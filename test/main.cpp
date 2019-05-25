@@ -11,13 +11,11 @@ int main(int argc, char *argv[]) {
     }
     auto const input = string(argv[1]);
 
-    mcfile::nbt::CompoundTag tag;
-    
-    Region r(input, 0, 0);
-    r.loadChunkDataSource([](int x, int z, ChunkDataSource data, StreamReader& reader) {
+    auto region = Region::MakeRegion(input, 0, 0);
+    region->loadChunkDataSource([](int x, int z, ChunkDataSource data, StreamReader& reader) {
         cout << "x=" << x << "; z=" << z << "; timestamp=" << data.timestamp << "; offset=" << data.offset << "; length=" << data.length << endl;
         
-        data.open(reader, [](std::vector<uint8_t> const& d) {
+        data.open(reader, [](std::vector<uint8_t>& d) {
             auto root = std::make_shared<nbt::CompoundTag>();
             auto bs = std::make_shared<ByteStream>(d);
             auto sr = std::make_shared<StreamReader>(bs);

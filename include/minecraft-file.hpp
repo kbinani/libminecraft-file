@@ -94,10 +94,10 @@ private:
 
 class ByteStream : public Stream {
 public:
-    explicit ByteStream(std::vector<uint8_t> const& buffer)
-        : buffer(buffer)
-        , loc(0)
+    explicit ByteStream(std::vector<uint8_t>& buffer)
+        : loc(0)
     {
+        this->buffer.swap(buffer);
     }
 
     ~ByteStream() {}
@@ -685,7 +685,7 @@ public:
     {
     }
 
-    bool open(StreamReader& reader, std::function<void(std::vector<uint8_t> const& data)> callback) const {
+    bool open(StreamReader& reader, std::function<void(std::vector<uint8_t>& data)> callback) const {
         if (!reader.valid()) {
             return false;
         }
