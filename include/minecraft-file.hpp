@@ -465,6 +465,8 @@ public:
     int8_t id() const override { return TAG_End; }
 };
 
+namespace _internal_ {
+    
 template< typename T, int8_t ID>
 class ScalarTag : public Tag {
 public:
@@ -482,11 +484,13 @@ public:
 public:
     T fValue;
 };
+        
+}
 
-class ByteTag : public ScalarTag<int8_t, Tag::TAG_Byte> {};
-class ShortTag : public ScalarTag<int16_t, Tag::TAG_Short> {};
-class IntTag : public ScalarTag<int32_t, Tag::TAG_Int> {};
-class LongTag : public ScalarTag<int64_t, Tag::TAG_Long> {};
+class ByteTag : public _internal_::ScalarTag<int8_t, Tag::TAG_Byte> {};
+class ShortTag : public _internal_::ScalarTag<int16_t, Tag::TAG_Short> {};
+class IntTag : public _internal_::ScalarTag<int32_t, Tag::TAG_Int> {};
+class LongTag : public _internal_::ScalarTag<int64_t, Tag::TAG_Long> {};
 
 class FloatTag : public Tag {
 public:
@@ -522,6 +526,8 @@ public:
     double fValue;
 };
 
+namespace _internal_ {
+    
 template<typename T, int8_t ID>
 class VectorTag : public Tag {
 public:
@@ -545,9 +551,11 @@ public:
     std::vector<T> fValue;
 };
 
-class ByteArrayTag : public VectorTag<int8_t, Tag::TAG_Byte_Array> {};
-class IntArrayTag : public VectorTag<int32_t, Tag::TAG_Int_Array> {};
-class LongArrayTag : public VectorTag<int64_t, Tag::TAG_Long_Array> {};
+}
+    
+class ByteArrayTag : public _internal_::VectorTag<int8_t, Tag::TAG_Byte_Array> {};
+class IntArrayTag : public _internal_::VectorTag<int32_t, Tag::TAG_Int_Array> {};
+class LongArrayTag : public _internal_::VectorTag<int64_t, Tag::TAG_Long_Array> {};
 
 class StringTag : public Tag {
 public:
@@ -669,32 +677,29 @@ inline std::shared_ptr<Tag> TagFactory::makeTag(int8_t id, std::string const& na
 
 class ChunkDataSource {
 public:
-    ChunkDataSource(std::string const& file_path, uint32_t timestamp, long offset, long length)
-        : file_path(file_path)
-        , timestamp(timestamp)
+    ChunkDataSource(uint32_t timestamp, long offset, long length)
+        : timestamp(timestamp)
         , offset(offset)
         , length(length)
     {
     }
 
-    bool open(std::function<void(std::vector<uint8_t> const& data)> callback) const {
-        auto fs = std::make_shared<FileStream>(file_path);
-        auto sr = std::make_shared<StreamReader>(fs);
-        if (!sr->valid()) {
+    bool open(StreamReader& reader, std::function<void(std::vector<uint8_t> const& data)> callback) const {
+        if (!reader.valid()) {
             return false;
         }
-        if (!sr->seek(offset + sizeof(uint32_t))) {
+        if (!reader.seek(offset + sizeof(uint32_t))) {
             return false;
         }
         uint8_t compression_type;
-        if (!sr->read(&compression_type)) {
+        if (!reader.read(&compression_type)) {
             return false;
         }
         if (compression_type != 2) {
             return false;
         }
         std::vector<uint8_t> buffer(length - 1);
-        if (!sr->read(buffer)) {
+        if (!reader.read(buffer)) {
             return false;
         }
         if (!Compression::decompress(buffer)) {
@@ -705,7 +710,6 @@ public:
     }
 
 public:
-    std::string const file_path;
     uint32_t const timestamp;
     long const offset;
     long const length;
@@ -724,44 +728,46 @@ public:
     Region(Region const&) = delete;
     Region& operator = (Region const&) = delete;
 
-    bool loadChunkDataSource(std::function<void(ChunkDataSource const&)> callback) {
-        int const x = this->x & 31;
-        int const z = this->z & 31;
-        int const index = x + z * 32;
+    bool loadChunkDataSource(std::function<void(int, int, ChunkDataSource, StreamReader&)> callback) {
         auto fs = std::make_shared<FileStream>(file_path);
         auto sr = std::make_shared<StreamReader>(fs);
-        if (!sr->valid()) {
-            return false;
+        for (int z = 0; z < 32; z++) {
+            for (int x = 0; x < 32; x++) {
+                int const index = (x & 31) + (z & 31) * 32;
+                if (!sr->valid()) {
+                    return false;
+                }
+                if (!sr->seek(4 * index)) {
+                    return false;
+                }
+                
+                uint32_t loc;
+                if (!sr->read(&loc)) {
+                    return false;
+                }
+                
+                long sectorOffset = loc >> 8;
+                if (!sr->seek(kSectorSize + 4 * index)) {
+                    return false;
+                }
+                
+                uint32_t timestamp;
+                if (!sr->read(&timestamp)) {
+                    return false;
+                }
+                
+                if (!sr->seek(sectorOffset * kSectorSize)) {
+                    return false;
+                }
+                uint32_t chunkSize;
+                if (!sr->read(&chunkSize)) {
+                    return false;
+                }
+                
+                ChunkDataSource data(timestamp, sectorOffset * kSectorSize, chunkSize);
+                callback(x, z, data, *sr);
+            }
         }
-        if (!sr->seek(4 * index)) {
-            return false;
-        }
-
-        uint32_t loc;
-        if (!sr->read(&loc)) {
-            return false;
-        }
-
-        long sectorOffset = loc >> 8;
-        if (!sr->seek(kSectorSize + 4 * index)) {
-            return false;
-        }
-
-        uint32_t timestamp;
-        if (!sr->read(&timestamp)) {
-            return false;
-        }
-
-        if (!sr->seek(sectorOffset * kSectorSize)) {
-            return false;
-        }
-        uint32_t chunkSize;
-        if (!sr->read(&chunkSize)) {
-            return false;
-        }
-
-        ChunkDataSource data(file_path, timestamp, sectorOffset * kSectorSize, chunkSize);
-        callback(data);
 
         return true;
     }
