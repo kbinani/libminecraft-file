@@ -9,6 +9,7 @@
 #include <memory>
 #include <map>
 #include <algorithm>
+#include <sstream>
 
 namespace mcfile {
 class Stream {
@@ -718,13 +719,6 @@ public:
 
 class Region {
 public:
-    Region(std::string const& file_path, int x, int z)
-        : x(x)
-        , z(z)
-        , file_path(file_path)
-    {
-    }
-
     Region(Region const&) = delete;
     Region& operator = (Region const&) = delete;
 
@@ -770,6 +764,54 @@ public:
         }
 
         return true;
+    }
+
+    static std::shared_ptr<Region> MakeRegion(std::string const& file_path, int x, int z) {
+        return std::shared_ptr<Region>(new Region(file_path, x, z));
+    }
+    
+    static std::shared_ptr<Region> MakeRegion(std::string const& file_path) {
+        // ../directory/r.5.13.mca
+
+        auto basename = file_path;
+        
+        auto pos = file_path.find_last_of('/');
+        if (pos == std::string::npos) {
+            pos = file_path.find_last_of('\\');
+        }
+        if (pos != std::string::npos) {
+            basename = file_path.substr(pos + 1);
+        }
+        
+        std::istringstream input(basename);
+        std::vector<std::string> tokens;
+        for (std::string line; std::getline(input, line, '.'); ) {
+            tokens.push_back(line);
+        }
+        if (tokens.size() != 4) {
+            return nullptr;
+        }
+        if (tokens[0] != "r" || tokens[3] != "mca") {
+            return nullptr;
+        }
+        
+        int x, z;
+        try {
+            x = std::stoi(tokens[1]);
+            z = std::stoi(tokens[2]);
+        } catch (...) {
+            return nullptr;
+        }
+        
+        return std::shared_ptr<Region>(new Region(file_path, x, z));
+    }
+    
+private:
+    Region(std::string const& file_path, int x, int z)
+        : x(x)
+        , z(z)
+        , file_path(file_path)
+    {
     }
 
 public:
