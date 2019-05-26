@@ -11,16 +11,21 @@ int main(int argc, char *argv[]) {
     }
     auto const input = string(argv[1]);
 
-    auto region = Region::MakeRegion(input, 0, 0);
-    region->loadChunkDataSource([](int x, int z, ChunkDataSource data, StreamReader& reader) {
-        cout << "x=" << x << "; z=" << z << "; timestamp=" << data.timestamp << "; offset=" << data.offset << "; length=" << data.length << endl;
+    auto region = Region::MakeRegion(input);
+    region->loadChunkDataSources([](int chunkX, int chunkZ, ChunkDataSource data, StreamReader& reader) {
+        cout
+            << "x=" << chunkX
+            << "; z=" << chunkZ
+            << "; timestamp=" << data.fTimestamp
+            << "; offset=" << data.fOffset
+            << "; length=" << data.fLength
+            << endl;
         
-        data.open(reader, [](std::vector<uint8_t>& d) {
+        data.load(reader, [](std::vector<uint8_t>& d) {
             auto root = std::make_shared<nbt::CompoundTag>();
             auto bs = std::make_shared<ByteStream>(d);
             auto sr = std::make_shared<StreamReader>(bs);
             root->read(*sr);
-            std::cout << std::boolalpha << root->valid() << std::endl;
         });
     });
     return 0;

@@ -27,11 +27,11 @@ public:
 
 class FileStream : public Stream {
 public:
-    explicit FileStream(std::string const& file_path)
-        : fp(nullptr)
-        , loc(0)
+    explicit FileStream(std::string const& filePath)
+        : fFile(nullptr)
+        , fLoc(0)
     {
-        FILE *fp = fopen(file_path.c_str(), "rb");
+        FILE *fp = fopen(filePath.c_str(), "rb");
 
         if (!fp) {
             return;
@@ -49,13 +49,13 @@ public:
             fclose(fp);
             return;
         }
-        this->fp = fp;
-        this->_length = length;
+        this->fFile = fp;
+        this->fLength = length;
     }
 
     ~FileStream() {
-        if (fp) {
-            fclose(fp);
+        if (fFile) {
+            fclose(fFile);
         }
     }
 
@@ -63,41 +63,41 @@ public:
     FileStream& operator = (FileStream const&) = delete;
 
     bool read(void *buffer, size_t size, size_t count) override {
-        if (!fp) {
+        if (!fFile) {
             return false;
         }
-        loc += size * count;
-        return fread(buffer, size, count, fp) == count;
+        fLoc += size * count;
+        return fread(buffer, size, count, fFile) == count;
     }
 
     bool seek(long offset) override {
-        if (!fp) {
+        if (!fFile) {
             return false;
         }
-        loc = offset;
-        return fseek(fp, offset, SEEK_SET) == 0;
+        fLoc = offset;
+        return fseek(fFile, offset, SEEK_SET) == 0;
     }
 
     bool valid() const override {
-        return fp != nullptr;
+        return fFile != nullptr;
     }
 
-    long length() const override { return _length; }
+    long length() const override { return fLength; }
 
-    long pos() const override { return loc; }
+    long pos() const override { return fLoc; }
 
 private:
-    FILE *fp;
-    long _length;
-    long loc;
+    FILE *fFile;
+    long fLength;
+    long fLoc;
 };
 
 class ByteStream : public Stream {
 public:
     explicit ByteStream(std::vector<uint8_t>& buffer)
-        : loc(0)
+        : fLoc(0)
     {
-        this->buffer.swap(buffer);
+        this->fBuffer.swap(buffer);
     }
 
     ~ByteStream() {}
@@ -106,31 +106,31 @@ public:
     ByteStream& operator = (ByteStream const&) = delete;
 
     bool read(void *buf, size_t size, size_t count) override {
-        if (buffer.size() <= loc + size * count) {
+        if (fBuffer.size() <= fLoc + size * count) {
             return false;
         }
-        std::copy(buffer.begin() + loc, buffer.begin() + loc + size * count, (uint8_t *)buf);
-        loc += size * count;
+        std::copy(fBuffer.begin() + fLoc, fBuffer.begin() + fLoc + size * count, (uint8_t *)buf);
+        fLoc += size * count;
         return true;
     }
 
     bool seek(long offset) override {
-        if (offset < 0 || buffer.size() <= offset) {
+        if (offset < 0 || fBuffer.size() <= offset) {
             return false;
         }
-        loc = offset;
+        fLoc = offset;
         return true;
     }
 
-    long length() const override { return buffer.size(); }
+    long length() const override { return fBuffer.size(); }
 
     bool valid() const override { return true; }
 
-    long pos() const override { return loc; }
+    long pos() const override { return fLoc; }
 
 private:
-    std::vector<uint8_t> buffer;
-    long loc;
+    std::vector<uint8_t> fBuffer;
+    long fLoc;
 };
 
 class StreamReader {
@@ -330,8 +330,8 @@ public:
 
     static bool compress(std::vector<uint8_t>& inout) {
         z_stream zs;
-        char buff[SEG_SIZE];
-        std::vector<uint8_t> out_data;
+        char buff[kSegSize];
+        std::vector<uint8_t> outData;
 
         memset(&zs, 0, sizeof(zs));
         if (deflateInit(&zs, Z_BEST_COMPRESSION) != Z_OK) {
@@ -343,10 +343,10 @@ public:
         int ret;
         do {
             zs.next_out = reinterpret_cast<Bytef *>(buff);
-            zs.avail_out = SEG_SIZE;
+            zs.avail_out = kSegSize;
 
             ret = deflate(&zs, Z_FINISH);
-            out_data.insert(out_data.end(), buff, buff + zs.total_out);
+            outData.insert(outData.end(), buff, buff + zs.total_out);
         } while (ret == Z_OK);
 
         int r = deflateEnd(&zs);
@@ -357,16 +357,16 @@ public:
             return false;
         }
 
-        inout.swap(out_data);
+        inout.swap(outData);
         return true;
     }
 
     static bool decompress(std::vector<uint8_t>& inout) {
         int ret;
         z_stream zs;
-        char buff[SEG_SIZE];
-        std::vector<uint8_t> out_data;
-        unsigned long prev_out = 0;
+        char buff[kSegSize];
+        std::vector<uint8_t> outData;
+        unsigned long prevOut = 0;
 
         memset(&zs, 0, sizeof(zs));
         if (inflateInit(&zs) != Z_OK) {
@@ -378,11 +378,11 @@ public:
 
         do {
             zs.next_out = reinterpret_cast<Bytef *>(buff);
-            zs.avail_out = SEG_SIZE;
+            zs.avail_out = kSegSize;
 
             ret = inflate(&zs, 0);
-            out_data.insert(out_data.end(), buff, buff + (zs.total_out - prev_out));
-            prev_out = zs.total_out;
+            outData.insert(outData.end(), buff, buff + (zs.total_out - prevOut));
+            prevOut = zs.total_out;
         } while (ret == Z_OK);
 
         inflateEnd(&zs);
@@ -390,12 +390,12 @@ public:
             return false;
         }
 
-        inout.swap(out_data);
+        inout.swap(outData);
         return true;
     }
 
 private:
-    static const unsigned int SEG_SIZE = 16384;
+    static const unsigned int kSegSize = 16384;
 };
 
 namespace nbt {
@@ -679,27 +679,27 @@ inline std::shared_ptr<Tag> TagFactory::makeTag(int8_t id, std::string const& na
 class ChunkDataSource {
 public:
     ChunkDataSource(uint32_t timestamp, long offset, long length)
-        : timestamp(timestamp)
-        , offset(offset)
-        , length(length)
+        : fTimestamp(timestamp)
+        , fOffset(offset)
+        , fLength(length)
     {
     }
 
-    bool open(StreamReader& reader, std::function<void(std::vector<uint8_t>& data)> callback) const {
+    bool load(StreamReader& reader, std::function<void(std::vector<uint8_t>& data)> callback) const {
         if (!reader.valid()) {
             return false;
         }
-        if (!reader.seek(offset + sizeof(uint32_t))) {
+        if (!reader.seek(fOffset + sizeof(uint32_t))) {
             return false;
         }
-        uint8_t compression_type;
-        if (!reader.read(&compression_type)) {
+        uint8_t compressionType;
+        if (!reader.read(&compressionType)) {
             return false;
         }
-        if (compression_type != 2) {
+        if (compressionType != 2) {
             return false;
         }
-        std::vector<uint8_t> buffer(length - 1);
+        std::vector<uint8_t> buffer(fLength - 1);
         if (!reader.read(buffer)) {
             return false;
         }
@@ -711,9 +711,9 @@ public:
     }
 
 public:
-    uint32_t const timestamp;
-    long const offset;
-    long const length;
+    uint32_t const fTimestamp;
+    long const fOffset;
+    long const fLength;
 };
 
 
@@ -722,8 +722,8 @@ public:
     Region(Region const&) = delete;
     Region& operator = (Region const&) = delete;
 
-    bool loadChunkDataSource(std::function<void(int, int, ChunkDataSource, StreamReader&)> callback) {
-        auto fs = std::make_shared<FileStream>(file_path);
+    bool loadChunkDataSources(std::function<void(int chunkX, int chunkZ, ChunkDataSource data, StreamReader& stream)> callback) {
+        auto fs = std::make_shared<FileStream>(fFilePath);
         auto sr = std::make_shared<StreamReader>(fs);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
@@ -759,28 +759,30 @@ public:
                 }
                 
                 ChunkDataSource data(timestamp, sectorOffset * kSectorSize, chunkSize);
-                callback(x, z, data, *sr);
+                int const chunkX = this->fX * 32 + x;
+                int const chunkZ = this->fZ * 32 + z;
+                callback(chunkX, chunkZ, data, *sr);
             }
         }
 
         return true;
     }
 
-    static std::shared_ptr<Region> MakeRegion(std::string const& file_path, int x, int z) {
-        return std::shared_ptr<Region>(new Region(file_path, x, z));
+    static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
+        return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
     
-    static std::shared_ptr<Region> MakeRegion(std::string const& file_path) {
+    static std::shared_ptr<Region> MakeRegion(std::string const& filePath) {
         // ../directory/r.5.13.mca
 
-        auto basename = file_path;
+        auto basename = filePath;
         
-        auto pos = file_path.find_last_of('/');
+        auto pos = filePath.find_last_of('/');
         if (pos == std::string::npos) {
-            pos = file_path.find_last_of('\\');
+            pos = filePath.find_last_of('\\');
         }
         if (pos != std::string::npos) {
-            basename = file_path.substr(pos + 1);
+            basename = filePath.substr(pos + 1);
         }
         
         std::istringstream input(basename);
@@ -803,23 +805,23 @@ public:
             return nullptr;
         }
         
-        return std::shared_ptr<Region>(new Region(file_path, x, z));
+        return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
     
 private:
-    Region(std::string const& file_path, int x, int z)
-        : x(x)
-        , z(z)
-        , file_path(file_path)
+    Region(std::string const& filePath, int x, int z)
+        : fX(x)
+        , fZ(z)
+        , fFilePath(filePath)
     {
     }
 
 public:
-    int const x;
-    int const z;
+    int const fX;
+    int const fZ;
 
 private:
-    std::string const file_path;
+    std::string const fFilePath;
 
     static long const kSectorSize = 4096;
 };
