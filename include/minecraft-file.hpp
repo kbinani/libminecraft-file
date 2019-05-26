@@ -10,6 +10,7 @@
 #include <map>
 #include <algorithm>
 #include <sstream>
+#include <limits>
 
 namespace mcfile {
 
@@ -167,11 +168,12 @@ public:
     }
 
     bool read(int16_t *v) {
-        int16_t t;
+        uint16_t t;
         if (!readRaw(&t)) {
             return false;
         }
-        *v = Int16FromBE(t);
+        t = Int16FromBE(t);
+        *v = *(int16_t *)&t;
         return true;
     }
 
@@ -185,11 +187,12 @@ public:
     }
 
     bool read(int32_t *v) {
-        int32_t t;
+        uint32_t t;
         if (!readRaw(&t)) {
             return false;
         }
-        *v = Int32FromBE(t);
+        t = Int32FromBE(t);
+        *v = *(int32_t *)&t;
         return true;
     }
 
@@ -203,11 +206,12 @@ public:
     }
 
     bool read(int64_t *v) {
-        int64_t t;
+        uint64_t t;
         if (!readRaw(&t)) {
             return false;
         }
-        *v = Int64FromBE(t);
+        t = Int64FromBE(t);
+        *v = *(int64_t *)&t;
         return true;
     }
 
@@ -260,23 +264,19 @@ private:
         return fStream->read(v, sizeof(T), 1);
     }
 
-    template<typename T>
-    static T SwapInt64(T v) {
-        static_assert(sizeof(T) == 8, "");
-        return (((T) (v) & (T) 0x00000000000000ff) << 56)
-            | (((T) (v) & (T) 0x000000000000ff00) << 40)
-            | (((T) (v) & (T) 0x0000000000ff0000) << 24)
-            | (((T) (v) & (T) 0x00000000ff000000) <<  8)
-            | (((T) (v) & (T) 0x000000ff00000000) >>  8)
-            | (((T) (v) & (T) 0x0000ff0000000000) >> 24)
-            | (((T) (v) & (T) 0x00ff000000000000) >> 40)
-            | (((T) (v) & (T) 0xff00000000000000) >> 56);
+    static uint64_t SwapInt64(uint64_t v) {
+        return ((v & 0x00000000000000ffLL) << 56)
+            | ((v & 0x000000000000ff00LL) << 40)
+            | ((v & 0x0000000000ff0000LL) << 24)
+            | ((v & 0x00000000ff000000LL) <<  8)
+            | ((v & 0x000000ff00000000LL) >>  8)
+            | ((v & 0x0000ff0000000000LL) >> 24)
+            | ((v & 0x00ff000000000000LL) >> 40)
+            | ((v & 0xff00000000000000LL) >> 56);
     }
 
-    template<typename T>
-    static T SwapInt32(T v) {
-        static_assert(sizeof(T) == 4, "");
-        T r;
+    static uint32_t SwapInt32(uint32_t v) {
+        uint32_t r;
         r  = v                << 24;
         r |= (v & 0x0000FF00) <<  8;
         r |= (v & 0x00FF0000) >>  8;
@@ -284,18 +284,14 @@ private:
         return r;
     }
 
-    template<typename T>
-    static T SwapInt16(T v) {
-        static_assert(sizeof(T) == 2, "");
-        T r;
+    static uint16_t SwapInt16(uint16_t v) {
+        uint16_t r;
         r = v << 8;
         r |= (v & 0xFF00) >> 8;
         return r;
     }
 
-    template<typename T>
-    static T Int64FromBE(T v) {
-        static_assert(sizeof(T) == 8, "");
+    static uint64_t Int64FromBE(uint64_t v) {
         #if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
             return v;
         #else
@@ -303,9 +299,7 @@ private:
         #endif
     }
 
-    template<typename T>
-    static T Int32FromBE(T v) {
-        static_assert(sizeof(T) == 4, "");
+    static uint32_t Int32FromBE(uint32_t v) {
         #if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
             return v;
         #else
@@ -313,9 +307,7 @@ private:
         #endif
     }
 
-    template<typename T>
-    static T Int16FromBE(T v) {
-        static_assert(sizeof(T) == 2, "");
+    static uint16_t Int16FromBE(uint16_t v) {
         #if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
             return v;
         #else
@@ -423,7 +415,7 @@ class Tag;
 
 class TagFactory {
 public:
-    static inline std::shared_ptr<Tag> makeTag(int8_t id, std::string const& name);
+    static inline std::shared_ptr<Tag> makeTag(uint8_t id, std::string const& name);
 
 private:
     template<typename T>
@@ -464,7 +456,7 @@ public:
 
     bool valid() const { return fValid; }
 
-    virtual int8_t id() const = 0;
+    virtual uint8_t id() const = 0;
 
     std::string name() const { return fName; }
 
@@ -486,19 +478,19 @@ protected:
     virtual bool readImpl(StreamReader& reader) = 0;
 
 public:
-    static int8_t const TAG_End = 0;
-    static int8_t const TAG_Byte = 1;
-    static int8_t const TAG_Short = 2;
-    static int8_t const TAG_Int = 3;
-    static int8_t const TAG_Long = 4;
-    static int8_t const TAG_Float = 5;
-    static int8_t const TAG_Double = 6;
-    static int8_t const TAG_Byte_Array = 7;
-    static int8_t const TAG_String = 8;
-    static int8_t const TAG_List = 9;
-    static int8_t const TAG_Compound = 10;
-    static int8_t const TAG_Int_Array = 11;
-    static int8_t const TAG_Long_Array = 12;
+    static uint8_t const TAG_End = 0;
+    static uint8_t const TAG_Byte = 1;
+    static uint8_t const TAG_Short = 2;
+    static uint8_t const TAG_Int = 3;
+    static uint8_t const TAG_Long = 4;
+    static uint8_t const TAG_Float = 5;
+    static uint8_t const TAG_Double = 6;
+    static uint8_t const TAG_Byte_Array = 7;
+    static uint8_t const TAG_String = 8;
+    static uint8_t const TAG_List = 9;
+    static uint8_t const TAG_Compound = 10;
+    static uint8_t const TAG_Int_Array = 11;
+    static uint8_t const TAG_Long_Array = 12;
 
 protected:
     std::string fName;
@@ -511,7 +503,7 @@ private:
 class EndTag : public Tag {
 public:
     bool readImpl(StreamReader&) override { return true; }
-    int8_t id() const override { return TAG_End; }
+    uint8_t id() const override { return TAG_End; }
 
     static EndTag const* instance() {
         static EndTag s;
@@ -521,7 +513,7 @@ public:
 
 namespace _internal_ {
     
-template< typename T, int8_t ID>
+template< typename T, uint8_t ID>
 class ScalarTag : public Tag {
 public:
     bool readImpl(StreamReader& r) override {
@@ -533,7 +525,7 @@ public:
         return true;
     }
 
-    int8_t id() const override { return ID; }
+    uint8_t id() const override { return ID; }
 
 public:
     T fValue;
@@ -541,7 +533,7 @@ public:
         
 }
 
-class ByteTag : public _internal_::ScalarTag<int8_t, Tag::TAG_Byte> {};
+class ByteTag : public _internal_::ScalarTag<uint8_t, Tag::TAG_Byte> {};
 class ShortTag : public _internal_::ScalarTag<int16_t, Tag::TAG_Short> {};
 class IntTag : public _internal_::ScalarTag<int32_t, Tag::TAG_Int> {};
 class LongTag : public _internal_::ScalarTag<int64_t, Tag::TAG_Long> {};
@@ -558,7 +550,7 @@ public:
         return true;
     }
 
-    int8_t id() const override { return Tag::TAG_Float; }
+    uint8_t id() const override { return Tag::TAG_Float; }
 
 public:
     float fValue;
@@ -576,7 +568,7 @@ public:
         return true;
     }
 
-    int8_t id() const override { return Tag::TAG_Double; }
+    uint8_t id() const override { return Tag::TAG_Double; }
 
 public:
     double fValue;
@@ -584,7 +576,7 @@ public:
 
 namespace _internal_ {
     
-template<typename T, int8_t ID>
+template<typename T, uint8_t ID>
 class VectorTag : public Tag {
 public:
     bool readImpl(StreamReader& r) override {
@@ -601,7 +593,7 @@ public:
         return true;
     }
 
-    int8_t id() const override { return ID; }
+    uint8_t id() const override { return ID; }
 
 public:
     std::vector<T> fValue;
@@ -609,7 +601,7 @@ public:
 
 }
     
-class ByteArrayTag : public _internal_::VectorTag<int8_t, Tag::TAG_Byte_Array> {};
+class ByteArrayTag : public _internal_::VectorTag<uint8_t, Tag::TAG_Byte_Array> {};
 class IntArrayTag : public _internal_::VectorTag<int32_t, Tag::TAG_Int_Array> {};
 class LongArrayTag : public _internal_::VectorTag<int64_t, Tag::TAG_Long_Array> {};
 
@@ -625,7 +617,7 @@ public:
         return true;
     }
 
-    int8_t id() const override { return Tag::TAG_String; }
+    uint8_t id() const override { return Tag::TAG_String; }
 
 public:
     std::string fValue;
@@ -635,7 +627,7 @@ public:
 class ListTag : public Tag {
 public:
     bool readImpl(StreamReader& r) override {
-        int8_t type;
+        uint8_t type;
         if (!r.read(&type)) {
             return false;
         }
@@ -656,7 +648,7 @@ public:
         return true;
     }
 
-    int8_t id() const override { return Tag::TAG_List; }
+    uint8_t id() const override { return Tag::TAG_List; }
 
 public:
     std::vector<std::shared_ptr<Tag>> fValue;
@@ -692,7 +684,7 @@ public:
         return true;
     }
 
-    int8_t id() const override { return Tag::TAG_Compound; }
+    uint8_t id() const override { return Tag::TAG_Compound; }
 
     Tag const* query(std::string const& path) const {
         // path: /Level/Sections
@@ -745,7 +737,7 @@ public:
 };
 
 
-inline std::shared_ptr<Tag> TagFactory::makeTag(int8_t id, std::string const& name) {
+inline std::shared_ptr<Tag> TagFactory::makeTag(uint8_t id, std::string const& name) {
     switch (id) {
         case Tag::TAG_End:
             return makeNamedTag<EndTag>(name);
@@ -781,16 +773,209 @@ inline std::shared_ptr<Tag> TagFactory::makeTag(int8_t id, std::string const& na
 
 } // namespace nbt
 
+
+class Block {
+public:
+    explicit Block(std::string const& name, std::map<std::string, std::string> const& properties)
+        : fName(name)
+        , fProperties(properties)
+    {
+    }
+
+public:
+    std::string const fName;
+    std::map<std::string, std::string> const fProperties;
+};
+
+    
+class ChunkSection {
+public:
+    std::shared_ptr<Block> blockAt(int offsetX, int offsetY, int offsetZ) const {
+        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
+            return nullptr;
+        }
+        size_t const numBits = fBlockStates.size() * 64;
+        if (numBits % 4096 != 0) {
+            return nullptr;
+        }
+        size_t const bitsPerIndex = numBits / 4096;
+        int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
+        
+        size_t const index = (size_t)offsetY * 16 * 16 + (size_t)offsetZ * 16 + (size_t)offsetX;
+        size_t const bitIndex = index * bitsPerIndex;
+        size_t const uint64Index = bitIndex / 64;
+
+        if (fBlockStates.size() <= uint64Index) {
+            return nullptr;
+        }
+        uint64_t const v0 = *(uint64_t *)(fBlockStates.data() + uint64Index);
+        uint64_t const v1 = (uint64Index + 1) < fBlockStates.size() ? *(uint64_t *)(fBlockStates.data() + uint64Index + 1) : 0;
+
+        int const v0Offset = bitIndex - uint64Index * 64;
+        int const v0Bits = std::min((uint64Index + 1) * 64 - bitIndex, bitsPerIndex);
+
+        uint64_t const paletteIndex = ((v0 >> v0Offset) & mask) | ((v1 << v0Bits) & mask);
+
+        /*
+                   uint64Index                         uint64Index + 1
+        |-----------------------------------||-----------------------------------|
+        |63                                0||63                                0|
+        |-------------------^====^----------||-----------------------------------|
+                                 |   <--   0
+                                 localBitOffset
+
+
+                   uint64Index                         uint64Index + 1
+        |-----------------------------------||-----------------------------------|
+        |63                                0||63                                0|
+        |===^-------------------------------||---------------------------------^=|
+            |    <--        <--       <--   0                                    0
+            localBitOffset
+        */
+
+        if (fPalette.size() <= paletteIndex) {
+            return nullptr;
+        }
+        
+        return fPalette[paletteIndex];
+    }
+    
+    static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const* section) {
+        auto yTag = section->query("Y")->asByte();
+        if (!yTag) {
+            return nullptr;
+        }
+
+        auto paletteTag = section->query("Palette")->asList();
+        if (!paletteTag) {
+            return nullptr;
+        }
+        std::vector<std::shared_ptr<Block>> palette;
+        for (auto entry : paletteTag->fValue) {
+            auto tag = entry->asCompound();
+            if (!tag) {
+                return nullptr;
+            }
+            auto nameTag = tag->query("Name")->asString();
+            if (!nameTag) {
+                return nullptr;
+            }
+            std::map<std::string, std::string> properties;
+            auto propertiesTag = tag->query("Properties")->asCompound();
+            if (propertiesTag) {
+                for (auto p : propertiesTag->fValue) {
+                    std::string n = p.first;
+                    if (n.empty()) {
+                        continue;
+                    }
+                    auto v = p.second->asString();
+                    if (!v) {
+                        continue;
+                    }
+                    properties.insert(std::make_pair(n, v->fValue));
+                }
+            }
+            palette.push_back(std::make_shared<Block>(nameTag->fValue, properties));
+        }
+        
+        auto blockStatesTag = section->query("BlockStates")->asLongArray();
+        if (!blockStatesTag) {
+            return nullptr;
+        }
+        
+        return std::shared_ptr<ChunkSection>(new ChunkSection((int)yTag->fValue,
+                                                              palette,
+                                                              blockStatesTag->fValue));
+    }
+    
+private:
+    ChunkSection(int y, std::vector<std::shared_ptr<Block>> const& palette, std::vector<int64_t> const& blockStates)
+        : fY(y)
+        , fPalette(palette)
+        , fBlockStates(blockStates)
+    {
+    }
+
+public:
+    int const fY;
+    std::vector<std::shared_ptr<Block>> const fPalette;
+    std::vector<int64_t> const fBlockStates;
+};
+
+    
+class Chunk {
+public:
+    std::shared_ptr<Block> blockAt(int x, int y, int z) const {
+        int const chunkX = x / 16;
+        int const chunkZ = z / 16;
+        if (chunkX != fChunkX || chunkZ != fChunkZ) {
+            return nullptr;
+        }
+        if (y < 0 || 256 <= y) {
+            return nullptr;
+        }
+        int const sectionY = y / 16;
+        auto sectionIt = std::find_if(fSections.begin(), fSections.end(), [sectionY](auto const& section) {
+            return section->fY == sectionY;
+        });
+        if (sectionIt == fSections.end()) {
+            return nullptr;
+        }
+        int const offsetX = x - chunkX * 16;
+        int const offsetZ = z - chunkZ * 16;
+        int const offsetY = y - sectionY * 16;
+        return (*sectionIt)->blockAt(offsetX, offsetY, offsetZ);
+    }
+
+    int minX() const { return fChunkX * 16; }
+    int maxX() const { return fChunkX * 16 + 15; }
+
+    int minZ() const { return fChunkZ * 16; }
+    int maxZ() const { return fChunkZ * 16 + 15; }
+
+    static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const& root) {
+        auto sectionsTag = root->query("/Level/Sections")->asList();
+        if (!sectionsTag) {
+            return nullptr;
+        }
+        std::vector<std::shared_ptr<ChunkSection>> sections;
+        for (auto sectionTag : sectionsTag->fValue) {
+            auto p = sectionTag->asCompound();
+            if (!p) {
+                return nullptr;
+            }
+            sections.push_back(ChunkSection::MakeChunkSection(p));
+        }
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections));
+    }
+    
+private:
+    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections)
+        : fChunkX(chunkX)
+        , fChunkZ(chunkZ)
+        , fSections(sections)
+    {
+    }
+
+public:
+    int const fChunkX;
+    int const fChunkZ;
+    std::vector<std::shared_ptr<ChunkSection>> fSections;
+};
+
+
 class ChunkDataSource {
 public:
-    ChunkDataSource(uint32_t timestamp, long offset, long length)
-        : fTimestamp(timestamp)
+    ChunkDataSource(int chunkX, int chunkZ, uint32_t timestamp, long offset, long length)
+        : fChunkX(chunkX)
+        , fChunkZ(chunkZ)
+        , fTimestamp(timestamp)
         , fOffset(offset)
         , fLength(length)
     {
     }
-
-    bool load(StreamReader& reader, std::function<void(nbt::CompoundTag const& root)> callback) const {
+    
+    bool load(StreamReader& reader, std::function<void(Chunk const& chunk)> callback) const {
         if (!reader.valid()) {
             return false;
         }
@@ -818,11 +1003,17 @@ public:
         if (!root->valid()) {
             return false;
         }
-        callback(*root);
+        auto chunk = Chunk::MakeChunk(fChunkX, fChunkZ, root);
+        if (!chunk) {
+            return false;
+        }
+        callback(*chunk);
         return true;
     }
-
+    
 public:
+    int const fChunkX;
+    int const fChunkZ;
     uint32_t const fTimestamp;
     long const fOffset;
     long const fLength;
@@ -834,7 +1025,7 @@ public:
     Region(Region const&) = delete;
     Region& operator = (Region const&) = delete;
 
-    using LoadChunkDataCallback = std::function<bool(int chunkX, int chunkZ, ChunkDataSource data, StreamReader& stream)>;
+    using LoadChunkDataCallback = std::function<bool(ChunkDataSource data, StreamReader& stream)>;
     
     bool loadChunkDataSources(LoadChunkDataCallback callback) {
         auto fs = std::make_shared<FileStream>(fFilePath);
@@ -903,7 +1094,7 @@ private:
     {
     }
 
-    bool loadChunkDataSourceImpl(int regionX, int regionZ, StreamReader& sr, std::function<bool(int chunkX, int chunkZ, ChunkDataSource data, StreamReader& stream)> callback) {
+    bool loadChunkDataSourceImpl(int regionX, int regionZ, StreamReader& sr, LoadChunkDataCallback callback) {
         int const index = (regionX & 31) + (regionZ & 31) * 32;
         if (!sr.valid()) {
             return false;
@@ -935,10 +1126,10 @@ private:
             return false;
         }
     
-        ChunkDataSource data(timestamp, sectorOffset * kSectorSize, chunkSize);
         int const chunkX = this->fX * 32 + regionX;
         int const chunkZ = this->fZ * 32 + regionZ;
-        if (!callback(chunkX, chunkZ, data, sr)) {
+        ChunkDataSource data(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
+        if (!callback(data, sr)) {
             return false;
         }
         

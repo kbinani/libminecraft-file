@@ -4,6 +4,34 @@
 using namespace std;
 using namespace mcfile;
 
+static std::string nameToDisplay(std::shared_ptr<Block> const& block) {
+    if (!block) {
+        return "x";
+    }
+    auto const name = block->fName;
+    if (name == "minecraft:air" || name == "minecraft:cave_air") {
+        return " ";
+    } else if (name == "minecraft:grass") {
+        return "w";
+    } else if (name == "minecraft:tall_grass") {
+        return "W";
+    } else if (name == "minecraft:grass_block" || name == "minecraft:dirt") {
+        return "d";
+    } else if (name == "minecraft:lilac") {
+        return "f";
+    } else if (name == "minecraft:oak_log") {
+        return "L";
+    } else if (name == "minecraft:sand") {
+        return "s";
+    } else if (name == "minecraft:stone") {
+        return "S";
+    } else if (name == "minecraft:oak_leaves") {
+        return "l";
+    } else {
+        return "?";
+    }
+}
+
 int main(int argc, char *argv[]) {
 
     if (argc < 2) {
@@ -12,50 +40,34 @@ int main(int argc, char *argv[]) {
     auto const input = string(argv[1]);
 
     auto region = Region::MakeRegion(input);
-    region->loadChunkDataSources([](int chunkX, int chunkZ, ChunkDataSource data, StreamReader& reader) {
-        cout
-            << "x=" << chunkX
-            << "; z=" << chunkZ
-            << "; timestamp=" << data.fTimestamp
-            << "; offset=" << data.fOffset
-            << "; length=" << data.fLength
-            << endl;
-        
-        data.load(reader, [](nbt::CompoundTag const& root) {
-            cout
-                << "name=" << root.name()
-                << "; valid=" << boolalpha << root.valid()
-                << endl;
-
-            auto sections = root.query("/Level/Sections")->asList();
-            if (!sections) {
-                return;
+    
+    cout
+        << "regionX=" << region->fX
+        << "; regionZ=" << region->fZ
+        << endl;
+    
+    region->loadChunkDataSources([](ChunkDataSource data, StreamReader& reader) {
+        data.load(reader, [data](Chunk const& chunk) {
+            for (int y = 0; y <= 90; y++) {
+                for (int z = chunk.minZ(); z <= chunk.maxZ(); z++) {
+                    for (int x = chunk.minX(); x <= chunk.maxX(); x++) {
+                        auto block = chunk.blockAt(x, y, z);
+                        cout << nameToDisplay(block);
+                    }
+                    cout << endl;
+                }
+                cout << "-----------------" << endl;
             }
             cout
-                << "sections->name()=" << sections->name()
-                << "; sections->fValue.size()=" << sections->fValue.size()
+                << "chunkX=" << chunk.fChunkX
+                << "; chunkZ=" << chunk.fChunkZ
+                << "; timestamp=" << data.fTimestamp
+                << "; chunk.fSections.size()=" << chunk.fSections.size()
                 << endl;
-            for (auto s : sections->fValue) {
-                nbt::CompoundTag const* section = s->asCompound();
-                if (!section) {
-                    continue;
-                }
-                nbt::ByteTag const* y = section->query("Y")->asByte();
-                if (!y) {
-                    continue;
-                }
-                nbt::LongArrayTag const* blockStates = section->query("BlockStates")->asLongArray();
-                if (!blockStates) {
-                    continue;
-                }
-                cout
-                    << "y=" << (int)y->fValue
-                    << "; blockStates->fValue.size()=" << blockStates->fValue.size()
-                    << endl;
-            }
         });
 
         return false;
     });
+
     return 0;
 }
