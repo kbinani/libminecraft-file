@@ -512,6 +512,11 @@ class EndTag : public Tag {
 public:
     bool readImpl(StreamReader&) override { return true; }
     int8_t id() const override { return TAG_End; }
+
+    static EndTag const* instance() {
+        static EndTag s;
+        return &s;
+    }
 };
 
 namespace _internal_ {
@@ -692,21 +697,21 @@ public:
     Tag const* query(std::string const& path) const {
         // path: /Level/Sections
         if (path.empty()) {
-            return nullptr;
+            return EndTag::instance();
         }
         std::string p = path;
         CompoundTag const* pivot = this;
         while (!p.empty()) {
             if (p[0] == '/') {
                 if (fValue.size() != 1) {
-                    return nullptr;
+                    return EndTag::instance();
                 }
                 auto child = fValue.begin()->second;
                 if (p.size() == 1) {
                     return child.get();
                 }
                 if (child->id() != Tag::TAG_Compound) {
-                    return nullptr;
+                    return EndTag::instance();
                 }
                 pivot = child->asCompound();
                 p = p.substr(1);
@@ -720,19 +725,19 @@ public:
                 }
                 auto child = pivot->fValue.find(name);
                 if (child == pivot->fValue.end()) {
-                    return nullptr;
+                    return EndTag::instance();
                 }
                 if (pos == std::string::npos) {
                     return child->second.get();
                 }
                 if (child->second->id() != Tag::TAG_Compound) {
-                    return nullptr;
+                    return EndTag::instance();
                 }
                 pivot = child->second->asCompound();
                 p = p.substr(pos + 1);
             }
         }
-        return nullptr;
+        return EndTag::instance();
     }
 
 public:
