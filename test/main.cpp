@@ -21,12 +21,15 @@ int main(int argc, char *argv[]) {
             << "; length=" << data.fLength
             << endl;
         
-        data.load(reader, [](std::vector<uint8_t>& d) {
-            auto root = std::make_shared<nbt::CompoundTag>();
-            auto bs = std::make_shared<ByteStream>(d);
-            auto sr = std::make_shared<StreamReader>(bs);
-            root->read(*sr);
+        data.load(reader, [](nbt::CompoundTag const& root) {
+            cout
+                << "name=" << root.name()
+                << "; valid=" << boolalpha << root.valid()
+                << endl;
+            auto sections = root.query("/Level/Sections");
         });
+
+        return false;
     });
     return 0;
 }

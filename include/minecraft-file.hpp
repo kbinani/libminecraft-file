@@ -12,6 +12,7 @@
 #include <sstream>
 
 namespace mcfile {
+
 class Stream {
 public:
     Stream() = default;
@@ -24,6 +25,7 @@ public:
     virtual bool valid() const = 0;
     virtual long pos() const = 0;
 };
+
 
 class FileStream : public Stream {
 public:
@@ -92,6 +94,7 @@ private:
     long fLoc;
 };
 
+
 class ByteStream : public Stream {
 public:
     explicit ByteStream(std::vector<uint8_t>& buffer)
@@ -132,6 +135,7 @@ private:
     std::vector<uint8_t> fBuffer;
     long fLoc;
 };
+
 
 class StreamReader {
 public:
@@ -398,6 +402,21 @@ private:
     static const unsigned int kSegSize = 16384;
 };
 
+
+class String {
+public:
+    String() = delete;
+    
+    static std::vector<std::string> Split(std::string const& sentence, char delimiter) {
+        std::istringstream input(sentence);
+        std::vector<std::string> tokens;
+        for (std::string line; std::getline(input, line, delimiter); ) {
+            tokens.push_back(line);
+        }
+        return tokens;
+    }
+};
+    
 namespace nbt {
 
 class Tag;
@@ -414,6 +433,7 @@ private:
         return p;
     }
 };
+
 
 class Tag {
 public:
@@ -460,6 +480,7 @@ private:
     bool fValid;
 };
 
+
 class EndTag : public Tag {
 public:
     bool readImpl(StreamReader&) override { return true; }
@@ -493,6 +514,7 @@ class ShortTag : public _internal_::ScalarTag<int16_t, Tag::TAG_Short> {};
 class IntTag : public _internal_::ScalarTag<int32_t, Tag::TAG_Int> {};
 class LongTag : public _internal_::ScalarTag<int64_t, Tag::TAG_Long> {};
 
+
 class FloatTag : public Tag {
 public:
     bool readImpl(StreamReader& r) override {
@@ -509,6 +531,7 @@ public:
 public:
     float fValue;
 };
+
 
 class DoubleTag : public Tag {
 public:
@@ -558,6 +581,7 @@ class ByteArrayTag : public _internal_::VectorTag<int8_t, Tag::TAG_Byte_Array> {
 class IntArrayTag : public _internal_::VectorTag<int32_t, Tag::TAG_Int_Array> {};
 class LongArrayTag : public _internal_::VectorTag<int64_t, Tag::TAG_Long_Array> {};
 
+
 class StringTag : public Tag {
 public:
     bool readImpl(StreamReader& r) override {
@@ -574,6 +598,7 @@ public:
 public:
     std::string fValue;
 };
+
 
 class ListTag : public Tag {
 public:
@@ -605,6 +630,7 @@ public:
     std::vector<std::shared_ptr<Tag>> fValue;
 };
 
+
 class CompoundTag : public Tag {
 public:
     bool readImpl(StreamReader& r) override {
@@ -612,10 +638,10 @@ public:
         while (r.pos() < r.length()) {
             uint8_t type;
             if (!r.read(&type)) {
-                return true;
+                break;
             }
             if (type == Tag::TAG_End) {
-                return true;
+                break;
             }
 
             std::string name;
@@ -636,9 +662,56 @@ public:
 
     int8_t id() const override { return Tag::TAG_Compound; }
 
+    Tag const* query(std::string const& path) const {
+        // path: /Level/Sections
+        if (path.empty()) {
+            return nullptr;
+        }
+        std::string p = path;
+        CompoundTag const* pivot = this;
+        while (!p.empty()) {
+            if (p[0] == '/') {
+                if (fValue.size() != 1) {
+                    return nullptr;
+                }
+                auto child = fValue.begin()->second;
+                if (p.size() == 1) {
+                    return child.get();
+                }
+                if (child->id() != Tag::TAG_Compound) {
+                    return nullptr;
+                }
+                pivot = reinterpret_cast<CompoundTag const*>(child.get());
+                p = p.substr(1);
+            } else {
+                auto pos = p.find_first_of('/');
+                std::string name;
+                if (pos == std::string::npos) {
+                    name = p;
+                } else {
+                    name = p.substr(0, pos);
+                }
+                auto child = pivot->fValue.find(name);
+                if (child == pivot->fValue.end()) {
+                    return nullptr;
+                }
+                if (pos == std::string::npos) {
+                    return child->second.get();
+                }
+                if (child->second->id() != Tag::TAG_Compound) {
+                    return nullptr;
+                }
+                pivot = reinterpret_cast<CompoundTag const*>(child->second.get());
+                p = p.substr(pos + 1);
+            }
+        }
+        return nullptr;
+    }
+
 public:
     std::map<std::string, std::shared_ptr<Tag>> fValue;
 };
+
 
 inline std::shared_ptr<Tag> TagFactory::makeTag(int8_t id, std::string const& name) {
     switch (id) {
@@ -685,7 +758,7 @@ public:
     {
     }
 
-    bool load(StreamReader& reader, std::function<void(std::vector<uint8_t>& data)> callback) const {
+    bool load(StreamReader& reader, std::function<void(nbt::CompoundTag const& root)> callback) const {
         if (!reader.valid()) {
             return false;
         }
@@ -706,7 +779,14 @@ public:
         if (!Compression::decompress(buffer)) {
             return false;
         }
-        callback(buffer);
+        auto root = std::make_shared<nbt::CompoundTag>();
+        auto bs = std::make_shared<ByteStream>(buffer);
+        auto sr = std::make_shared<StreamReader>(bs);
+        root->read(*sr);
+        if (!root->valid()) {
+            return false;
+        }
+        callback(*root);
         return true;
     }
 
@@ -722,7 +802,7 @@ public:
     Region(Region const&) = delete;
     Region& operator = (Region const&) = delete;
 
-    bool loadChunkDataSources(std::function<void(int chunkX, int chunkZ, ChunkDataSource data, StreamReader& stream)> callback) {
+    bool loadChunkDataSources(std::function<bool(int chunkX, int chunkZ, ChunkDataSource data, StreamReader& stream)> callback) {
         auto fs = std::make_shared<FileStream>(fFilePath);
         auto sr = std::make_shared<StreamReader>(fs);
         for (int z = 0; z < 32; z++) {
@@ -761,7 +841,9 @@ public:
                 ChunkDataSource data(timestamp, sectorOffset * kSectorSize, chunkSize);
                 int const chunkX = this->fX * 32 + x;
                 int const chunkZ = this->fZ * 32 + z;
-                callback(chunkX, chunkZ, data, *sr);
+                if (!callback(chunkX, chunkZ, data, *sr)) {
+                    return false;
+                }
             }
         }
 
@@ -785,11 +867,7 @@ public:
             basename = filePath.substr(pos + 1);
         }
         
-        std::istringstream input(basename);
-        std::vector<std::string> tokens;
-        for (std::string line; std::getline(input, line, '.'); ) {
-            tokens.push_back(line);
-        }
+        std::vector<std::string> tokens = String::Split(basename, '.');
         if (tokens.size() != 4) {
             return nullptr;
         }
