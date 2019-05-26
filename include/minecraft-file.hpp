@@ -829,52 +829,29 @@ public:
     Region(Region const&) = delete;
     Region& operator = (Region const&) = delete;
 
-    bool loadChunkDataSources(std::function<bool(int chunkX, int chunkZ, ChunkDataSource data, StreamReader& stream)> callback) {
+    using LoadChunkDataCallback = std::function<bool(int chunkX, int chunkZ, ChunkDataSource data, StreamReader& stream)>;
+    
+    bool loadChunkDataSources(LoadChunkDataCallback callback) {
         auto fs = std::make_shared<FileStream>(fFilePath);
-        auto sr = std::make_shared<StreamReader>(fs);
+        StreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
-                int const index = (x & 31) + (z & 31) * 32;
-                if (!sr->valid()) {
-                    return false;
-                }
-                if (!sr->seek(4 * index)) {
-                    return false;
-                }
-                
-                uint32_t loc;
-                if (!sr->read(&loc)) {
-                    return false;
-                }
-                
-                long sectorOffset = loc >> 8;
-                if (!sr->seek(kSectorSize + 4 * index)) {
-                    return false;
-                }
-                
-                uint32_t timestamp;
-                if (!sr->read(&timestamp)) {
-                    return false;
-                }
-                
-                if (!sr->seek(sectorOffset * kSectorSize)) {
-                    return false;
-                }
-                uint32_t chunkSize;
-                if (!sr->read(&chunkSize)) {
-                    return false;
-                }
-                
-                ChunkDataSource data(timestamp, sectorOffset * kSectorSize, chunkSize);
-                int const chunkX = this->fX * 32 + x;
-                int const chunkZ = this->fZ * 32 + z;
-                if (!callback(chunkX, chunkZ, data, *sr)) {
+                if (!loadChunkDataSourceImpl(x, z, sr, callback)) {
                     return false;
                 }
             }
         }
 
         return true;
+    }
+    
+    bool loadChunkDataSource(int regionX, int regionZ, LoadChunkDataCallback callback) {
+        if (regionX < 0 || 32 <= regionX || regionZ < 0 || 32 <= regionZ) {
+            return false;
+        }
+        auto fs = std::make_shared<FileStream>(fFilePath);
+        StreamReader sr(fs);
+        return loadChunkDataSourceImpl(regionX, regionZ, sr, callback);
     }
 
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
@@ -919,6 +896,48 @@ private:
         , fZ(z)
         , fFilePath(filePath)
     {
+    }
+
+    bool loadChunkDataSourceImpl(int regionX, int regionZ, StreamReader& sr, std::function<bool(int chunkX, int chunkZ, ChunkDataSource data, StreamReader& stream)> callback) {
+        int const index = (regionX & 31) + (regionZ & 31) * 32;
+        if (!sr.valid()) {
+            return false;
+        }
+        if (!sr.seek(4 * index)) {
+            return false;
+        }
+    
+        uint32_t loc;
+        if (!sr.read(&loc)) {
+            return false;
+        }
+    
+        long sectorOffset = loc >> 8;
+        if (!sr.seek(kSectorSize + 4 * index)) {
+            return false;
+        }
+    
+        uint32_t timestamp;
+        if (!sr.read(&timestamp)) {
+            return false;
+        }
+    
+        if (!sr.seek(sectorOffset * kSectorSize)) {
+            return false;
+        }
+        uint32_t chunkSize;
+        if (!sr.read(&chunkSize)) {
+            return false;
+        }
+    
+        ChunkDataSource data(timestamp, sectorOffset * kSectorSize, chunkSize);
+        int const chunkX = this->fX * 32 + regionX;
+        int const chunkZ = this->fZ * 32 + regionZ;
+        if (!callback(chunkX, chunkZ, data, sr)) {
+            return false;
+        }
+        
+        return true;
     }
 
 public:
