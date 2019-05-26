@@ -26,7 +26,12 @@ int main(int argc, char *argv[]) {
                 << "name=" << root.name()
                 << "; valid=" << boolalpha << root.valid()
                 << endl;
-            auto sections = root.query("/Level/Sections");
+
+            auto sections = root.query("/Level/Sections")->asList();
+            cout
+                << "sections->name()=" << sections->name()
+                << "; sections->fValue.size()=" << sections->fValue.size()
+                << endl;
         });
 
         return false;
