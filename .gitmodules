@@ -1,0 +1,3 @@
+[submodule "test/ext/svpng"]
+	path = test/ext/svpng
+	url = git@github.com:miloyip/svpng.git
