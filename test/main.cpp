@@ -1,73 +1,105 @@
 #include <iostream>
 #include "minecraft-file.hpp"
+#include <set>
+#include "svpng.inc"
 
 using namespace std;
 using namespace mcfile;
 
-static std::string nameToDisplay(std::shared_ptr<Block> const& block) {
-    if (!block) {
-        return "x";
-    }
-    auto const name = block->fName;
-    if (name == "minecraft:air" || name == "minecraft:cave_air") {
-        return " ";
-    } else if (name == "minecraft:grass") {
-        return "w";
-    } else if (name == "minecraft:tall_grass") {
-        return "W";
-    } else if (name == "minecraft:grass_block" || name == "minecraft:dirt") {
-        return "d";
-    } else if (name == "minecraft:lilac") {
-        return "f";
-    } else if (name == "minecraft:oak_log") {
-        return "L";
-    } else if (name == "minecraft:sand") {
-        return "s";
-    } else if (name == "minecraft:stone") {
-        return "S";
-    } else if (name == "minecraft:oak_leaves") {
-        return "l";
-    } else {
-        return "?";
-    }
+static constexpr uint32_t RGB(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
+    return ((uint32_t)a << 24) | ((uint32_t)b << 16) | ((uint32_t)g << 8) | (uint32_t)r;
 }
 
-int main(int argc, char *argv[]) {
+static map<string, uint32_t> const blockToColor {
+    {"minecraft:water", RGB(63, 63, 252)},
+    {"minecraft:stone", RGB(111, 111, 111)},
+    {"minecraft:granite", RGB(149, 108, 76)},
+    {"minecraft:diorite", RGB(252, 249, 242)},
+    {"minecraft:andesite", RGB(111, 111, 111)},
+    {"minecraft:chest", RGB(141,118,71)},
+    {"minecraft:clay", RGB(162,166,182)},
+    {"minecraft:coal_ore", RGB(111,111,111)},
+    {"minecraft:cobblestone", RGB(111,111,111)},
+    {"minecraft:dirt", RGB(149,108,76)},
+    {"minecraft:brown_mushroom", RGB(0,123,0)},
+};
 
-    if (argc < 2) {
+static set<string> transparentBlocks = {
+    "minecraft:air",
+    "minecraft:cave_air",
+};
+
+int main(int argc, char *argv[]) {
+    if (argc < 3) {
         return 1;
     }
     auto const input = string(argv[1]);
+    auto const output = string(argv[2]);
 
-    auto region = Region::MakeRegion(input);
-    
-    cout
-        << "regionX=" << region->fX
-        << "; regionZ=" << region->fZ
-        << endl;
-    
-    region->loadChunkDataSources([](ChunkDataSource data, StreamReader& reader) {
-        data.load(reader, [data](Chunk const& chunk) {
-            for (int y = 0; y <= 90; y++) {
-                for (int z = chunk.minZ(); z <= chunk.maxZ(); z++) {
-                    for (int x = chunk.minX(); x <= chunk.maxX(); x++) {
-                        auto block = chunk.blockAt(x, y, z);
-                        cout << nameToDisplay(block);
-                    }
-                    cout << endl;
-                }
-                cout << "-----------------" << endl;
+    int const minX = -1024;
+    int const minZ = -512;
+    int const maxX = 1535;
+    int const maxZ = 1023;
+
+    int const width = maxX - minX + 1;
+    int const height = maxZ - minZ + 1;
+    vector<uint32_t> img(width * height, RGB(0, 0, 0, 0));
+
+    World world(input);
+
+    set<string> unknownBlockNames;
+
+    int const minRegionX = Coordinate::RegionFromBlock(minX);
+    int const maxRegionX = Coordinate::RegionFromBlock(maxX);
+    int const minRegionZ = Coordinate::RegionFromBlock(minZ);
+    int const maxRegionZ = Coordinate::RegionFromBlock(maxZ);
+    for (int regionZ = minRegionZ; regionZ <= maxRegionZ; regionZ++) {
+        for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
+            auto region = world.region(regionX, regionZ);
+            if (!region) {
+                continue;
             }
-            cout
-                << "chunkX=" << chunk.fChunkX
-                << "; chunkZ=" << chunk.fChunkZ
-                << "; timestamp=" << data.fTimestamp
-                << "; chunk.fSections.size()=" << chunk.fSections.size()
-                << endl;
-        });
+            cout << "[" << regionX << ", " << regionZ << "]" << endl;
+            region->loadChunkDataSources([&](ChunkDataSource data, StreamReader& stream) {
+                return data.load(stream, [&](Chunk const& chunk) {
+                    for (int z = chunk.minZ(); z <= chunk.maxZ(); z++) {
+                        for (int x = chunk.minX(); x <= chunk.maxX(); x++) {
+                            for (int y = 255; y >= 0; y--) {
+                                auto block = chunk.blockAt(x, y, z);
+                                if (!block) {
+                                    continue;
+                                }
+                                auto t = transparentBlocks.find(block->fName);
+                                if (t != transparentBlocks.end()) {
+                                    continue;
+                                }
+                                auto it = blockToColor.find(block->fName);
+                                if (it == blockToColor.end()) {
+                                    unknownBlockNames.insert(block->fName);
+                                } else {
+                                    int const index = (z - minZ) * width + (x - minX);
+                                    img[index] = it->second;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    return true;
+                });
+            });
+        }
+    }
 
-        return false;
-    });
+    for (auto it : unknownBlockNames) {
+        cerr << it << endl;
+    }
+
+    FILE *out = fopen(output.c_str(), "wb");
+    if (!out) {
+        return 1;
+    }
+    svpng(out, width, height, (unsigned char *)img.data(), 1);
+    fclose(out);
 
     return 0;
 }
