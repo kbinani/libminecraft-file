@@ -774,6 +774,33 @@ inline std::shared_ptr<Tag> TagFactory::makeTag(uint8_t id, std::string const& n
 } // namespace nbt
 
 
+class Coordinate {
+private:
+    Coordinate() = delete;
+
+public:
+    static int ChunkFromBlock(int block) {
+        if (block < 0) {
+            return (block - 15) / 16;
+        } else {
+            return block / 16;
+        }
+    }
+
+    static int RegionFromChunk(int region) {
+        if (region < 0) {
+            return (region - 31) / 32;
+        } else {
+            return region / 32;
+        }
+    }
+    
+    static int RegionFromBlock(int block) {
+        return RegionFromChunk(ChunkFromBlock(block));
+    }
+};
+
+
 class Block {
 public:
     explicit Block(std::string const& name, std::map<std::string, std::string> const& properties)
@@ -906,8 +933,8 @@ public:
 class Chunk {
 public:
     std::shared_ptr<Block> blockAt(int x, int y, int z) const {
-        int const chunkX = x / 16;
-        int const chunkZ = z / 16;
+        int const chunkX = Coordinate::ChunkFromBlock(x);
+        int const chunkZ = Coordinate::ChunkFromBlock(z);
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return nullptr;
         }
@@ -1164,11 +1191,10 @@ public:
         if (minX > maxX || minZ > maxZ) {
             return false;
         }
-        int const blocksPerRegion = 16 * 32;
-        int const minRegionX = minX / blocksPerRegion;
-        int const maxRegionX = (maxX + maxX % blocksPerRegion) / blocksPerRegion;
-        int const minRegionZ = minZ / blocksPerRegion;
-        int const maxRegionZ = (maxZ + maxZ % blocksPerRegion) / blocksPerRegion;
+        int const minRegionX = Coordinate::RegionFromBlock(minX);
+        int const maxRegionX = Coordinate::RegionFromBlock(maxX);
+        int const minRegionZ = Coordinate::RegionFromBlock(minZ);
+        int const maxRegionZ = Coordinate::RegionFromBlock(maxZ);
         for (int regionZ = minRegionZ; regionZ <= maxRegionZ; regionZ++) {
             for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
                 auto region = this->region(regionX, regionZ);
