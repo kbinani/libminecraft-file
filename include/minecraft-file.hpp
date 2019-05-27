@@ -1146,4 +1146,57 @@ private:
     static long const kSectorSize = 4096;
 };
 
+class World {
+public:
+    explicit World(std::string const& rootDirectory)
+        : fRootDirectory(rootDirectory)
+    {
+    }
+
+    std::shared_ptr<Region> region(int regionX, int regionZ) const {
+        std::ostringstream ss;
+        ss << fRootDirectory << "/region/r." << regionX << "." << regionZ << ".mca";
+        auto fileName = ss.str();
+        return Region::MakeRegion(fileName);
+    }
+
+    bool eachBlock(int minX, int minZ, int maxX, int maxZ, std::function<bool(int x, int y, int z, std::shared_ptr<Block>)> callback) {
+        if (minX > maxX || minZ > maxZ) {
+            return false;
+        }
+        int const blocksPerRegion = 16 * 32;
+        int const minRegionX = minX / blocksPerRegion;
+        int const maxRegionX = (maxX + maxX % blocksPerRegion) / blocksPerRegion;
+        int const minRegionZ = minZ / blocksPerRegion;
+        int const maxRegionZ = (maxZ + maxZ % blocksPerRegion) / blocksPerRegion;
+        for (int regionZ = minRegionZ; regionZ <= maxRegionZ; regionZ++) {
+            for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
+                auto region = this->region(regionX, regionZ);
+                if (!region) {
+                    continue;
+                }
+                return region->loadChunkDataSources([=](ChunkDataSource data, StreamReader& reader) {
+                    return data.load(reader, [=](Chunk const& chunk) {
+                        for (int y = 0; y < 256; y++) {
+                            for (int z = std::max(minZ, chunk.minZ()); z <= std::min(maxZ, chunk.maxZ()); z++) {
+                                for (int x = std::max(minX, chunk.minX()); x <= std::min(maxX, chunk.maxX()); x++) {
+                                    auto block = chunk.blockAt(x, y, z);
+                                    if (!callback(x, y, z, block)) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                        return true;
+                    });
+                });
+            }
+        }
+        return true;
+    }
+
+public:
+    std::string const fRootDirectory;
+};
+
 } // namespace mcfile
