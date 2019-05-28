@@ -1109,10 +1109,15 @@ public:
         } catch (...) {
             return nullptr;
         }
-        
+
         return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
-    
+
+    int minX() const { return fX * 32 * 16; }
+    int maxX() const { return (fX + 1) * 32 * 16 - 1; }
+    int minZ() const { return fZ * 32 * 16; }
+    int maxZ() const { return (fZ + 1) * 32 * 16 - 1; }
+
 private:
     Region(std::string const& filePath, int x, int z)
         : fX(x)

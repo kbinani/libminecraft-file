@@ -3,6 +3,7 @@
 #include <math.h>
 #include <set>
 #include "svpng.inc"
+#include "hwm/task/task_queue.hpp"
 
 using namespace std;
 using namespace mcfile;
@@ -213,18 +214,24 @@ int main(int argc, char *argv[]) {
 
     int const width = maxX - minX + 1;
     int const height = maxZ - minZ + 1;
-    vector<uint32_t> img(width * height, Color(0, 0, 0, 0).color());
 
     World world(input);
-
-    map<string, size_t> unknownBlockNames;
 
     int const minRegionX = Coordinate::RegionFromBlock(minX);
     int const maxRegionX = Coordinate::RegionFromBlock(maxX);
     int const minRegionZ = Coordinate::RegionFromBlock(minZ);
     int const maxRegionZ = Coordinate::RegionFromBlock(maxZ);
-    Color const waterColor(63, 63, 252);
-    double const waterDiffusion = 0.02;
+
+    hwm::task_queue q(thread::hardware_concurrency());
+    struct QueueResult {
+        int x;
+        int z;
+        int width;
+        int height;
+        vector<uint32_t> data;
+    };
+    vector<future<QueueResult>> futures;
+
 
     for (int regionZ = minRegionZ; regionZ <= maxRegionZ; regionZ++) {
         for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
@@ -232,63 +239,85 @@ int main(int argc, char *argv[]) {
             if (!region) {
                 continue;
             }
-            cout << "[" << regionX << ", " << regionZ << "]" << endl;
-            region->loadChunkDataSources([&](ChunkDataSource data, StreamReader& stream) {
-                return data.load(stream, [&](Chunk const& chunk) {
-                    for (int z = chunk.minZ(); z <= chunk.maxZ(); z++) {
-                        for (int x = chunk.minX(); x <= chunk.maxX(); x++) {
-                            int waterDepth = 0;
-                            int airDepth = 0;
-                            for (int y = 255; y >= 0; y--) {
-                                auto block = chunk.blockAt(x, y, z);
-                                if (!block) {
-                                    airDepth++;
-                                    continue;
-                                }
-                                if (block->fName == "minecraft:water" || block->fName == "minecraft:bubble_column") {
-                                    waterDepth++;
-                                    continue;
-                                }
-                                if (transparentBlocks.find(block->fName) != transparentBlocks.end()) {
-                                    airDepth++;
-                                    continue;
-                                }
-                                if (plantBlocks.find(block->fName) != plantBlocks.end()) {
-                                    airDepth++;
-                                    continue;
-                                }
-                                auto it = blockToColor.find(block->fName);
-                                if (it == blockToColor.end()) {
-                                    auto u = unknownBlockNames.find(block->fName);
-                                    if (u == unknownBlockNames.end()) {
-                                        unknownBlockNames.insert(make_pair(block->fName, 1));
-                                    } else {
-                                        u->second += 1;
+            futures.emplace_back(q.enqueue([minX, maxX, minZ, maxZ](shared_ptr<Region> region) {
+                int const x0 = std::min(std::max(region->minX(), minX), maxX);
+                int const z0 = std::min(std::max(region->minZ(), minZ), maxZ);
+                int const x1 = std::min(std::max(region->maxX(), minX), maxX);
+                int const z1 = std::min(std::max(region->maxZ(), minZ), maxZ);
+                QueueResult result;
+                result.x = x0;
+                result.z = z0;
+                int const w = x1 - x0 + 1;
+                int const h = z1 - z0 + 1;
+                result.width = w;
+                result.height = h;
+                result.data.resize(w * h, Color(0, 0, 0, 0).color());
+
+                region->loadChunkDataSources([&result, x0, z0, w](ChunkDataSource data, StreamReader& stream) {
+                    return data.load(stream, [&result, x0, z0, w](Chunk const& chunk) {
+                        Color const waterColor(63, 63, 252);
+                        double const waterDiffusion = 0.02;
+
+                        for (int z = chunk.minZ(); z <= chunk.maxZ(); z++) {
+                            for (int x = chunk.minX(); x <= chunk.maxX(); x++) {
+                                int waterDepth = 0;
+                                int airDepth = 0;
+                                for (int y = 255; y >= 0; y--) {
+                                    auto block = chunk.blockAt(x, y, z);
+                                    if (!block) {
+                                        airDepth++;
+                                        continue;
                                     }
-                                } else {
-                                    Color const opaqeBlockColor = it->second;
-                                    uint32_t color;
-                                    if (waterDepth > 0) {
-                                        auto const w = waterColor.diffuse(waterDiffusion, waterDepth);
-                                        color = w.color();
-                                    } else {
-                                        color = opaqeBlockColor.color();
+                                    if (block->fName == "minecraft:water" || block->fName == "minecraft:bubble_column") {
+                                        waterDepth++;
+                                        continue;
                                     }
-                                    int const index = (z - minZ) * width + (x - minX);
-                                    img[index] = color;
-                                    break;
+                                    if (transparentBlocks.find(block->fName) != transparentBlocks.end()) {
+                                        airDepth++;
+                                        continue;
+                                    }
+                                    if (plantBlocks.find(block->fName) != plantBlocks.end()) {
+                                        airDepth++;
+                                        continue;
+                                    }
+                                    auto it = blockToColor.find(block->fName);
+                                    if (it == blockToColor.end()) {
+                                        cerr << "Unknown block: " << block->fName << endl;
+                                    } else {
+                                        Color const opaqeBlockColor = it->second;
+                                        uint32_t color;
+                                        if (waterDepth > 0) {
+                                            auto const w = waterColor.diffuse(waterDiffusion, waterDepth);
+                                            color = w.color();
+                                        } else {
+                                            color = opaqeBlockColor.color();
+                                        }
+                                        int const index = (z - z0) * w + (x - x0);
+                                        result.data[index] = color;
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
-                    return true;
+                    });
                 });
-            });
+                return result;
+            }, region));
         }
     }
 
-    for (auto it : unknownBlockNames) {
-        cerr << it.first << "\t" << it.second << endl;
+    vector<uint32_t> img(width * height, Color(0, 0, 0, 0).color());
+
+    for (auto& f : futures) {
+        QueueResult result = f.get();
+        for (int i = 0; i < result.width; i++) {
+            for (int j = 0; j < result.height; j++) {
+                int const x = result.x + i;
+                int const z = result.z + j;
+                int const idx = (z - minZ) * width + (x - minX);
+                img[idx] = result.data[j * result.width + i];
+            }
+        }
     }
 
     FILE *out = fopen(output.c_str(), "wb");
