@@ -1,3 +1,6 @@
 [submodule "test/ext/svpng"]
 	path = test/ext/svpng
 	url = git@github.com:miloyip/svpng.git
+[submodule "test/ext/hwm.task"]
+	path = test/ext/hwm.task
+	url = git@github.com:hotwatermorning/hwm.task.git
