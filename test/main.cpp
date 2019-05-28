@@ -88,7 +88,7 @@ static map<string, Color> const blockToColor {
     {"minecraft:brown_mushroom", Color(0, 123, 0)},
     {"minecraft:grass_block", Color(125, 176, 55)},
     {"minecraft:iron_ore", Color(111, 111, 111)},
-    {"minecraft:sand", Color(149, 108, 76)},
+    {"minecraft:sand", Color(244, 230, 161)},
     {"minecraft:oak_leaves", Color(0, 123, 0)},
     {"minecraft:jungle_leaves", Color(0, 123, 0)},
     {"minecraft:birch_leaves", Color(67, 124, 37)},
