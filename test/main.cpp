@@ -8,6 +8,13 @@
 using namespace std;
 using namespace mcfile;
 
+struct HSV {
+    double fH;
+    double fS;
+    double fV;
+};
+
+
 class Color {
 public:
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
@@ -40,6 +47,81 @@ public:
 
     static Color FromDouble(double r, double g, double b, double a) {
         return Color(r, g, b, a, true);
+    }
+
+    HSV toHSV() const {
+        double r = fR;
+        double g = fG;
+        double b = fB;
+        double max = r > g ? r : g;
+        max = max > b ? max : b;
+        double min = r < g ? r : g;
+        min = min < b ? min : b;
+        double h = max - min;
+        if (h > 0.0) {
+            if (max == r) {
+                h = (g - b) / h;
+                if (h < 0.0) {
+                    h += 6.0;
+                }
+            } else if (max == g) {
+                h = 2.0 + (b - r) / h;
+            } else {
+                h = 4.0 + (r - g) / h;
+            }
+        }
+        h /= 6.0;
+        double s = (max - min);
+        if (max != 0.0)
+            s /= max;
+        double v = max;
+        HSV ret;
+        ret.fH = h;
+        ret.fS = s;
+        ret.fV = v;
+        return ret;
+    }
+
+    static Color FromHSV(HSV c) {
+        double v = c.fV;
+        double s = c.fS;
+        double h = c.fH;
+        double r = v;
+        double g = v;
+        double b = v;
+        if (s > 0.0) {
+            h *= 6.0;
+            int i = (int) h;
+            double f = h - (float) i;
+            switch (i) {
+                default:
+                case 0:
+                    g *= 1 - s * (1 - f);
+                    b *= 1 - s;
+                    break;
+                case 1:
+                    r *= 1 - s * f;
+                    b *= 1 - s;
+                    break;
+                case 2:
+                    r *= 1 - s;
+                    b *= 1 - s * (1 - f);
+                    break;
+                case 3:
+                    r *= 1 - s;
+                    g *= 1 - s * f;
+                    break;
+                case 4:
+                    r *= 1 - s * (1 - f);
+                    g *= 1 - s;
+                    break;
+                case 5:
+                    g *= 1 - s;
+                    b *= 1 - s * f;
+                    break;
+            }
+        }
+        return FromDouble(r, g, b, 1);
     }
 
     std::string toString() const {
@@ -86,13 +168,12 @@ static map<string, Color> const blockToColor {
     {"minecraft:cobblestone", Color(111, 111, 111)},
     {"minecraft:dirt", Color(149, 108, 76)},
     {"minecraft:brown_mushroom", Color(0, 123, 0)},
-    {"minecraft:grass_block", Color(125, 176, 55)},
+    {"minecraft:grass_block", Color(130, 148, 58)},
     {"minecraft:iron_ore", Color(111, 111, 111)},
-    {"minecraft:sand", Color(244, 230, 161)},
-    {"minecraft:oak_leaves", Color(0, 123, 0)},
-    {"minecraft:jungle_leaves", Color(0, 123, 0)},
+    {"minecraft:sand", Color(201,192,154)}, //
+    {"minecraft:oak_leaves", Color(56, 95, 31)}, //
+    {"minecraft:jungle_leaves", Color(56, 95, 31)}, //
     {"minecraft:birch_leaves", Color(67, 124, 37)},
-    {"minecraft:grass", Color(125, 176, 55)},
     {"minecraft:vine", Color(0, 123, 0)},
     {"minecraft:red_mushroom", Color(0, 123, 0)},
     {"minecraft:mossy_cobblestone", Color(111, 111, 111)},
@@ -106,13 +187,13 @@ static map<string, Color> const blockToColor {
     {"minecraft:cobblestone_stairs", Color(111, 111, 111)},
     {"minecraft:black_wool", Color(25, 25, 25)},
     {"minecraft:ladder", Color(255, 255, 255)},
-    {"minecraft:grass_path", Color(149, 108, 76)},
+    {"minecraft:grass_path", Color(204, 204, 204)}, //
     {"minecraft:birch_fence", Color(244, 230, 161)},
     {"minecraft:birch_planks", Color(244, 230, 161)},
     {"minecraft:birch_stairs", Color(244, 230, 161)},
     {"minecraft:dark_oak_fence", Color(101, 75, 50)},
     {"minecraft:dark_oak_log", Color(101, 75, 50)},
-    {"minecraft:dark_oak_planks", Color(101, 75, 50)},
+    {"minecraft:dark_oak_planks", Color(191,152,63)}, //
     {"minecraft:dark_oak_slab", Color(101, 75, 50)},
     {"minecraft:dark_oak_stairs", Color(101, 75, 50)},
     {"minecraft:dark_oak_trapdoor", Color(141, 118, 71)},
@@ -143,7 +224,7 @@ static map<string, Color> const blockToColor {
     {"minecraft:snow_block", Color(252, 252, 252)},
     {"minecraft:spruce_door", Color(141, 118, 71)},
     {"minecraft:spruce_fence", Color(141, 118, 71)},
-    {"minecraft:spruce_leaves", Color(0, 123, 0)},
+    {"minecraft:spruce_leaves", Color(56, 95, 31)}, //
     {"minecraft:stone_brick_stairs", Color(111, 111, 111)},
     {"minecraft:stone_bricks", Color(111, 111, 111)},
     {"minecraft:stone_slab", Color(111, 111, 111)},
@@ -166,6 +247,7 @@ static map<string, Color> const blockToColor {
 };
 
 static set<string> plantBlocks = {
+    "minecraft:grass",
     "minecraft:tall_grass",
     "minecraft:beetroots",
     "minecraft:carrots",
@@ -200,6 +282,19 @@ static set<string> transparentBlocks = {
     "minecraft:cave_air",
 };
 
+static double AltitudeColormapFunc(double x, double a, double c, double d, double e, double f, double g) {
+    x *= 193;
+    return a * exp(-x * x / (2 * c * c)) + ((d * x + e) * x + f) * x + g;
+}
+
+static Color AltitudeColormap(int y) {
+    double x = std::min(std::max((y - 63.0) / 193.0, 0.0), 1.0);
+    double r = AltitudeColormapFunc(x, 48.6399, 13.3443, 0.00000732641, -0.00154886, -0.211758, 83.3109);
+    double g = AltitudeColormapFunc(x, 92.7934, 9.66818, 0.00000334955, -0.000491041, -0.189276, 56.8844);
+    double b = AltitudeColormapFunc(x, 43.4277, 8.92338, 0.00000387675, -0.00112176, 0.0373863, 15.9435);
+    return Color::FromDouble(r / 255, g / 255, b / 255, 1);
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         return 1;
@@ -224,14 +319,14 @@ int main(int argc, char *argv[]) {
 
     hwm::task_queue q(thread::hardware_concurrency());
     struct QueueResult {
-        int x;
-        int z;
-        int width;
-        int height;
-        vector<uint32_t> data;
+        int fX;
+        int fZ;
+        int fWidth;
+        int fHeight;
+        vector<Color> fPixels;
+        vector<uint8_t> fHeightMap;
     };
     vector<future<QueueResult>> futures;
-
 
     for (int regionZ = minRegionZ; regionZ <= maxRegionZ; regionZ++) {
         for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
@@ -245,17 +340,18 @@ int main(int argc, char *argv[]) {
                 int const x1 = std::min(std::max(region->maxX(), minX), maxX);
                 int const z1 = std::min(std::max(region->maxZ(), minZ), maxZ);
                 QueueResult result;
-                result.x = x0;
-                result.z = z0;
+                result.fX = x0;
+                result.fZ = z0;
                 int const w = x1 - x0 + 1;
                 int const h = z1 - z0 + 1;
-                result.width = w;
-                result.height = h;
-                result.data.resize(w * h, Color(0, 0, 0, 0).color());
+                result.fWidth = w;
+                result.fHeight = h;
+                result.fPixels.resize(w * h, Color(0, 0, 0, 0));
+                result.fHeightMap.resize(w * h, 0);
 
                 region->loadChunkDataSources([&result, x0, z0, w](ChunkDataSource data, StreamReader& stream) {
                     return data.load(stream, [&result, x0, z0, w](Chunk const& chunk) {
-                        Color const waterColor(63, 63, 252);
+                        Color const waterColor(69, 91, 211);
                         double const waterDiffusion = 0.02;
 
                         for (int z = chunk.minZ(); z <= chunk.maxZ(); z++) {
@@ -284,16 +380,19 @@ int main(int argc, char *argv[]) {
                                     if (it == blockToColor.end()) {
                                         cerr << "Unknown block: " << block->fName << endl;
                                     } else {
-                                        Color const opaqeBlockColor = it->second;
-                                        uint32_t color;
-                                        if (waterDepth > 0) {
-                                            auto const w = waterColor.diffuse(waterDiffusion, waterDepth);
-                                            color = w.color();
-                                        } else {
-                                            color = opaqeBlockColor.color();
-                                        }
                                         int const index = (z - z0) * w + (x - x0);
-                                        result.data[index] = color;
+                                        Color const opaqeBlockColor = it->second;
+                                        Color color(0, 0, 0, 0);
+                                        if (waterDepth > 0) {
+                                            color = waterColor.diffuse(waterDiffusion, waterDepth);
+                                        } else if (block->fName == "minecraft:grass_block") {
+                                            color = AltitudeColormap(y);
+                                            result.fHeightMap[index] = y;
+                                        } else {
+                                            color = opaqeBlockColor;
+                                            result.fHeightMap[index] = y;
+                                        }
+                                        result.fPixels[index] = color;
                                         break;
                                     }
                                 }
@@ -306,16 +405,111 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    vector<uint32_t> img(width * height, Color(0, 0, 0, 0).color());
+    vector<Color> img(width * height, Color(0, 0, 0, 0));
+    vector<uint8_t> heightMap(width * height, 0);
+    vector<uint32_t> pixels(width * height);
 
     for (auto& f : futures) {
         QueueResult result = f.get();
-        for (int i = 0; i < result.width; i++) {
-            for (int j = 0; j < result.height; j++) {
-                int const x = result.x + i;
-                int const z = result.z + j;
+        for (int i = 0; i < result.fWidth; i++) {
+            for (int j = 0; j < result.fHeight; j++) {
+                int const x = result.fX + i;
+                int const z = result.fZ + j;
                 int const idx = (z - minZ) * width + (x - minX);
-                img[idx] = result.data[j * result.width + i];
+                img[idx] = result.fPixels[j * result.fWidth + i];
+                heightMap[idx] = result.fHeightMap[j * result.fWidth + i];
+            }
+        }
+    }
+    for (int z = 0; z < height; z++) {
+        for (int x = 0; x < width; x++) {
+            int const idx = z * width + x;
+            uint8_t const h = heightMap[idx];
+            if (h == 0) {
+                Color c = img[idx];
+                Color cNorth = c;
+                Color cEast = c;
+                Color cSouth = c;
+                Color cWest = c;
+                if (z > 1) {
+                    uint8_t hh = heightMap[(z - 1) * width + x];
+                    if (hh == 0) {
+                        cNorth = img[(z - 1) * width + x];
+                    }
+                }
+                if (z + 1 < height) {
+                    uint8_t hh = heightMap[(z + 1) * width + x];
+                    if (hh == 0) {
+                        cSouth = img[(z + 1) * width + x];
+                    }
+                }
+                if (x > 1) {
+                    auto hh = heightMap[z * width + x - 1];
+                    if (hh == 0) {
+                        cWest = img[z * width + x - 1];
+                    }
+                }
+                if (x + 1 < width) {
+                    auto hh = heightMap[z * width + x + 1];
+                    if (hh > 0) {
+                        cEast = img[z * width + x + 1];
+                    }
+                }
+                double r = (c.fR * c.fA + cNorth.fR * cNorth.fA / 4 + cEast.fR * cEast.fA / 4 + cSouth.fR * cSouth.fA / 4 + cWest.fR * cWest.fA / 4) / 2;
+                double g = (c.fG * c.fA + cNorth.fG * cNorth.fA / 4 + cEast.fG * cEast.fA / 4 + cSouth.fG * cSouth.fA / 4 + cWest.fG * cWest.fA / 4) / 2;
+                double b = (c.fB * c.fA + cNorth.fB * cNorth.fA / 4 + cEast.fB * cEast.fA / 4 + cSouth.fB * cSouth.fA / 4 + cWest.fB * cWest.fA / 4) / 2;
+                pixels[idx] = Color::FromDouble(r, g, b, 1).color();
+            } else {
+                uint8_t hNorth = h;
+                uint8_t hEast = h;
+                uint8_t hSouth = h;
+                uint8_t hWest = h;
+                if (z > 1) {
+                    uint8_t hh = heightMap[(z - 1) * width + x];
+                    if (hh > 0) {
+                        hNorth = hh;
+                    }
+                }
+                if (z + 1 < height) {
+                    uint8_t hh = heightMap[(z + 1) * width + x];
+                    if (hh > 0) {
+                        hSouth = hh;
+                    }
+                }
+                if (x > 1) {
+                    auto hh = heightMap[z * width + x - 1];
+                    if (hh > 0) {
+                        hWest = hh;
+                    }
+                }
+                if (x + 1 < width) {
+                    auto hh = heightMap[z * width + x + 1];
+                    if (hh > 0) {
+                        hEast = hh;
+                    }
+                }
+                int score = 0; // +: bright, -: dark
+                if (hNorth > h) score--;
+                if (hNorth < h) score++;
+                if (hWest > h) score--;
+                if (hWest < h) score++;
+
+                Color c = img[idx];
+                if (score > 0) {
+                    double coeff = 1.2;
+                    HSV hsv = c.toHSV();
+                    hsv.fV = hsv.fV * coeff;
+                    Color cc = Color::FromHSV(hsv);
+                    pixels[idx] = cc.color();
+                } else if (score < 0) {
+                    double coeff = 0.8;
+                    HSV hsv = c.toHSV();
+                    hsv.fV = hsv.fV * coeff;
+                    Color cc = Color::FromHSV(hsv);
+                    pixels[idx] = cc.color();
+                } else {
+                    pixels[idx] = c.color();
+                }
             }
         }
     }
@@ -324,7 +518,7 @@ int main(int argc, char *argv[]) {
     if (!out) {
         return 1;
     }
-    svpng(out, width, height, (unsigned char *)img.data(), 1);
+    svpng(out, width, height, (unsigned char *)pixels.data(), 1);
     fclose(out);
 
     return 0;
