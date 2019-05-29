@@ -219,7 +219,7 @@ static map<string, Color> const blockToColor {
     {"minecraft:redstone_ore", Color(111, 111, 111)},
     {"minecraft:sandstone", Color(244, 230, 161)},
     {"minecraft:sea_lantern", Color(252, 249, 242)},
-    {"minecraft:snow", Color(252, 252, 252)},
+    {"minecraft:snow", Color(229, 229, 229)}, //
     {"minecraft:snow_block", Color(252, 252, 252)},
     {"minecraft:spruce_door", Color(141, 118, 71)},
     {"minecraft:spruce_fence", Color(141, 118, 71)},
