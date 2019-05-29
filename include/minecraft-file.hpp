@@ -942,16 +942,14 @@ public:
             return nullptr;
         }
         int const sectionY = y / 16;
-        auto sectionIt = std::find_if(fSections.begin(), fSections.end(), [sectionY](auto const& section) {
-            return section->fY == sectionY;
-        });
-        if (sectionIt == fSections.end()) {
+        auto section = fSections[sectionY];
+        if (!section) {
             return nullptr;
         }
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - sectionY * 16;
-        return (*sectionIt)->blockAt(offsetX, offsetY, offsetZ);
+        return section->blockAt(offsetX, offsetY, offsetZ);
     }
 
     int minX() const { return fChunkX * 16; }
@@ -975,19 +973,24 @@ public:
         }
         return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections));
     }
-    
+
 private:
     explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
-        , fSections(sections)
     {
+        for (auto section : sections) {
+            int const y = section->fY;
+            if (0 <= y && y < 16) {
+                fSections[y] = section;
+            }
+        }
     }
 
 public:
     int const fChunkX;
     int const fChunkZ;
-    std::vector<std::shared_ptr<ChunkSection>> fSections;
+    std::shared_ptr<ChunkSection> fSections[16];
 };
 
 
