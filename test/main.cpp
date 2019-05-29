@@ -174,7 +174,6 @@ static map<string, Color> const blockToColor {
     {"minecraft:oak_leaves", Color(56, 95, 31)}, //
     {"minecraft:jungle_leaves", Color(56, 95, 31)}, //
     {"minecraft:birch_leaves", Color(67, 124, 37)},
-    {"minecraft:vine", Color(0, 123, 0)},
     {"minecraft:red_mushroom", Color(0, 123, 0)},
     {"minecraft:mossy_cobblestone", Color(111, 111, 111)},
     {"minecraft:oak_stairs", Color(127, 85, 48)},
@@ -186,7 +185,6 @@ static map<string, Color> const blockToColor {
     {"minecraft:oak_fence", Color(127, 85, 48)},
     {"minecraft:cobblestone_stairs", Color(111, 111, 111)},
     {"minecraft:black_wool", Color(25, 25, 25)},
-    {"minecraft:ladder", Color(255, 255, 255)},
     {"minecraft:grass_path", Color(204, 204, 204)}, //
     {"minecraft:birch_fence", Color(244, 230, 161)},
     {"minecraft:birch_planks", Color(244, 230, 161)},
@@ -207,7 +205,7 @@ static map<string, Color> const blockToColor {
     {"minecraft:jungle_stairs", Color(149, 108, 76)},
     {"minecraft:jungle_trapdoor", Color(141, 118, 71)},
     {"minecraft:lapis_ore", Color(111, 111, 111)},
-    {"minecraft:lava", Color(252, 0, 0)},
+    {"minecraft:lava", Color(179, 71, 3)},
     {"minecraft:oak_door", Color(141, 118, 71)},
     {"minecraft:oak_slab", Color(127, 85, 48)},
     {"minecraft:oak_trapdoor", Color(141, 118, 71)},
@@ -244,42 +242,44 @@ static map<string, Color> const blockToColor {
     // plants
     {"minecraft:lily_pad", Color(0, 123, 0)},
     {"minecraft:wheat", Color(0, 123, 0)},
+    {"minecraft:melon", Color(125, 202, 25)},
+    {"minecraft:pumpkin", Color(213, 125, 50)},
+    {"minecraft:grass", Color(109, 141, 35)},
+    {"minecraft:tall_grass", Color(109, 141, 35)},
+    {"minecraft:dandelion", Color(245, 238, 50)},
+    {"minecraft:poppy", Color(229, 31, 29)},
+    {"minecraft:peony", Color(232, 143, 213)},
+    {"minecraft:pink_tulip", Color(234, 182, 209)},
+    {"minecraft:orange_tulip", Color(242, 118, 33)},
+    {"minecraft:lilac", Color(212, 119, 197)},
+    {"minecraft:sunflower", Color(245, 238, 50)},
+    {"minecraft:allium", Color(200, 109, 241)},
+    {"minecraft:red_tulip", Color(229, 31, 29)},
+    {"minecraft:white_tulip", Color(255, 255, 255)},
+    {"minecraft:rose_bush", Color(136, 40, 27)},
+    {"minecraft:blue_orchid", Color(47, 181, 199)},
+    {"minecraft:oxeye_daisy", Color(236, 246, 247)},
+    {"minecraft:sugar_cane", Color(165, 214, 90)},
 };
 
 static set<string> plantBlocks = {
-    "minecraft:grass",
-    "minecraft:tall_grass",
     "minecraft:beetroots",
     "minecraft:carrots",
-    "minecraft:dandelion",
-    "minecraft:lilac",
-    "minecraft:melon",
-    "minecraft:orange_tulip",
-    "minecraft:oxeye_daisy",
-    "minecraft:peony",
-    "minecraft:pink_tulip",
-    "minecraft:poppy",
     "minecraft:potatoes",
-    "minecraft:pumpkin",
-    "minecraft:rose_bush",
     "minecraft:seagrass",
-    "minecraft:sugar_cane",
-    "minecraft:sunflower",
     "minecraft:tall_seagrass",
     "minecraft:fern",
     "minecraft:azure_bluet",
-    "minecraft:allium",
-    "minecraft:blue_orchid",
     "minecraft:kelp",
     "minecraft:large_fern",
-    "minecraft:red_tulip",
-    "minecraft:white_tulip",
     "minecraft:kelp_plant",
 };
 
 static set<string> transparentBlocks = {
     "minecraft:air",
     "minecraft:cave_air",
+    "minecraft:vine", // Color(56, 95, 31)}, //
+    "minecraft:ladder", // Color(255, 255, 255)},
 };
 
 static double AltitudeColormapFunc(double x, double a, double c, double d, double e, double f, double g) {
@@ -353,11 +353,15 @@ int main(int argc, char *argv[]) {
                     return data.load(stream, [&result, x0, z0, w](Chunk const& chunk) {
                         Color const waterColor(69, 91, 211);
                         double const waterDiffusion = 0.02;
-
-                        for (int z = chunk.minZ(); z <= chunk.maxZ(); z++) {
-                            for (int x = chunk.minX(); x <= chunk.maxX(); x++) {
+                        int const sZ = chunk.minZ();
+                        int const eZ = chunk.maxZ();
+                        int const sX = chunk.minX();
+                        int const eX = chunk.maxX();
+                        for (int z = sZ; z <= eZ; z++) {
+                            for (int x = sX; x <= eX; x++) {
                                 int waterDepth = 0;
                                 int airDepth = 0;
+                                Color translucentBlock(0, 0, 0, 0);
                                 for (int y = 255; y >= 0; y--) {
                                     auto block = chunk.blockAt(x, y, z);
                                     if (!block) {
@@ -385,6 +389,7 @@ int main(int argc, char *argv[]) {
                                         Color color(0, 0, 0, 0);
                                         if (waterDepth > 0) {
                                             color = waterColor.diffuse(waterDiffusion, waterDepth);
+                                            translucentBlock = Color(0, 0, 0, 0);
                                         } else if (block->fName == "minecraft:grass_block") {
                                             color = AltitudeColormap(y);
                                             result.fHeightMap[index] = y;
@@ -392,7 +397,7 @@ int main(int argc, char *argv[]) {
                                             color = opaqeBlockColor;
                                             result.fHeightMap[index] = y;
                                         }
-                                        result.fPixels[index] = color;
+                                        result.fPixels[index] = Color::Add(color, translucentBlock.withAlphaComponent(0.2));
                                         break;
                                     }
                                 }
@@ -425,8 +430,9 @@ int main(int argc, char *argv[]) {
         for (int x = 0; x < width; x++) {
             int const idx = z * width + x;
             uint8_t const h = heightMap[idx];
+            Color c = img[idx];
+            Color color = c;
             if (h == 0) {
-                Color c = img[idx];
                 Color cNorth = c;
                 Color cEast = c;
                 Color cSouth = c;
@@ -458,58 +464,57 @@ int main(int argc, char *argv[]) {
                 double r = (c.fR * c.fA + cNorth.fR * cNorth.fA / 4 + cEast.fR * cEast.fA / 4 + cSouth.fR * cSouth.fA / 4 + cWest.fR * cWest.fA / 4) / 2;
                 double g = (c.fG * c.fA + cNorth.fG * cNorth.fA / 4 + cEast.fG * cEast.fA / 4 + cSouth.fG * cSouth.fA / 4 + cWest.fG * cWest.fA / 4) / 2;
                 double b = (c.fB * c.fA + cNorth.fB * cNorth.fA / 4 + cEast.fB * cEast.fA / 4 + cSouth.fB * cSouth.fA / 4 + cWest.fB * cWest.fA / 4) / 2;
-                pixels[idx] = Color::FromDouble(r, g, b, 1).color();
-            } else {
-                uint8_t hNorth = h;
-                uint8_t hEast = h;
-                uint8_t hSouth = h;
-                uint8_t hWest = h;
-                if (z > 1) {
-                    uint8_t hh = heightMap[(z - 1) * width + x];
-                    if (hh > 0) {
-                        hNorth = hh;
-                    }
-                }
-                if (z + 1 < height) {
-                    uint8_t hh = heightMap[(z + 1) * width + x];
-                    if (hh > 0) {
-                        hSouth = hh;
-                    }
-                }
-                if (x > 1) {
-                    auto hh = heightMap[z * width + x - 1];
-                    if (hh > 0) {
-                        hWest = hh;
-                    }
-                }
-                if (x + 1 < width) {
-                    auto hh = heightMap[z * width + x + 1];
-                    if (hh > 0) {
-                        hEast = hh;
-                    }
-                }
-                int score = 0; // +: bright, -: dark
-                if (hNorth > h) score--;
-                if (hNorth < h) score++;
-                if (hWest > h) score--;
-                if (hWest < h) score++;
+                color = Color::FromDouble(r, g, b, 1);
+            }
 
-                Color c = img[idx];
-                if (score > 0) {
-                    double coeff = 1.2;
-                    HSV hsv = c.toHSV();
-                    hsv.fV = hsv.fV * coeff;
-                    Color cc = Color::FromHSV(hsv);
-                    pixels[idx] = cc.color();
-                } else if (score < 0) {
-                    double coeff = 0.8;
-                    HSV hsv = c.toHSV();
-                    hsv.fV = hsv.fV * coeff;
-                    Color cc = Color::FromHSV(hsv);
-                    pixels[idx] = cc.color();
-                } else {
-                    pixels[idx] = c.color();
+            uint8_t hNorth = h;
+            uint8_t hEast = h;
+            uint8_t hSouth = h;
+            uint8_t hWest = h;
+            if (z > 1) {
+                uint8_t hh = heightMap[(z - 1) * width + x];
+                if (hh > 0) {
+                    hNorth = hh;
                 }
+            }
+            if (z + 1 < height) {
+                uint8_t hh = heightMap[(z + 1) * width + x];
+                if (hh > 0) {
+                    hSouth = hh;
+                }
+            }
+            if (x > 1) {
+                auto hh = heightMap[z * width + x - 1];
+                if (hh > 0) {
+                    hWest = hh;
+                }
+            }
+            if (x + 1 < width) {
+                auto hh = heightMap[z * width + x + 1];
+                if (hh > 0) {
+                    hEast = hh;
+                }
+            }
+            int score = 0; // +: bright, -: dark
+            if (hNorth > h) score--;
+            if (hNorth < h) score++;
+            if (hWest > h) score--;
+            if (hWest < h) score++;
+
+            if (score > 0) {
+                double coeff = 1.2;
+                HSV hsv = color.toHSV();
+                hsv.fV = hsv.fV * coeff;
+                Color cc = Color::FromHSV(hsv);
+                pixels[idx] = cc.color();
+            } else if (score < 0) {
+                double coeff = 0.8;
+                HSV hsv = color.toHSV();
+                hsv.fV = hsv.fV * coeff;
+                Color cc = Color::FromHSV(hsv);
+                pixels[idx] = cc.color();
+            } else {
+                pixels[idx] = color.color();
             }
         }
     }
