@@ -4,3 +4,6 @@
 [submodule "test/ext/hwm.task"]
 	path = test/ext/hwm.task
 	url = git@github.com:hotwatermorning/hwm.task.git
+[submodule "test/ext/colormap-shaders"]
+	path = test/ext/colormap-shaders
+	url = git@github.com:kbinani/colormap-shaders.git

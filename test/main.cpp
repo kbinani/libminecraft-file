@@ -4,6 +4,7 @@
 #include <set>
 #include "svpng.inc"
 #include "hwm/task/task_queue.hpp"
+#include "colormap/colormap.h"
 
 using namespace std;
 using namespace mcfile;
@@ -282,19 +283,6 @@ static set<string> transparentBlocks = {
     "minecraft:ladder", // Color(255, 255, 255)},
 };
 
-static double AltitudeColormapFunc(double x, double a, double c, double d, double e, double f, double g) {
-    x *= 193;
-    return a * exp(-x * x / (2 * c * c)) + ((d * x + e) * x + f) * x + g;
-}
-
-static Color AltitudeColormap(int y) {
-    double x = std::min(std::max((y - 63.0) / 193.0, 0.0), 1.0);
-    double r = AltitudeColormapFunc(x, 48.6399, 13.3443, 0.00000732641, -0.00154886, -0.211758, 83.3109);
-    double g = AltitudeColormapFunc(x, 92.7934, 9.66818, 0.00000334955, -0.000491041, -0.189276, 56.8844);
-    double b = AltitudeColormapFunc(x, 43.4277, 8.92338, 0.00000387675, -0.00112176, 0.0373863, 15.9435);
-    return Color::FromDouble(r / 255, g / 255, b / 255, 1);
-}
-
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         return 1;
@@ -353,6 +341,7 @@ int main(int argc, char *argv[]) {
                     return data.load(stream, [&result, x0, z0, w](Chunk const& chunk) {
                         Color const waterColor(69, 91, 211);
                         double const waterDiffusion = 0.02;
+                        colormap::kbinani::Altitude altitude;
                         int const sZ = chunk.minZ();
                         int const eZ = chunk.maxZ();
                         int const sX = chunk.minX();
@@ -391,7 +380,9 @@ int main(int argc, char *argv[]) {
                                             color = waterColor.diffuse(waterDiffusion, waterDepth);
                                             translucentBlock = Color(0, 0, 0, 0);
                                         } else if (block->fName == "minecraft:grass_block") {
-                                            color = AltitudeColormap(y);
+                                            double const v = std::min(std::max((y - 63.0) / 193.0, 0.0), 1.0);
+                                            auto c = altitude.getColor(v);
+                                            color = Color::FromDouble(c.r, c.g, c.b, 1);
                                             result.fHeightMap[index] = y;
                                         } else {
                                             color = opaqeBlockColor;
