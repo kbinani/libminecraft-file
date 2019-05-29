@@ -337,64 +337,63 @@ int main(int argc, char *argv[]) {
                 result.fPixels.resize(w * h, Color(0, 0, 0, 0));
                 result.fHeightMap.resize(w * h, 0);
 
-                region->loadChunkDataSources([&result, x0, z0, w](ChunkDataSource data, StreamReader& stream) {
-                    return data.load(stream, [&result, x0, z0, w](Chunk const& chunk) {
-                        Color const waterColor(69, 91, 211);
-                        double const waterDiffusion = 0.02;
-                        colormap::kbinani::Altitude altitude;
-                        int const sZ = chunk.minZ();
-                        int const eZ = chunk.maxZ();
-                        int const sX = chunk.minX();
-                        int const eX = chunk.maxX();
-                        for (int z = sZ; z <= eZ; z++) {
-                            for (int x = sX; x <= eX; x++) {
-                                int waterDepth = 0;
-                                int airDepth = 0;
-                                Color translucentBlock(0, 0, 0, 0);
-                                for (int y = 255; y >= 0; y--) {
-                                    auto block = chunk.blockAt(x, y, z);
-                                    if (!block) {
-                                        airDepth++;
-                                        continue;
-                                    }
-                                    if (block->fName == "minecraft:water" || block->fName == "minecraft:bubble_column") {
-                                        waterDepth++;
-                                        continue;
-                                    }
-                                    if (transparentBlocks.find(block->fName) != transparentBlocks.end()) {
-                                        airDepth++;
-                                        continue;
-                                    }
-                                    if (plantBlocks.find(block->fName) != plantBlocks.end()) {
-                                        airDepth++;
-                                        continue;
-                                    }
-                                    auto it = blockToColor.find(block->fName);
-                                    if (it == blockToColor.end()) {
-                                        cerr << "Unknown block: " << block->fName << endl;
+                region->loadAllChunks([&result, x0, z0, w](Chunk const& chunk) {
+                    Color const waterColor(69, 91, 211);
+                    double const waterDiffusion = 0.02;
+                    colormap::kbinani::Altitude altitude;
+                    int const sZ = chunk.minZ();
+                    int const eZ = chunk.maxZ();
+                    int const sX = chunk.minX();
+                    int const eX = chunk.maxX();
+                    for (int z = sZ; z <= eZ; z++) {
+                        for (int x = sX; x <= eX; x++) {
+                            int waterDepth = 0;
+                            int airDepth = 0;
+                            Color translucentBlock(0, 0, 0, 0);
+                            for (int y = 255; y >= 0; y--) {
+                                auto block = chunk.blockAt(x, y, z);
+                                if (!block) {
+                                    airDepth++;
+                                    continue;
+                                }
+                                if (block->fName == "minecraft:water" || block->fName == "minecraft:bubble_column") {
+                                    waterDepth++;
+                                    continue;
+                                }
+                                if (transparentBlocks.find(block->fName) != transparentBlocks.end()) {
+                                    airDepth++;
+                                    continue;
+                                }
+                                if (plantBlocks.find(block->fName) != plantBlocks.end()) {
+                                    airDepth++;
+                                    continue;
+                                }
+                                auto it = blockToColor.find(block->fName);
+                                if (it == blockToColor.end()) {
+                                    cerr << "Unknown block: " << block->fName << endl;
+                                } else {
+                                    int const index = (z - z0) * w + (x - x0);
+                                    Color const opaqeBlockColor = it->second;
+                                    Color color(0, 0, 0, 0);
+                                    if (waterDepth > 0) {
+                                        color = waterColor.diffuse(waterDiffusion, waterDepth);
+                                        translucentBlock = Color(0, 0, 0, 0);
+                                    } else if (block->fName == "minecraft:grass_block") {
+                                        double const v = std::min(std::max((y - 63.0) / 193.0, 0.0), 1.0);
+                                        auto c = altitude.getColor(v);
+                                        color = Color::FromDouble(c.r, c.g, c.b, 1);
+                                        result.fHeightMap[index] = y;
                                     } else {
-                                        int const index = (z - z0) * w + (x - x0);
-                                        Color const opaqeBlockColor = it->second;
-                                        Color color(0, 0, 0, 0);
-                                        if (waterDepth > 0) {
-                                            color = waterColor.diffuse(waterDiffusion, waterDepth);
-                                            translucentBlock = Color(0, 0, 0, 0);
-                                        } else if (block->fName == "minecraft:grass_block") {
-                                            double const v = std::min(std::max((y - 63.0) / 193.0, 0.0), 1.0);
-                                            auto c = altitude.getColor(v);
-                                            color = Color::FromDouble(c.r, c.g, c.b, 1);
-                                            result.fHeightMap[index] = y;
-                                        } else {
-                                            color = opaqeBlockColor;
-                                            result.fHeightMap[index] = y;
-                                        }
-                                        result.fPixels[index] = Color::Add(color, translucentBlock.withAlphaComponent(0.2));
-                                        break;
+                                        color = opaqeBlockColor;
+                                        result.fHeightMap[index] = y;
                                     }
+                                    result.fPixels[index] = Color::Add(color, translucentBlock.withAlphaComponent(0.2));
+                                    break;
                                 }
                             }
                         }
-                    });
+                    }
+                    return true;
                 });
                 return result;
             }, region));

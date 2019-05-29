@@ -398,7 +398,7 @@ private:
 class String {
 public:
     String() = delete;
-    
+
     static std::vector<std::string> Split(std::string const& sentence, char delimiter) {
         std::istringstream input(sentence);
         std::vector<std::string> tokens;
@@ -408,7 +408,7 @@ public:
         return tokens;
     }
 };
-    
+
 namespace nbt {
 
 class Tag;
@@ -439,7 +439,7 @@ class ListTag;
 class CompoundTag;
 class IntArrayTag;
 class LongArrayTag;
-    
+
 class Tag {
 public:
     friend class TagFactory;
@@ -512,7 +512,7 @@ public:
 };
 
 namespace _internal_ {
-    
+
 template< typename T, uint8_t ID>
 class ScalarTag : public Tag {
 public:
@@ -530,7 +530,7 @@ public:
 public:
     T fValue;
 };
-        
+
 }
 
 class ByteTag : public _internal_::ScalarTag<uint8_t, Tag::TAG_Byte> {};
@@ -575,7 +575,7 @@ public:
 };
 
 namespace _internal_ {
-    
+
 template<typename T, uint8_t ID>
 class VectorTag : public Tag {
 public:
@@ -600,7 +600,7 @@ public:
 };
 
 }
-    
+
 class ByteArrayTag : public _internal_::VectorTag<uint8_t, Tag::TAG_Byte_Array> {};
 class IntArrayTag : public _internal_::VectorTag<int32_t, Tag::TAG_Int_Array> {};
 class LongArrayTag : public _internal_::VectorTag<int64_t, Tag::TAG_Long_Array> {};
@@ -794,7 +794,7 @@ public:
             return region / 32;
         }
     }
-    
+
     static int RegionFromBlock(int block) {
         return RegionFromChunk(ChunkFromBlock(block));
     }
@@ -814,7 +814,7 @@ public:
     std::map<std::string, std::string> const fProperties;
 };
 
-    
+
 class ChunkSection {
 public:
     std::shared_ptr<Block> blockAt(int offsetX, int offsetY, int offsetZ) const {
@@ -827,7 +827,7 @@ public:
         }
         size_t const bitsPerIndex = numBits / 4096;
         int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
-        
+
         size_t const index = (size_t)offsetY * 16 * 16 + (size_t)offsetZ * 16 + (size_t)offsetX;
         size_t const bitIndex = index * bitsPerIndex;
         size_t const uint64Index = bitIndex / 64;
@@ -904,17 +904,17 @@ public:
             }
             palette.push_back(std::make_shared<Block>(nameTag->fValue, properties));
         }
-        
+
         auto blockStatesTag = section->query("BlockStates")->asLongArray();
         if (!blockStatesTag) {
             return nullptr;
         }
-        
+
         return std::shared_ptr<ChunkSection>(new ChunkSection((int)yTag->fValue,
                                                               palette,
                                                               blockStatesTag->fValue));
     }
-    
+
 private:
     ChunkSection(int y, std::vector<std::shared_ptr<Block>> const& palette, std::vector<int64_t> const& blockStates)
         : fY(y)
@@ -929,7 +929,7 @@ public:
     std::vector<int64_t> const fBlockStates;
 };
 
-    
+
 class Chunk {
 public:
     std::shared_ptr<Block> blockAt(int x, int y, int z) const {
@@ -1004,7 +1004,7 @@ public:
         , fLength(length)
     {
     }
-    
+
     bool load(StreamReader& reader, std::function<void(Chunk const& chunk)> callback) const {
         if (!reader.valid()) {
             return false;
@@ -1040,7 +1040,7 @@ public:
         callback(*chunk);
         return true;
     }
-    
+
 public:
     int const fChunkX;
     int const fChunkZ;
@@ -1055,40 +1055,39 @@ public:
     Region(Region const&) = delete;
     Region& operator = (Region const&) = delete;
 
-    using LoadChunkDataCallback = std::function<bool(ChunkDataSource data, StreamReader& stream)>;
-    
-    bool loadChunkDataSources(LoadChunkDataCallback callback) {
+    using LoadChunkCallback = std::function<bool(Chunk const&)>;
+
+    bool loadAllChunks(LoadChunkCallback callback) {
         auto fs = std::make_shared<FileStream>(fFilePath);
         StreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
-                if (!loadChunkDataSourceImpl(x, z, sr, callback)) {
+                if (loadChunkImpl(x, z, callback)) {
                     return false;
                 }
             }
         }
-
         return true;
     }
     
-    bool loadChunkDataSource(int regionX, int regionZ, LoadChunkDataCallback callback) {
+    bool loadChunk(int regionX, int regionZ, LoadChunkCallback callback) {
         if (regionX < 0 || 32 <= regionX || regionZ < 0 || 32 <= regionZ) {
             return false;
         }
         auto fs = std::make_shared<FileStream>(fFilePath);
         StreamReader sr(fs);
-        return loadChunkDataSourceImpl(regionX, regionZ, sr, callback);
+        return loadChunkImpl(regionX, regionZ, callback);
     }
 
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
         return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
-    
+
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath) {
         // ../directory/r.5.13.mca
 
         auto basename = filePath;
-        
+
         auto pos = filePath.find_last_of('/');
         if (pos == std::string::npos) {
             pos = filePath.find_last_of('\\');
@@ -1096,7 +1095,7 @@ public:
         if (pos != std::string::npos) {
             basename = filePath.substr(pos + 1);
         }
-        
+
         std::vector<std::string> tokens = String::Split(basename, '.');
         if (tokens.size() != 4) {
             return nullptr;
@@ -1104,7 +1103,7 @@ public:
         if (tokens[0] != "r" || tokens[3] != "mca") {
             return nullptr;
         }
-        
+
         int x, z;
         try {
             x = std::stoi(tokens[1]);
@@ -1129,7 +1128,9 @@ private:
     {
     }
 
-    bool loadChunkDataSourceImpl(int regionX, int regionZ, StreamReader& sr, LoadChunkDataCallback callback) {
+    bool loadChunkImpl(int regionX, int regionZ, LoadChunkCallback callback) {
+        auto fs = std::make_shared<FileStream>(fFilePath);
+        StreamReader sr(fs);
         int const index = (regionX & 31) + (regionZ & 31) * 32;
         if (!sr.valid()) {
             return false;
@@ -1137,22 +1138,22 @@ private:
         if (!sr.seek(4 * index)) {
             return false;
         }
-    
+
         uint32_t loc;
         if (!sr.read(&loc)) {
             return false;
         }
-    
+
         long sectorOffset = loc >> 8;
         if (!sr.seek(kSectorSize + 4 * index)) {
             return false;
         }
-    
+
         uint32_t timestamp;
         if (!sr.read(&timestamp)) {
             return false;
         }
-    
+
         if (!sr.seek(sectorOffset * kSectorSize)) {
             return false;
         }
@@ -1160,14 +1161,14 @@ private:
         if (!sr.read(&chunkSize)) {
             return false;
         }
-    
+
         int const chunkX = this->fX * 32 + regionX;
         int const chunkZ = this->fZ * 32 + regionZ;
         ChunkDataSource data(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
-        if (!callback(data, sr)) {
+        if (data.load(sr, callback)) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -1209,20 +1210,18 @@ public:
                 if (!region) {
                     continue;
                 }
-                return region->loadChunkDataSources([=](ChunkDataSource data, StreamReader& reader) {
-                    return data.load(reader, [=](Chunk const& chunk) {
-                        for (int y = 0; y < 256; y++) {
-                            for (int z = std::max(minZ, chunk.minZ()); z <= std::min(maxZ, chunk.maxZ()); z++) {
-                                for (int x = std::max(minX, chunk.minX()); x <= std::min(maxX, chunk.maxX()); x++) {
-                                    auto block = chunk.blockAt(x, y, z);
-                                    if (!callback(x, y, z, block)) {
-                                        return false;
-                                    }
+                return region->loadAllChunks([=](Chunk const& chunk) {
+                    for (int y = 0; y < 256; y++) {
+                        for (int z = std::max(minZ, chunk.minZ()); z <= std::min(maxZ, chunk.maxZ()); z++) {
+                            for (int x = std::max(minX, chunk.minX()); x <= std::min(maxX, chunk.maxX()); x++) {
+                                auto block = chunk.blockAt(x, y, z);
+                                if (!callback(x, y, z, block)) {
+                                    return false;
                                 }
                             }
                         }
-                        return true;
-                    });
+                    }
+                    return true;
                 });
             }
         }
