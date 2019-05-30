@@ -10,19 +10,19 @@ using namespace std;
 using namespace mcfile;
 
 struct HSV {
-    double fH;
-    double fS;
-    double fV;
+    float fH;
+    float fS;
+    float fV;
 };
 
 
 class Color {
 public:
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
-        : fR(r / 255.)
-        , fG(g / 255.)
-        , fB(b / 255.)
-        , fA(a / 255.)
+        : fR(r / 255.f)
+        , fG(g / 255.f)
+        , fB(b / 255.f)
+        , fA(a / 255.f)
     {
     }
 
@@ -30,13 +30,13 @@ public:
         return ((uint32_t)0xFF << 24) | ((uint32_t)ToU8(fB * fA) << 16) | ((uint32_t)ToU8(fG * fA) << 8) | (uint32_t)ToU8(fR * fA);
     }
 
-    Color diffuse(double diffusion, double distance) const {
-        double intensity = pow(10., -diffusion * distance);
-        return FromDouble(fR, fG, fB, fA * intensity);
+    Color diffuse(float diffusion, float distance) const {
+        float intensity = pow(10., -diffusion * distance);
+        return FromFloat(fR, fG, fB, fA * intensity);
     }
 
-    Color withAlphaComponent(double a) const {
-        return FromDouble(fR, fG, fB, a);
+    Color withAlphaComponent(float a) const {
+        return FromFloat(fR, fG, fB, a);
     }
 
     static Color Add(Color a, Color b) {
@@ -46,36 +46,36 @@ public:
                      1., true);
     }
 
-    static Color FromDouble(double r, double g, double b, double a) {
+    static Color FromFloat(float r, float g, float b, float a) {
         return Color(r, g, b, a, true);
     }
 
     HSV toHSV() const {
-        double r = fR;
-        double g = fG;
-        double b = fB;
-        double max = r > g ? r : g;
+        float r = fR;
+        float g = fG;
+        float b = fB;
+        float max = r > g ? r : g;
         max = max > b ? max : b;
-        double min = r < g ? r : g;
+        float min = r < g ? r : g;
         min = min < b ? min : b;
-        double h = max - min;
-        if (h > 0.0) {
+        float h = max - min;
+        if (h > 0.0f) {
             if (max == r) {
                 h = (g - b) / h;
-                if (h < 0.0) {
-                    h += 6.0;
+                if (h < 0.0f) {
+                    h += 6.0f;
                 }
             } else if (max == g) {
-                h = 2.0 + (b - r) / h;
+                h = 2.0f + (b - r) / h;
             } else {
-                h = 4.0 + (r - g) / h;
+                h = 4.0f + (r - g) / h;
             }
         }
-        h /= 6.0;
-        double s = (max - min);
-        if (max != 0.0)
+        h /= 6.0f;
+        float s = (max - min);
+        if (max != 0.0f)
             s /= max;
-        double v = max;
+        float v = max;
         HSV ret;
         ret.fH = h;
         ret.fS = s;
@@ -84,16 +84,16 @@ public:
     }
 
     static Color FromHSV(HSV c) {
-        double v = c.fV;
-        double s = c.fS;
-        double h = c.fH;
-        double r = v;
-        double g = v;
-        double b = v;
+        float v = c.fV;
+        float s = c.fS;
+        float h = c.fH;
+        float r = v;
+        float g = v;
+        float b = v;
         if (s > 0.0) {
             h *= 6.0;
             int i = (int) h;
-            double f = h - (float) i;
+            float f = h - (float) i;
             switch (i) {
                 default:
                 case 0:
@@ -122,7 +122,7 @@ public:
                     break;
             }
         }
-        return FromDouble(r, g, b, 1);
+        return FromFloat(r, g, b, 1);
     }
 
     std::string toString() const {
@@ -132,8 +132,8 @@ public:
     }
 
 private:
-    static uint8_t ToU8(double v) {
-        double vv = v * 255;
+    static uint8_t ToU8(float v) {
+        float vv = v * 255;
         if (vv < 0) {
             return 0;
         } else if (255 < vv) {
@@ -143,7 +143,7 @@ private:
         }
     }
 
-    Color(double r, double g, double b, double a, bool)
+    Color(float r, float g, float b, float a, bool)
         : fR(r)
         , fG(g)
         , fB(b)
@@ -152,135 +152,135 @@ private:
     }
 
 public:
-    double fR;
-    double fG;
-    double fB;
-    double fA;
+    float fR;
+    float fG;
+    float fB;
+    float fA;
 };
 
-static map<string, Color> const blockToColor {
-    {"minecraft:stone", Color(111, 111, 111)},
-    {"minecraft:granite", Color(149, 108, 76)},
-    {"minecraft:diorite", Color(252, 249, 242)},
-    {"minecraft:andesite", Color(111, 111, 111)},
-    {"minecraft:chest", Color(141, 118, 71)},
-    {"minecraft:clay", Color(162, 166, 182)},
-    {"minecraft:coal_ore", Color(111, 111, 111)},
-    {"minecraft:cobblestone", Color(111, 111, 111)},
-    {"minecraft:dirt", Color(149, 108, 76)},
-    {"minecraft:brown_mushroom", Color(0, 123, 0)},
-    {"minecraft:grass_block", Color(130, 148, 58)},
-    {"minecraft:iron_ore", Color(111, 111, 111)},
-    {"minecraft:sand", Color(201,192,154)}, //
-    {"minecraft:oak_leaves", Color(56, 95, 31)}, //
-    {"minecraft:jungle_leaves", Color(56, 95, 31)}, //
-    {"minecraft:birch_leaves", Color(67, 124, 37)},
-    {"minecraft:red_mushroom", Color(0, 123, 0)},
-    {"minecraft:mossy_cobblestone", Color(111, 111, 111)},
-    {"minecraft:oak_stairs", Color(127, 85, 48)},
-    {"minecraft:gravel", Color(111, 111, 111)},
-    {"minecraft:oak_log", Color(141, 118, 71)},
-    {"minecraft:oak_planks", Color(127, 85, 48)},
-    {"minecraft:wall_torch", Color(255, 255, 255)},
-    {"minecraft:farmland", Color(149, 108, 76)},
-    {"minecraft:oak_fence", Color(127, 85, 48)},
-    {"minecraft:cobblestone_stairs", Color(111, 111, 111)},
-    {"minecraft:black_wool", Color(25, 25, 25)},
-    {"minecraft:grass_path", Color(204, 204, 204)}, //
-    {"minecraft:birch_fence", Color(244, 230, 161)},
-    {"minecraft:birch_planks", Color(244, 230, 161)},
-    {"minecraft:birch_stairs", Color(244, 230, 161)},
-    {"minecraft:dark_oak_fence", Color(101, 75, 50)},
-    {"minecraft:dark_oak_log", Color(101, 75, 50)},
-    {"minecraft:dark_oak_planks", Color(191,152,63)}, //
-    {"minecraft:dark_oak_slab", Color(101, 75, 50)},
-    {"minecraft:dark_oak_stairs", Color(101, 75, 50)},
-    {"minecraft:dark_oak_trapdoor", Color(141, 118, 71)},
-    {"minecraft:diamond_ore", Color(111, 111, 111)},
-    {"minecraft:gold_ore", Color(111, 111, 111)},
-    {"minecraft:ice", Color(158, 158, 252)},
-    {"minecraft:jungle_fence", Color(149, 108, 76)},
-    {"minecraft:jungle_log", Color(149, 108, 76)},
-    {"minecraft:jungle_planks", Color(149, 108, 76)},
-    {"minecraft:jungle_slab", Color(149, 108, 76)},
-    {"minecraft:jungle_stairs", Color(149, 108, 76)},
-    {"minecraft:jungle_trapdoor", Color(141, 118, 71)},
-    {"minecraft:lapis_ore", Color(111, 111, 111)},
-    {"minecraft:lava", Color(179, 71, 3)},
-    {"minecraft:oak_door", Color(141, 118, 71)},
-    {"minecraft:oak_slab", Color(127, 85, 48)},
-    {"minecraft:oak_trapdoor", Color(141, 118, 71)},
-    {"minecraft:obsidian", Color(25, 25, 25)},
-    {"minecraft:packed_ice", Color(158, 158, 252)},
-    {"minecraft:polished_granite", Color(149, 108, 76)},
-    {"minecraft:prismarine", Color(75, 125, 151)},
-    {"minecraft:prismarine_bricks", Color(91, 216, 210)},
-    {"minecraft:rail", Color(255, 255, 255)},
-    {"minecraft:redstone_ore", Color(111, 111, 111)},
-    {"minecraft:sandstone", Color(244, 230, 161)},
-    {"minecraft:sea_lantern", Color(252, 249, 242)},
-    {"minecraft:snow", Color(229, 229, 229)}, //
-    {"minecraft:snow_block", Color(252, 252, 252)},
-    {"minecraft:spruce_door", Color(141, 118, 71)},
-    {"minecraft:spruce_fence", Color(141, 118, 71)},
-    {"minecraft:spruce_leaves", Color(56, 95, 31)}, //
-    {"minecraft:stone_brick_stairs", Color(111, 111, 111)},
-    {"minecraft:stone_bricks", Color(111, 111, 111)},
-    {"minecraft:stone_slab", Color(111, 111, 111)},
-    {"minecraft:spruce_log", Color(141, 118, 71)},
-    {"minecraft:spruce_planks", Color(127, 85, 48)},
-    {"minecraft:spruce_slab", Color(127, 85, 48)},
-    {"minecraft:spruce_stairs", Color(141, 118, 71)},
-    {"minecraft:spruce_trapdoor", Color(141, 118, 71)},
-    {"minecraft:mossy_stone_bricks", Color(111, 111, 111)},
-    {"minecraft:chiseled_stone_bricks", Color(111, 111, 111)},
-    {"minecraft:cracked_stone_bricks", Color(111, 111, 111)},
-    {"minecraft:infested_stone", Color(111, 111, 111)},
-    {"minecraft:cobweb", Color(255, 255, 255)},
-    {"minecraft:blue_ice", Color(102, 151, 246)},
-    {"minecraft:magma_block", Color(181, 64, 9)},
+static map<blocks::BlockId, Color> const blockToColor {
+    {blocks::minecraft::stone, Color(111, 111, 111)},
+    {blocks::minecraft::granite, Color(149, 108, 76)},
+    {blocks::minecraft::diorite, Color(252, 249, 242)},
+    {blocks::minecraft::andesite, Color(111, 111, 111)},
+    {blocks::minecraft::chest, Color(141, 118, 71)},
+    {blocks::minecraft::clay, Color(162, 166, 182)},
+    {blocks::minecraft::coal_ore, Color(111, 111, 111)},
+    {blocks::minecraft::cobblestone, Color(111, 111, 111)},
+    {blocks::minecraft::dirt, Color(149, 108, 76)},
+    {blocks::minecraft::brown_mushroom, Color(0, 123, 0)},
+    {blocks::minecraft::grass_block, Color(130, 148, 58)},
+    {blocks::minecraft::iron_ore, Color(111, 111, 111)},
+    {blocks::minecraft::sand, Color(201,192,154)}, //
+    {blocks::minecraft::oak_leaves, Color(56, 95, 31)}, //
+    {blocks::minecraft::jungle_leaves, Color(56, 95, 31)}, //
+    {blocks::minecraft::birch_leaves, Color(67, 124, 37)},
+    {blocks::minecraft::red_mushroom, Color(0, 123, 0)},
+    {blocks::minecraft::mossy_cobblestone, Color(111, 111, 111)},
+    {blocks::minecraft::oak_stairs, Color(127, 85, 48)},
+    {blocks::minecraft::gravel, Color(111, 111, 111)},
+    {blocks::minecraft::oak_log, Color(141, 118, 71)},
+    {blocks::minecraft::oak_planks, Color(127, 85, 48)},
+    {blocks::minecraft::wall_torch, Color(255, 255, 255)},
+    {blocks::minecraft::farmland, Color(149, 108, 76)},
+    {blocks::minecraft::oak_fence, Color(127, 85, 48)},
+    {blocks::minecraft::cobblestone_stairs, Color(111, 111, 111)},
+    {blocks::minecraft::black_wool, Color(25, 25, 25)},
+    {blocks::minecraft::grass_path, Color(204, 204, 204)}, //
+    {blocks::minecraft::birch_fence, Color(244, 230, 161)},
+    {blocks::minecraft::birch_planks, Color(244, 230, 161)},
+    {blocks::minecraft::birch_stairs, Color(244, 230, 161)},
+    {blocks::minecraft::dark_oak_fence, Color(101, 75, 50)},
+    {blocks::minecraft::dark_oak_log, Color(101, 75, 50)},
+    {blocks::minecraft::dark_oak_planks, Color(191,152,63)}, //
+    {blocks::minecraft::dark_oak_slab, Color(101, 75, 50)},
+    {blocks::minecraft::dark_oak_stairs, Color(101, 75, 50)},
+    {blocks::minecraft::dark_oak_trapdoor, Color(141, 118, 71)},
+    {blocks::minecraft::diamond_ore, Color(111, 111, 111)},
+    {blocks::minecraft::gold_ore, Color(111, 111, 111)},
+    {blocks::minecraft::ice, Color(158, 158, 252)},
+    {blocks::minecraft::jungle_fence, Color(149, 108, 76)},
+    {blocks::minecraft::jungle_log, Color(149, 108, 76)},
+    {blocks::minecraft::jungle_planks, Color(149, 108, 76)},
+    {blocks::minecraft::jungle_slab, Color(149, 108, 76)},
+    {blocks::minecraft::jungle_stairs, Color(149, 108, 76)},
+    {blocks::minecraft::jungle_trapdoor, Color(141, 118, 71)},
+    {blocks::minecraft::lapis_ore, Color(111, 111, 111)},
+    {blocks::minecraft::lava, Color(179, 71, 3)},
+    {blocks::minecraft::oak_door, Color(141, 118, 71)},
+    {blocks::minecraft::oak_slab, Color(127, 85, 48)},
+    {blocks::minecraft::oak_trapdoor, Color(141, 118, 71)},
+    {blocks::minecraft::obsidian, Color(25, 25, 25)},
+    {blocks::minecraft::packed_ice, Color(158, 158, 252)},
+    {blocks::minecraft::polished_granite, Color(149, 108, 76)},
+    {blocks::minecraft::prismarine, Color(75, 125, 151)},
+    {blocks::minecraft::prismarine_bricks, Color(91, 216, 210)},
+    {blocks::minecraft::rail, Color(255, 255, 255)},
+    {blocks::minecraft::redstone_ore, Color(111, 111, 111)},
+    {blocks::minecraft::sandstone, Color(244, 230, 161)},
+    {blocks::minecraft::sea_lantern, Color(252, 249, 242)},
+    {blocks::minecraft::snow, Color(229, 229, 229)}, //
+    {blocks::minecraft::snow_block, Color(252, 252, 252)},
+    {blocks::minecraft::spruce_door, Color(141, 118, 71)},
+    {blocks::minecraft::spruce_fence, Color(141, 118, 71)},
+    {blocks::minecraft::spruce_leaves, Color(56, 95, 31)}, //
+    {blocks::minecraft::stone_brick_stairs, Color(111, 111, 111)},
+    {blocks::minecraft::stone_bricks, Color(111, 111, 111)},
+    {blocks::minecraft::stone_slab, Color(111, 111, 111)},
+    {blocks::minecraft::spruce_log, Color(141, 118, 71)},
+    {blocks::minecraft::spruce_planks, Color(127, 85, 48)},
+    {blocks::minecraft::spruce_slab, Color(127, 85, 48)},
+    {blocks::minecraft::spruce_stairs, Color(141, 118, 71)},
+    {blocks::minecraft::spruce_trapdoor, Color(141, 118, 71)},
+    {blocks::minecraft::mossy_stone_bricks, Color(111, 111, 111)},
+    {blocks::minecraft::chiseled_stone_bricks, Color(111, 111, 111)},
+    {blocks::minecraft::cracked_stone_bricks, Color(111, 111, 111)},
+    {blocks::minecraft::infested_stone, Color(111, 111, 111)},
+    {blocks::minecraft::cobweb, Color(255, 255, 255)},
+    {blocks::minecraft::blue_ice, Color(102, 151, 246)},
+    {blocks::minecraft::magma_block, Color(181, 64, 9)},
 
     // plants
-    {"minecraft:lily_pad", Color(0, 123, 0)},
-    {"minecraft:wheat", Color(0, 123, 0)},
-    {"minecraft:melon", Color(125, 202, 25)},
-    {"minecraft:pumpkin", Color(213, 125, 50)},
-    {"minecraft:grass", Color(109, 141, 35)},
-    {"minecraft:tall_grass", Color(109, 141, 35)},
-    {"minecraft:dandelion", Color(245, 238, 50)},
-    {"minecraft:poppy", Color(229, 31, 29)},
-    {"minecraft:peony", Color(232, 143, 213)},
-    {"minecraft:pink_tulip", Color(234, 182, 209)},
-    {"minecraft:orange_tulip", Color(242, 118, 33)},
-    {"minecraft:lilac", Color(212, 119, 197)},
-    {"minecraft:sunflower", Color(245, 238, 50)},
-    {"minecraft:allium", Color(200, 109, 241)},
-    {"minecraft:red_tulip", Color(229, 31, 29)},
-    {"minecraft:white_tulip", Color(255, 255, 255)},
-    {"minecraft:rose_bush", Color(136, 40, 27)},
-    {"minecraft:blue_orchid", Color(47, 181, 199)},
-    {"minecraft:oxeye_daisy", Color(236, 246, 247)},
-    {"minecraft:sugar_cane", Color(165, 214, 90)},
+    {blocks::minecraft::lily_pad, Color(0, 123, 0)},
+    {blocks::minecraft::wheat, Color(0, 123, 0)},
+    {blocks::minecraft::melon, Color(125, 202, 25)},
+    {blocks::minecraft::pumpkin, Color(213, 125, 50)},
+    {blocks::minecraft::grass, Color(109, 141, 35)},
+    {blocks::minecraft::tall_grass, Color(109, 141, 35)},
+    {blocks::minecraft::dandelion, Color(245, 238, 50)},
+    {blocks::minecraft::poppy, Color(229, 31, 29)},
+    {blocks::minecraft::peony, Color(232, 143, 213)},
+    {blocks::minecraft::pink_tulip, Color(234, 182, 209)},
+    {blocks::minecraft::orange_tulip, Color(242, 118, 33)},
+    {blocks::minecraft::lilac, Color(212, 119, 197)},
+    {blocks::minecraft::sunflower, Color(245, 238, 50)},
+    {blocks::minecraft::allium, Color(200, 109, 241)},
+    {blocks::minecraft::red_tulip, Color(229, 31, 29)},
+    {blocks::minecraft::white_tulip, Color(255, 255, 255)},
+    {blocks::minecraft::rose_bush, Color(136, 40, 27)},
+    {blocks::minecraft::blue_orchid, Color(47, 181, 199)},
+    {blocks::minecraft::oxeye_daisy, Color(236, 246, 247)},
+    {blocks::minecraft::sugar_cane, Color(165, 214, 90)},
 };
 
-static set<string> plantBlocks = {
-    "minecraft:beetroots",
-    "minecraft:carrots",
-    "minecraft:potatoes",
-    "minecraft:seagrass",
-    "minecraft:tall_seagrass",
-    "minecraft:fern",
-    "minecraft:azure_bluet",
-    "minecraft:kelp",
-    "minecraft:large_fern",
-    "minecraft:kelp_plant",
+static set<blocks::BlockId> plantBlocks = {
+    blocks::minecraft::beetroots,
+    blocks::minecraft::carrots,
+    blocks::minecraft::potatoes,
+    blocks::minecraft::seagrass,
+    blocks::minecraft::tall_seagrass,
+    blocks::minecraft::fern,
+    blocks::minecraft::azure_bluet,
+    blocks::minecraft::kelp,
+    blocks::minecraft::large_fern,
+    blocks::minecraft::kelp_plant,
 };
 
-static set<string> transparentBlocks = {
-    "minecraft:air",
-    "minecraft:cave_air",
-    "minecraft:vine", // Color(56, 95, 31)}, //
-    "minecraft:ladder", // Color(255, 255, 255)},
+static set<blocks::BlockId> transparentBlocks = {
+    blocks::minecraft::air,
+    blocks::minecraft::cave_air,
+    blocks::minecraft::vine, // Color(56, 95, 31)}, //
+    blocks::minecraft::ladder, // Color(255, 255, 255)},
 };
 
 int main(int argc, char *argv[]) {
@@ -306,15 +306,11 @@ int main(int argc, char *argv[]) {
     int const maxRegionZ = Coordinate::RegionFromBlock(maxZ);
 
     hwm::task_queue q(thread::hardware_concurrency());
-    struct QueueResult {
-        int fX;
-        int fZ;
-        int fWidth;
-        int fHeight;
-        vector<Color> fPixels;
-        vector<uint8_t> fHeightMap;
-    };
-    vector<future<QueueResult>> futures;
+    vector<future<void>> futures;
+    vector<uint8_t> heightMap(width * height, 0);
+    vector<Color> pixels(width * height, Color::FromFloat(0, 0, 0, 1));
+    uint8_t *heightMapPtr = heightMap.data();
+    Color *pixelsPtr = pixels.data();
 
     for (int regionZ = minRegionZ; regionZ <= maxRegionZ; regionZ++) {
         for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
@@ -322,24 +318,10 @@ int main(int argc, char *argv[]) {
             if (!region) {
                 continue;
             }
-            futures.emplace_back(q.enqueue([minX, maxX, minZ, maxZ](shared_ptr<Region> region) {
-                int const x0 = std::min(std::max(region->minBlockX(), minX), maxX);
-                int const z0 = std::min(std::max(region->minBlockZ(), minZ), maxZ);
-                int const x1 = std::min(std::max(region->maxBlockX(), minX), maxX);
-                int const z1 = std::min(std::max(region->maxBlockZ(), minZ), maxZ);
-                QueueResult result;
-                result.fX = x0;
-                result.fZ = z0;
-                int const w = x1 - x0 + 1;
-                int const h = z1 - z0 + 1;
-                result.fWidth = w;
-                result.fHeight = h;
-                result.fPixels.resize(w * h, Color(0, 0, 0, 0));
-                result.fHeightMap.resize(w * h, 0);
-
-                region->loadAllChunks([&result, x0, z0, w, minX, maxX, minZ, maxZ](Chunk const& chunk) {
+            futures.emplace_back(q.enqueue([minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, width](shared_ptr<Region> region) {
+                region->loadAllChunks([minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, width](Chunk const& chunk) {
                     Color const waterColor(69, 91, 211);
-                    double const waterDiffusion = 0.02;
+                    float const waterDiffusion = 0.02;
                     colormap::kbinani::Altitude altitude;
                     int const sZ = std::min(std::max(chunk.minBlockZ(), minZ), maxZ);
                     int const eZ = std::min(std::max(chunk.maxBlockZ(), minZ), maxZ);
@@ -351,43 +333,43 @@ int main(int argc, char *argv[]) {
                             int airDepth = 0;
                             Color translucentBlock(0, 0, 0, 0);
                             for (int y = 255; y >= 0; y--) {
-                                auto block = chunk.blockAt(x, y, z);
+                                auto block = chunk.blockIdAt(x, y, z);
                                 if (!block) {
                                     airDepth++;
                                     continue;
                                 }
-                                if (block->fName == "minecraft:water" || block->fName == "minecraft:bubble_column") {
+                                if (block == blocks::minecraft::water || block == blocks::minecraft::bubble_column) {
                                     waterDepth++;
                                     continue;
                                 }
-                                if (transparentBlocks.find(block->fName) != transparentBlocks.end()) {
+                                if (transparentBlocks.find(block) != transparentBlocks.end()) {
                                     airDepth++;
                                     continue;
                                 }
-                                if (plantBlocks.find(block->fName) != plantBlocks.end()) {
+                                if (plantBlocks.find(block) != plantBlocks.end()) {
                                     airDepth++;
                                     continue;
                                 }
-                                auto it = blockToColor.find(block->fName);
+                                auto it = blockToColor.find(block);
                                 if (it == blockToColor.end()) {
-                                    cerr << "Unknown block: " << block->fName << endl;
+                                    cerr << "Unknown block: " << block << endl;
                                 } else {
-                                    int const index = (z - z0) * w + (x - x0);
+                                    int const idx = (z - minZ) * width + (x - minX);
                                     Color const opaqeBlockColor = it->second;
                                     Color color(0, 0, 0, 0);
                                     if (waterDepth > 0) {
                                         color = waterColor.diffuse(waterDiffusion, waterDepth);
                                         translucentBlock = Color(0, 0, 0, 0);
-                                    } else if (block->fName == "minecraft:grass_block") {
-                                        double const v = std::min(std::max((y - 63.0) / 193.0, 0.0), 1.0);
+                                    } else if (block == blocks::minecraft::grass_block) {
+                                        float const v = std::min(std::max((y - 63.0) / 193.0, 0.0), 1.0);
                                         auto c = altitude.getColor(v);
-                                        color = Color::FromDouble(c.r, c.g, c.b, 1);
-                                        result.fHeightMap[index] = y;
+                                        color = Color::FromFloat(c.r, c.g, c.b, 1);
+                                        heightMapPtr[idx] = y;
                                     } else {
                                         color = opaqeBlockColor;
-                                        result.fHeightMap[index] = y;
+                                        heightMapPtr[idx] = y;
                                     }
-                                    result.fPixels[index] = Color::Add(color, translucentBlock.withAlphaComponent(0.2));
+                                    pixelsPtr[idx] = Color::Add(color, translucentBlock.withAlphaComponent(0.2));
                                     break;
                                 }
                             }
@@ -395,32 +377,20 @@ int main(int argc, char *argv[]) {
                     }
                     return true;
                 });
-                return result;
             }, region));
         }
     }
 
-    vector<Color> img(width * height, Color(0, 0, 0, 0));
-    vector<uint8_t> heightMap(width * height, 0);
-    vector<uint32_t> pixels(width * height);
+    vector<uint32_t> img(width * height, Color(0, 0, 0, 0).color());
 
     for (auto& f : futures) {
-        QueueResult result = f.get();
-        for (int i = 0; i < result.fWidth; i++) {
-            for (int j = 0; j < result.fHeight; j++) {
-                int const x = result.fX + i;
-                int const z = result.fZ + j;
-                int const idx = (z - minZ) * width + (x - minX);
-                img[idx] = result.fPixels[j * result.fWidth + i];
-                heightMap[idx] = result.fHeightMap[j * result.fWidth + i];
-            }
-        }
+        f.get();
     }
     for (int z = 0; z < height; z++) {
         for (int x = 0; x < width; x++) {
             int const idx = z * width + x;
             uint8_t const h = heightMap[idx];
-            Color c = img[idx];
+            Color c = pixels[idx];
             Color color = c;
             if (h == 0) {
                 Color cNorth = c;
@@ -430,31 +400,31 @@ int main(int argc, char *argv[]) {
                 if (z > 1) {
                     uint8_t hh = heightMap[(z - 1) * width + x];
                     if (hh == 0) {
-                        cNorth = img[(z - 1) * width + x];
+                        cNorth = pixels[(z - 1) * width + x];
                     }
                 }
                 if (z + 1 < height) {
                     uint8_t hh = heightMap[(z + 1) * width + x];
                     if (hh == 0) {
-                        cSouth = img[(z + 1) * width + x];
+                        cSouth = pixels[(z + 1) * width + x];
                     }
                 }
                 if (x > 1) {
                     auto hh = heightMap[z * width + x - 1];
                     if (hh == 0) {
-                        cWest = img[z * width + x - 1];
+                        cWest = pixels[z * width + x - 1];
                     }
                 }
                 if (x + 1 < width) {
                     auto hh = heightMap[z * width + x + 1];
                     if (hh > 0) {
-                        cEast = img[z * width + x + 1];
+                        cEast = pixels[z * width + x + 1];
                     }
                 }
-                double r = (c.fR * c.fA + cNorth.fR * cNorth.fA / 4 + cEast.fR * cEast.fA / 4 + cSouth.fR * cSouth.fA / 4 + cWest.fR * cWest.fA / 4) / 2;
-                double g = (c.fG * c.fA + cNorth.fG * cNorth.fA / 4 + cEast.fG * cEast.fA / 4 + cSouth.fG * cSouth.fA / 4 + cWest.fG * cWest.fA / 4) / 2;
-                double b = (c.fB * c.fA + cNorth.fB * cNorth.fA / 4 + cEast.fB * cEast.fA / 4 + cSouth.fB * cSouth.fA / 4 + cWest.fB * cWest.fA / 4) / 2;
-                color = Color::FromDouble(r, g, b, 1);
+                float r = (c.fR * c.fA + cNorth.fR * cNorth.fA / 4 + cEast.fR * cEast.fA / 4 + cSouth.fR * cSouth.fA / 4 + cWest.fR * cWest.fA / 4) / 2;
+                float g = (c.fG * c.fA + cNorth.fG * cNorth.fA / 4 + cEast.fG * cEast.fA / 4 + cSouth.fG * cSouth.fA / 4 + cWest.fG * cWest.fA / 4) / 2;
+                float b = (c.fB * c.fA + cNorth.fB * cNorth.fA / 4 + cEast.fB * cEast.fA / 4 + cSouth.fB * cSouth.fA / 4 + cWest.fB * cWest.fA / 4) / 2;
+                color = Color::FromFloat(r, g, b, 1);
             }
 
             uint8_t hNorth = h;
@@ -492,19 +462,19 @@ int main(int argc, char *argv[]) {
             if (hWest < h) score++;
 
             if (score > 0) {
-                double coeff = 1.2;
+                float coeff = 1.2;
                 HSV hsv = color.toHSV();
                 hsv.fV = hsv.fV * coeff;
                 Color cc = Color::FromHSV(hsv);
-                pixels[idx] = cc.color();
+                img[idx] = cc.color();
             } else if (score < 0) {
-                double coeff = 0.8;
+                float coeff = 0.8;
                 HSV hsv = color.toHSV();
                 hsv.fV = hsv.fV * coeff;
                 Color cc = Color::FromHSV(hsv);
-                pixels[idx] = cc.color();
+                img[idx] = cc.color();
             } else {
-                pixels[idx] = color.color();
+                img[idx] = color.color();
             }
         }
     }
@@ -513,7 +483,7 @@ int main(int argc, char *argv[]) {
     if (!out) {
         return 1;
     }
-    svpng(out, width, height, (unsigned char *)pixels.data(), 1);
+    svpng(out, width, height, (unsigned char *)img.data(), 1);
     fclose(out);
 
     return 0;
