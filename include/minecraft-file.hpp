@@ -14,26 +14,34 @@
 
 namespace mcfile {
 
+namespace detail {
+
 class Stream {
 public:
     Stream() = default;
-    Stream(Stream const&) = delete;
-    Stream& operator = (Stream const&) = delete;
+
+    Stream(Stream const &) = delete;
+
+    Stream &operator=(Stream const &) = delete;
+
     virtual ~Stream() {}
+
     virtual long length() const = 0;
+
     virtual bool read(void *buffer, size_t size, size_t count) = 0;
+
     virtual bool seek(long offset) = 0;
+
     virtual bool valid() const = 0;
+
     virtual long pos() const = 0;
 };
 
 
 class FileStream : public Stream {
 public:
-    explicit FileStream(std::string const& filePath)
-        : fFile(nullptr)
-        , fLoc(0)
-    {
+    explicit FileStream(std::string const &filePath)
+            : fFile(nullptr), fLoc(0) {
         FILE *fp = fopen(filePath.c_str(), "rb");
 
         if (!fp) {
@@ -62,8 +70,9 @@ public:
         }
     }
 
-    FileStream(FileStream const&) = delete;
-    FileStream& operator = (FileStream const&) = delete;
+    FileStream(FileStream const &) = delete;
+
+    FileStream &operator=(FileStream const &) = delete;
 
     bool read(void *buffer, size_t size, size_t count) override {
         if (!fFile) {
@@ -98,22 +107,22 @@ private:
 
 class ByteStream : public Stream {
 public:
-    explicit ByteStream(std::vector<uint8_t>& buffer)
-        : fLoc(0)
-    {
+    explicit ByteStream(std::vector<uint8_t> &buffer)
+            : fLoc(0) {
         this->fBuffer.swap(buffer);
     }
 
     ~ByteStream() {}
 
-    ByteStream(ByteStream const&) = delete;
-    ByteStream& operator = (ByteStream const&) = delete;
+    ByteStream(ByteStream const &) = delete;
+
+    ByteStream &operator=(ByteStream const &) = delete;
 
     bool read(void *buf, size_t size, size_t count) override {
         if (fBuffer.size() <= fLoc + size * count) {
             return false;
         }
-        std::copy(fBuffer.begin() + fLoc, fBuffer.begin() + fLoc + size * count, (uint8_t *)buf);
+        std::copy(fBuffer.begin() + fLoc, fBuffer.begin() + fLoc + size * count, (uint8_t *) buf);
         fLoc += size * count;
         return true;
     }
@@ -141,12 +150,12 @@ private:
 class StreamReader {
 public:
     explicit StreamReader(std::shared_ptr<Stream> stream)
-        : fStream(stream)
-    {
+            : fStream(stream) {
     }
 
-    StreamReader(StreamReader const&) = delete;
-    StreamReader& operator = (StreamReader const&) = delete;
+    StreamReader(StreamReader const &) = delete;
+
+    StreamReader &operator=(StreamReader const &) = delete;
 
     bool valid() const {
         if (!fStream) {
@@ -173,7 +182,7 @@ public:
             return false;
         }
         t = Int16FromBE(t);
-        *v = *(int16_t *)&t;
+        *v = *(int16_t *) &t;
         return true;
     }
 
@@ -192,7 +201,7 @@ public:
             return false;
         }
         t = Int32FromBE(t);
-        *v = *(int32_t *)&t;
+        *v = *(int32_t *) &t;
         return true;
     }
 
@@ -211,7 +220,7 @@ public:
             return false;
         }
         t = Int64FromBE(t);
-        *v = *(int64_t *)&t;
+        *v = *(int64_t *) &t;
         return true;
     }
 
@@ -224,12 +233,12 @@ public:
         return true;
     }
 
-    bool read(std::vector<uint8_t>& buffer) {
+    bool read(std::vector<uint8_t> &buffer) {
         size_t const count = buffer.size();
         return fStream->read(buffer.data(), sizeof(uint8_t), count);
     }
 
-    bool read(std::string& s) {
+    bool read(std::string &s) {
         uint16_t length;
         if (!read(&length)) {
             return false;
@@ -239,7 +248,7 @@ public:
             return false;
         }
         buffer.push_back(0);
-        std::string tmp((char const*)buffer.data());
+        std::string tmp((char const *) buffer.data());
         s.swap(tmp);
         return true;
     }
@@ -266,21 +275,21 @@ private:
 
     static uint64_t SwapInt64(uint64_t v) {
         return ((v & 0x00000000000000ffLL) << 56)
-            | ((v & 0x000000000000ff00LL) << 40)
-            | ((v & 0x0000000000ff0000LL) << 24)
-            | ((v & 0x00000000ff000000LL) <<  8)
-            | ((v & 0x000000ff00000000LL) >>  8)
-            | ((v & 0x0000ff0000000000LL) >> 24)
-            | ((v & 0x00ff000000000000LL) >> 40)
-            | ((v & 0xff00000000000000LL) >> 56);
+               | ((v & 0x000000000000ff00LL) << 40)
+               | ((v & 0x0000000000ff0000LL) << 24)
+               | ((v & 0x00000000ff000000LL) << 8)
+               | ((v & 0x000000ff00000000LL) >> 8)
+               | ((v & 0x0000ff0000000000LL) >> 24)
+               | ((v & 0x00ff000000000000LL) >> 40)
+               | ((v & 0xff00000000000000LL) >> 56);
     }
 
     static uint32_t SwapInt32(uint32_t v) {
         uint32_t r;
-        r  = v                << 24;
-        r |= (v & 0x0000FF00) <<  8;
-        r |= (v & 0x00FF0000) >>  8;
-        r |= v                >> 24;
+        r = v << 24;
+        r |= (v & 0x0000FF00) << 8;
+        r |= (v & 0x00FF0000) >> 8;
+        r |= v >> 24;
         return r;
     }
 
@@ -292,27 +301,27 @@ private:
     }
 
     static uint64_t Int64FromBE(uint64_t v) {
-        #if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-            return v;
-        #else
-            return SwapInt64(v);
-        #endif
+#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
+        return v;
+#else
+        return SwapInt64(v);
+#endif
     }
 
     static uint32_t Int32FromBE(uint32_t v) {
-        #if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-            return v;
-        #else
-            return SwapInt32(v);
-        #endif
+#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
+        return v;
+#else
+        return SwapInt32(v);
+#endif
     }
 
     static uint16_t Int16FromBE(uint16_t v) {
-        #if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-            return v;
-        #else
-            return SwapInt16(v);
-        #endif
+#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
+        return v;
+#else
+        return SwapInt16(v);
+#endif
     }
 
 private:
@@ -324,7 +333,7 @@ class Compression {
 public:
     Compression() = delete;
 
-    static bool compress(std::vector<uint8_t>& inout) {
+    static bool compress(std::vector<uint8_t> &inout) {
         z_stream zs;
         char buff[kSegSize];
         std::vector<uint8_t> outData;
@@ -333,7 +342,7 @@ public:
         if (deflateInit(&zs, Z_BEST_COMPRESSION) != Z_OK) {
             return false;
         }
-        zs.next_in = (Bytef *)inout.data();
+        zs.next_in = (Bytef *) inout.data();
         zs.avail_in = inout.size();
 
         int ret;
@@ -357,7 +366,7 @@ public:
         return true;
     }
 
-    static bool decompress(std::vector<uint8_t>& inout) {
+    static bool decompress(std::vector<uint8_t> &inout) {
         int ret;
         z_stream zs;
         char buff[kSegSize];
@@ -369,7 +378,7 @@ public:
             return false;
         }
 
-        zs.next_in = (Bytef *)inout.data();
+        zs.next_in = (Bytef *) inout.data();
         zs.avail_in = inout.size();
 
         do {
@@ -399,15 +408,17 @@ class String {
 public:
     String() = delete;
 
-    static std::vector<std::string> Split(std::string const& sentence, char delimiter) {
+    static std::vector<std::string> Split(std::string const &sentence, char delimiter) {
         std::istringstream input(sentence);
         std::vector<std::string> tokens;
-        for (std::string line; std::getline(input, line, delimiter); ) {
+        for (std::string line; std::getline(input, line, delimiter);) {
             tokens.push_back(line);
         }
         return tokens;
     }
 };
+
+} // namespace detail
 
 namespace nbt {
 
@@ -450,7 +461,7 @@ public:
     Tag(Tag const&) = delete;
     Tag& operator = (Tag const&) = delete;
 
-    void read(StreamReader& reader) {
+    void read(detail::StreamReader& reader) {
         fValid = readImpl(reader);
     }
 
@@ -475,7 +486,7 @@ public:
     LongArrayTag const* asLongArray() const { return this->id() == TAG_Long_Array ? reinterpret_cast<LongArrayTag const*>(this) : nullptr; }
 
 protected:
-    virtual bool readImpl(StreamReader& reader) = 0;
+    virtual bool readImpl(detail::StreamReader& reader) = 0;
 
 public:
     static uint8_t const TAG_End = 0;
@@ -502,7 +513,7 @@ private:
 
 class EndTag : public Tag {
 public:
-    bool readImpl(StreamReader&) override { return true; }
+    bool readImpl(detail::StreamReader&) override { return true; }
     uint8_t id() const override { return TAG_End; }
 
     static EndTag const* instance() {
@@ -511,12 +522,12 @@ public:
     }
 };
 
-namespace _internal_ {
+namespace detail {
 
 template< typename T, uint8_t ID>
 class ScalarTag : public Tag {
 public:
-    bool readImpl(StreamReader& r) override {
+    bool readImpl(::mcfile::detail::StreamReader& r) override {
         T v;
         if (!r.read(&v)) {
             return false;
@@ -533,15 +544,15 @@ public:
 
 }
 
-class ByteTag : public _internal_::ScalarTag<uint8_t, Tag::TAG_Byte> {};
-class ShortTag : public _internal_::ScalarTag<int16_t, Tag::TAG_Short> {};
-class IntTag : public _internal_::ScalarTag<int32_t, Tag::TAG_Int> {};
-class LongTag : public _internal_::ScalarTag<int64_t, Tag::TAG_Long> {};
+class ByteTag : public detail::ScalarTag<uint8_t, Tag::TAG_Byte> {};
+class ShortTag : public detail::ScalarTag<int16_t, Tag::TAG_Short> {};
+class IntTag : public detail::ScalarTag<int32_t, Tag::TAG_Int> {};
+class LongTag : public detail::ScalarTag<int64_t, Tag::TAG_Long> {};
 
 
 class FloatTag : public Tag {
 public:
-    bool readImpl(StreamReader& r) override {
+    bool readImpl(::mcfile::detail::StreamReader& r) override {
         uint32_t v;
         if (!r.read(&v)) {
             return false;
@@ -559,7 +570,7 @@ public:
 
 class DoubleTag : public Tag {
 public:
-    bool readImpl(StreamReader& r) override {
+    bool readImpl(::mcfile::detail::StreamReader& r) override {
         uint64_t v;
         if (!r.read(&v)) {
             return false;
@@ -574,12 +585,12 @@ public:
     double fValue;
 };
 
-namespace _internal_ {
+namespace detail {
 
 template<typename T, uint8_t ID>
 class VectorTag : public Tag {
 public:
-    bool readImpl(StreamReader& r) override {
+    bool readImpl(::mcfile::detail::StreamReader& r) override {
         uint32_t length;
         if (!r.read(&length)) {
             return false;
@@ -601,14 +612,14 @@ public:
 
 }
 
-class ByteArrayTag : public _internal_::VectorTag<uint8_t, Tag::TAG_Byte_Array> {};
-class IntArrayTag : public _internal_::VectorTag<int32_t, Tag::TAG_Int_Array> {};
-class LongArrayTag : public _internal_::VectorTag<int64_t, Tag::TAG_Long_Array> {};
+class ByteArrayTag : public detail::VectorTag<uint8_t, Tag::TAG_Byte_Array> {};
+class IntArrayTag : public detail::VectorTag<int32_t, Tag::TAG_Int_Array> {};
+class LongArrayTag : public detail::VectorTag<int64_t, Tag::TAG_Long_Array> {};
 
 
 class StringTag : public Tag {
 public:
-    bool readImpl(StreamReader& r) override {
+    bool readImpl(::mcfile::detail::StreamReader& r) override {
         std::string tmp;
         if (!r.read(tmp)) {
             return false;
@@ -626,7 +637,7 @@ public:
 
 class ListTag : public Tag {
 public:
-    bool readImpl(StreamReader& r) override {
+    bool readImpl(::mcfile::detail::StreamReader& r) override {
         uint8_t type;
         if (!r.read(&type)) {
             return false;
@@ -657,7 +668,7 @@ public:
 
 class CompoundTag : public Tag {
 public:
-    bool readImpl(StreamReader& r) override {
+    bool readImpl(::mcfile::detail::StreamReader& r) override {
         std::map<std::string, std::shared_ptr<Tag>> tmp;
         while (r.pos() < r.length()) {
             uint8_t type;
@@ -780,30 +791,22 @@ private:
 
 public:
     static int ChunkFromBlock(int block) {
-        if (block < 0) {
-            return (block - 15) / 16;
-        } else {
-            return block / 16;
-        }
+        return block >> 4;
     }
 
     static int RegionFromChunk(int region) {
-        if (region < 0) {
-            return (region - 31) / 32;
-        } else {
-            return region / 32;
-        }
+        return region >> 5;
     }
 
     static int RegionFromBlock(int block) {
-        return RegionFromChunk(ChunkFromBlock(block));
+        return block >> 9;
     }
 };
 
 
 class Block {
 public:
-    explicit Block(std::string const& name, std::map<std::string, std::string> const& properties)
+    Block(std::string const& name, std::map<std::string, std::string> const& properties)
         : fName(name)
         , fProperties(properties)
     {
@@ -825,12 +828,12 @@ public:
         if (numBits % 4096 != 0) {
             return nullptr;
         }
-        size_t const bitsPerIndex = numBits / 4096;
+        size_t const bitsPerIndex = numBits >> 12;
         int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
 
         size_t const index = (size_t)offsetY * 16 * 16 + (size_t)offsetZ * 16 + (size_t)offsetX;
         size_t const bitIndex = index * bitsPerIndex;
-        size_t const uint64Index = bitIndex / 64;
+        size_t const uint64Index = bitIndex >> 6;
 
         if (fBlockStates.size() <= uint64Index) {
             return nullptr;
@@ -952,11 +955,11 @@ public:
         return section->blockAt(offsetX, offsetY, offsetZ);
     }
 
-    int minX() const { return fChunkX * 16; }
-    int maxX() const { return fChunkX * 16 + 15; }
+    int minBlockX() const { return fChunkX * 16; }
+    int maxBlockX() const { return fChunkX * 16 + 15; }
 
-    int minZ() const { return fChunkZ * 16; }
-    int maxZ() const { return fChunkZ * 16 + 15; }
+    int minBlockZ() const { return fChunkZ * 16; }
+    int maxBlockZ() const { return fChunkZ * 16 + 15; }
 
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const& root) {
         auto sectionsTag = root->query("/Level/Sections")->asList();
@@ -993,19 +996,15 @@ public:
     std::shared_ptr<ChunkSection> fSections[16];
 };
 
+namespace detail {
 
 class ChunkDataSource {
 public:
     ChunkDataSource(int chunkX, int chunkZ, uint32_t timestamp, long offset, long length)
-        : fChunkX(chunkX)
-        , fChunkZ(chunkZ)
-        , fTimestamp(timestamp)
-        , fOffset(offset)
-        , fLength(length)
-    {
+            : fChunkX(chunkX), fChunkZ(chunkZ), fTimestamp(timestamp), fOffset(offset), fLength(length) {
     }
 
-    bool load(StreamReader& reader, std::function<void(Chunk const& chunk)> callback) const {
+    bool load(StreamReader &reader, std::function<void(Chunk const &chunk)> callback) const {
         if (!reader.valid()) {
             return false;
         }
@@ -1049,6 +1048,8 @@ public:
     long const fLength;
 };
 
+} // namespace detail
+
 
 class Region {
 public:
@@ -1058,8 +1059,8 @@ public:
     using LoadChunkCallback = std::function<bool(Chunk const&)>;
 
     bool loadAllChunks(LoadChunkCallback callback) {
-        auto fs = std::make_shared<FileStream>(fFilePath);
-        StreamReader sr(fs);
+        auto fs = std::make_shared<detail::FileStream>(fFilePath);
+        detail::StreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
                 if (loadChunkImpl(x, z, callback)) {
@@ -1074,8 +1075,8 @@ public:
         if (regionX < 0 || 32 <= regionX || regionZ < 0 || 32 <= regionZ) {
             return false;
         }
-        auto fs = std::make_shared<FileStream>(fFilePath);
-        StreamReader sr(fs);
+        auto fs = std::make_shared<detail::FileStream>(fFilePath);
+        detail::StreamReader sr(fs);
         return loadChunkImpl(regionX, regionZ, callback);
     }
 
@@ -1096,7 +1097,7 @@ public:
             basename = filePath.substr(pos + 1);
         }
 
-        std::vector<std::string> tokens = String::Split(basename, '.');
+        std::vector<std::string> tokens = detail::String::Split(basename, '.');
         if (tokens.size() != 4) {
             return nullptr;
         }
@@ -1115,10 +1116,10 @@ public:
         return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
 
-    int minX() const { return fX * 32 * 16; }
-    int maxX() const { return (fX + 1) * 32 * 16 - 1; }
-    int minZ() const { return fZ * 32 * 16; }
-    int maxZ() const { return (fZ + 1) * 32 * 16 - 1; }
+    int minBlockX() const { return fX * 32 * 16; }
+    int maxBlockX() const { return (fX + 1) * 32 * 16 - 1; }
+    int minBlockZ() const { return fZ * 32 * 16; }
+    int maxBlockZ() const { return (fZ + 1) * 32 * 16 - 1; }
 
 private:
     Region(std::string const& filePath, int x, int z)
@@ -1129,8 +1130,8 @@ private:
     }
 
     bool loadChunkImpl(int regionX, int regionZ, LoadChunkCallback callback) {
-        auto fs = std::make_shared<FileStream>(fFilePath);
-        StreamReader sr(fs);
+        auto fs = std::make_shared<detail::FileStream>(fFilePath);
+        detail::StreamReader sr(fs);
         int const index = (regionX & 31) + (regionZ & 31) * 32;
         if (!sr.valid()) {
             return false;
@@ -1164,7 +1165,7 @@ private:
 
         int const chunkX = this->fX * 32 + regionX;
         int const chunkZ = this->fZ * 32 + regionZ;
-        ChunkDataSource data(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
+        detail::ChunkDataSource data(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
         if (data.load(sr, callback)) {
             return false;
         }
@@ -1212,8 +1213,8 @@ public:
                 }
                 return region->loadAllChunks([=](Chunk const& chunk) {
                     for (int y = 0; y < 256; y++) {
-                        for (int z = std::max(minZ, chunk.minZ()); z <= std::min(maxZ, chunk.maxZ()); z++) {
-                            for (int x = std::max(minX, chunk.minX()); x <= std::min(maxX, chunk.maxX()); x++) {
+                        for (int z = std::max(minZ, chunk.minBlockZ()); z <= std::min(maxZ, chunk.maxBlockZ()); z++) {
+                            for (int x = std::max(minX, chunk.minBlockX()); x <= std::min(maxX, chunk.maxBlockX()); x++) {
                                 auto block = chunk.blockAt(x, y, z);
                                 if (!callback(x, y, z, block)) {
                                     return false;

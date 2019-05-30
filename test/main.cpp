@@ -323,10 +323,10 @@ int main(int argc, char *argv[]) {
                 continue;
             }
             futures.emplace_back(q.enqueue([minX, maxX, minZ, maxZ](shared_ptr<Region> region) {
-                int const x0 = std::min(std::max(region->minX(), minX), maxX);
-                int const z0 = std::min(std::max(region->minZ(), minZ), maxZ);
-                int const x1 = std::min(std::max(region->maxX(), minX), maxX);
-                int const z1 = std::min(std::max(region->maxZ(), minZ), maxZ);
+                int const x0 = std::min(std::max(region->minBlockX(), minX), maxX);
+                int const z0 = std::min(std::max(region->minBlockZ(), minZ), maxZ);
+                int const x1 = std::min(std::max(region->maxBlockX(), minX), maxX);
+                int const z1 = std::min(std::max(region->maxBlockZ(), minZ), maxZ);
                 QueueResult result;
                 result.fX = x0;
                 result.fZ = z0;
@@ -337,14 +337,14 @@ int main(int argc, char *argv[]) {
                 result.fPixels.resize(w * h, Color(0, 0, 0, 0));
                 result.fHeightMap.resize(w * h, 0);
 
-                region->loadAllChunks([&result, x0, z0, w](Chunk const& chunk) {
+                region->loadAllChunks([&result, x0, z0, w, minX, maxX, minZ, maxZ](Chunk const& chunk) {
                     Color const waterColor(69, 91, 211);
                     double const waterDiffusion = 0.02;
                     colormap::kbinani::Altitude altitude;
-                    int const sZ = chunk.minZ();
-                    int const eZ = chunk.maxZ();
-                    int const sX = chunk.minX();
-                    int const eX = chunk.maxX();
+                    int const sZ = std::min(std::max(chunk.minBlockZ(), minZ), maxZ);
+                    int const eZ = std::min(std::max(chunk.maxBlockZ(), minZ), maxZ);
+                    int const sX = std::min(std::max(chunk.minBlockX(), minX), maxX);
+                    int const eX = std::min(std::max(chunk.maxBlockX(), minX), maxX);
                     for (int z = sZ; z <= eZ; z++) {
                         for (int x = sX; x <= eX; x++) {
                             int waterDepth = 0;
