@@ -283,6 +283,19 @@ static set<blocks::BlockId> transparentBlocks = {
     blocks::minecraft::ladder, // Color(255, 255, 255)},
 };
 
+static float LightAt(Chunk const& chunk, int x, int y, int z) {
+    int const envLight = 8;
+    int const defaultLight = 15;
+    if (defaultLight >= 15) {
+        return 1;
+    }
+    
+    int const blockLight = std::max(0, chunk.blockLightAt(x, y, z));
+    int const skyLight = std::max(0, chunk.skyLightAt(x, y, z));
+    float const l = std::min(std::max(blockLight + envLight * (skyLight / 15.f) + defaultLight, 0.f), 15.f) / 15.f;
+    return l;
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         return 1;
@@ -309,8 +322,10 @@ int main(int argc, char *argv[]) {
     vector<future<void>> futures;
     vector<uint8_t> heightMap(width * height, 0);
     vector<Color> pixels(width * height, Color::FromFloat(0, 0, 0, 1));
+    vector<float> light(width * height, 0);
     uint8_t *heightMapPtr = heightMap.data();
     Color *pixelsPtr = pixels.data();
+    float *lightPtr = light.data();
 
     for (int regionZ = minRegionZ; regionZ <= maxRegionZ; regionZ++) {
         for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
@@ -318,8 +333,8 @@ int main(int argc, char *argv[]) {
             if (!region) {
                 continue;
             }
-            futures.emplace_back(q.enqueue([minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, width](shared_ptr<Region> region) {
-                region->loadAllChunks([minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, width](Chunk const& chunk) {
+            futures.emplace_back(q.enqueue([minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, lightPtr, width](shared_ptr<Region> region) {
+                region->loadAllChunks([minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, lightPtr, width](Chunk const& chunk) {
                     Color const waterColor(69, 91, 211);
                     float const waterDiffusion = 0.02;
                     colormap::kbinani::Altitude altitude;
@@ -339,6 +354,10 @@ int main(int argc, char *argv[]) {
                                     continue;
                                 }
                                 if (block == blocks::minecraft::water || block == blocks::minecraft::bubble_column) {
+                                    if (waterDepth == 0) {
+                                        int const idx = (z - minZ) * width + (x - minX);
+                                        lightPtr[idx] = LightAt(chunk, x, y + 1, z);
+                                    }
                                     waterDepth++;
                                     continue;
                                 }
@@ -355,6 +374,7 @@ int main(int argc, char *argv[]) {
                                     cerr << "Unknown block: " << block << endl;
                                 } else {
                                     int const idx = (z - minZ) * width + (x - minX);
+
                                     Color const opaqeBlockColor = it->second;
                                     Color color(0, 0, 0, 0);
                                     if (waterDepth > 0) {
@@ -365,9 +385,11 @@ int main(int argc, char *argv[]) {
                                         auto c = altitude.getColor(v);
                                         color = Color::FromFloat(c.r, c.g, c.b, 1);
                                         heightMapPtr[idx] = y;
+                                        lightPtr[idx] = LightAt(chunk, x, y + 1, z);
                                     } else {
                                         color = opaqeBlockColor;
                                         heightMapPtr[idx] = y;
+                                        lightPtr[idx] = LightAt(chunk, x, y + 1, z);
                                     }
                                     pixelsPtr[idx] = Color::Add(color, translucentBlock.withAlphaComponent(0.2));
                                     break;
@@ -466,16 +488,17 @@ int main(int argc, char *argv[]) {
                 HSV hsv = color.toHSV();
                 hsv.fV = hsv.fV * coeff;
                 Color cc = Color::FromHSV(hsv);
-                img[idx] = cc.color();
+                color = cc;
             } else if (score < 0) {
                 float coeff = 0.8;
                 HSV hsv = color.toHSV();
                 hsv.fV = hsv.fV * coeff;
                 Color cc = Color::FromHSV(hsv);
-                img[idx] = cc.color();
-            } else {
-                img[idx] = color.color();
+                color = cc;
             }
+
+            float const l = light[idx];
+            img[idx] = Color::FromFloat(color.fR, color.fG, color.fB, color.fA * l).color();
         }
     }
 
