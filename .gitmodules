@@ -1,9 +1,9 @@
-[submodule "test/ext/svpng"]
-	path = test/ext/svpng
+[submodule "example/ext/svpng"]
+	path = example/ext/svpng
 	url = git@github.com:miloyip/svpng.git
-[submodule "test/ext/hwm.task"]
-	path = test/ext/hwm.task
+[submodule "example/ext/hwm.task"]
+	path = example/ext/hwm.task
 	url = git@github.com:hotwatermorning/hwm.task.git
-[submodule "test/ext/colormap-shaders"]
-	path = test/ext/colormap-shaders
+[submodule "example/ext/colormap-shaders"]
+	path = example/ext/colormap-shaders
 	url = git@github.com:kbinani/colormap-shaders.git
