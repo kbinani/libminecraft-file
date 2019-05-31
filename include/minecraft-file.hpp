@@ -2726,7 +2726,7 @@ public:
             return nullptr;
         }
         int const sectionY = y / 16;
-        auto section = fSections[sectionY];
+        auto const& section = fSections[sectionY];
         if (!section) {
             return nullptr;
         }
@@ -2746,7 +2746,7 @@ public:
             return blocks::unknown;
         }
         int const sectionY = y / 16;
-        auto section = fSections[sectionY];
+        auto const& section = fSections[sectionY];
         if (!section) {
             return blocks::unknown;
         }
