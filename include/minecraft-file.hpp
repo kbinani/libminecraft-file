@@ -2636,6 +2636,20 @@ public:
         return fBlockIdPalette[index];
     }
 
+    bool blockIdWithYOffset(int offsetY, std::function<bool(int offsetX, int offsetZ, blocks::BlockId blockId)> callback) const {
+        if (offsetY < 0 || 16 <= offsetY) {
+            return false;
+        }
+        return eachPaletteIndexWithY(offsetY, [this, callback](int offsetX, int offsetZ, int index) {
+            if (index < 0 || fBlockIdPalette.size() <= index) {
+                if (!callback(offsetX, offsetZ, blocks::unknown)) {
+                    return false;
+                }
+            }
+            return callback(offsetX, offsetZ, fBlockIdPalette[index]);
+        });
+    }
+
     static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const* section) {
         auto yTag = section->query("Y")->asByte();
         if (!yTag) {
@@ -2748,6 +2762,52 @@ private:
         }
 
         return (int)paletteIndex;
+    }
+
+    bool eachPaletteIndexWithY(int offsetY, std::function<bool(int offsetX, int offsetZ, int paletteIndex)> callback) const {
+        size_t const numBits = fBlockStates.size() * 64;
+        if (numBits % 4096 != 0) {
+            return false;
+        }
+        size_t const bitsPerIndex = numBits >> 12;
+        int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
+
+        size_t index = (size_t)offsetY * 16 * 16;
+        size_t bitIndex = index * index * bitsPerIndex;
+        size_t uint64Index = bitIndex / 64;
+        uint64_t v0 = uint64Index < fBlockStates.size() ? *(uint64_t *)(fBlockStates.data() + uint64Index) : 0;
+        uint64_t v1 = (uint64Index + 1) < fBlockStates.size() ? *(uint64_t *)(fBlockStates.data() + uint64Index + 1) : 0;
+        size_t v0Remaining = 64;
+        size_t v1Remaining = 64;
+
+        for (int offsetZ = 0; offsetZ < 16; offsetZ++) {
+            for (int offsetX = 0; offsetX < 16; offsetX++) {
+                assert(v0Remaining > 0 && v1Remaining > 0);
+                uint64_t paletteIndex = v0 & mask;
+                int const v0Bits = std::min(v0Remaining, bitsPerIndex);
+                int const v1Bits = bitsPerIndex - v0Bits;
+                v0Remaining -= v0Bits;
+                if (v1Bits == 0) {
+                    v0 >>= v0Bits;
+                } else {
+                    assert(v0Remaining == 0);
+                    paletteIndex |= (v1 << v0Bits) & mask;
+                    v1 >>= v1Bits;
+                    v1Remaining -= v1Bits;
+                    v0 = v1;
+                    v0Remaining = v1Remaining;
+                    uint64Index++;
+                    v1 = (uint64Index + 1) < fBlockStates.size() ? *(uint64_t *)(fBlockStates.data() + uint64Index + 1) : 0;
+                    v1Remaining = 64;
+                }
+                if (!callback(offsetX, offsetZ, paletteIndex)) {
+                    return false;
+                }
+                index++;
+            }
+        }
+
+        return true;
     }
 
 public:
