@@ -2953,8 +2953,8 @@ public:
     int minBlockZ() const { return fChunkZ * 16; }
     int maxBlockZ() const { return fChunkZ * 16 + 15; }
 
-    static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const& root) {
-        auto sectionsTag = root->query("/Level/Sections")->asList();
+    static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, nbt::CompoundTag const& root) {
+        auto sectionsTag = root.query("/Level/Sections")->asList();
         if (!sectionsTag) {
             return nullptr;
         }
@@ -3024,7 +3024,7 @@ public:
         if (!root->valid()) {
             return false;
         }
-        auto chunk = Chunk::MakeChunk(fChunkX, fChunkZ, root);
+        auto chunk = Chunk::MakeChunk(fChunkX, fChunkZ, *root);
         if (!chunk) {
             return false;
         }
