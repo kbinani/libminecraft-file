@@ -2628,6 +2628,30 @@ public:
         return fPalette[index];
     }
 
+    uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const {
+        int const index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (index < 0) {
+            return 0;
+        }
+        int const bitIndex = index * 4;
+        int const byteIndex = bitIndex / 8;
+        int const bitOffset = bitIndex - 8 * byteIndex;
+        uint8_t const v = fBlockLight[byteIndex];
+        return (v >> bitOffset) & 0xF;
+    }
+
+    uint8_t skyLightAt(int offsetX, int offsetY, int offsetZ) const {
+        int const index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (index < 0) {
+            return 0;
+        }
+        int const bitIndex = index * 4;
+        int const byteIndex = bitIndex / 8;
+        int const bitOffset = bitIndex - 8 * byteIndex;
+        uint8_t const v = fSkyLight[byteIndex];
+        return (v >> bitOffset) & 0xF;
+    }
+
     blocks::BlockId blockIdAt(int offsetX, int offsetY, int offsetZ) const {
         int const index = paletteIndex(offsetX, offsetY, offsetZ);
         if (index < 0) {
@@ -2699,18 +2723,32 @@ public:
             return nullptr;
         }
 
+        auto blockLightTag = section->query("BlockLight")->asByteArray();
+        if (!blockLightTag) {
+            return nullptr;
+        }
+        
+        auto skyLightTag = section->query("SkyLight")->asByteArray();
+        if (!skyLightTag) {
+            return nullptr;
+        }
+
         return std::shared_ptr<ChunkSection>(new ChunkSection((int)yTag->fValue,
                                                               palette,
                                                               blockIdPalette,
-                                                              blockStatesTag->value()));
+                                                              blockStatesTag->value(),
+                                                              blockLightTag->value(),
+                                                              skyLightTag->value()));
     }
 
 private:
-    ChunkSection(int y, std::vector<std::shared_ptr<Block>> const& palette, std::vector<blocks::BlockId> const& blockIdPalette, std::vector<int64_t> const& blockStates)
+    ChunkSection(int y, std::vector<std::shared_ptr<Block>> const& palette, std::vector<blocks::BlockId> const& blockIdPalette, std::vector<int64_t> const& blockStates, std::vector<uint8_t> const& blockLight, std::vector<uint8_t> const& skyLight)
         : fY(y)
         , fPalette(palette)
         , fBlockIdPalette(blockIdPalette)
         , fBlockStates(blockStates)
+        , fBlockLight(blockLight)
+        , fSkyLight(skyLight)
     {
     }
 
@@ -2810,11 +2848,20 @@ private:
         return true;
     }
 
+    static int BlockIndex(int offsetX, int offsetY, int offsetZ) {
+        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
+            return -1;
+        }
+        return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
+    }
+
 public:
     int const fY;
     std::vector<std::shared_ptr<Block>> const fPalette;
     std::vector<blocks::BlockId> const fBlockIdPalette;
     std::vector<int64_t> const fBlockStates;
+    std::vector<uint8_t> fBlockLight;
+    std::vector<uint8_t> fSkyLight;
 };
 
 
@@ -2858,6 +2905,46 @@ public:
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - sectionY * 16;
         return section->blockIdAt(offsetX, offsetY, offsetZ);
+    }
+
+    int blockLightAt(int x, int y, int z) const {
+        int const chunkX = Coordinate::ChunkFromBlock(x);
+        int const chunkZ = Coordinate::ChunkFromBlock(z);
+        if (chunkX != fChunkX || chunkZ != fChunkZ) {
+            return 0;
+        }
+        if (y < 0 || 256 <= y) {
+            return -1;
+        }
+        int const sectionY = y / 16;
+        auto const& section = fSections[sectionY];
+        if (!section) {
+            return -1;
+        }
+        int const offsetX = x - chunkX * 16;
+        int const offsetZ = z - chunkZ * 16;
+        int const offsetY = y - sectionY * 16;
+        return section->blockLightAt(offsetX, offsetY, offsetZ);
+    }
+
+    int skyLightAt(int x, int y, int z) const {
+        int const chunkX = Coordinate::ChunkFromBlock(x);
+        int const chunkZ = Coordinate::ChunkFromBlock(z);
+        if (chunkX != fChunkX || chunkZ != fChunkZ) {
+            return 0;
+        }
+        if (y < 0 || 256 <= y) {
+            return -1;
+        }
+        int const sectionY = y / 16;
+        auto const& section = fSections[sectionY];
+        if (!section) {
+            return -1;
+        }
+        int const offsetX = x - chunkX * 16;
+        int const offsetZ = z - chunkZ * 16;
+        int const offsetY = y - sectionY * 16;
+        return section->skyLightAt(offsetX, offsetY, offsetZ);
     }
 
     int minBlockX() const { return fChunkX * 16; }
