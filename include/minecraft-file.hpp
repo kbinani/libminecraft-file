@@ -238,6 +238,11 @@ public:
         return fStream->read(buffer.data(), sizeof(uint8_t), count);
     }
 
+    template<typename T>
+    bool copy(std::vector<T>& buffer) {
+        return fStream->read(buffer.data(), sizeof(T), buffer.size());
+    }
+
     bool read(std::string &s) {
         uint16_t length;
         if (!read(&length)) {
@@ -265,6 +270,30 @@ public:
             return 0;
         }
         return fStream->pos();
+    }
+
+    static uint64_t Int64FromBE(uint64_t v) {
+#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
+        return v;
+#else
+        return SwapInt64(v);
+#endif
+    }
+
+    static uint32_t Int32FromBE(uint32_t v) {
+#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
+        return v;
+#else
+        return SwapInt32(v);
+#endif
+    }
+
+    static uint16_t Int16FromBE(uint16_t v) {
+#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
+        return v;
+#else
+        return SwapInt16(v);
+#endif
     }
 
 private:
@@ -298,30 +327,6 @@ private:
         r = v << 8;
         r |= (v & 0xFF00) >> 8;
         return r;
-    }
-
-    static uint64_t Int64FromBE(uint64_t v) {
-#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-        return v;
-#else
-        return SwapInt64(v);
-#endif
-    }
-
-    static uint32_t Int32FromBE(uint32_t v) {
-#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-        return v;
-#else
-        return SwapInt32(v);
-#endif
-    }
-
-    static uint16_t Int16FromBE(uint16_t v) {
-#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-        return v;
-#else
-        return SwapInt16(v);
-#endif
     }
 
 private:
@@ -590,31 +595,70 @@ namespace detail {
 template<typename T, uint8_t ID>
 class VectorTag : public Tag {
 public:
+    VectorTag()
+        : Tag()
+        , fPrepared(false)
+    {
+    }
+
     bool readImpl(::mcfile::detail::StreamReader& r) override {
         uint32_t length;
         if (!r.read(&length)) {
             return false;
         }
         fValue.resize(length);
-        for (uint32_t i = 0; i < length; i++) {
-            if (!r.read(fValue.data() + i)) {
-                return false;
-            }
+        if (!r.copy(fValue)) {
+            return false;
         }
         return true;
     }
 
     uint8_t id() const override { return ID; }
 
-public:
-    std::vector<T> fValue;
+    std::vector<T> const& value() const {
+        if (!fPrepared) {
+            for (size_t i = 0; i < fValue.size(); i++) {
+                fValue[i] = convert(fValue[i]);
+            }
+            fPrepared = true;
+        }
+        return fValue;
+    }
+
+protected:
+    virtual T convert(T v) const = 0;
+
+private:
+    std::vector<T> mutable fValue;
+    bool mutable fPrepared = false;
 };
 
 }
 
-class ByteArrayTag : public detail::VectorTag<uint8_t, Tag::TAG_Byte_Array> {};
-class IntArrayTag : public detail::VectorTag<int32_t, Tag::TAG_Int_Array> {};
-class LongArrayTag : public detail::VectorTag<int64_t, Tag::TAG_Long_Array> {};
+class ByteArrayTag : public detail::VectorTag<uint8_t, Tag::TAG_Byte_Array> {
+private:
+    uint8_t convert(uint8_t v) const override { return v; }
+};
+
+
+class IntArrayTag : public detail::VectorTag<int32_t, Tag::TAG_Int_Array> {
+private:
+    int32_t convert(int32_t v) const override {
+        uint32_t t = *(uint32_t *)&v;
+        t = ::mcfile::detail::StreamReader::Int32FromBE(t);
+        return *(int32_t *)&t;
+    }
+};
+
+
+class LongArrayTag : public detail::VectorTag<int64_t, Tag::TAG_Long_Array> {
+private:
+    int64_t convert(int64_t v) const override {
+        uint64_t t = *(uint64_t *)&v;
+        t = ::mcfile::detail::StreamReader::Int64FromBE(t);
+        return *(int64_t *)&t;
+    }
+};
 
 
 class StringTag : public Tag {
@@ -2644,7 +2688,7 @@ public:
         return std::shared_ptr<ChunkSection>(new ChunkSection((int)yTag->fValue,
                                                               palette,
                                                               blockIdPalette,
-                                                              blockStatesTag->fValue));
+                                                              blockStatesTag->value()));
     }
 
 private:
