@@ -7,17 +7,18 @@
 
 using namespace mcfile;
 
-TEST_CASE("Chunk") {
+TEST_CASE("Test") {
     const auto dir = Path::Dirname(__FILE__);
     std::map<Point3D, BlockData> expected;
     BlockData::ReadAll(dir + std::string("/data/1.13.2/mitomitoyapparikawaiiyo/region/r.0.0-c.0.0.csv"), expected);
 
     World world(dir + std::string("/data/1.13.2/mitomitoyapparikawaiiyo"));
 
-    SUBCASE("{blockAt,blockLightAt,skyLightAt}") {
+    SUBCASE("Chunk::{blockAt,blockLightAt,skyLightAt}") {
         auto region = world.region(0, 0);
         CHECK(region != nullptr);
-        const bool ret = region->loadChunk(0, 0, [&expected](Chunk const& chunk) {
+        bool error = false;
+        const bool ret = region->loadChunk(0, 0, error, [&expected](Chunk const& chunk) {
             CHECK(chunk.minBlockX() == 0);
             CHECK(chunk.maxBlockX() == 15);
             CHECK(chunk.minBlockZ() == 0);
@@ -47,13 +48,15 @@ TEST_CASE("Chunk") {
             }
             return true;
         });
+        CHECK(!error);
         CHECK(ret);
     }
     
-    SUBCASE("blockIdAt") {
+    SUBCASE("Chunk::blockIdAt") {
         auto region = world.region(0, 0);
         CHECK(region != nullptr);
-        auto const ret = region->loadChunk(0, 0, [&expected](Chunk const& chunk) {
+        bool error = false;
+        auto const ret = region->loadChunk(0, 0, error, [&expected](Chunk const& chunk) {
             for (int y = 0; y < 256; y++) {
                 for (int z = chunk.minBlockZ(); z <= chunk.maxBlockZ(); z++) {
                     for (int x = chunk.minBlockX(); x <= chunk.maxBlockX(); x++) {
@@ -71,6 +74,23 @@ TEST_CASE("Chunk") {
                         }
                     }
                 }
+            }
+            return true;
+        });
+        CHECK(!error);
+        CHECK(ret);
+    }
+
+    SUBCASE("World::eachBlock") {
+        auto const ret = world.eachBlock(0, 0, 15, 15, [&expected](int x, int y, int z, std::shared_ptr<Block> const& block) {
+            auto pos = MakePoint3D(x, y, z);
+            auto expectedIt = expected.find(pos);
+            assert(expectedIt != expected.end());
+            auto const& e = expectedIt->second;
+            if (block) {
+                CHECK(block->fName == e.fName);
+            } else {
+                CHECK(e.fName == "NULL");
             }
             return true;
         });

@@ -2993,7 +2993,7 @@ namespace detail {
 class ChunkDataSource {
 public:
     ChunkDataSource(int chunkX, int chunkZ, uint32_t timestamp, long offset, long length)
-            : fChunkX(chunkX), fChunkZ(chunkZ), fTimestamp(timestamp), fOffset(offset), fLength(length) {
+        : fChunkX(chunkX), fChunkZ(chunkZ), fTimestamp(timestamp), fOffset(offset), fLength(length) {
     }
 
     bool load(StreamReader &reader, std::function<void(Chunk const &chunk)> callback) const {
@@ -3050,12 +3050,12 @@ public:
 
     using LoadChunkCallback = std::function<bool(Chunk const&)>;
 
-    bool loadAllChunks(LoadChunkCallback callback) {
+    bool loadAllChunks(bool& error, LoadChunkCallback callback) {
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
-                if (loadChunkImpl(x, z, callback)) {
+                if (!loadChunkImpl(x, z, error, callback)) {
                     return false;
                 }
             }
@@ -3063,13 +3063,13 @@ public:
         return true;
     }
     
-    bool loadChunk(int regionX, int regionZ, LoadChunkCallback callback) {
+    bool loadChunk(int regionX, int regionZ, bool& error, LoadChunkCallback callback) {
         if (regionX < 0 || 32 <= regionX || regionZ < 0 || 32 <= regionZ) {
             return false;
         }
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
-        return loadChunkImpl(regionX, regionZ, callback);
+        return loadChunkImpl(regionX, regionZ, error, callback);
     }
 
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
@@ -3121,44 +3121,56 @@ private:
     {
     }
 
-    bool loadChunkImpl(int regionX, int regionZ, LoadChunkCallback callback) {
+    bool loadChunkImpl(int regionX, int regionZ, bool& error, LoadChunkCallback callback) {
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
         int const index = (regionX & 31) + (regionZ & 31) * 32;
         if (!sr.valid()) {
-            return false;
+            error = true;
+            return true;
         }
         if (!sr.seek(4 * index)) {
-            return false;
+            error = true;
+            return true;
         }
 
         uint32_t loc;
         if (!sr.read(&loc)) {
-            return false;
+            error = true;
+            return true;
         }
 
         long sectorOffset = loc >> 8;
         if (!sr.seek(kSectorSize + 4 * index)) {
-            return false;
+            error = true;
+            return true;
         }
 
         uint32_t timestamp;
         if (!sr.read(&timestamp)) {
-            return false;
+            error = true;
+            return true;
         }
 
         if (!sr.seek(sectorOffset * kSectorSize)) {
-            return false;
+            error = true;
+            return true;
         }
         uint32_t chunkSize;
         if (!sr.read(&chunkSize)) {
-            return false;
+            error = true;
+            return true;
         }
 
         int const chunkX = this->fX * 32 + regionX;
         int const chunkZ = this->fZ * 32 + regionZ;
         detail::ChunkDataSource data(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
-        return data.load(sr, callback);
+        if (data.load(sr, callback)) {
+            return true;
+        } else {
+            error = true;
+            return true;
+        }
     }
 
 public:
@@ -3185,7 +3197,7 @@ public:
         return Region::MakeRegion(fileName);
     }
 
-    bool eachBlock(int minX, int minZ, int maxX, int maxZ, std::function<bool(int x, int y, int z, std::shared_ptr<Block>)> callback) {
+    bool eachBlock(int minX, int minZ, int maxX, int maxZ, std::function<bool(int x, int y, int z, std::shared_ptr<Block>)> callback) const {
         if (minX > maxX || minZ > maxZ) {
             return false;
         }
@@ -3199,7 +3211,8 @@ public:
                 if (!region) {
                     continue;
                 }
-                return region->loadAllChunks([=](Chunk const& chunk) {
+                bool error = false;
+                return region->loadAllChunks(error, [minX, minZ, maxX, maxZ, callback](Chunk const& chunk) {
                     for (int y = 0; y < 256; y++) {
                         for (int z = std::max(minZ, chunk.minBlockZ()); z <= std::min(maxZ, chunk.maxBlockZ()); z++) {
                             for (int x = std::max(minX, chunk.minBlockX()); x <= std::min(maxX, chunk.maxBlockX()); x++) {
