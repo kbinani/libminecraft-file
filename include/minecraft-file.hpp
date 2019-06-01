@@ -3158,11 +3158,7 @@ private:
         int const chunkX = this->fX * 32 + regionX;
         int const chunkZ = this->fZ * 32 + regionZ;
         detail::ChunkDataSource data(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
-        if (data.load(sr, callback)) {
-            return false;
-        }
-
-        return true;
+        return data.load(sr, callback);
     }
 
 public:
