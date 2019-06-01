@@ -334,7 +334,8 @@ int main(int argc, char *argv[]) {
                 continue;
             }
             futures.emplace_back(q.enqueue([minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, lightPtr, width](shared_ptr<Region> region) {
-                region->loadAllChunks([minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, lightPtr, width](Chunk const& chunk) {
+                bool error = false;
+                region->loadAllChunks(error, [minX, maxX, minZ, maxZ, heightMapPtr, pixelsPtr, lightPtr, width](Chunk const& chunk) {
                     Color const waterColor(69, 91, 211);
                     float const waterDiffusion = 0.02;
                     colormap::kbinani::Altitude altitude;
