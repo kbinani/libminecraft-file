@@ -2635,6 +2635,9 @@ public:
         }
         int const bitIndex = index * 4;
         int const byteIndex = bitIndex / 8;
+        if (fBlockLight.size() <= byteIndex) {
+            return 0;
+        }
         int const bitOffset = bitIndex - 8 * byteIndex;
         uint8_t const v = fBlockLight[byteIndex];
         return (v >> bitOffset) & 0xF;
@@ -2647,6 +2650,9 @@ public:
         }
         int const bitIndex = index * 4;
         int const byteIndex = bitIndex / 8;
+        if (fSkyLight.size() <= byteIndex) {
+            return 0;
+        }
         int const bitOffset = bitIndex - 8 * byteIndex;
         uint8_t const v = fSkyLight[byteIndex];
         return (v >> bitOffset) & 0xF;
@@ -2726,22 +2732,24 @@ public:
             return nullptr;
         }
 
+        std::vector<uint8_t> blockLight;
         auto blockLightTag = section->query("BlockLight")->asByteArray();
-        if (!blockLightTag) {
-            return nullptr;
+        if (blockLightTag) {
+            blockLight = blockLightTag->value();
         }
         
+        std::vector<uint8_t> skyLight;
         auto skyLightTag = section->query("SkyLight")->asByteArray();
-        if (!skyLightTag) {
-            return nullptr;
+        if (skyLightTag) {
+            skyLight = skyLightTag->value();
         }
 
         return std::shared_ptr<ChunkSection>(new ChunkSection((int)yTag->fValue,
                                                               palette,
                                                               blockIdPalette,
                                                               blockStatesTag->value(),
-                                                              blockLightTag->value(),
-                                                              skyLightTag->value()));
+                                                              blockLight,
+                                                              skyLight));
     }
 
 private:
