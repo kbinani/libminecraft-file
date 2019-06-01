@@ -2675,6 +2675,9 @@ public:
     }
 
     static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const* section) {
+        if (!section) {
+            return nullptr;
+        }
         auto yTag = section->query("Y")->asByte();
         if (!yTag) {
             return nullptr;
@@ -2960,11 +2963,10 @@ public:
         }
         std::vector<std::shared_ptr<ChunkSection>> sections;
         for (auto sectionTag : sectionsTag->fValue) {
-            auto p = sectionTag->asCompound();
-            if (!p) {
-                return nullptr;
+            auto section = ChunkSection::MakeChunkSection(sectionTag->asCompound());
+            if (section) {
+                sections.push_back(section);
             }
-            sections.push_back(ChunkSection::MakeChunkSection(p));
         }
         return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections));
     }
