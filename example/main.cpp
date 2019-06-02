@@ -26,8 +26,12 @@ public:
     {
     }
 
-    uint32_t color() const {
+    uint32_t premultipliedColor() const {
         return ((uint32_t)0xFF << 24) | ((uint32_t)ToU8(fB * fA) << 16) | ((uint32_t)ToU8(fG * fA) << 8) | (uint32_t)ToU8(fR * fA);
+    }
+
+    uint32_t color() const {
+        return ((uint32_t)ToU8(fA) << 24) | ((uint32_t)ToU8(fB) << 16) | ((uint32_t)ToU8(fG) << 8) | (uint32_t)ToU8(fR);
     }
 
     Color diffuse(float diffusion, float distance) const {
