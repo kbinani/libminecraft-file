@@ -3235,7 +3235,7 @@ public:
 
     using LoadChunkCallback = std::function<bool(Chunk const&)>;
 
-    bool loadAllChunks(bool& error, LoadChunkCallback callback) {
+    bool loadAllChunks(bool& error, LoadChunkCallback callback) const {
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
@@ -3248,7 +3248,7 @@ public:
         return true;
     }
     
-    bool loadChunk(int regionX, int regionZ, bool& error, LoadChunkCallback callback) {
+    bool loadChunk(int regionX, int regionZ, bool& error, LoadChunkCallback callback) const {
         if (regionX < 0 || 32 <= regionX || regionZ < 0 || 32 <= regionZ) {
             return false;
         }
@@ -3306,7 +3306,7 @@ private:
     {
     }
 
-    bool loadChunkImpl(int regionX, int regionZ, bool& error, LoadChunkCallback callback) {
+    bool loadChunkImpl(int regionX, int regionZ, bool& error, LoadChunkCallback callback) const {
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
         int const index = (regionX & 31) + (regionZ & 31) * 32;
