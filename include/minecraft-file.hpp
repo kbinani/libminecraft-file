@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <zlib.h>
 #include <cstdint>
+#include <cassert>
 #include <string>
 #include <vector>
 #include <memory>
