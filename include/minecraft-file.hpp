@@ -13,6 +13,12 @@
 #include <sstream>
 #include <limits>
 
+#if defined(__APPLE__)
+#    include <libkern/OSByteOrder.h>
+#elif defined(__linux__) || defined(__CYGWIN__)
+#    include <endian.h>
+#endif
+
 namespace mcfile {
 
 namespace detail {
@@ -274,27 +280,27 @@ public:
     }
 
     static uint64_t Int64FromBE(uint64_t v) {
-#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-        return v;
-#else
-        return SwapInt64(v);
-#endif
+        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
+            return v;
+        #else
+            return SwapInt64(v);
+        #endif
     }
 
     static uint32_t Int32FromBE(uint32_t v) {
-#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-        return v;
-#else
-        return SwapInt32(v);
-#endif
+        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
+            return v;
+        #else
+            return SwapInt32(v);
+        #endif
     }
 
     static uint16_t Int16FromBE(uint16_t v) {
-#if __BYTE_ORDER == __ORDER_BIG_ENDIAN__
-        return v;
-#else
-        return SwapInt16(v);
-#endif
+        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
+            return v;
+        #else
+            return SwapInt16(v);
+        #endif
     }
 
 private:
