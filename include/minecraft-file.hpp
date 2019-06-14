@@ -3240,21 +3240,21 @@ public:
         detail::StreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
-                if (!loadChunkImpl(x, z, error, callback)) {
+                if (!loadChunkImpl(x, z, sr, error, callback)) {
                     return false;
                 }
             }
         }
         return true;
     }
-    
+
     bool loadChunk(int regionX, int regionZ, bool& error, LoadChunkCallback callback) const {
         if (regionX < 0 || 32 <= regionX || regionZ < 0 || 32 <= regionZ) {
             return false;
         }
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
-        return loadChunkImpl(regionX, regionZ, error, callback);
+        return loadChunkImpl(regionX, regionZ, sr, error, callback);
     }
 
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
@@ -3306,9 +3306,7 @@ private:
     {
     }
 
-    bool loadChunkImpl(int regionX, int regionZ, bool& error, LoadChunkCallback callback) const {
-        auto fs = std::make_shared<detail::FileStream>(fFilePath);
-        detail::StreamReader sr(fs);
+    bool loadChunkImpl(int regionX, int regionZ, detail::StreamReader& sr, bool& error, LoadChunkCallback callback) const {
         int const index = (regionX & 31) + (regionZ & 31) * 32;
         if (!sr.valid()) {
             error = true;
