@@ -2798,6 +2798,184 @@ public:
     std::map<std::string, std::string> const fProperties;
 };
 
+namespace biomes {
+
+using BiomeId = uint16_t;
+
+enum : BiomeId {
+    unknown = 0,
+};
+
+namespace minecraft {
+
+enum : BiomeId {
+    ocean = 1,
+    plains,
+    desert,
+    mountains,
+    forest,
+    taiga,
+    swamp,
+    river,
+    nether,
+    the_end,
+    frozen_ocean,
+    frozen_river,
+    snowy_tundra,
+    snowy_mountains,
+    mushroom_fields,
+    mushroom_field_shore,
+    beach,
+    desert_hills,
+    wooded_hills,
+    taiga_hills,
+    mountain_edge,
+    jungle,
+    jungle_hills,
+    jungle_edge,
+    deep_ocean,
+    stone_shore,
+    snowy_beach,
+    birch_forest,
+    birch_forest_hills,
+    dark_forest,
+    snowy_taiga,
+    snowy_taiga_hills,
+    giant_tree_taiga,
+    giant_tree_taiga_hills,
+    wooded_mountains,
+    savanna,
+    savanna_plateau,
+    badlands,
+    wooded_badlands_plateau,
+    badlands_plateau,
+    small_end_islands,
+    end_midlands,
+    end_highlands,
+    end_barrens,
+    warm_ocean,
+    lukewarm_ocean,
+    cold_ocean,
+    deep_warm_ocean,
+    deep_lukewarm_ocean,
+    deep_cold_ocean,
+    deep_frozen_ocean,
+    the_void,
+    sunflower_plains,
+    desert_lakes,
+    gravelly_mountains,
+    flower_forest,
+    taiga_mountains,
+    swamp_hills,
+    ice_spikes,
+    modified_jungle,
+    modified_jungle_edge,
+    tall_birch_forest,
+    tall_birch_hills,
+    dark_forest_hills,
+    snowy_taiga_mountains,
+    giant_spruce_taiga,
+    giant_spruce_taiga_hills,
+    modified_gravelly_mountains,
+    shattered_savanna,
+    shattered_savanna_plateau,
+    eroded_badlands,
+    modified_wooded_badlands_plateau,
+    modified_badlands_plateau,
+    bamboo_jungle,
+    bamboo_jungle_hills,
+
+    minecraft_max_biome_id,
+};
+
+} // namespace minecraft
+
+static inline BiomeId FromInt(int v) {
+    static std::map<int, BiomeId> const mapping = {
+        {0, minecraft::ocean},
+        {1, minecraft::plains},
+        {2, minecraft::desert},
+        {3, minecraft::mountains},
+        {4, minecraft::forest},
+        {5, minecraft::taiga},
+        {6, minecraft::swamp},
+        {7, minecraft::river},
+        {8, minecraft::nether},
+        {9, minecraft::the_end},
+        {10, minecraft::frozen_ocean},
+        {11, minecraft::frozen_river},
+        {12, minecraft::snowy_tundra},
+        {13, minecraft::snowy_mountains},
+        {14, minecraft::mushroom_fields},
+        {15, minecraft::mushroom_field_shore},
+        {16, minecraft::beach},
+        {17, minecraft::desert_hills},
+        {18, minecraft::wooded_hills},
+        {19, minecraft::taiga_hills},
+        {20, minecraft::mountain_edge},
+        {21, minecraft::jungle},
+        {22, minecraft::jungle_hills},
+        {23, minecraft::jungle_edge},
+        {24, minecraft::deep_ocean},
+        {25, minecraft::stone_shore},
+        {26, minecraft::snowy_beach},
+        {27, minecraft::birch_forest},
+        {28, minecraft::birch_forest_hills},
+        {29, minecraft::dark_forest},
+        {30, minecraft::snowy_taiga},
+        {31, minecraft::snowy_taiga_hills},
+        {32, minecraft::giant_tree_taiga},
+        {33, minecraft::giant_tree_taiga_hills},
+        {34, minecraft::wooded_mountains},
+        {35, minecraft::savanna},
+        {36, minecraft::savanna_plateau},
+        {37, minecraft::badlands},
+        {38, minecraft::wooded_badlands_plateau},
+        {39, minecraft::badlands_plateau},
+        {40, minecraft::small_end_islands},
+        {41, minecraft::end_midlands},
+        {42, minecraft::end_highlands},
+        {43, minecraft::end_barrens},
+        {44, minecraft::warm_ocean},
+        {45, minecraft::lukewarm_ocean},
+        {46, minecraft::cold_ocean},
+        {47, minecraft::deep_warm_ocean},
+        {48, minecraft::deep_lukewarm_ocean},
+        {49, minecraft::deep_cold_ocean},
+        {50, minecraft::deep_frozen_ocean},
+        {127, minecraft::the_void},
+        {129, minecraft::sunflower_plains},
+        {130, minecraft::desert_lakes},
+        {131, minecraft::gravelly_mountains},
+        {132, minecraft::flower_forest},
+        {133, minecraft::taiga_mountains},
+        {134, minecraft::swamp_hills},
+        {140, minecraft::ice_spikes},
+        {149, minecraft::modified_jungle},
+        {151, minecraft::modified_jungle_edge},
+        {155, minecraft::tall_birch_forest},
+        {156, minecraft::tall_birch_hills},
+        {157, minecraft::dark_forest_hills},
+        {158, minecraft::snowy_taiga_mountains},
+        {160, minecraft::giant_spruce_taiga},
+        {161, minecraft::giant_spruce_taiga_hills},
+        {162, minecraft::modified_gravelly_mountains},
+        {163, minecraft::shattered_savanna},
+        {164, minecraft::shattered_savanna_plateau},
+        {165, minecraft::eroded_badlands},
+        {166, minecraft::modified_wooded_badlands_plateau},
+        {167, minecraft::modified_badlands_plateau},
+        {168, minecraft::bamboo_jungle},
+        {169, minecraft::bamboo_jungle_hills},
+    };
+    auto mappingIt = mapping.find(v);
+    if (mappingIt == mapping.end()) {
+        return unknown;
+    }
+    return mappingIt->second;
+}
+
+} // namespace biomes
 
 class ChunkSection {
 public:
@@ -2918,7 +3096,7 @@ public:
         if (blockLightTag) {
             blockLight = blockLightTag->value();
         }
-        
+
         std::vector<uint8_t> skyLight;
         auto skyLightTag = section->query("SkyLight")->asByteArray();
         if (skyLightTag) {
@@ -3139,6 +3317,21 @@ public:
         return section->skyLightAt(offsetX, offsetY, offsetZ);
     }
 
+    biomes::BiomeId biomeAt(int x, int z) const {
+        int const offsetX = x - fChunkX * 16;
+        int const offsetZ = z - fChunkZ * 16;
+
+        if (offsetX < 0 || 16 <= offsetX || offsetZ < 0 || 16 <= offsetZ) {
+            return biomes::unknown;
+        }
+        int const index = offsetZ * 16 + offsetX;
+        if (index < fBiomes.size()) {
+            return fBiomes[index];
+        } else {
+            return biomes::unknown;
+        }
+    }
+
     int minBlockX() const { return fChunkX * 16; }
     int maxBlockX() const { return fChunkX * 16 + 15; }
 
@@ -3157,11 +3350,24 @@ public:
                 sections.push_back(section);
             }
         }
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections));
+
+        std::vector<biomes::BiomeId> biomes;
+        auto biomesTag = root.query("/Level/Biomes")->asIntArray();
+        if (biomesTag) {
+            std::vector<int32_t> const& value = biomesTag->value();
+            if (value.size() == 256) {
+                biomes.resize(256);
+                for (int i = 0; i < 256; i++) {
+                    biomes[i] = biomes::FromInt(value[i]);
+                }
+            }
+        }
+
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, biomes));
     }
 
 private:
-    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections)
+    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, std::vector<biomes::BiomeId> & biomes)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
     {
@@ -3171,12 +3377,14 @@ private:
                 fSections[y] = section;
             }
         }
+        fBiomes.swap(biomes);
     }
 
 public:
     int const fChunkX;
     int const fChunkZ;
     std::shared_ptr<ChunkSection> fSections[16];
+    std::vector<biomes::BiomeId> fBiomes;
 };
 
 namespace detail {
