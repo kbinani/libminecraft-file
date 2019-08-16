@@ -3899,7 +3899,14 @@ private:
                 id = blocks::minecraft::purpur_slab;
                 properties["type"] = "double";
                 break;
-            case 205: id = blocks::minecraft::purpur_slab; break; // top/bottom?
+            case 205:
+                id = blocks::minecraft::purpur_slab;
+                if (data == 8) {
+                    properties["type"] = "top";
+                } else {
+                    properties["type"] = "bottom";
+                }
+                break;
             case 206: id = blocks::minecraft::end_stone_bricks; break;
             case 207: id = blocks::minecraft::beetroots; break;
             case 208: id = blocks::minecraft::grass_path; break;
