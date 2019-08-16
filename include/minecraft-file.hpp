@@ -4374,7 +4374,7 @@ public:
 
         std::vector<biomes::BiomeId> biomes;
         auto biomesTag = root.query("/Level/Biomes");
-        parseBiomes(biomesTag, biomes);
+        ParseBiomes(biomesTag, biomes);
 
         return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, biomes));
     }
@@ -4393,7 +4393,7 @@ private:
         fBiomes.swap(biomes);
     }
 
-    static void parseBiomes(nbt::Tag const* biomesTag, std::vector<biomes::BiomeId> &result) {
+    static void ParseBiomes(nbt::Tag const* biomesTag, std::vector<biomes::BiomeId> &result) {
         if (!biomesTag) {
             return;
         }
