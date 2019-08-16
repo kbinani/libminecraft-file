@@ -4373,16 +4373,8 @@ public:
         }
 
         std::vector<biomes::BiomeId> biomes;
-        auto biomesTag = root.query("/Level/Biomes")->asIntArray();
-        if (biomesTag) {
-            std::vector<int32_t> const& value = biomesTag->value();
-            if (value.size() == 256) {
-                biomes.resize(256);
-                for (int i = 0; i < 256; i++) {
-                    biomes[i] = biomes::FromInt(value[i]);
-                }
-            }
-        }
+        auto biomesTag = root.query("/Level/Biomes");
+        parseBiomes(biomesTag, biomes);
 
         return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, biomes));
     }
@@ -4399,6 +4391,29 @@ private:
             }
         }
         fBiomes.swap(biomes);
+    }
+
+    static void parseBiomes(nbt::Tag const* biomesTag, std::vector<biomes::BiomeId> &result) {
+        if (!biomesTag) {
+            return;
+        }
+        if (biomesTag->id() == nbt::Tag::TAG_Int_Array) {
+            std::vector<int32_t> const& value = biomesTag->asIntArray()->value();
+            if (value.size() == 256) {
+                result.resize(256);
+                for (int i = 0; i < 256; i++) {
+                    result[i] = biomes::FromInt(value[i]);
+                }
+            }
+        } else if (biomesTag->id() == nbt::Tag::TAG_Byte_Array) {
+            std::vector<uint8_t> const& value = biomesTag->asByteArray()->value();
+            if (value.size() == 256) {
+                result.resize(256);
+                for (int i = 0; i < 256; i++) {
+                    result[i] = biomes::FromInt(value[i]);
+                }
+            }
+        }
     }
 
 public:
