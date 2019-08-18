@@ -4355,11 +4355,12 @@ public:
     int maxBlockZ() const { return fChunkZ * 16 + 15; }
 
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, nbt::CompoundTag const& root) {
+        int dataVersion = 0;
         auto dataVersionTag = root.query("/DataVersion")->asInt();
-        if (!dataVersionTag) {
-            return nullptr;
+        if (dataVersionTag) {
+            // *.mca created by Minecraft 1.2.1 does not have /DataVersion tag
+            dataVersion = dataVersionTag->fValue;
         }
-        int const dataVersion = dataVersionTag->fValue;
         auto sectionsTag = root.query("/Level/Sections")->asList();
         if (!sectionsTag) {
             return nullptr;
