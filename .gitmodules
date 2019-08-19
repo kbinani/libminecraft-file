@@ -1,12 +1,12 @@
 [submodule "example/ext/svpng"]
 	path = example/ext/svpng
-	url = git@github.com:miloyip/svpng.git
+	url = https://github.com:miloyip/svpng.git
 [submodule "example/ext/hwm.task"]
 	path = example/ext/hwm.task
-	url = git@github.com:hotwatermorning/hwm.task.git
+	url = https://github.com:hotwatermorning/hwm.task.git
 [submodule "example/ext/colormap-shaders"]
 	path = example/ext/colormap-shaders
-	url = git@github.com:kbinani/colormap-shaders.git
+	url = https://github.com:kbinani/colormap-shaders.git
 [submodule "test/ext/doctest"]
 	path = test/ext/doctest
-	url = git@github.com:onqtam/doctest.git
+	url = https://github.com:onqtam/doctest.git
