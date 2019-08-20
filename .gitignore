@@ -5,3 +5,4 @@ CMakeScripts
 CMakeCache.txt
 cmake_install.cmake
 Debug
+/html

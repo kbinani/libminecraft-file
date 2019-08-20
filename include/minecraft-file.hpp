@@ -1,5 +1,7 @@
 #pragma once
 
+/// @file
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <zlib.h>
@@ -856,6 +858,8 @@ public:
 
 namespace blocks {
 
+/// @typedef BlockId
+/// @brief BlockId
 using BlockId = uint32_t;
 
 enum : BlockId {
@@ -2961,6 +2965,8 @@ public:
 
 namespace biomes {
 
+/// @typedef BiomeId
+/// @brief BiomeId
 using BiomeId = uint16_t;
 
 enum : BiomeId {
