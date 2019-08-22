@@ -475,7 +475,7 @@ public:
     Tag(Tag const&) = delete;
     Tag& operator = (Tag const&) = delete;
 
-    void read(detail::StreamReader& reader) {
+    void read(::mcfile::detail::StreamReader& reader) {
         fValid = readImpl(reader);
     }
 
@@ -500,7 +500,7 @@ public:
     LongArrayTag const* asLongArray() const { return this->id() == TAG_Long_Array ? reinterpret_cast<LongArrayTag const*>(this) : nullptr; }
 
 protected:
-    virtual bool readImpl(detail::StreamReader& reader) = 0;
+    virtual bool readImpl(::mcfile::detail::StreamReader& reader) = 0;
 
 public:
     static uint8_t const TAG_End = 0;
@@ -527,7 +527,7 @@ private:
 
 class EndTag : public Tag {
 public:
-    bool readImpl(detail::StreamReader&) override { return true; }
+    bool readImpl(::mcfile::detail::StreamReader&) override { return true; }
     uint8_t id() const override { return TAG_End; }
 
     static EndTag const* instance() {
@@ -556,7 +556,7 @@ public:
     T fValue;
 };
 
-}
+} // namespace detail
 
 class ByteTag : public detail::ScalarTag<uint8_t, Tag::TAG_Byte> {};
 class ShortTag : public detail::ScalarTag<int16_t, Tag::TAG_Short> {};
@@ -642,7 +642,7 @@ private:
     bool mutable fPrepared = false;
 };
 
-}
+} // namespace detail
 
 class ByteArrayTag : public detail::VectorTag<uint8_t, Tag::TAG_Byte_Array> {
 private:
