@@ -4625,7 +4625,21 @@ public:
         fclose(fp);
         return true;
     }
-
+    
+    bool chunkExists(int chunkX, int chunkZ) const {
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
+        if (localChunkX < 0 || 32 <= localChunkX) {
+            return false;
+        }
+        if (localChunkZ < 0 || 32 <= localChunkZ) {
+            return false;
+        }
+        auto fs = std::make_shared<detail::FileStream>(fFilePath);
+        detail::StreamReader sr(fs);
+        return dataSource(localChunkX, localChunkZ, sr) != nullptr;
+    }
+    
 private:
     Region(std::string const& filePath, int x, int z)
         : fX(x)
@@ -4634,49 +4648,50 @@ private:
     {
     }
 
-    bool loadChunkImpl(int regionX, int regionZ, detail::StreamReader& sr, bool& error, LoadChunkCallback callback) const {
-        int const index = (regionX & 31) + (regionZ & 31) * 32;
+    std::shared_ptr<detail::ChunkDataSource> dataSource(int localChunkX, int localChunkZ, detail::StreamReader& sr) const {
+        int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
         if (!sr.valid()) {
-            error = true;
-            return true;
+            return nullptr;
         }
         if (!sr.seek(4 * index)) {
-            error = true;
-            return true;
+            return nullptr;
         }
 
         uint32_t loc;
         if (!sr.read(&loc)) {
-            error = true;
-            return true;
+            return nullptr;
         }
 
         long sectorOffset = loc >> 8;
         if (!sr.seek(kSectorSize + 4 * index)) {
-            error = true;
-            return true;
+            return nullptr;
         }
 
         uint32_t timestamp;
         if (!sr.read(&timestamp)) {
-            error = true;
-            return true;
+            return nullptr;
         }
 
         if (!sr.seek(sectorOffset * kSectorSize)) {
-            error = true;
-            return true;
+            return nullptr;
         }
         uint32_t chunkSize;
         if (!sr.read(&chunkSize)) {
+            return nullptr;
+        }
+
+        int const chunkX = this->fX * 32 + localChunkX;
+        int const chunkZ = this->fZ * 32 + localChunkZ;
+        return std::make_shared<detail::ChunkDataSource>(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
+    }
+    
+    bool loadChunkImpl(int regionX, int regionZ, detail::StreamReader& sr, bool& error, LoadChunkCallback callback) const {
+        auto data = dataSource(regionX, regionZ, sr);
+        if (!data) {
             error = true;
             return true;
         }
-
-        int const chunkX = this->fX * 32 + regionX;
-        int const chunkZ = this->fZ * 32 + regionZ;
-        detail::ChunkDataSource data(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
-        if (data.load(sr, callback)) {
+        if (data->load(sr, callback)) {
             return true;
         } else {
             error = true;
