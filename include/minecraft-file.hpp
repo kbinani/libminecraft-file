@@ -4555,6 +4555,77 @@ public:
     int minBlockZ() const { return fZ * 32 * 16; }
     int maxBlockZ() const { return (fZ + 1) * 32 * 16 - 1; }
 
+    bool clearChunk(int chunkX, int chunkZ) {
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
+        if (localChunkX < 0 || 32 <= localChunkX) {
+            return false;
+        }
+        if (localChunkZ < 0 || 32 <= localChunkZ) {
+            return false;
+        }
+
+        FILE *fp = fopen(fFilePath.c_str(), "r+b");
+        if (!fp) {
+            return false;
+        }
+        int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
+        if (fseek(fp, 4 * index, SEEK_SET) != 0) {
+            fclose(fp);
+            return false;
+        }
+        uint32_t loc;
+        if (fread(&loc, sizeof(loc), 1, fp) != 1) {
+            fclose(fp);
+            return false;
+        }
+        loc = detail::StreamReader::Int32FromBE(loc);
+        if (loc == 0) {
+            fclose(fp);
+            return true;
+        }
+        long const sectorOffset = loc >> 8;
+        if (fseek(fp, 4 * index, SEEK_SET) != 0) {
+            fclose(fp);
+            return false;
+        }
+        loc = 0;
+        if (fwrite(&loc, sizeof(loc), 1, fp) != 1) {
+            fclose(fp);
+            return false;
+        }
+
+        if (fseek(fp, kSectorSize + 4 * index, SEEK_SET) != 0) {
+            fclose(fp);
+            return false;
+        }
+        uint32_t timestamp = 0;
+        if (fwrite(&timestamp, sizeof(timestamp), 1, fp) != 1) {
+            fclose(fp);
+            return false;
+        }
+        if (fseek(fp, sectorOffset * kSectorSize, SEEK_SET) != 0) {
+            fclose(fp);
+            return false;
+        }
+        uint32_t chunkSize;
+        if (fread(&chunkSize, sizeof(chunkSize), 1, fp) != 1) {
+            fclose(fp);
+            return false;
+        }
+        chunkSize = detail::StreamReader::Int32FromBE(chunkSize);
+        for (uint32_t i = 0; i < chunkSize; i++) {
+            uint8_t zero = 0;
+            if (fwrite(&zero, sizeof(zero), 1, fp) != 1) {
+                fclose(fp);
+                return false;
+            }
+        }
+
+        fclose(fp);
+        return true;
+    }
+
 private:
     Region(std::string const& filePath, int x, int z)
         : fX(x)
