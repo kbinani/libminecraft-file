@@ -4992,6 +4992,19 @@ public:
         return true;
     }
 
+    bool eachRegions(std::function<void(std::shared_ptr<Region> const&)> callback) const {
+        auto regionDir = std::filesystem::path(fRootDirectory).append("region");
+        std::filesystem::directory_iterator it(regionDir);
+        for (auto const& path : it) {
+            auto region = Region::MakeRegion(path.path());
+            if (!region) {
+                continue;
+            }
+            callback(region);
+        }
+        return true;
+    }
+    
 public:
     std::string const fRootDirectory;
 };
