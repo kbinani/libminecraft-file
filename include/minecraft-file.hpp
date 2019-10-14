@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <sstream>
 #include <limits>
+#include <filesystem>
 
 #if defined(__APPLE__)
 #    include <libkern/OSByteOrder.h>
@@ -107,6 +108,33 @@ public:
 
     long pos() const override { return fLoc; }
 
+    static bool copy(FILE *in, FILE *out, size_t length) {
+        if (!in || !out) {
+            return false;
+        }
+        if (length == 0) {
+            return true;
+        }
+        uint8_t buffer[512]= { 0 };
+        size_t const size = sizeof(buffer[0]);
+        size_t const nitems = sizeof(buffer) / size;
+        size_t remain = length;
+        while (remain > 0) {
+            size_t const num = std::min(nitems, remain);
+            size_t const read = fread(buffer, size, num, in);
+            if (read != num) {
+                return false;
+            }
+            size_t const written = fwrite(buffer, size, read, out);
+            if (written != read) {
+                return false;
+            }
+            assert(remain >= read);
+            remain -= read;
+        }
+        return true;
+    }
+    
 private:
     FILE *fFile;
     long fLength;
@@ -4505,13 +4533,13 @@ public:
         return true;
     }
 
-    bool loadChunk(int regionX, int regionZ, bool& error, LoadChunkCallback callback) const {
-        if (regionX < 0 || 32 <= regionX || regionZ < 0 || 32 <= regionZ) {
+    bool loadChunk(int localChunkX, int localChunkZ, bool& error, LoadChunkCallback callback) const {
+        if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
             return false;
         }
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
-        return loadChunkImpl(regionX, regionZ, sr, error, callback);
+        return loadChunkImpl(localChunkX, localChunkZ, sr, error, callback);
     }
 
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
@@ -4554,6 +4582,11 @@ public:
     int maxBlockX() const { return (fX + 1) * 32 * 16 - 1; }
     int minBlockZ() const { return fZ * 32 * 16; }
     int maxBlockZ() const { return (fZ + 1) * 32 * 16 - 1; }
+
+    int minChunkX() const { return fX * 32; }
+    int maxChunkX() const { return (fX + 1) * 32 - 1; }
+    int minChunkZ() const { return fZ * 32; }
+    int maxChunkZ() const { return (fZ + 1) * 32 - 1; }
 
     bool clearChunk(int chunkX, int chunkZ) {
         int const localChunkX = chunkX - fX * 32;
@@ -4637,7 +4670,210 @@ public:
         }
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
-        return dataSource(localChunkX, localChunkZ, sr) != nullptr;
+        auto data = dataSource(localChunkX, localChunkZ, sr);
+        if (!data) {
+            return false;
+        }
+        return data->fLength > 0;
+    }
+
+    static std::string getDefaultChunkNbtFileName(int chunkX, int chunkZ) {
+        std::ostringstream s;
+        s << "c." << chunkX << "." << chunkZ << ".nbt";
+        return s.str();
+    }
+
+    static std::string getDefaultCompressedChunkNbtFileName(int chunkX, int chunkZ) {
+        std::ostringstream s;
+        s << "c." << chunkX << "." << chunkZ << ".nbt.z";
+        return s.str();
+    }
+
+    bool exportAllToNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::getDefaultChunkNbtFileName) const {
+        int const minX = minChunkX();
+        int const minZ = minChunkZ();
+        int const maxX = maxChunkX();
+        int const maxZ = maxChunkZ();
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                std::string const n = name(x, z);
+                std::string const path = directory + "/" + n;
+                if (!exportToNbt(x, z, path)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool exportAllToCompressedNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::getDefaultCompressedChunkNbtFileName) const {
+        int const minX = minChunkX();
+        int const minZ = minChunkZ();
+        int const maxX = maxChunkX();
+        int const maxZ = maxChunkZ();
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                std::string const n = name(x, z);
+                std::string const path = directory + "/" + n;
+                if (!exportToCompressedNbt(x, z, path)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool exportToNbt(int chunkX, int chunkZ, std::string const& filePath) const {
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
+        if (localChunkX < 0 || 32 <= localChunkX) {
+            return false;
+        }
+        if (localChunkZ < 0 || 32 <= localChunkZ) {
+            return false;
+        }
+
+        FILE *in = fopen(fFilePath.c_str(), "rb");
+        if (!in) {
+            return false;
+        }
+        int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
+        if (fseek(in, 4 * index, SEEK_SET) != 0) {
+            fclose(in);
+            return false;
+        }
+        uint32_t loc;
+        if (fread(&loc, sizeof(loc), 1, in) != 1) {
+            fclose(in);
+            return false;
+        }
+        loc = detail::StreamReader::Int32FromBE(loc);
+        if (loc == 0) {
+            fclose(in);
+            return true;
+        }
+        long const sectorOffset = loc >> 8;
+        if (fseek(in, 4 * index, SEEK_SET) != 0) {
+            fclose(in);
+            return false;
+        }
+        if (fseek(in, sectorOffset * kSectorSize, SEEK_SET) != 0) {
+            fclose(in);
+            return false;
+        }
+        uint32_t chunkSize;
+        if (fread(&chunkSize, sizeof(chunkSize), 1, in) != 1) {
+            fclose(in);
+            return false;
+        }
+        chunkSize = detail::StreamReader::Int32FromBE(chunkSize) - 1;
+        
+        uint8_t compressionType;
+        if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
+            fclose(in);
+            return false;
+        }
+        if (compressionType != 2) {
+            fclose(in);
+            return false;
+        }
+
+        FILE* out = fopen(filePath.c_str(), "wb");
+        if (!out) {
+            fclose(in);
+            return false;
+        }
+        
+        std::vector<uint8_t> buffer(chunkSize);
+        if (fread(buffer.data(), chunkSize, 1, in) != 1) {
+            fclose(in);
+            fclose(out);
+            return false;
+        }
+        if (!detail::Compression::decompress(buffer)) {
+            fclose(in);
+            fclose(out);
+            return false;
+        }
+        if (fwrite(buffer.data(), buffer.size(), 1, out) != 1) {
+            fclose(in);
+            fclose(out);
+            return false;
+        }
+        
+        fclose(in);
+        fclose(out);
+        
+        return true;
+    }
+
+    bool exportToCompressedNbt(int chunkX, int chunkZ, std::string const& filePath) const {
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
+        if (localChunkX < 0 || 32 <= localChunkX) {
+            return false;
+        }
+        if (localChunkZ < 0 || 32 <= localChunkZ) {
+            return false;
+        }
+
+        FILE *in = fopen(fFilePath.c_str(), "rb");
+        if (!in) {
+            return false;
+        }
+        int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
+        if (fseek(in, 4 * index, SEEK_SET) != 0) {
+            fclose(in);
+            return false;
+        }
+        uint32_t loc;
+        if (fread(&loc, sizeof(loc), 1, in) != 1) {
+            fclose(in);
+            return false;
+        }
+        loc = detail::StreamReader::Int32FromBE(loc);
+        if (loc == 0) {
+            fclose(in);
+            return true;
+        }
+        long const sectorOffset = loc >> 8;
+        if (fseek(in, 4 * index, SEEK_SET) != 0) {
+            fclose(in);
+            return false;
+        }
+        if (fseek(in, sectorOffset * kSectorSize, SEEK_SET) != 0) {
+            fclose(in);
+            return false;
+        }
+        uint32_t chunkSize;
+        if (fread(&chunkSize, sizeof(chunkSize), 1, in) != 1) {
+            fclose(in);
+            return false;
+        }
+        chunkSize = detail::StreamReader::Int32FromBE(chunkSize) - 1;
+        
+        uint8_t compressionType;
+        if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
+            fclose(in);
+            return false;
+        }
+
+        FILE* out = fopen(filePath.c_str(), "wb");
+        if (!out) {
+            fclose(in);
+            return false;
+        }
+
+        if (!detail::FileStream::copy(in, out, chunkSize)) {
+            fclose(in);
+            fclose(out);
+            return false;
+        }
+        
+        fclose(in);
+        fclose(out);
+        
+        return true;
     }
     
 private:
