@@ -4700,6 +4700,12 @@ public:
         s << "c." << chunkX << "." << chunkZ << ".nbt.z";
         return s.str();
     }
+    
+    static std::string getDefaultRegionFileName(int regionX, int regionZ) {
+        std::ostringstream s;
+        s << "r." << regionX << "." << regionZ << ".mca";
+        return s.str();
+    }
 
     bool exportAllToNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::getDefaultChunkNbtFileName) const {
         int const minX = minChunkX();
@@ -4984,6 +4990,55 @@ public:
         return true;
     }
     
+    static bool iterateRegionForCompressedNbtFiles(std::string const& chunkFilesDirectory,
+                                                   std::function<bool(int regionX, int regionZ, std::string const& chunkFilesDirectory)> callback,
+                                                   std::function<std::string(int regionX, int regionZ)> regionFileName = Region::getDefaultRegionFileName) {
+        namespace fs = std::filesystem;
+        int minRegionX = 1;
+        int maxRegionX = -1;
+        int minRegionZ = 1;
+        int maxRegionZ = -1;
+        std::error_code err;
+        for (auto& p : fs::directory_iterator(chunkFilesDirectory)) {
+            if (!p.is_regular_file(err)) {
+                continue;
+            }
+            std::string name = p.path().filename();
+            int chunkX;
+            int chunkZ;
+            if (sscanf(name.c_str(), "c.%d.%d.nbt.z", &chunkX, &chunkZ) != 2) {
+                continue;
+            }
+            int const regionX = Coordinate::RegionFromChunk(chunkX);
+            int const regionZ = Coordinate::RegionFromChunk(chunkZ);
+            if (minRegionX > maxRegionX) {
+                minRegionX = regionX;
+                maxRegionX = regionX;
+            } else {
+                minRegionX = std::min(minRegionX, regionX);
+                maxRegionX = std::max(maxRegionX, regionX);
+            }
+            if (minRegionZ > maxRegionZ) {
+                minRegionZ = regionZ;
+                maxRegionZ = regionZ;
+            } else {
+                minRegionZ = std::min(minRegionZ, regionZ);
+                maxRegionZ = std::max(maxRegionZ, regionZ);
+            }
+        }
+        if (minRegionX > maxRegionX || minRegionZ > maxRegionZ) {
+            return true;
+        }
+        for (int x = minRegionX; x <= maxRegionX; x++) {
+            for (int z = minRegionZ; z <= maxRegionZ; z++) {
+                if (!callback(x, z, chunkFilesDirectory)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 private:
     Region(std::string const& filePath, int x, int z)
         : fX(x)
