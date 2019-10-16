@@ -333,6 +333,18 @@ public:
         #endif
     }
 
+    static uint64_t Int64BEFromNative(uint64_t v) {
+        return Int64FromBE(v);
+    }
+
+    static uint32_t Int32BEFromNative(uint32_t v) {
+        return Int32FromBE(v);
+    }
+    
+    static uint16_t Int16BEFromNative(uint16_t v) {
+        return Int16FromBE(v);
+    }
+    
 private:
     template<typename T>
     bool readRaw(T *v) {
@@ -4694,8 +4706,8 @@ public:
         int const minZ = minChunkZ();
         int const maxX = maxChunkX();
         int const maxZ = maxChunkZ();
-        for (int x = minX; x <= maxX; x++) {
-            for (int z = minZ; z <= maxZ; z++) {
+        for (int z = minZ; z <= maxZ; z++) {
+            for (int x = minX; x <= maxX; x++) {
                 std::string const n = name(x, z);
                 std::string const path = directory + "/" + n;
                 if (!exportToNbt(x, z, path)) {
@@ -4711,8 +4723,8 @@ public:
         int const minZ = minChunkZ();
         int const maxX = maxChunkX();
         int const maxZ = maxChunkZ();
-        for (int x = minX; x <= maxX; x++) {
-            for (int z = minZ; z <= maxZ; z++) {
+        for (int z = minZ; z <= maxZ; z++) {
+            for (int x = minX; x <= maxX; x++) {
                 std::string const n = name(x, z);
                 std::string const path = directory + "/" + n;
                 if (!exportToCompressedNbt(x, z, path)) {
@@ -4872,7 +4884,103 @@ public:
         
         fclose(in);
         fclose(out);
+
+        return true;
+    }
+
+    static bool concatCompressedNbt(int regionX, int regionZ, std::string const& directory, std::string const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::getDefaultCompressedChunkNbtFileName) {
+        namespace fs = std::filesystem;
         
+        int const minChunkX = regionX * 32;
+        int const maxChunkX = minChunkX + 31;
+        int const minChunkZ = regionZ * 32;
+        int const maxChunkZ = minChunkZ + 31;
+        bool exists = false;
+        for (int z = minChunkZ; z <= maxChunkZ; z++) {
+            for (int x = minChunkX; x <= maxChunkX; x++) {
+                fs::path const filepath = fs::path(directory).append(name(x, z));
+                std::error_code ec;
+                if (fs::exists(filepath, ec)) {
+                    exists = true;
+                    break;
+                }
+            }
+        }
+        if (!exists) {
+            return true;
+        }
+
+        FILE* out = fopen(fs::path(resultMcaFilePath).native().c_str(), "wb");
+        if (!out) {
+            return false;
+        }
+        fseek(out, 2 * kSectorSize, SEEK_SET);
+        
+        std::vector<uint32_t> locationLut(1024, 0);
+        for (int z = minChunkZ; z <= maxChunkZ; z++) {
+            int const localChunkZ = z - minChunkZ;
+            for (int x = minChunkX; x <= maxChunkX; x++) {
+                int const localChunkX = x - minChunkX;
+                int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
+                fs::path const filepath = fs::path(directory).append(name(x, z));
+                FILE *in = fopen(filepath.native().c_str(), "rb");
+                if (!in) {
+                    continue;
+                }
+                long const currentLocation = ftell(out);
+                size_t const size = fs::file_size(filepath) + 1;
+                long const location = Ceil(currentLocation, kSectorSize);
+                if (fseek(out, location, SEEK_SET) != 0) {
+                    fclose(in);
+                    fclose(out);
+                    return false;
+                }
+                uint32_t s = detail::StreamReader::Int32BEFromNative(size);
+                if (fwrite(&s, sizeof(s), 1, out) != 1) {
+                    fclose(in);
+                    fclose(out);
+                    return false;
+                }
+                uint8_t compressionType = 2;
+                if (fwrite(&compressionType, sizeof(compressionType), 1, out) != 1) {
+                    fclose(in);
+                    fclose(out);
+                    return false;
+                }
+                if (!detail::FileStream::copy(in, out, size - 1)) {
+                    fclose(in);
+                    fclose(out);
+                    return false;
+                }
+                fclose(in);
+
+                uint32_t const numSectors = Ceil(size, kSectorSize) / kSectorSize;
+                uint32_t const loc = (((((uint32_t)location) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
+                locationLut[index] = detail::StreamReader::Int32BEFromNative(loc);
+            }
+        }
+        long const current = ftell(out);
+        long const numZeroFill = Ceil(current, kSectorSize) - current;
+        std::vector<uint8_t> zerofill(numZeroFill);
+        if (fwrite(zerofill.data(), sizeof(uint8_t), numZeroFill, out) != numZeroFill) {
+            fclose(out);
+            return false;
+        }
+        
+        if (fseek(out, 0, SEEK_SET) != 0) {
+            fclose(out);
+            return false;
+        }
+        if (fwrite(locationLut.data(), sizeof(uint32_t), locationLut.size(), out) != locationLut.size()) {
+            fclose(out);
+            return false;
+        }
+        std::vector<uint32_t> timestamp(1024, std::time(nullptr));
+        if (fwrite(timestamp.data(), sizeof(uint32_t), timestamp.size(), out) != timestamp.size()) {
+            fclose(out);
+            return false;
+        }
+        fclose(out);
         return true;
     }
     
@@ -4935,6 +5043,13 @@ private:
         }
     }
 
+    static uint32_t Ceil(uint32_t v, uint32_t div) {
+        if (v % div == 0) {
+            return v;
+        }
+        return v + (div - (v % div));
+    }
+    
 public:
     int const fX;
     int const fZ;
