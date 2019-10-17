@@ -4854,11 +4854,8 @@ public:
             fclose(in);
             return true;
         }
+        
         long const sectorOffset = loc >> 8;
-        if (fseek(in, 4 * index, SEEK_SET) != 0) {
-            fclose(in);
-            return false;
-        }
         if (fseek(in, sectorOffset * kSectorSize, SEEK_SET) != 0) {
             fclose(in);
             return false;
@@ -4869,7 +4866,7 @@ public:
             return false;
         }
         chunkSize = detail::StreamReader::Int32FromBE(chunkSize) - 1;
-        
+
         uint8_t compressionType;
         if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
             fclose(in);
