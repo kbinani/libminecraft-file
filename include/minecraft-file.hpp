@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <zlib.h>
+#include <string.h>
 #include <cstdint>
 #include <cassert>
 #include <string>
@@ -14,7 +15,12 @@
 #include <algorithm>
 #include <sstream>
 #include <limits>
+#include <functional>
+#if __has_include(<experimental/filesystem>)
+#include <experimental/filesystem>
+#else
 #include <filesystem>
+#endif
 
 #if defined(__APPLE__)
 #    include <libkern/OSByteOrder.h>
@@ -4892,7 +4898,11 @@ public:
     }
 
     static bool concatCompressedNbt(int regionX, int regionZ, std::string const& directory, std::string const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::getDefaultCompressedChunkNbtFileName) {
+        #if __has_include(<experimental/filesystem>)
+        namespace fs = std::experimental::filesystem;
+        #else
         namespace fs = std::filesystem;
+        #endif
         
         int const minChunkX = regionX * 32;
         int const maxChunkX = minChunkX + 31;
@@ -4990,14 +5000,18 @@ public:
     static bool iterateRegionForCompressedNbtFiles(std::string const& chunkFilesDirectory,
                                                    std::function<bool(int regionX, int regionZ, std::string const& chunkFilesDirectory)> callback,
                                                    std::function<std::string(int regionX, int regionZ)> regionFileName = Region::getDefaultRegionFileName) {
+        #if __has_include(<experimental/filesystem>)
+        namespace fs = std::experimental::filesystem;
+        #else
         namespace fs = std::filesystem;
+        #endif
         int minRegionX = 1;
         int maxRegionX = -1;
         int minRegionZ = 1;
         int maxRegionZ = -1;
         std::error_code err;
         for (auto& p : fs::directory_iterator(chunkFilesDirectory)) {
-            if (!p.is_regular_file(err)) {
+            if (!fs::is_regular_file(p, err)) {
                 continue;
             }
             std::string name = p.path().filename();
@@ -5160,8 +5174,13 @@ public:
     }
 
     bool eachRegions(std::function<void(std::shared_ptr<Region> const&)> callback) const {
-        auto regionDir = std::filesystem::path(fRootDirectory).append("region");
-        std::filesystem::directory_iterator it(regionDir);
+        #if defined(__cpp_lib_experimental_filesystem)
+        namespace fs = std::experimental::filesystem;
+        #else
+        namespace fs = std::filesystem;
+        #endif
+        auto regionDir = fs::path(fRootDirectory).append("region");
+        fs::directory_iterator it(regionDir);
         for (auto const& path : it) {
             auto region = Region::MakeRegion(path.path());
             if (!region) {
