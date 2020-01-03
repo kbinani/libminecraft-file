@@ -1,0 +1,57 @@
+#pragma once
+
+namespace mcfile {
+namespace detail {
+
+class ChunkDataSource {
+public:
+    ChunkDataSource(int chunkX, int chunkZ, uint32_t timestamp, long offset, long length)
+        : fChunkX(chunkX), fChunkZ(chunkZ), fTimestamp(timestamp), fOffset(offset), fLength(length) {
+    }
+
+    bool load(StreamReader &reader, std::function<void(Chunk const &chunk)> callback) const {
+        if (!reader.valid()) {
+            return false;
+        }
+        if (!reader.seek(fOffset + sizeof(uint32_t))) {
+            return false;
+        }
+        uint8_t compressionType;
+        if (!reader.read(&compressionType)) {
+            return false;
+        }
+        if (compressionType != 2) {
+            return false;
+        }
+        std::vector<uint8_t> buffer(fLength - 1);
+        if (!reader.read(buffer)) {
+            return false;
+        }
+        if (!Compression::decompress(buffer)) {
+            return false;
+        }
+        auto root = std::make_shared<nbt::CompoundTag>();
+        auto bs = std::make_shared<ByteStream>(buffer);
+        auto sr = std::make_shared<StreamReader>(bs);
+        root->read(*sr);
+        if (!root->valid()) {
+            return false;
+        }
+        auto chunk = Chunk::MakeChunk(fChunkX, fChunkZ, *root);
+        if (!chunk) {
+            return false;
+        }
+        callback(*chunk);
+        return true;
+    }
+
+public:
+    int const fChunkX;
+    int const fChunkZ;
+    uint32_t const fTimestamp;
+    long const fOffset;
+    long const fLength;
+};
+
+} // namespace detail
+} // namespace mcfile
