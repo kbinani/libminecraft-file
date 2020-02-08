@@ -84,19 +84,38 @@ public:
         return section->skyLightAt(offsetX, offsetY, offsetZ);
     }
 
-    biomes::BiomeId biomeAt(int x, int z) const {
-        int const offsetX = x - fChunkX * 16;
-        int const offsetZ = z - fChunkZ * 16;
-
-        if (offsetX < 0 || 16 <= offsetX || offsetZ < 0 || 16 <= offsetZ) {
-            return biomes::unknown;
-        }
-        int const index = offsetZ * 16 + offsetX;
-        if (index < fBiomes.size()) {
-            return fBiomes[index];
+    biomes::BiomeId biomeAt(int x, int y, int z) const {
+        if (fDataVersion >= 2203) { // 19w36a
+            int const offsetX = (x - fChunkX * 16) / 4;
+            int const offsetY = y / 4;
+            int const offsetZ = (x - fChunkZ * 16) / 4;
+            if (offsetX < 0 || 4 <= offsetX || offsetZ < 0 || 4 <= offsetZ || offsetY < 0 || 64 <= offsetY) {
+                return biomes::unknown;
+            }
+            int const index = offsetZ + offsetX * 4 + offsetY * 16;
+            if (index < fBiomes.size()) {
+                return fBiomes[index];
+            } else {
+                return biomes::unknown;
+            }
         } else {
-            return biomes::unknown;
+            int const offsetX = x - fChunkX * 16;
+            int const offsetZ = z - fChunkZ * 16;
+
+            if (offsetX < 0 || 16 <= offsetX || offsetZ < 0 || 16 <= offsetZ) {
+                return biomes::unknown;
+            }
+            int const index = offsetZ * 16 + offsetX;
+            if (index < fBiomes.size()) {
+                return fBiomes[index];
+            } else {
+                return biomes::unknown;
+            }
         }
+    }
+
+    biomes::BiomeId biomeAt(int x, int z) const {
+        return biomeAt(x, 0, z);
     }
 
     int minBlockX() const { return fChunkX * 16; }
@@ -128,13 +147,14 @@ public:
         auto biomesTag = root.query("/Level/Biomes");
         ParseBiomes(biomesTag, biomes);
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, biomes));
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes));
     }
 
 private:
-    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, std::vector<biomes::BiomeId> & biomes)
+    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
+        , fDataVersion(dataVersion)
     {
         for (auto section : sections) {
             int const y = section->y();
@@ -151,9 +171,9 @@ private:
         }
         if (biomesTag->id() == nbt::Tag::TAG_Int_Array) {
             std::vector<int32_t> const& value = biomesTag->asIntArray()->value();
-            if (value.size() == 256) {
-                result.resize(256);
-                for (int i = 0; i < 256; i++) {
+            if (value.size() == 256 || value.size() == 1024) {
+                result.resize(value.size());
+                for (int i = 0; i < value.size(); i++) {
                     result[i] = biomes::FromInt(value[i]);
                 }
             }
@@ -173,6 +193,7 @@ public:
     int const fChunkZ;
     std::shared_ptr<ChunkSection> fSections[16];
     std::vector<biomes::BiomeId> fBiomes;
+    int const fDataVersion;
 };
 
 } // namespace mcfile
