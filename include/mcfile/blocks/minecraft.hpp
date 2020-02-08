@@ -684,7 +684,7 @@ enum : BlockId {
 
     // 1.15
 
-    bee_next,
+    bee_nest,
     beehive,
     honey_block,
     honeycomb_block,

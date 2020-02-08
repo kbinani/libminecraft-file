@@ -684,7 +684,7 @@ static inline BlockId FromName(std::string const& name) {
 
         // 1.15
 
-        {"minecraft:bee_next", minecraft::bee_next},
+        {"minecraft:bee_nest", minecraft::bee_nest},
         {"minecraft:beehive", minecraft::beehive},
         {"minecraft:honey_block", minecraft::honey_block},
         {"minecraft:honeycomb_block", minecraft::honeycomb_block},
