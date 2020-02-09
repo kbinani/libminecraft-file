@@ -80,6 +80,9 @@ static inline BiomeId FromInt(int v) {
         {167, minecraft::modified_badlands_plateau},
         {168, minecraft::bamboo_jungle},
         {169, minecraft::bamboo_jungle_hills},
+        {170, minecraft::soul_sand_valley},
+        {171, minecraft::crimson_forest},
+        {172, minecraft::warped_forest},
     };
     auto mappingIt = mapping.find(v);
     if (mappingIt == mapping.end()) {

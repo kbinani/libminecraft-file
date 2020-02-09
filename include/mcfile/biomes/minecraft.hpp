@@ -81,6 +81,11 @@ enum : BiomeId {
     bamboo_jungle,
     bamboo_jungle_hills,
 
+    // 20w06a
+    soul_sand_valley,
+    crimson_forest,
+    warped_forest,
+
     minecraft_max_biome_id,
 };
 
