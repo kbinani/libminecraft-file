@@ -11,7 +11,7 @@ int main() {
     using namespace mcfile;
     
     // accessing game data of the nether dimension
-    World w("somewhere/.minecraft/saves/world/DIM-1");
+    World world("somewhere/.minecraft/saves/world/DIM-1");
     // read region file from world/DIM-1/regions/r.0.0.mca
     std::shared_ptr<Region> region = world.region(0, 0);
 
