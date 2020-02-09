@@ -22,15 +22,21 @@ public:
         return true;
     }
 
-    bool loadChunk(int localChunkX, int localChunkZ, bool& error, LoadChunkCallback callback) const {
+    std::shared_ptr<Chunk> chunkAt(int chunkX, int chunkZ) {
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
         if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
-            return false;
+            return nullptr;
         }
         auto fs = std::make_shared<detail::FileStream>(fFilePath);
         detail::StreamReader sr(fs);
-        return loadChunkImpl(localChunkX, localChunkZ, sr, error, callback);
+        std::shared_ptr<detail::ChunkDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        if (!src) {
+            return nullptr;
+        }
+        return src->load(sr);
     }
-
+    
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
         return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
@@ -166,25 +172,25 @@ public:
         return data->fLength > 0;
     }
 
-    static std::string getDefaultChunkNbtFileName(int chunkX, int chunkZ) {
+    static std::string GetDefaultChunkNbtFileName(int chunkX, int chunkZ) {
         std::ostringstream s;
         s << "c." << chunkX << "." << chunkZ << ".nbt";
         return s.str();
     }
 
-    static std::string getDefaultCompressedChunkNbtFileName(int chunkX, int chunkZ) {
+    static std::string GetDefaultCompressedChunkNbtFileName(int chunkX, int chunkZ) {
         std::ostringstream s;
         s << "c." << chunkX << "." << chunkZ << ".nbt.z";
         return s.str();
     }
     
-    static std::string getDefaultRegionFileName(int regionX, int regionZ) {
+    static std::string GetDefaultRegionFileName(int regionX, int regionZ) {
         std::ostringstream s;
         s << "r." << regionX << "." << regionZ << ".mca";
         return s.str();
     }
 
-    bool exportAllToNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::getDefaultChunkNbtFileName) const {
+    bool exportAllToNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::GetDefaultChunkNbtFileName) const {
         int const minX = minChunkX();
         int const minZ = minChunkZ();
         int const maxX = maxChunkX();
@@ -201,7 +207,7 @@ public:
         return true;
     }
 
-    bool exportAllToCompressedNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::getDefaultCompressedChunkNbtFileName) const {
+    bool exportAllToCompressedNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::GetDefaultCompressedChunkNbtFileName) const {
         int const minX = minChunkX();
         int const minZ = minChunkZ();
         int const maxX = maxChunkX();
@@ -368,7 +374,7 @@ public:
         return true;
     }
 
-    static bool concatCompressedNbt(int regionX, int regionZ, std::string const& directory, std::string const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::getDefaultCompressedChunkNbtFileName) {
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const& directory, std::string const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) {
         namespace fs = mcfile::detail::filesystem;
 
         int const minChunkX = regionX * 32;
@@ -464,9 +470,9 @@ public:
         return true;
     }
     
-    static bool iterateRegionForCompressedNbtFiles(std::string const& chunkFilesDirectory,
+    static bool IterateRegionForCompressedNbtFiles(std::string const& chunkFilesDirectory,
                                                    std::function<bool(int regionX, int regionZ, std::string const& chunkFilesDirectory)> callback,
-                                                   std::function<std::string(int regionX, int regionZ)> regionFileName = Region::getDefaultRegionFileName) {
+                                                   std::function<std::string(int regionX, int regionZ)> regionFileName = Region::GetDefaultRegionFileName) {
         namespace fs = mcfile::detail::filesystem;
 
         int minRegionX = 1;

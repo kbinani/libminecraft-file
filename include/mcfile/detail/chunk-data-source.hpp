@@ -9,6 +9,37 @@ public:
         : fChunkX(chunkX), fChunkZ(chunkZ), fTimestamp(timestamp), fOffset(offset), fLength(length) {
     }
 
+    std::shared_ptr<Chunk> load(StreamReader &reader) const {
+        if (!reader.valid()) {
+            return nullptr;
+        }
+        if (!reader.seek(fOffset + sizeof(uint32_t))) {
+            return nullptr;
+        }
+        uint8_t compressionType;
+        if (!reader.read(&compressionType)) {
+            return nullptr;
+        }
+        if (compressionType != 2) {
+            return nullptr;
+        }
+        std::vector<uint8_t> buffer(fLength - 1);
+        if (!reader.read(buffer)) {
+            return nullptr;
+        }
+        if (!Compression::decompress(buffer)) {
+            return nullptr;
+        }
+        auto root = std::make_shared<nbt::CompoundTag>();
+        auto bs = std::make_shared<ByteStream>(buffer);
+        auto sr = std::make_shared<StreamReader>(bs);
+        root->read(*sr);
+        if (!root->valid()) {
+            return nullptr;
+        }
+        return Chunk::MakeChunk(fChunkX, fChunkZ, *root);
+    }
+    
     bool load(StreamReader &reader, std::function<void(Chunk const &chunk)> callback) const {
         if (!reader.valid()) {
             return false;

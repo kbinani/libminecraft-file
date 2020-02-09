@@ -88,11 +88,11 @@ public:
         if (fDataVersion >= 2203) { // 19w36a
             int const offsetX = (x - fChunkX * 16) / 4;
             int const offsetY = y / 4;
-            int const offsetZ = (x - fChunkZ * 16) / 4;
+            int const offsetZ = (z - fChunkZ * 16) / 4;
             if (offsetX < 0 || 4 <= offsetX || offsetZ < 0 || 4 <= offsetZ || offsetY < 0 || 64 <= offsetY) {
                 return biomes::unknown;
             }
-            int const index = offsetZ + offsetX * 4 + offsetY * 16;
+            int const index = offsetX + offsetZ * 4 + offsetY * 16;
             if (index < fBiomes.size()) {
                 return fBiomes[index];
             } else {
@@ -171,9 +171,10 @@ private:
         }
         if (biomesTag->id() == nbt::Tag::TAG_Int_Array) {
             std::vector<int32_t> const& value = biomesTag->asIntArray()->value();
-            if (value.size() == 256 || value.size() == 1024) {
-                result.resize(value.size());
-                for (int i = 0; i < value.size(); i++) {
+            size_t const size = value.size();
+            if (size == 256 || size == 1024) {
+                result.resize(size);
+                for (int i = 0; i < size; i++) {
                     result[i] = biomes::FromInt(value[i]);
                 }
             }

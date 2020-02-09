@@ -4,7 +4,7 @@ namespace mcfile {
 namespace blocks {
 
 static inline std::string Name(BlockId id) {
-    static std::map<BlockId, std::string> mapping = {
+    static std::map<BlockId, std::string> const mapping = {
         {minecraft::acacia_button, "minecraft:acacia_button"},
         {minecraft::acacia_door, "minecraft:acacia_door"},
         {minecraft::acacia_fence, "minecraft:acacia_fence"},
