@@ -682,6 +682,13 @@ enum : BlockId {
     zombie_head,
     zombie_wall_head,
 
+    // 1.15
+
+    bee_nest,
+    beehive,
+    honey_block,
+    honeycomb_block,
+
     minecraft_max_block_id,
 };
 

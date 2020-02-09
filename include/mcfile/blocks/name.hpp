@@ -4,7 +4,7 @@ namespace mcfile {
 namespace blocks {
 
 static inline std::string Name(BlockId id) {
-    static std::map<BlockId, std::string> mapping = {
+    static std::map<BlockId, std::string> const mapping = {
         {minecraft::acacia_button, "minecraft:acacia_button"},
         {minecraft::acacia_door, "minecraft:acacia_door"},
         {minecraft::acacia_fence, "minecraft:acacia_fence"},
@@ -681,6 +681,12 @@ static inline std::string Name(BlockId id) {
         {minecraft::yellow_wool, "minecraft:yellow_wool"},
         {minecraft::zombie_head, "minecraft:zombie_head"},
         {minecraft::zombie_wall_head, "minecraft:zombie_wall_head"},
+
+        // 1.15
+        {minecraft::bee_nest, "minecraft:bee_nest"},
+        {minecraft::beehive, "minecraft:beehive"},
+        {minecraft::honey_block, "minecraft:honey_block"},
+        {minecraft::honeycomb_block, "minecraft:honeycomb_block"},
     };
     auto mappingIt = mapping.find(id);
     if (mappingIt == mapping.end()) {
