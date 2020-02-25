@@ -5,7 +5,7 @@ namespace detail {
 
 class ChunkSection_1_13 : public ChunkSection {
 public:
-    std::shared_ptr<Block> blockAt(int offsetX, int offsetY, int offsetZ) const override {
+    std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
         int const index = paletteIndex(offsetX, offsetY, offsetZ);
         if (index < 0) {
             return nullptr;
@@ -82,7 +82,7 @@ public:
         if (!paletteTag) {
             return nullptr;
         }
-        std::vector<std::shared_ptr<Block>> palette;
+        std::vector<std::shared_ptr<Block const>> palette;
         for (auto entry : paletteTag->fValue) {
             auto tag = entry->asCompound();
             if (!tag) {
@@ -107,7 +107,7 @@ public:
                     properties.insert(std::make_pair(n, v->fValue));
                 }
             }
-            palette.push_back(std::make_shared<Block>(nameTag->fValue, properties));
+            palette.push_back(std::make_shared<Block const>(nameTag->fValue, properties));
         }
 
         std::vector<blocks::BlockId> blockIdPalette(palette.size());
@@ -142,7 +142,7 @@ public:
     }
 
 private:
-    ChunkSection_1_13(int y, std::vector<std::shared_ptr<Block>> const& palette, std::vector<blocks::BlockId> const& blockIdPalette, std::vector<int64_t> const& blockStates, std::vector<uint8_t> const& blockLight, std::vector<uint8_t> const& skyLight)
+    ChunkSection_1_13(int y, std::vector<std::shared_ptr<Block const>> const& palette, std::vector<blocks::BlockId> const& blockIdPalette, std::vector<int64_t> const& blockStates, std::vector<uint8_t> const& blockLight, std::vector<uint8_t> const& skyLight)
         : fY(y)
         , fPalette(palette)
         , fBlockIdPalette(blockIdPalette)
@@ -257,7 +257,7 @@ private:
 
 public:
     int const fY;
-    std::vector<std::shared_ptr<Block>> const fPalette;
+    std::vector<std::shared_ptr<Block const>> const fPalette;
     std::vector<blocks::BlockId> const fBlockIdPalette;
     std::vector<int64_t> const fBlockStates;
     std::vector<uint8_t> fBlockLight;

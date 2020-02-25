@@ -16,7 +16,7 @@ public:
         return Region::MakeRegion(fileName);
     }
 
-    bool eachBlock(int minX, int minZ, int maxX, int maxZ, std::function<bool(int x, int y, int z, std::shared_ptr<Block>)> callback) const {
+    bool eachBlock(int minX, int minZ, int maxX, int maxZ, std::function<bool(int x, int y, int z, std::shared_ptr<Block const>)> callback) const {
         if (minX > maxX || minZ > maxZ) {
             return false;
         }
@@ -62,7 +62,7 @@ public:
         }
         return true;
     }
-    
+
 public:
     std::string const fRootDirectory;
 };

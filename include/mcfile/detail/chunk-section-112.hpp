@@ -47,7 +47,7 @@ public:
             skyLight = skyLightTag->value();
         }
 
-        std::vector<std::shared_ptr<Block>> palette;
+        std::vector<std::shared_ptr<Block const>> palette;
         std::vector<uint16_t> paletteIndices(16 * 16 * 16);
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
@@ -57,7 +57,7 @@ public:
                     uint8_t const idHi = Nibble4(add, index);
                     uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
                     uint8_t const blockData = Nibble4(data, index);
-                    std::shared_ptr<Block> block = Flatten(id, blockData);
+                    std::shared_ptr<Block const> block = Flatten(id, blockData);
                     int paletteIndex = -1;
                     for (int i = 0; i < (int)palette.size(); i++) {
                         if (palette[i]->equals(*block)) {
@@ -77,7 +77,7 @@ public:
         return std::shared_ptr<ChunkSection>(new ChunkSection_1_12(yTag->fValue, palette, paletteIndices, blockLight, skyLight));
     }
 
-    std::shared_ptr<Block> blockAt(int offsetX, int offsetY, int offsetZ) const override {
+    std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
         int const index = BlockIndex(offsetX, offsetY, offsetZ);
         if (index < 0) {
             return nullptr;
@@ -129,7 +129,7 @@ public:
     }
 
 private:
-    ChunkSection_1_12(int y, std::vector<std::shared_ptr<Block>> const& palette, std::vector<uint16_t> const& paletteIndices, std::vector<uint8_t> const& blockLight, std::vector<uint8_t> const& skyLight)
+    ChunkSection_1_12(int y, std::vector<std::shared_ptr<Block const>> const& palette, std::vector<uint16_t> const& paletteIndices, std::vector<uint8_t> const& blockLight, std::vector<uint8_t> const& skyLight)
         : fY(y)
         , fPalette(palette)
         , fPaletteIndices(paletteIndices)
@@ -149,7 +149,7 @@ private:
         return index % 2 == 0 ? arr[index / 2] & 0x0F : (arr[index / 2] >> 4) & 0x0F;
     }
 
-    static inline std::shared_ptr<Block> Flatten(uint16_t blockId, uint8_t data) {
+    static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> properties;
         switch (blockId) {
@@ -814,7 +814,7 @@ private:
 
 private:
     int const fY;
-    std::vector<std::shared_ptr<Block>> fPalette;
+    std::vector<std::shared_ptr<Block const>> fPalette;
     std::vector<uint16_t> fPaletteIndices;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;

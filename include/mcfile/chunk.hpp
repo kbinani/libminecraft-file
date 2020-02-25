@@ -4,7 +4,7 @@ namespace mcfile {
 
 class Chunk {
 public:
-    std::shared_ptr<Block> blockAt(int x, int y, int z) const {
+    std::shared_ptr<Block const> blockAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
         if (chunkX != fChunkX || chunkZ != fChunkZ) {

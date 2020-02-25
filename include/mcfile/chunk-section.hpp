@@ -5,7 +5,7 @@ namespace mcfile {
 class ChunkSection {
 public:
     virtual ~ChunkSection() {}
-    virtual std::shared_ptr<Block> blockAt(int offsetX, int offsetY, int offsetZ) const = 0;
+    virtual std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual uint8_t skyLightAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual blocks::BlockId blockIdAt(int offsetX, int offsetY, int offsetZ) const = 0;
