@@ -24,10 +24,10 @@ int main() {
     std::shared_ptr<Chunk> invalid = region->chunkAt(999, 999); // nullptr because chunk [999, 999] is not stored in r.0.0.mca
     std::shared_ptr<Chunk> chunk = region->chunkAt(0, 0);
 
-    std::shared_ptr<Block> invalidBlock = chunk->blockAt(-1, -1, -1); // nullptr because of invalid coordinates
+    std::shared_ptr<Block const> invalidBlock = chunk->blockAt(-1, -1, -1); // nullptr because of invalid coordinates
 
     // get block information at (x, y, z) = (0, 1, 2)
-    std::shared_ptr<Block> b00 = chunk->blockAt(0, 1, 2);
+    std::shared_ptr<Block const> b00 = chunk->blockAt(0, 1, 2);
     std::cout << b00->fName << std::endl; // "minecraft:bedrock" etc.
 
     // get biome type at (x, y, z) = (1, 0, 2)

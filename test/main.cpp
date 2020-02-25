@@ -74,7 +74,7 @@ TEST_CASE("1.13.2") {
     }
 
     SUBCASE("World::eachBlock") {
-        auto const ret = world.eachBlock(0, 0, 15, 15, [&expected](int x, int y, int z, std::shared_ptr<Block> const& block) {
+        auto const ret = world.eachBlock(0, 0, 15, 15, [&expected](int x, int y, int z, std::shared_ptr<Block const> const& block) {
             auto pos = MakePoint3D(x, y, z);
             auto expectedIt = expected.find(pos);
             assert(expectedIt != expected.end());
@@ -93,7 +93,7 @@ TEST_CASE("1.13.2") {
 TEST_CASE("20w06a") {
     const auto dir = Path::Dirname(__FILE__);
     World world(dir + std::string("/data/20w06a/world/DIM-1"));
-    
+
     SUBCASE("biomeAt") {
         auto const& region = world.region(-1, -1);
         CHECK(region);
