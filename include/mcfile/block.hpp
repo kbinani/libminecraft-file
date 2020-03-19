@@ -35,6 +35,26 @@ public:
         return true;
     }
 
+    std::string toString() const {
+        std::ostringstream ss;
+        ss << fName;
+        if (!fProperties.empty()) {
+            ss << "[";
+            auto it = fProperties.begin();
+            while (true) {
+                ss << it->first << "=" << it->second;
+                it++;
+                if (it == fProperties.end()) {
+                    break;
+                } else {
+                    ss << ",";
+                }
+            }
+            ss << "]";
+        }
+        return ss.str();
+    }
+    
 public:
     std::string const fName;
     std::map<std::string, std::string> const fProperties;
