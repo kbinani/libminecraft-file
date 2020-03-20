@@ -150,6 +150,28 @@ public:
         return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes));
     }
 
+    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
+        auto stream = std::make_shared<mcfile::detail::FileStream>(filePath);
+        if (!stream->valid()) {
+            return nullptr;
+        }
+        std::vector<uint8_t> buffer(stream->length());
+        if (!stream->read(buffer.data(), 1, buffer.size())) {
+            return nullptr;
+        }
+        if (!detail::Compression::decompress(buffer)) {
+            return nullptr;
+        }
+        auto root = std::make_shared<mcfile::nbt::CompoundTag>();
+        auto bs = std::make_shared<mcfile::detail::ByteStream>(buffer);
+        detail::StreamReader reader(bs);
+        root->read(reader);
+        if (!root->valid()) {
+            return nullptr;
+        }
+        return MakeChunk(chunkX, chunkZ, *root);
+    }
+    
 private:
     explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes)
         : fChunkX(chunkX)
