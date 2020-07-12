@@ -16,6 +16,7 @@
 #include <sstream>
 #include <limits>
 #include <functional>
+#include <cmath>
 
 #include <mcfile/detail/filesystem.hpp>
 #include <mcfile/detail/stream.hpp>
@@ -55,6 +56,7 @@
 #include <mcfile/chunk-section.hpp>
 #include <mcfile/detail/chunk-section-112.hpp>
 #include <mcfile/detail/chunk-section-113.hpp>
+#include <mcfile/detail/chunk-section-116.hpp>
 #include <mcfile/detail/chunk-section-generator.hpp>
 #include <mcfile/chunk.hpp>
 #include <mcfile/detail/chunk-data-source.hpp>
