@@ -5,9 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: test
       run: |
-        git submodule update --init --recursive
         mkdir -p test/build
         cd test/build
         cmake ..
