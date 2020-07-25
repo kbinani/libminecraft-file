@@ -55,6 +55,14 @@ public:
         return ss.str();
     }
     
+    std::string property(std::string const& name, std::string const& fallback = "") const {
+        auto value = fProperties.find(name);
+        if (value == fProperties.end()) {
+            return fallback;
+        }
+        return value->second;
+    }
+    
 public:
     std::string const fName;
     std::map<std::string, std::string> const fProperties;
