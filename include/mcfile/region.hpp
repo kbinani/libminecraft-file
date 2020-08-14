@@ -396,7 +396,7 @@ public:
             return true;
         }
 
-        FILE* out = fopen(fs::path(resultMcaFilePath).native().c_str(), "wb");
+        FILE* out = fopen(resultMcaFilePath.c_str(), "wb");
         if (!out) {
             return false;
         }
@@ -408,8 +408,8 @@ public:
             for (int x = minChunkX; x <= maxChunkX; x++) {
                 int const localChunkX = x - minChunkX;
                 int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
-                fs::path const filepath = fs::path(directory).append(name(x, z));
-                FILE *in = fopen(filepath.native().c_str(), "rb");
+                std::string const filepath = directory + "/" + name(x, z);
+                FILE *in = fopen(filepath.c_str(), "rb");
                 if (!in) {
                     continue;
                 }
@@ -484,7 +484,7 @@ public:
             if (!fs::is_regular_file(p, err)) {
                 continue;
             }
-            std::string name = p.path().filename();
+            std::string name = p.path().filename().string();
             int chunkX;
             int chunkZ;
             if (sscanf(name.c_str(), "c.%d.%d.nbt.z", &chunkX, &chunkZ) != 2) {

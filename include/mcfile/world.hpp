@@ -54,7 +54,7 @@ public:
         auto regionDir = fs::path(fRootDirectory).append("region");
         fs::directory_iterator it(regionDir);
         for (auto const& path : it) {
-            auto region = Region::MakeRegion(path.path());
+            auto region = Region::MakeRegion(path.path().string());
             if (!region) {
                 continue;
             }
