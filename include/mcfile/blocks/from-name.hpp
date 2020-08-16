@@ -688,9 +688,9 @@ static inline BlockId FromName(std::string const& name) {
         {"minecraft:beehive", minecraft::beehive},
         {"minecraft:honey_block", minecraft::honey_block},
         {"minecraft:honeycomb_block", minecraft::honeycomb_block},
-        
+
         // 1.16
-        
+
         {"minecraft:crimson_nylium", minecraft::crimson_nylium},
         {"minecraft:warped_nylium", minecraft::warped_nylium},
         {"minecraft:crimson_planks", minecraft::crimson_planks},
@@ -756,6 +756,18 @@ static inline BlockId FromName(std::string const& name) {
         {"minecraft:crimson_door", minecraft::crimson_door},
         {"minecraft:warped_door", minecraft::warped_door},
         {"minecraft:target", minecraft::target},
+
+        // bugfix for 1.16
+
+        {"minecraft:twisting_vines_plant", minecraft::twisting_vines_plant},
+        {"minecraft:warped_wart_block", minecraft::warped_wart_block},
+        {"minecraft:quartz_bricks", minecraft::quartz_bricks},
+        {"minecraft:stripped_crimson_hyphae", minecraft::stripped_crimson_hyphae},
+        {"minecraft:stripped_warped_hyphae", minecraft::stripped_warped_hyphae},
+        {"minecraft:crimson_sign", minecraft::crimson_sign},
+        {"minecraft:warped_sign", minecraft::warped_sign},
+        {"minecraft:polished_blackstone_pressure_plate", minecraft::polished_blackstone_pressure_plate},
+        {"minecraft:polished_blackstone_button", minecraft::polished_blackstone_button},
     };
     auto mappingIt = mapping.find(name);
     if (mappingIt == mapping.end()) {

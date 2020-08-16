@@ -757,6 +757,18 @@ enum : BlockId {
     warped_door,
     target,
 
+    // bugfix for 1.16
+
+    twisting_vines_plant,
+    warped_wart_block,
+    quartz_bricks,
+    stripped_crimson_hyphae,
+    stripped_warped_hyphae,
+    crimson_sign,
+    warped_sign,
+    polished_blackstone_pressure_plate,
+    polished_blackstone_button,
+
     minecraft_max_block_id,
 };
 
