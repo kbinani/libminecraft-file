@@ -13,7 +13,7 @@ enum : BiomeId {
     taiga,
     swamp,
     river,
-    nether,
+    nether_wastes,
     the_end,
     frozen_ocean,
     frozen_river,
@@ -85,6 +85,9 @@ enum : BiomeId {
     soul_sand_valley,
     crimson_forest,
     warped_forest,
+
+    // 20w15a
+    basalt_deltas,
 
     minecraft_max_biome_id,
 };

@@ -13,7 +13,7 @@ static inline BiomeId FromInt(int v) {
         {5, minecraft::taiga},
         {6, minecraft::swamp},
         {7, minecraft::river},
-        {8, minecraft::nether},
+        {8, minecraft::nether_wastes},
         {9, minecraft::the_end},
         {10, minecraft::frozen_ocean},
         {11, minecraft::frozen_river},
@@ -80,9 +80,14 @@ static inline BiomeId FromInt(int v) {
         {167, minecraft::modified_badlands_plateau},
         {168, minecraft::bamboo_jungle},
         {169, minecraft::bamboo_jungle_hills},
+
+        // 20w06a
         {170, minecraft::soul_sand_valley},
         {171, minecraft::crimson_forest},
         {172, minecraft::warped_forest},
+
+        // 20w15a
+        {173, minecraft::basalt_deltas},
     };
     auto mappingIt = mapping.find(v);
     if (mappingIt == mapping.end()) {

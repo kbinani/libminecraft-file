@@ -3,7 +3,15 @@
 namespace mcfile {
 namespace biomes {
 
-static inline std::string Name(BiomeId id) {
+static inline std::string Name(BiomeId id, int chunkDataVersion) {
+    if (id == minecraft::nether_wastes) {
+        if (chunkDataVersion >= 2504) {
+            // 20w06a
+            return "minecraft:nether_wastes";
+        } else {
+            return "minecraft:nether";
+        }
+    }
     static std::map<BiomeId, std::string> const mapping = {
         {minecraft::ocean, "minecraft:ocean"},
         {minecraft::plains, "minecraft:plains"},
@@ -13,7 +21,6 @@ static inline std::string Name(BiomeId id) {
         {minecraft::taiga, "minecraft:taiga"},
         {minecraft::swamp, "minecraft:swamp"},
         {minecraft::river, "minecraft:river"},
-        {minecraft::nether, "minecraft:nether"},
         {minecraft::the_end, "minecraft:the_end"},
         {minecraft::frozen_ocean, "minecraft:frozen_ocean"},
         {minecraft::frozen_river, "minecraft:frozen_river"},
@@ -80,9 +87,14 @@ static inline std::string Name(BiomeId id) {
         {minecraft::modified_badlands_plateau, "minecraft:modified_badlands_plateau"},
         {minecraft::bamboo_jungle, "minecraft:bamboo_jungle"},
         {minecraft::bamboo_jungle_hills, "minecraft:bamboo_jungle_hills"},
+
+        // 20w06a
         {minecraft::soul_sand_valley, "minecraft:soul_sand_valley"},
         {minecraft::crimson_forest, "minecraft:crimson_forest"},
         {minecraft::warped_forest, "minecraft:warped_forest"},
+
+        // 20w15a
+        {minecraft::basalt_deltas, "minecraft:basalt_deltas"},
     };
     auto mappingIt = mapping.find(id);
     if (mappingIt == mapping.end()) {
