@@ -43,7 +43,7 @@ public:
     }
 
     void write(int32_t v) {
-        uint64_t t = detail::Int32LEFromNative(*(int32_t *) &v);
+        uint32_t t = detail::Int32LEFromNative(*(int32_t *) &v);
         fStream->write(&t, sizeof(t));
     }
 

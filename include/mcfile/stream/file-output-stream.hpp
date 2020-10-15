@@ -25,6 +25,18 @@ public:
 
     FileOutputStream &operator=(FileOutputStream const &) = delete;
 
+    bool write(void *buffer, size_t size) override {
+        return fwrite(buffer, size, 1, fFile) == 1;
+    }
+
+    bool seek(long offset) override {
+        return fseek(fFile, offset, SEEK_SET) == 0;
+    }
+
+    long pos() const override {
+        return ftell(fFile);
+    }
+
 private:
     FILE *fFile;
 };

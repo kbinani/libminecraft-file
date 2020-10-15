@@ -30,7 +30,11 @@ public:
     void read(::mcfile::stream::InputStreamReader& reader) {
         fValid = readImpl(reader);
     }
-
+    
+    void write(::mcfile::stream::OutputStreamWriter& writer) const {
+        writeImpl(writer);
+    }
+    
     bool valid() const { return fValid; }
 
     virtual uint8_t id() const = 0;
@@ -53,6 +57,7 @@ public:
 
 protected:
     virtual bool readImpl(::mcfile::stream::InputStreamReader& reader) = 0;
+    virtual void writeImpl(::mcfile::stream::OutputStreamWriter& writer) const = 0;
 
 public:
     static uint8_t const TAG_End = 0;
@@ -71,8 +76,6 @@ public:
 
 protected:
     std::string fName;
-
-private:
     bool fValid;
 };
 

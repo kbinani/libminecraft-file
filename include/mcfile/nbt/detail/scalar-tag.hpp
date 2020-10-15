@@ -7,6 +7,13 @@ namespace detail {
 template< typename T, uint8_t ID>
 class ScalarTag : public Tag {
 public:
+    ScalarTag() : Tag() {}
+
+    explicit ScalarTag(T v) {
+        fValue = v;
+        fValid = true;
+    }
+    
     bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         T v;
         if (!r.read(&v)) {
@@ -16,6 +23,10 @@ public:
         return true;
     }
 
+    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
+        w.write(fValue);
+    }
+    
     uint8_t id() const override { return ID; }
 
 public:

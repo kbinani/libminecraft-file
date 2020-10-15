@@ -31,6 +31,15 @@ public:
         fValue.swap(tmp);
         return true;
     }
+    
+    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
+        for (auto it = fValue.begin(); it != fValue.end(); it++) {
+            uint8_t type = it->second->id();
+            w.write(type);
+            w.write(it->first);
+            it->second->write(w);
+        }
+    }
 
     uint8_t id() const override { return Tag::TAG_Compound; }
 

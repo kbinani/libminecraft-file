@@ -10,6 +10,7 @@ public:
     VectorTag()
         : Tag()
         , fPrepared(false)
+        , fLittleEndian(false)
     {
     }
 
@@ -22,15 +23,23 @@ public:
         if (!r.copy(fValue)) {
             return false;
         }
+        fLittleEndian = r.isLittleEndian();
         return true;
     }
 
+    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
+        std::vector<T> const& b = value();
+        for (size_t i = 0; i < b.size(); i++) {
+            w.write(b[i]);
+        }
+    }
+    
     uint8_t id() const override { return ID; }
 
     std::vector<T> const& value() const {
         if (!fPrepared) {
             for (size_t i = 0; i < fValue.size(); i++) {
-                fValue[i] = convert(fValue[i]);
+                fValue[i] = convert(fValue[i], fLittleEndian);
             }
             fPrepared = true;
         }
@@ -38,11 +47,12 @@ public:
     }
 
 protected:
-    virtual T convert(T v) const = 0;
+    virtual T convert(T v, bool littleEndian) const = 0;
 
 private:
     std::vector<T> mutable fValue;
     bool mutable fPrepared = false;
+    bool fLittleEndian;
 };
 
 } // namespace detail

@@ -23,13 +23,23 @@ public:
             }
             tmp.push_back(tag);
         }
+        fType = type;
         tmp.swap(fValue);
         return true;
     }
 
+    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
+        w.write(fType);
+        w.write((int32_t)fValue.size());
+        for (auto const& v : fValue) {
+            v->write(w);
+        }
+    }
+    
     uint8_t id() const override { return Tag::TAG_List; }
 
 public:
+    uint8_t fType;
     std::vector<std::shared_ptr<Tag>> fValue;
 };
 
