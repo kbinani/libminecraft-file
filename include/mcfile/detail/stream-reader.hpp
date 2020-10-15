@@ -9,10 +9,15 @@
 namespace mcfile {
 namespace detail {
 
+struct ReadOption {
+    bool fLittleEndian;
+};
+
 class StreamReader {
 public:
-    explicit StreamReader(std::shared_ptr<Stream> stream)
-            : fStream(stream) {
+    explicit StreamReader(std::shared_ptr<InputStream> stream, ReadOption option = { .fLittleEndian = false })
+            : fStream(stream)
+            , fLittleEndian(option.fLittleEndian) {
     }
 
     StreamReader(StreamReader const &) = delete;
@@ -43,7 +48,7 @@ public:
         if (!readRaw(&t)) {
             return false;
         }
-        t = Int16FromBE(t);
+        t = int16FromRaw(t);
         *v = *(int16_t *) &t;
         return true;
     }
@@ -53,7 +58,7 @@ public:
         if (!readRaw(&t)) {
             return false;
         }
-        *v = Int16FromBE(t);
+        *v = int16FromRaw(t);
         return true;
     }
 
@@ -62,7 +67,7 @@ public:
         if (!readRaw(&t)) {
             return false;
         }
-        t = Int32FromBE(t);
+        t = int32FromRaw(t);
         *v = *(int32_t *) &t;
         return true;
     }
@@ -72,7 +77,7 @@ public:
         if (!readRaw(&t)) {
             return false;
         }
-        *v = Int32FromBE(t);
+        *v = int32FromRaw(t);
         return true;
     }
 
@@ -81,7 +86,7 @@ public:
         if (!readRaw(&t)) {
             return false;
         }
-        t = Int64FromBE(t);
+        t = int64FromRaw(t);
         *v = *(int64_t *) &t;
         return true;
     }
@@ -91,7 +96,7 @@ public:
         if (!readRaw(&t)) {
             return false;
         }
-        *v = Int64FromBE(t);
+        *v = int64FromRaw(t);
         return true;
     }
 
@@ -158,6 +163,30 @@ public:
         #endif
     }
 
+    static uint64_t Int64FromLE(uint64_t v) {
+        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
+            return SwapInt64(v);
+        #else
+            return v;
+        #endif
+    }
+
+    static uint32_t Int32FromLE(uint32_t v) {
+        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
+            return SwapInt32(v);
+        #else
+            return v;
+        #endif
+    }
+
+    static uint16_t Int16FromLE(uint16_t v) {
+        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
+            return SwapInt16(v);
+        #else
+            return v;
+        #endif
+    }
+
     static uint64_t Int64BEFromNative(uint64_t v) {
         return Int64FromBE(v);
     }
@@ -174,6 +203,30 @@ private:
     template<typename T>
     bool readRaw(T *v) {
         return fStream->read(v, sizeof(T), 1);
+    }
+
+    uint64_t int64FromRaw(uint64_t v) const {
+        if (fLittleEndian) {
+            return Int64FromLE(v);
+        } else {
+            return Int64FromBE(v);
+        }
+    }
+
+    uint32_t int32FromRaw(uint32_t v) const {
+        if (fLittleEndian) {
+            return Int32FromLE(v);
+        } else {
+            return Int32FromBE(v);
+        }
+    }
+
+    uint16_t int16FromRaw(uint16_t v) const {
+        if (fLittleEndian) {
+            return Int16FromLE(v);
+        } else {
+            return Int16FromBE(v);
+        }
     }
 
     static uint64_t SwapInt64(uint64_t v) {
@@ -204,8 +257,9 @@ private:
     }
 
 private:
-    std::shared_ptr<Stream> fStream;
+    std::shared_ptr<InputStream> fStream;
+    bool fLittleEndian;
 };
 
-} // namespace mcfile
 } // namespace detail
+} // namespace mcfile
