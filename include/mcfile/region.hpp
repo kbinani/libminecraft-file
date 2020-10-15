@@ -10,7 +10,7 @@ public:
     using LoadChunkCallback = std::function<bool(Chunk const&)>;
 
     bool loadAllChunks(bool& error, LoadChunkCallback callback) const {
-        auto fs = std::make_shared<detail::FileStream>(fFilePath);
+        auto fs = std::make_shared<detail::FileInputStream>(fFilePath);
         detail::StreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
@@ -28,7 +28,7 @@ public:
         if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
             return nullptr;
         }
-        auto fs = std::make_shared<detail::FileStream>(fFilePath);
+        auto fs = std::make_shared<detail::FileInputStream>(fFilePath);
         detail::StreamReader sr(fs);
         std::shared_ptr<detail::ChunkDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
@@ -163,7 +163,7 @@ public:
         if (localChunkZ < 0 || 32 <= localChunkZ) {
             return false;
         }
-        auto fs = std::make_shared<detail::FileStream>(fFilePath);
+        auto fs = std::make_shared<detail::FileInputStream>(fFilePath);
         detail::StreamReader sr(fs);
         auto data = dataSource(localChunkX, localChunkZ, sr);
         if (!data) {
@@ -362,7 +362,7 @@ public:
             return false;
         }
 
-        if (!detail::FileStream::copy(in, out, chunkSize)) {
+        if (!detail::FileInputStream::Copy(in, out, chunkSize)) {
             fclose(in);
             fclose(out);
             return false;
@@ -433,7 +433,7 @@ public:
                     fclose(out);
                     return false;
                 }
-                if (!detail::FileStream::copy(in, out, size - 1)) {
+                if (!detail::FileInputStream::Copy(in, out, size - 1)) {
                     fclose(in);
                     fclose(out);
                     return false;

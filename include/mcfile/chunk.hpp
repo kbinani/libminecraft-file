@@ -151,7 +151,7 @@ public:
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
-        auto stream = std::make_shared<mcfile::detail::FileStream>(filePath);
+        auto stream = std::make_shared<mcfile::detail::FileInputStream>(filePath);
         if (!stream->valid()) {
             return nullptr;
         }

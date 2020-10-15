@@ -3,15 +3,15 @@
 namespace mcfile {
 namespace detail {
 
-class Stream {
+class InputStream {
 public:
-    Stream() = default;
+    InputStream() = default;
 
-    Stream(Stream const &) = delete;
+    InputStream(InputStream const &) = delete;
 
-    Stream &operator=(Stream const &) = delete;
+    InputStream &operator=(InputStream const &) = delete;
 
-    virtual ~Stream() {}
+    virtual ~InputStream() {}
 
     virtual long length() const = 0;
 

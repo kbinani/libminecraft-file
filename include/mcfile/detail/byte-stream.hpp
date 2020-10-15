@@ -3,7 +3,7 @@
 namespace mcfile {
 namespace detail {
 
-class ByteStream : public Stream {
+class ByteStream : public InputStream {
 public:
     explicit ByteStream(std::vector<uint8_t> &buffer)
             : fLoc(0) {
