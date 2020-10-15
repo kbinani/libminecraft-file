@@ -39,6 +39,7 @@ public:
             w.write(it->first);
             it->second->write(w);
         }
+        w.write((uint8_t)0);
     }
 
     uint8_t id() const override { return Tag::TAG_Compound; }
