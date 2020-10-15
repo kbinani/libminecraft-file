@@ -7,22 +7,22 @@
 #endif
 
 namespace mcfile {
-namespace detail {
+namespace stream {
 
 struct ReadOption {
     bool fLittleEndian;
 };
 
-class StreamReader {
+class InputStreamReader {
 public:
-    explicit StreamReader(std::shared_ptr<InputStream> stream, ReadOption option = { .fLittleEndian = false })
+    explicit InputStreamReader(std::shared_ptr<InputStream> stream, ReadOption option = { .fLittleEndian = false })
             : fStream(stream)
             , fLittleEndian(option.fLittleEndian) {
     }
 
-    StreamReader(StreamReader const &) = delete;
+    InputStreamReader(InputStreamReader const &) = delete;
 
-    StreamReader &operator=(StreamReader const &) = delete;
+    InputStreamReader &operator=(InputStreamReader const &) = delete;
 
     bool valid() const {
         if (!fStream) {
@@ -261,5 +261,5 @@ private:
     bool fLittleEndian;
 };
 
-} // namespace detail
+} // namespace stream
 } // namespace mcfile

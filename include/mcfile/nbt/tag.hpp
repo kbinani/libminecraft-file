@@ -27,7 +27,7 @@ public:
     Tag(Tag const&) = delete;
     Tag& operator = (Tag const&) = delete;
 
-    void read(::mcfile::detail::StreamReader& reader) {
+    void read(::mcfile::stream::InputStreamReader& reader) {
         fValid = readImpl(reader);
     }
 
@@ -52,7 +52,7 @@ public:
     LongArrayTag const* asLongArray() const { return this->id() == TAG_Long_Array ? reinterpret_cast<LongArrayTag const*>(this) : nullptr; }
 
 protected:
-    virtual bool readImpl(::mcfile::detail::StreamReader& reader) = 0;
+    virtual bool readImpl(::mcfile::stream::InputStreamReader& reader) = 0;
 
 public:
     static uint8_t const TAG_End = 0;

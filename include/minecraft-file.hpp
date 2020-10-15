@@ -19,10 +19,10 @@
 #include <cmath>
 
 #include <mcfile/detail/filesystem.hpp>
-#include <mcfile/detail/stream.hpp>
-#include <mcfile/detail/file-stream.hpp>
-#include <mcfile/detail/byte-stream.hpp>
-#include <mcfile/detail/stream-reader.hpp>
+#include <mcfile/stream/input-stream.hpp>
+#include <mcfile/stream/file-input-stream.hpp>
+#include <mcfile/stream/byte-stream.hpp>
+#include <mcfile/stream/input-stream-reader.hpp>
 #include <mcfile/detail/compression.hpp>
 #include <mcfile/detail/string.hpp>
 #include <mcfile/nbt/tag-factory.hpp>

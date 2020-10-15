@@ -5,7 +5,7 @@ namespace nbt {
 
 class ListTag : public Tag {
 public:
-    bool readImpl(::mcfile::detail::StreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         uint8_t type;
         if (!r.read(&type)) {
             return false;

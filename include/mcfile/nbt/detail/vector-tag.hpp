@@ -13,7 +13,7 @@ public:
     {
     }
 
-    bool readImpl(::mcfile::detail::StreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         uint32_t length;
         if (!r.read(&length)) {
             return false;

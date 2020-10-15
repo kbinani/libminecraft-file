@@ -9,7 +9,7 @@ public:
         : fChunkX(chunkX), fChunkZ(chunkZ), fTimestamp(timestamp), fOffset(offset), fLength(length) {
     }
 
-    std::shared_ptr<Chunk> load(StreamReader &reader) const {
+    std::shared_ptr<Chunk> load(::mcfile::stream::InputStreamReader &reader) const {
         if (!reader.valid()) {
             return nullptr;
         }
@@ -31,8 +31,8 @@ public:
             return nullptr;
         }
         auto root = std::make_shared<nbt::CompoundTag>();
-        auto bs = std::make_shared<ByteStream>(buffer);
-        auto sr = std::make_shared<StreamReader>(bs);
+        auto bs = std::make_shared<stream::ByteStream>(buffer);
+        auto sr = std::make_shared<stream::InputStreamReader>(bs);
         root->read(*sr);
         if (!root->valid()) {
             return nullptr;
@@ -40,7 +40,7 @@ public:
         return Chunk::MakeChunk(fChunkX, fChunkZ, *root);
     }
     
-    bool load(StreamReader &reader, std::function<void(Chunk const &chunk)> callback) const {
+    bool load(::mcfile::stream::InputStreamReader &reader, std::function<void(Chunk const &chunk)> callback) const {
         if (!reader.valid()) {
             return false;
         }
@@ -62,8 +62,8 @@ public:
             return false;
         }
         auto root = std::make_shared<nbt::CompoundTag>();
-        auto bs = std::make_shared<ByteStream>(buffer);
-        auto sr = std::make_shared<StreamReader>(bs);
+        auto bs = std::make_shared<stream::ByteStream>(buffer);
+        auto sr = std::make_shared<stream::InputStreamReader>(bs);
         root->read(*sr);
         if (!root->valid()) {
             return false;

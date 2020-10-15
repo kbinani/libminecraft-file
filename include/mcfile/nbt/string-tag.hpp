@@ -5,7 +5,7 @@ namespace nbt {
 
 class StringTag : public Tag {
 public:
-    bool readImpl(::mcfile::detail::StreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         std::string tmp;
         if (!r.read(tmp)) {
             return false;

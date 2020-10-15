@@ -10,8 +10,8 @@ public:
     using LoadChunkCallback = std::function<bool(Chunk const&)>;
 
     bool loadAllChunks(bool& error, LoadChunkCallback callback) const {
-        auto fs = std::make_shared<detail::FileInputStream>(fFilePath);
-        detail::StreamReader sr(fs);
+        auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
+        stream::InputStreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
                 if (!loadChunkImpl(x, z, sr, error, callback)) {
@@ -28,8 +28,8 @@ public:
         if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
             return nullptr;
         }
-        auto fs = std::make_shared<detail::FileInputStream>(fFilePath);
-        detail::StreamReader sr(fs);
+        auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
+        stream::InputStreamReader sr(fs);
         std::shared_ptr<detail::ChunkDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
             return nullptr;
@@ -107,7 +107,7 @@ public:
             fclose(fp);
             return false;
         }
-        loc = detail::StreamReader::Int32FromBE(loc);
+        loc = stream::InputStreamReader::Int32FromBE(loc);
         if (loc == 0) {
             fclose(fp);
             return true;
@@ -141,7 +141,7 @@ public:
             fclose(fp);
             return false;
         }
-        chunkSize = detail::StreamReader::Int32FromBE(chunkSize);
+        chunkSize = stream::InputStreamReader::Int32FromBE(chunkSize);
         for (uint32_t i = 0; i < chunkSize; i++) {
             uint8_t zero = 0;
             if (fwrite(&zero, sizeof(zero), 1, fp) != 1) {
@@ -163,8 +163,8 @@ public:
         if (localChunkZ < 0 || 32 <= localChunkZ) {
             return false;
         }
-        auto fs = std::make_shared<detail::FileInputStream>(fFilePath);
-        detail::StreamReader sr(fs);
+        auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
+        stream::InputStreamReader sr(fs);
         auto data = dataSource(localChunkX, localChunkZ, sr);
         if (!data) {
             return false;
@@ -248,7 +248,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = detail::StreamReader::Int32FromBE(loc);
+        loc = stream::InputStreamReader::Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             return true;
@@ -267,7 +267,7 @@ public:
             fclose(in);
             return false;
         }
-        chunkSize = detail::StreamReader::Int32FromBE(chunkSize) - 1;
+        chunkSize = stream::InputStreamReader::Int32FromBE(chunkSize) - 1;
         
         uint8_t compressionType;
         if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
@@ -332,7 +332,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = detail::StreamReader::Int32FromBE(loc);
+        loc = stream::InputStreamReader::Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             return true;
@@ -348,7 +348,7 @@ public:
             fclose(in);
             return false;
         }
-        chunkSize = detail::StreamReader::Int32FromBE(chunkSize) - 1;
+        chunkSize = stream::InputStreamReader::Int32FromBE(chunkSize) - 1;
 
         uint8_t compressionType;
         if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
@@ -362,7 +362,7 @@ public:
             return false;
         }
 
-        if (!detail::FileInputStream::Copy(in, out, chunkSize)) {
+        if (!stream::FileInputStream::Copy(in, out, chunkSize)) {
             fclose(in);
             fclose(out);
             return false;
@@ -421,7 +421,7 @@ public:
                     fclose(out);
                     return false;
                 }
-                uint32_t s = detail::StreamReader::Int32BEFromNative(size);
+                uint32_t s = stream::InputStreamReader::Int32BEFromNative(size);
                 if (fwrite(&s, sizeof(s), 1, out) != 1) {
                     fclose(in);
                     fclose(out);
@@ -433,7 +433,7 @@ public:
                     fclose(out);
                     return false;
                 }
-                if (!detail::FileInputStream::Copy(in, out, size - 1)) {
+                if (!stream::FileInputStream::Copy(in, out, size - 1)) {
                     fclose(in);
                     fclose(out);
                     return false;
@@ -442,7 +442,7 @@ public:
 
                 uint32_t const numSectors = Ceil(size, kSectorSize) / kSectorSize;
                 uint32_t const loc = (((((uint32_t)location) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
-                locationLut[index] = detail::StreamReader::Int32BEFromNative(loc);
+                locationLut[index] = stream::InputStreamReader::Int32BEFromNative(loc);
             }
         }
         long const current = ftell(out);
@@ -528,7 +528,7 @@ private:
     {
     }
 
-    std::shared_ptr<detail::ChunkDataSource> dataSource(int localChunkX, int localChunkZ, detail::StreamReader& sr) const {
+    std::shared_ptr<detail::ChunkDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader& sr) const {
         int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
         if (!sr.valid()) {
             return nullptr;
@@ -565,7 +565,7 @@ private:
         return std::make_shared<detail::ChunkDataSource>(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
     }
     
-    bool loadChunkImpl(int regionX, int regionZ, detail::StreamReader& sr, bool& error, LoadChunkCallback callback) const {
+    bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader& sr, bool& error, LoadChunkCallback callback) const {
         auto data = dataSource(regionX, regionZ, sr);
         if (!data) {
             error = true;

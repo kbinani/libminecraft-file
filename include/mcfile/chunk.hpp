@@ -151,7 +151,7 @@ public:
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
-        auto stream = std::make_shared<mcfile::detail::FileInputStream>(filePath);
+        auto stream = std::make_shared<mcfile::stream::FileInputStream>(filePath);
         if (!stream->valid()) {
             return nullptr;
         }
@@ -163,8 +163,8 @@ public:
             return nullptr;
         }
         auto root = std::make_shared<mcfile::nbt::CompoundTag>();
-        auto bs = std::make_shared<mcfile::detail::ByteStream>(buffer);
-        detail::StreamReader reader(bs);
+        auto bs = std::make_shared<mcfile::stream::ByteStream>(buffer);
+        stream::InputStreamReader reader(bs);
         root->read(reader);
         if (!root->valid()) {
             return nullptr;

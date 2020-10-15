@@ -1,7 +1,7 @@
 #pragma once
 
 namespace mcfile {
-namespace detail {
+namespace stream {
 
 class InputStream {
 public:
@@ -24,5 +24,6 @@ public:
     virtual long pos() const = 0;
 };
 
+} // namespace stream
 } // namespace mcfile
-} // namespace detail
+

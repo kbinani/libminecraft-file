@@ -5,7 +5,7 @@ namespace nbt {
 
 class FloatTag : public Tag {
 public:
-    bool readImpl(::mcfile::detail::StreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         uint32_t v;
         if (!r.read(&v)) {
             return false;

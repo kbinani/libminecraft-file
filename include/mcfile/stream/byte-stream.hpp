@@ -1,7 +1,7 @@
 #pragma once
 
 namespace mcfile {
-namespace detail {
+namespace stream {
 
 class ByteStream : public InputStream {
 public:
@@ -44,5 +44,5 @@ private:
     long fLoc;
 };
 
+} // namespace stream
 } // namespace mcfile
-} // namespace detail

@@ -5,7 +5,7 @@ namespace nbt {
 
 class CompoundTag : public Tag {
 public:
-    bool readImpl(::mcfile::detail::StreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         std::map<std::string, std::shared_ptr<Tag>> tmp;
         while (r.pos() < r.length()) {
             uint8_t type;

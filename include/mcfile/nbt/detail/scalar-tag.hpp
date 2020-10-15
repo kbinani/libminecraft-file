@@ -7,7 +7,7 @@ namespace detail {
 template< typename T, uint8_t ID>
 class ScalarTag : public Tag {
 public:
-    bool readImpl(::mcfile::detail::StreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         T v;
         if (!r.read(&v)) {
             return false;
