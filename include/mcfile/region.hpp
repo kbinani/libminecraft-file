@@ -107,7 +107,7 @@ public:
             fclose(fp);
             return false;
         }
-        loc = stream::InputStreamReader::Int32FromBE(loc);
+        loc = detail::Int32FromBE(loc);
         if (loc == 0) {
             fclose(fp);
             return true;
@@ -141,7 +141,7 @@ public:
             fclose(fp);
             return false;
         }
-        chunkSize = stream::InputStreamReader::Int32FromBE(chunkSize);
+        chunkSize = detail::Int32FromBE(chunkSize);
         for (uint32_t i = 0; i < chunkSize; i++) {
             uint8_t zero = 0;
             if (fwrite(&zero, sizeof(zero), 1, fp) != 1) {
@@ -248,7 +248,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = stream::InputStreamReader::Int32FromBE(loc);
+        loc = detail::Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             return true;
@@ -267,7 +267,7 @@ public:
             fclose(in);
             return false;
         }
-        chunkSize = stream::InputStreamReader::Int32FromBE(chunkSize) - 1;
+        chunkSize = detail::Int32FromBE(chunkSize) - 1;
         
         uint8_t compressionType;
         if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
@@ -332,7 +332,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = stream::InputStreamReader::Int32FromBE(loc);
+        loc = detail::Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             return true;
@@ -348,7 +348,7 @@ public:
             fclose(in);
             return false;
         }
-        chunkSize = stream::InputStreamReader::Int32FromBE(chunkSize) - 1;
+        chunkSize = detail::Int32FromBE(chunkSize) - 1;
 
         uint8_t compressionType;
         if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
@@ -421,7 +421,7 @@ public:
                     fclose(out);
                     return false;
                 }
-                uint32_t s = stream::InputStreamReader::Int32BEFromNative(size);
+                uint32_t s = detail::Int32BEFromNative(size);
                 if (fwrite(&s, sizeof(s), 1, out) != 1) {
                     fclose(in);
                     fclose(out);
@@ -442,7 +442,7 @@ public:
 
                 uint32_t const numSectors = Ceil(size, kSectorSize) / kSectorSize;
                 uint32_t const loc = (((((uint32_t)location) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
-                locationLut[index] = stream::InputStreamReader::Int32BEFromNative(loc);
+                locationLut[index] = detail::Int32BEFromNative(loc);
             }
         }
         long const current = ftell(out);

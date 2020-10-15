@@ -138,65 +138,9 @@ public:
         }
         return fStream->pos();
     }
-
-    static uint64_t Int64FromBE(uint64_t v) {
-        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
-            return v;
-        #else
-            return SwapInt64(v);
-        #endif
-    }
-
-    static uint32_t Int32FromBE(uint32_t v) {
-        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
-            return v;
-        #else
-            return SwapInt32(v);
-        #endif
-    }
-
-    static uint16_t Int16FromBE(uint16_t v) {
-        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
-            return v;
-        #else
-            return SwapInt16(v);
-        #endif
-    }
-
-    static uint64_t Int64FromLE(uint64_t v) {
-        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
-            return SwapInt64(v);
-        #else
-            return v;
-        #endif
-    }
-
-    static uint32_t Int32FromLE(uint32_t v) {
-        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
-            return SwapInt32(v);
-        #else
-            return v;
-        #endif
-    }
-
-    static uint16_t Int16FromLE(uint16_t v) {
-        #if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
-            return SwapInt16(v);
-        #else
-            return v;
-        #endif
-    }
-
-    static uint64_t Int64BEFromNative(uint64_t v) {
-        return Int64FromBE(v);
-    }
-
-    static uint32_t Int32BEFromNative(uint32_t v) {
-        return Int32FromBE(v);
-    }
     
-    static uint16_t Int16BEFromNative(uint16_t v) {
-        return Int16FromBE(v);
+    bool isLittleEndian() const {
+        return fLittleEndian;
     }
     
 private:
@@ -207,53 +151,26 @@ private:
 
     uint64_t int64FromRaw(uint64_t v) const {
         if (fLittleEndian) {
-            return Int64FromLE(v);
+            return detail::Int64FromLE(v);
         } else {
-            return Int64FromBE(v);
+            return detail::Int64FromBE(v);
         }
     }
 
     uint32_t int32FromRaw(uint32_t v) const {
         if (fLittleEndian) {
-            return Int32FromLE(v);
+            return detail::Int32FromLE(v);
         } else {
-            return Int32FromBE(v);
+            return detail::Int32FromBE(v);
         }
     }
 
     uint16_t int16FromRaw(uint16_t v) const {
         if (fLittleEndian) {
-            return Int16FromLE(v);
+            return detail::Int16FromLE(v);
         } else {
-            return Int16FromBE(v);
+            return detail::Int16FromBE(v);
         }
-    }
-
-    static uint64_t SwapInt64(uint64_t v) {
-        return ((v & 0x00000000000000ffLL) << 56)
-               | ((v & 0x000000000000ff00LL) << 40)
-               | ((v & 0x0000000000ff0000LL) << 24)
-               | ((v & 0x00000000ff000000LL) << 8)
-               | ((v & 0x000000ff00000000LL) >> 8)
-               | ((v & 0x0000ff0000000000LL) >> 24)
-               | ((v & 0x00ff000000000000LL) >> 40)
-               | ((v & 0xff00000000000000LL) >> 56);
-    }
-
-    static uint32_t SwapInt32(uint32_t v) {
-        uint32_t r;
-        r = v << 24;
-        r |= (v & 0x0000FF00) << 8;
-        r |= (v & 0x00FF0000) >> 8;
-        r |= v >> 24;
-        return r;
-    }
-
-    static uint16_t SwapInt16(uint16_t v) {
-        uint16_t r;
-        r = v << 8;
-        r |= (v & 0xFF00) >> 8;
-        return r;
     }
 
 private:

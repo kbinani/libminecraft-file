@@ -19,10 +19,14 @@
 #include <cmath>
 
 #include <mcfile/detail/filesystem.hpp>
+#include <mcfile/detail/endianness.hpp>
 #include <mcfile/stream/input-stream.hpp>
+#include <mcfile/stream/output-stream.hpp>
 #include <mcfile/stream/file-input-stream.hpp>
+#include <mcfile/stream/file-output-stream.hpp>
 #include <mcfile/stream/byte-stream.hpp>
 #include <mcfile/stream/input-stream-reader.hpp>
+#include <mcfile/stream/output-stream-writer.hpp>
 #include <mcfile/detail/compression.hpp>
 #include <mcfile/detail/string.hpp>
 #include <mcfile/nbt/tag-factory.hpp>
