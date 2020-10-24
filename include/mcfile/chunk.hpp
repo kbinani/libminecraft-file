@@ -176,6 +176,7 @@ private:
     explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
+        , fSections(16, nullptr)
         , fDataVersion(dataVersion)
     {
         for (auto section : sections) {
@@ -214,7 +215,7 @@ private:
 public:
     int const fChunkX;
     int const fChunkZ;
-    std::shared_ptr<ChunkSection> fSections[16];
+    std::vector<std::shared_ptr<ChunkSection>> fSections;
     std::vector<biomes::BiomeId> fBiomes;
     int const fDataVersion;
 };
