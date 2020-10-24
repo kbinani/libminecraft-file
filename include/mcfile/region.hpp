@@ -43,18 +43,13 @@ public:
 
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath) {
         // ../directory/r.5.13.mca
+        namespace fs = detail::filesystem;
+        using mcfile::detail::String;
+        using namespace std;
 
-        auto basename = filePath;
+        string basename = fs::path(filePath).filename().string();
 
-        auto pos = filePath.find_last_of('/');
-        if (pos == std::string::npos) {
-            pos = filePath.find_last_of('\\');
-        }
-        if (pos != std::string::npos) {
-            basename = filePath.substr(pos + 1);
-        }
-
-        std::vector<std::string> tokens = detail::String::Split(basename, '.');
+        vector<string> tokens = String::Split(basename, '.');
         if (tokens.size() != 4) {
             return nullptr;
         }
@@ -64,13 +59,13 @@ public:
 
         int x, z;
         try {
-            x = std::stoi(tokens[1]);
-            z = std::stoi(tokens[2]);
+            x = stoi(tokens[1]);
+            z = stoi(tokens[2]);
         } catch (...) {
             return nullptr;
         }
 
-        return std::shared_ptr<Region>(new Region(filePath, x, z));
+        return shared_ptr<Region>(new Region(filePath, x, z));
     }
 
     int minBlockX() const { return fX * 32 * 16; }
