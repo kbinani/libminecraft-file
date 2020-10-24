@@ -36,23 +36,23 @@ public:
     }
 
     std::string toString() const {
-        std::ostringstream ss;
-        ss << fName;
-        if (!fProperties.empty()) {
-            ss << "[";
-            auto it = fProperties.begin();
-            while (true) {
-                ss << it->first << "=" << it->second;
-                it++;
-                if (it == fProperties.end()) {
-                    break;
-                } else {
-                    ss << ",";
-                }
-            }
-            ss << "]";
+        using namespace std;
+        string s = fName;
+        if (fProperties.empty()) {
+            return s;
         }
-        return ss.str();
+        bool first = true;
+        for (auto const& it : fProperties) {
+            if (first) {
+                s += "[";
+            } else {
+                s += ",";
+            }
+            s += it.first + "=" + it.second;
+            first = false;
+        }
+        s += "]";
+        return s;
     }
     
     std::string property(std::string const& name, std::string const& fallback = "") const {
