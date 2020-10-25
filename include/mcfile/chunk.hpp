@@ -125,6 +125,8 @@ public:
     int maxBlockZ() const { return fChunkZ * 16 + 15; }
 
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, nbt::CompoundTag const& root) {
+        using namespace std;
+
         int dataVersion = 0;
         auto dataVersionTag = root.query("/DataVersion")->asInt();
         if (dataVersionTag) {
@@ -135,7 +137,7 @@ public:
         if (!sectionsTag) {
             return nullptr;
         }
-        std::vector<std::shared_ptr<ChunkSection>> sections;
+        vector<shared_ptr<ChunkSection>> sections;
         for (auto sectionTag : sectionsTag->fValue) {
             auto section = detail::ChunkSectionGenerator::MakeChunkSection(sectionTag->asCompound(), dataVersion);
             if (section) {
@@ -143,11 +145,41 @@ public:
             }
         }
 
-        std::vector<biomes::BiomeId> biomes;
+        vector<biomes::BiomeId> biomes;
         auto biomesTag = root.query("/Level/Biomes");
         ParseBiomes(biomesTag, biomes);
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes));
+        vector<shared_ptr<nbt:: CompoundTag>> entities;
+        auto entitiesTag = root.query("/Level/Entities");
+        if (entitiesTag && entitiesTag->id() == nbt::Tag::TAG_List && entitiesTag->asList()->fType == nbt::Tag::TAG_Compound) {
+            auto entitiesList = entitiesTag->asList();
+            for (auto it : entitiesList->fValue) {
+                auto comp = it->asCompound();
+                if (!comp) {
+                    continue;
+                }
+                auto copy = make_shared<nbt::CompoundTag>();
+                copy->fValue = comp->fValue;
+                entities.push_back(copy);
+            }
+        }
+
+        vector<shared_ptr<nbt::CompoundTag>> tileEntities;
+        auto tileEntitiesTag = root.query("/Level/TileEntities");
+        if (tileEntitiesTag && tileEntitiesTag->id() == nbt::Tag::TAG_List && tileEntitiesTag->asList()->fType == nbt::Tag::TAG_Compound) {
+            auto tileEntitiesList = tileEntitiesTag->asList();
+            for (auto it : tileEntitiesList->fValue) {
+                auto comp = it->asCompound();
+                if (!comp) {
+                    continue;
+                }
+                auto copy = make_shared<nbt::CompoundTag>();
+                copy->fValue = comp->fValue;
+                tileEntities.push_back(copy);
+            }
+        }
+
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities));
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
@@ -173,7 +205,7 @@ public:
     }
     
 private:
-    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes)
+    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes, std::vector<std::shared_ptr<nbt::CompoundTag>> &entities, std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
         , fSections(16, nullptr)
@@ -186,6 +218,8 @@ private:
             }
         }
         fBiomes.swap(biomes);
+        fEntities.swap(entities);
+        fTileEntities.swap(tileEntities);
     }
 
     static void ParseBiomes(nbt::Tag const* biomesTag, std::vector<biomes::BiomeId> &result) {
@@ -218,6 +252,8 @@ public:
     std::vector<std::shared_ptr<ChunkSection>> fSections;
     std::vector<biomes::BiomeId> fBiomes;
     int const fDataVersion;
+    std::vector<std::shared_ptr<nbt::CompoundTag>> fEntities;
+    std::vector<std::shared_ptr<nbt::CompoundTag>> fTileEntities;
 };
 
 } // namespace mcfile
