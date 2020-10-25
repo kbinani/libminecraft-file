@@ -5,7 +5,7 @@ namespace nbt {
 
 class FloatTag : public Tag {
 public:
-    FloatTag() : Tag() {}
+    FloatTag() : Tag(), fValue(0) {}
     explicit FloatTag(float v) : fValue(v) {}
 
     bool readImpl(::mcfile::stream::InputStreamReader& r) override {

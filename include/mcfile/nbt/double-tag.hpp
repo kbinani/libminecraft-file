@@ -5,7 +5,7 @@ namespace nbt {
 
 class DoubleTag : public Tag {
 public:
-    DoubleTag() : Tag() {}
+    DoubleTag() : Tag(), fValue(0) {}
     explicit DoubleTag(double v) : fValue(v) {}
 
     bool readImpl(::mcfile::stream::InputStreamReader& r) override {
