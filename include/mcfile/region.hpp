@@ -22,7 +22,7 @@ public:
         return true;
     }
 
-    std::shared_ptr<Chunk> chunkAt(int chunkX, int chunkZ) {
+    std::shared_ptr<Chunk> chunkAt(int chunkX, int chunkZ) const {
         int const localChunkX = chunkX - fX * 32;
         int const localChunkZ = chunkZ - fZ * 32;
         if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
