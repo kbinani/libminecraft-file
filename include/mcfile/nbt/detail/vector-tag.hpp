@@ -37,11 +37,12 @@ public:
 
     void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
         std::vector<T> const& b = value();
+        w.write((uint32_t)fValue.size());
         for (size_t i = 0; i < b.size(); i++) {
             w.write(b[i]);
         }
     }
-    
+
     uint8_t id() const override { return ID; }
 
     std::vector<T> const& value() const {
