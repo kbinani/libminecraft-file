@@ -4,6 +4,11 @@ namespace mcfile {
 namespace nbt {
 
 class LongArrayTag : public detail::VectorTag<int64_t, Tag::TAG_Long_Array> {
+public:
+    LongArrayTag() : VectorTag() {}
+
+    explicit LongArrayTag(std::vector<int64_t>& input) : VectorTag(input) {}
+
 private:
     int64_t convert(int64_t v, bool littleEndian) const override {
         uint64_t t = *(uint64_t *)&v;

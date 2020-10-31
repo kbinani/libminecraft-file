@@ -14,6 +14,14 @@ public:
     {
     }
 
+    explicit VectorTag(std::vector<T>& input)
+        : Tag()
+        , fPrepared(true)
+        , fLittleEndian(false)
+    {
+        fValue.swap(input);
+    }
+
     bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         uint32_t length;
         if (!r.read(&length)) {
