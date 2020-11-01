@@ -52,6 +52,9 @@ public:
     bool eachRegions(std::function<void(std::shared_ptr<Region> const&)> callback) const {
         namespace fs = mcfile::detail::filesystem;
         auto regionDir = fs::path(fRootDirectory).append("region");
+        if (!fs::exists(regionDir)) {
+            return  true;
+        }
         fs::directory_iterator it(regionDir);
         for (auto const& path : it) {
             auto region = Region::MakeRegion(path.path().string());
