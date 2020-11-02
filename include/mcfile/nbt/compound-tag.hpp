@@ -50,7 +50,7 @@ public:
             return EndTag::instance();
         }
         std::string p = path;
-        CompoundTag const* pivot = this;
+        Tag const* pivot = this;
         while (!p.empty()) {
             if (p[0] == '/') {
                 if (fValue.size() != 1) {
@@ -73,21 +73,53 @@ public:
                 } else {
                     name = p.substr(0, pos);
                 }
-                auto child = pivot->fValue.find(name);
-                if (child == pivot->fValue.end()) {
-                    return EndTag::instance();
+                if (pivot->id() == Tag::TAG_List) {
+                    auto list = pivot->asList();
+                    if (!list) return EndTag::instance();
+                    int index;
+                    try {
+                        index = std::stoi(name);
+                        if (index < 0 || list->fValue.size() <= index) {
+                            return EndTag::instance();
+                        }
+                        auto child = list->fValue[index];
+                        if (pos == std::string::npos) {
+                            return child.get();
+                        }
+                        auto id = child->id();
+                        if (id != Tag::TAG_Compound && id != Tag::TAG_List) {
+                            return EndTag::instance();
+                        }
+                        pivot = child.get();
+                        p = p.substr(pos + 1);
+                    } catch (...) {
+                        return EndTag::instance();
+                    }
+                } else if (pivot->id() == Tag::TAG_Compound) {
+                    auto comp = pivot->asCompound();
+                    if (!comp) return EndTag::instance();
+
+                    auto child = comp->fValue.find(name);
+                    if (child == comp->fValue.end()) {
+                        return EndTag::instance();
+                    }
+                    if (pos == std::string::npos) {
+                        return child->second.get();
+                    }
+                    auto id = child->second->id();
+                    if (id != Tag::TAG_Compound && id != Tag::TAG_List) {
+                        return EndTag::instance();
+                    }
+                    pivot = child->second.get();
+                    p = p.substr(pos + 1);
                 }
-                if (pos == std::string::npos) {
-                    return child->second.get();
-                }
-                if (child->second->id() != Tag::TAG_Compound) {
-                    return EndTag::instance();
-                }
-                pivot = child->second->asCompound();
-                p = p.substr(pos + 1);
             }
         }
         return EndTag::instance();
+    }
+
+    std::shared_ptr<Tag>& operator[](std::string const& name) {
+        return fValue[name];
     }
 
 public:
