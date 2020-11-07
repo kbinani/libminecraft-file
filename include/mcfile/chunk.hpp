@@ -179,7 +179,13 @@ public:
             }
         }
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities));
+        string s;
+        auto status = root.query("/Level/Status")->asString();
+        if (status) {
+            s = status->fValue;
+        }
+
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities, s));
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
@@ -205,11 +211,12 @@ public:
     }
     
 private:
-    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes, std::vector<std::shared_ptr<nbt::CompoundTag>> &entities, std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities)
+    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes, std::vector<std::shared_ptr<nbt::CompoundTag>> &entities, std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities, std::string const& status)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
         , fSections(16, nullptr)
         , fDataVersion(dataVersion)
+        , fStatus(status)
     {
         for (auto section : sections) {
             int const y = section->y();
@@ -254,6 +261,7 @@ public:
     int const fDataVersion;
     std::vector<std::shared_ptr<nbt::CompoundTag>> fEntities;
     std::vector<std::shared_ptr<nbt::CompoundTag>> fTileEntities;
+    std::string const fStatus;
 };
 
 } // namespace mcfile
