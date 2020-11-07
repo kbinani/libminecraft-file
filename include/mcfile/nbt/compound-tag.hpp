@@ -122,7 +122,7 @@ public:
         return fValue[name];
     }
 
-    std::shared_ptr<StringTag> string(std::string const& name) const {
+    std::shared_ptr<StringTag> stringTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -130,7 +130,7 @@ public:
         return std::dynamic_pointer_cast<StringTag>(found->second);
     }
 
-    std::shared_ptr<ByteTag> byte(std::string const& name) const {
+    std::shared_ptr<ByteTag> byteTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -138,7 +138,7 @@ public:
         return std::dynamic_pointer_cast<ByteTag>(found->second);
     }
 
-    std::shared_ptr<CompoundTag> compound(std::string const& name) const {
+    std::shared_ptr<CompoundTag> compoundTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -146,7 +146,7 @@ public:
         return std::dynamic_pointer_cast<CompoundTag>(found->second);
     }
 
-    std::shared_ptr<ListTag> list(std::string const& name) const {
+    std::shared_ptr<ListTag> listTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -154,7 +154,7 @@ public:
         return std::dynamic_pointer_cast<ListTag>(found->second);
     }
 
-    std::shared_ptr<IntTag> int32(std::string const& name) const {
+    std::shared_ptr<IntTag> intTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -162,7 +162,7 @@ public:
         return std::dynamic_pointer_cast<IntTag>(found->second);
     }
 
-    std::shared_ptr<LongTag> int64(std::string const& name) const {
+    std::shared_ptr<LongTag> longTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -170,7 +170,7 @@ public:
         return std::dynamic_pointer_cast<LongTag>(found->second);
     }
 
-    std::shared_ptr<ShortTag> int16(std::string const& name) const {
+    std::shared_ptr<ShortTag> shortTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -178,7 +178,7 @@ public:
         return std::dynamic_pointer_cast<ShortTag>(found->second);
     }
 
-    std::shared_ptr<FloatTag> float32(std::string const& name) const {
+    std::shared_ptr<FloatTag> floatTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -186,7 +186,7 @@ public:
         return std::dynamic_pointer_cast<FloatTag>(found->second);
     }
 
-    std::shared_ptr<DoubleTag> float64(std::string const& name) const {
+    std::shared_ptr<DoubleTag> doubleTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -194,7 +194,7 @@ public:
         return std::dynamic_pointer_cast<DoubleTag>(found->second);
     }
 
-    std::shared_ptr<IntArrayTag> intArray(std::string const& name) const {
+    std::shared_ptr<IntArrayTag> intArrayTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -202,7 +202,7 @@ public:
         return std::dynamic_pointer_cast<IntArrayTag>(found->second);
     }
 
-    std::shared_ptr<ByteArrayTag> byteArray(std::string const& name) const {
+    std::shared_ptr<ByteArrayTag> byteArrayTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
@@ -210,12 +210,52 @@ public:
         return std::dynamic_pointer_cast<ByteArrayTag>(found->second);
     }
 
-    std::shared_ptr<LongArrayTag> longArray(std::string const& name) const {
+    std::shared_ptr<LongArrayTag> longArrayTag(std::string const& name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
         if (found->second->id() != Tag::TAG_Long_Array) return nullptr;
         return std::dynamic_pointer_cast<LongArrayTag>(found->second);
+    }
+
+    int8_t byte(std::string const& name, int8_t fallback = 0) const {
+        auto v = byteTag(name);
+        return v ? v->fValue : fallback;
+    }
+
+    bool boolean(std::string const& name, bool fallback = false) const {
+        auto v = byteTag(name);
+        return v ? v->fValue != 0 : fallback;
+    }
+
+    int16_t int16(std::string const& name, int16_t fallback = 0) const {
+        auto v = shortTag(name);
+        return v ? v->fValue : fallback;
+    }
+
+    int32_t int32(std::string const& name, int32_t fallback) const {
+        auto v = intTag(name);
+        return v ? v->fValue : fallback;
+    }
+
+    int64_t int64(std::string const& name, int64_t fallback = 0) const {
+        auto v = longTag(name);
+        return v ? v->fValue : fallback;
+    }
+
+    std::string string(std::string const& name, std::string fallback = 0) const {
+        auto v = stringTag(name);
+        return v ? v->fValue : fallback;
+    }
+
+    float float32(std::string const& name, float fallback = 0) const {
+        auto v = floatTag(name);
+        return v ? v->fValue : fallback;
+    }
+
+    double float64(std::string const& name, double fallback = 0) const {
+        auto v = doubleTag(name);
+        return v ? v->fValue : fallback;
     }
 
 public:
