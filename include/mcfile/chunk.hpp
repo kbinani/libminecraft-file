@@ -127,13 +127,18 @@ public:
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, nbt::CompoundTag const& root) {
         using namespace std;
 
+        auto level = root.query("/Level")->asCompound();
+        if (!level) {
+            return nullptr;
+        }
+
         int dataVersion = 0;
         auto dataVersionTag = root.query("/DataVersion")->asInt();
         if (dataVersionTag) {
             // *.mca created by Minecraft 1.2.1 does not have /DataVersion tag
             dataVersion = dataVersionTag->fValue;
         }
-        auto sectionsTag = root.query("/Level/Sections")->asList();
+        auto sectionsTag = level->listTag("Sections");
         if (!sectionsTag) {
             return nullptr;
         }
@@ -146,12 +151,12 @@ public:
         }
 
         vector<biomes::BiomeId> biomes;
-        auto biomesTag = root.query("/Level/Biomes");
+        auto biomesTag = level->query("Biomes");
         ParseBiomes(biomesTag, biomes);
 
         vector<shared_ptr<nbt:: CompoundTag>> entities;
-        auto entitiesTag = root.query("/Level/Entities");
-        if (entitiesTag && entitiesTag->id() == nbt::Tag::TAG_List && entitiesTag->asList()->fType == nbt::Tag::TAG_Compound) {
+        auto entitiesTag = level->listTag("Entities");
+        if (entitiesTag && entitiesTag->fType == nbt::Tag::TAG_Compound) {
             auto entitiesList = entitiesTag->asList();
             for (auto it : entitiesList->fValue) {
                 auto comp = it->asCompound();
@@ -165,9 +170,8 @@ public:
         }
 
         vector<shared_ptr<nbt::CompoundTag>> tileEntities;
-        auto tileEntitiesTag = root.query("/Level/TileEntities");
-        if (tileEntitiesTag && tileEntitiesTag->id() == nbt::Tag::TAG_List && tileEntitiesTag->asList()->fType == nbt::Tag::TAG_Compound) {
-            auto tileEntitiesList = tileEntitiesTag->asList();
+        auto tileEntitiesList = level->listTag("TileEntities");
+        if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::TAG_Compound) {
             for (auto it : tileEntitiesList->fValue) {
                 auto comp = it->asCompound();
                 if (!comp) {
@@ -180,12 +184,14 @@ public:
         }
 
         string s;
-        auto status = root.query("/Level/Status")->asString();
+        auto status = level->stringTag("Status");
         if (status) {
             s = status->fValue;
         }
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities, s));
+        auto structures = level->compoundTag("Structures");
+
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities, s, structures));
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
@@ -211,12 +217,13 @@ public:
     }
     
 private:
-    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes, std::vector<std::shared_ptr<nbt::CompoundTag>> &entities, std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities, std::string const& status)
+    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes, std::vector<std::shared_ptr<nbt::CompoundTag>> &entities, std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities, std::string const& status, std::shared_ptr<nbt::CompoundTag> const& structures)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
         , fSections(16, nullptr)
         , fDataVersion(dataVersion)
         , fStatus(status)
+        , fStructures(structures)
     {
         for (auto section : sections) {
             int const y = section->y();
@@ -262,6 +269,7 @@ public:
     std::vector<std::shared_ptr<nbt::CompoundTag>> fEntities;
     std::vector<std::shared_ptr<nbt::CompoundTag>> fTileEntities;
     std::string const fStatus;
+    std::shared_ptr<mcfile::nbt::CompoundTag> fStructures;
 };
 
 } // namespace mcfile
