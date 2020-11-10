@@ -79,10 +79,10 @@ public:
                     int index;
                     try {
                         index = std::stoi(name);
-                        if (index < 0 || list->fValue.size() <= index) {
+                        if (index < 0 || list->size() <= index) {
                             return EndTag::instance();
                         }
-                        auto child = list->fValue[index];
+                        auto child = list->at(index);
                         if (pos == std::string::npos) {
                             return child.get();
                         }
@@ -121,6 +121,24 @@ public:
     std::shared_ptr<Tag>& operator[](std::string const& name) {
         return fValue[name];
     }
+
+    void insert(std::pair<std::string, std::shared_ptr<Tag>> const &item) {
+        fValue.insert(item);
+    }
+
+    void insert(std::initializer_list<std::pair<std::string const, std::shared_ptr<Tag>>> l) {
+        for (auto const& it : l) {
+            fValue.insert(it);
+        }
+    }
+
+    decltype(auto) find(std::string const& name) const { return fValue.find(name); }
+    decltype(auto) begin() const { return fValue.begin(); }
+    decltype(auto) end() const { return fValue.end(); }
+    size_t size() const { return fValue.size(); }
+    bool empty() const { return fValue.empty(); }
+
+    void erase(std::string const& name) { fValue.erase(name); }
 
     std::shared_ptr<StringTag> stringTag(std::string const& name) const {
         auto found = fValue.find(name);
@@ -328,6 +346,10 @@ public:
     double float64(std::string const& name, double fallback) const {
         auto v = doubleTag(name);
         return v ? v->fValue : fallback;
+    }
+
+    void set(std::string const& name, std::shared_ptr<Tag> const& value) {
+        fValue[name] = value;
     }
 
 public:

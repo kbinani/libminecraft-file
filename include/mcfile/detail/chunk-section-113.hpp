@@ -83,19 +83,19 @@ public:
             return nullptr;
         }
         std::vector<std::shared_ptr<Block const>> palette;
-        for (auto entry : paletteTag->fValue) {
+        for (auto entry : *paletteTag) {
             auto tag = entry->asCompound();
             if (!tag) {
                 return nullptr;
             }
-            auto nameTag = tag->query("Name")->asString();
+            auto nameTag = tag->stringTag("Name");
             if (!nameTag) {
                 return nullptr;
             }
             std::map<std::string, std::string> properties;
-            auto propertiesTag = tag->query("Properties")->asCompound();
+            auto propertiesTag = tag->compoundTag("Properties");
             if (propertiesTag) {
-                for (auto p : propertiesTag->fValue) {
+                for (auto p : *propertiesTag) {
                     std::string n = p.first;
                     if (n.empty()) {
                         continue;

@@ -38,6 +38,19 @@ public:
     
     uint8_t id() const override { return Tag::TAG_List; }
 
+    decltype(auto) begin() { return fValue.begin(); }
+    decltype(auto) end() { return fValue.end(); }
+
+    decltype(auto) begin() const { return fValue.begin(); }
+    decltype(auto) end() const { return fValue.end(); }
+
+    void push_back(std::shared_ptr<Tag> const& item) { fValue.push_back(item); }
+
+    size_t size() const { return fValue.size(); }
+    bool empty() const { return fValue.empty(); }
+    std::shared_ptr<Tag> at(size_t idx) const { return fValue[idx]; }
+    std::shared_ptr<Tag>& at(size_t idx) { return fValue[idx]; }
+
 public:
     uint8_t fType;
     std::vector<std::shared_ptr<Tag>> fValue;

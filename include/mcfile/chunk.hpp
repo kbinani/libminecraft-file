@@ -143,7 +143,7 @@ public:
             return nullptr;
         }
         vector<shared_ptr<ChunkSection>> sections;
-        for (auto sectionTag : sectionsTag->fValue) {
+        for (auto sectionTag : *sectionsTag) {
             auto section = detail::ChunkSectionGenerator::MakeChunkSection(sectionTag->asCompound(), dataVersion);
             if (section) {
                 sections.push_back(section);
@@ -158,7 +158,7 @@ public:
         auto entitiesTag = level->listTag("Entities");
         if (entitiesTag && entitiesTag->fType == nbt::Tag::TAG_Compound) {
             auto entitiesList = entitiesTag->asList();
-            for (auto it : entitiesList->fValue) {
+            for (auto it : *entitiesList) {
                 auto comp = it->asCompound();
                 if (!comp) {
                     continue;
@@ -172,7 +172,7 @@ public:
         vector<shared_ptr<nbt::CompoundTag>> tileEntities;
         auto tileEntitiesList = level->listTag("TileEntities");
         if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::TAG_Compound) {
-            for (auto it : tileEntitiesList->fValue) {
+            for (auto it : *tileEntitiesList) {
                 auto comp = it->asCompound();
                 if (!comp) {
                     continue;

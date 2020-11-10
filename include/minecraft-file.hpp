@@ -18,6 +18,7 @@
 #include <functional>
 #include <cmath>
 #include <optional>
+#include <initializer_list>
 
 #include <mcfile/detail/filesystem.hpp>
 #include <mcfile/detail/endianness.hpp>
