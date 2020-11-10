@@ -218,17 +218,89 @@ public:
         return std::dynamic_pointer_cast<LongArrayTag>(found->second);
     }
 
-    int8_t byte(std::string const& name, int8_t fallback = 0) const {
+    std::optional<int8_t> byte(std::string const& name) const {
+        auto v = byteTag(name);
+        if (v) {
+            return v->fValue;
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    std::optional<bool> boolean(std::string const& name) const {
+        auto v = byteTag(name);
+        if (v) {
+            return v->fValue != 0;
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    std::optional<int16_t> int16(std::string const& name) const {
+        auto v = shortTag(name);
+        if (v) {
+            return v->fValue;
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    std::optional<int32_t> int32(std::string const& name) const {
+        auto v = intTag(name);
+        if (v) {
+            return v->fValue;
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    std::optional<int64_t> int64(std::string const& name) const {
+        auto v = longTag(name);
+        if (v) {
+            return v->fValue;
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    std::optional<std::string> string(std::string const& name) const {
+        auto v = stringTag(name);
+        if (v) {
+            return v->fValue;
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    std::optional<float> float32(std::string const& name) const {
+        auto v = floatTag(name);
+        if (v) {
+            return v->fValue;
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    std::optional<double> float64(std::string const& name) const {
+        auto v = doubleTag(name);
+        if (v) {
+            return v->fValue;
+        } else {
+            return std::nullopt;
+        }
+    }
+    
+    int8_t byte(std::string const& name, int8_t fallback) const {
         auto v = byteTag(name);
         return v ? v->fValue : fallback;
     }
 
-    bool boolean(std::string const& name, bool fallback = false) const {
+    bool boolean(std::string const& name, bool fallback) const {
         auto v = byteTag(name);
         return v ? v->fValue != 0 : fallback;
     }
 
-    int16_t int16(std::string const& name, int16_t fallback = 0) const {
+    int16_t int16(std::string const& name, int16_t fallback) const {
         auto v = shortTag(name);
         return v ? v->fValue : fallback;
     }
@@ -238,22 +310,22 @@ public:
         return v ? v->fValue : fallback;
     }
 
-    int64_t int64(std::string const& name, int64_t fallback = 0) const {
+    int64_t int64(std::string const& name, int64_t fallback) const {
         auto v = longTag(name);
         return v ? v->fValue : fallback;
     }
 
-    std::string string(std::string const& name, std::string fallback = 0) const {
+    std::string string(std::string const& name, std::string fallback) const {
         auto v = stringTag(name);
         return v ? v->fValue : fallback;
     }
 
-    float float32(std::string const& name, float fallback = 0) const {
+    float float32(std::string const& name, float fallback) const {
         auto v = floatTag(name);
         return v ? v->fValue : fallback;
     }
 
-    double float64(std::string const& name, double fallback = 0) const {
+    double float64(std::string const& name, double fallback) const {
         auto v = doubleTag(name);
         return v ? v->fValue : fallback;
     }
