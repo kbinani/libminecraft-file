@@ -49,7 +49,7 @@ public:
         return true;
     }
 
-    bool eachRegions(std::function<void(std::shared_ptr<Region> const&)> callback) const {
+    bool eachRegions(std::function<bool(std::shared_ptr<Region> const&)> callback) const {
         namespace fs = mcfile::detail::filesystem;
         auto regionDir = fs::path(fRootDirectory).append("region");
         if (!fs::exists(regionDir)) {
@@ -61,7 +61,9 @@ public:
             if (!region) {
                 continue;
             }
-            callback(region);
+            if (!callback(region)) {
+                return false;
+            }
         }
         return true;
     }
