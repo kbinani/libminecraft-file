@@ -6,11 +6,11 @@ namespace detail {
 class ChunkSection_1_16 : public ChunkSection {
 public:
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = paletteIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
+        auto const index = paletteIndexAt(offsetX, offsetY, offsetZ);
+        if (!index) {
             return nullptr;
         }
-        return fPalette[index];
+        return fPalette[*index];
     }
 
     uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const override {
@@ -44,11 +44,11 @@ public:
     }
 
     blocks::BlockId blockIdAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = paletteIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
+        auto const index = paletteIndexAt(offsetX, offsetY, offsetZ);
+        if (!index) {
             return blocks::unknown;
         }
-        return fBlockIdPalette[index];
+        return fBlockIdPalette[*index];
     }
 
     bool blockIdWithYOffset(int offsetY, std::function<bool(int offsetX, int offsetZ, blocks::BlockId blockId)> callback) const override {
@@ -68,6 +68,41 @@ public:
     int y() const override {
         return fY;
     }
+
+    std::vector<std::shared_ptr<Block const>> const& palette() const override {
+        return fPalette;
+    }
+
+    std::optional<size_t> paletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
+        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
+            return std::nullopt;
+        }
+
+        size_t const numBits = fBlockStates.size() * 64;
+        size_t const bitsPerIndex = std::floor((double)numBits / 4096.0);
+        size_t const palettesPerLong = std::floor(64.0 / (double)bitsPerIndex);
+
+        size_t const index = (size_t)offsetY * 16 * 16 + (size_t)offsetZ * 16 + (size_t)offsetX;
+        size_t const uint64Index = index / palettesPerLong;
+
+        if (fBlockStates.size() <= uint64Index) {
+            return std::nullopt;
+        }
+
+        int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
+
+        uint64_t const v = *(uint64_t*)(fBlockStates.data() + uint64Index);
+        int const offset = (index % palettesPerLong) * bitsPerIndex;
+
+        uint64_t const paletteIndex = (v >> offset) & mask;
+
+        if (fPalette.size() <= paletteIndex) {
+            return std::nullopt;
+        }
+
+        return (size_t)paletteIndex;
+    }
+
 
     static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const* section) {
         if (!section) {
@@ -150,36 +185,6 @@ private:
         , fBlockLight(blockLight)
         , fSkyLight(skyLight)
     {
-    }
-
-    int paletteIndex(int offsetX, int offsetY, int offsetZ) const {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return -1;
-        }
-
-        size_t const numBits = fBlockStates.size() * 64;
-        size_t const bitsPerIndex = std::floor((double)numBits / 4096.0);
-        size_t const palettesPerLong = std::floor(64.0 / (double)bitsPerIndex);
-        
-        size_t const index = (size_t)offsetY * 16 * 16 + (size_t)offsetZ * 16 + (size_t)offsetX;
-        size_t const uint64Index = index / palettesPerLong;
-        
-        if (fBlockStates.size() <= uint64Index) {
-            return -1;
-        }
-
-        int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
-
-        uint64_t const v = *(uint64_t *)(fBlockStates.data() + uint64Index);
-        int const offset = (index % palettesPerLong) * bitsPerIndex;
-        
-        uint64_t const paletteIndex = (v >> offset) & mask;
-        
-        if (fPalette.size() <= paletteIndex) {
-            return -1;
-        }
-        
-        return (int)paletteIndex;
     }
 
     bool eachPaletteIndexWithY(int offsetY, std::function<bool(int offsetX, int offsetZ, int paletteIndex)> callback) const {

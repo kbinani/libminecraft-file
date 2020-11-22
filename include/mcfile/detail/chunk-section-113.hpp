@@ -69,6 +69,18 @@ public:
         return fY;
     }
 
+    std::vector<std::shared_ptr<Block const>> const& palette() const override {
+        return fPalette;
+    }
+
+    std::optional<size_t> paletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
+        int const index = paletteIndex(offsetX, offsetY, offsetZ);
+        if (index < 0) {
+            return std::nullopt;
+        }
+        return index;
+    }
+
     static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const* section) {
         if (!section) {
             return nullptr;

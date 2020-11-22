@@ -128,6 +128,18 @@ public:
         return fY;
     }
 
+    std::vector<std::shared_ptr<Block const>> const& palette() const override {
+        return fPalette;
+    }
+
+    std::optional<size_t> paletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
+        int const index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (index < 0) {
+            return std::nullopt;
+        }
+        return fPaletteIndices[index];
+    }
+
 private:
     ChunkSection_1_12(int y, std::vector<std::shared_ptr<Block const>> const& palette, std::vector<uint16_t> const& paletteIndices, std::vector<uint8_t> const& blockLight, std::vector<uint8_t> const& skyLight)
         : fY(y)
