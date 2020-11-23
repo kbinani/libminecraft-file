@@ -311,7 +311,7 @@ private:
             case 28: id = blocks::minecraft::detector_rail; break;
             case 29: id = blocks::minecraft::sticky_piston; break;
             case 30: id = blocks::minecraft::cobweb; break;
-            case 31: id = blocks::minecraft::tall_grass; break;
+            case 31: id = blocks::minecraft::grass; break;
             case 32: id = blocks::minecraft::dead_bush; break;
             case 33: id = blocks::minecraft::piston; break;
             case 34: id = blocks::minecraft::piston_head; break;
