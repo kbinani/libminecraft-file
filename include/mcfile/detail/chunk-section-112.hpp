@@ -161,6 +161,13 @@ private:
         return index % 2 == 0 ? arr[index / 2] & 0x0F : (arr[index / 2] >> 4) & 0x0F;
     }
 
+    static void Stairs(uint8_t data, std::map<std::string, std::string> &props) {
+        static std::string const facing[4] = {"east", "west", "south", "north"};
+        props["facing"] = facing[std::clamp(data & 0x3, 0, 3)];
+        static std::string const half[2] = {"bottm", "top"};
+        props["half"] = half[std::clamp(data & 0x4, 0, 1)];
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> properties;
@@ -427,7 +434,9 @@ private:
                 break;
             case 51: id = blocks::minecraft::fire; break;
             case 52: id = blocks::minecraft::spawner; break;
-            case 53: id = blocks::minecraft::oak_stairs; break;
+            case 53: id = blocks::minecraft::oak_stairs;
+                Stairs(data, properties);
+                break;
             case 54: id = blocks::minecraft::chest; break;
             case 55: id = blocks::minecraft::redstone_wire; break;
             case 56: id = blocks::minecraft::diamond_ore; break;
@@ -443,7 +452,9 @@ private:
             case 64: id = blocks::minecraft::oak_door; break;
             case 65: id = blocks::minecraft::ladder; break;
             case 66: id = blocks::minecraft::rail; break;
-            case 67: id = blocks::minecraft::cobblestone_stairs; break;
+            case 67: id = blocks::minecraft::cobblestone_stairs;
+                Stairs(data, properties);
+                break;
             case 68: id = blocks::minecraft::oak_wall_sign; break;
             case 69: id = blocks::minecraft::lever; break;
             case 70: id = blocks::minecraft::stone_pressure_plate; break;
@@ -540,13 +551,19 @@ private:
             case 105: id = blocks::minecraft::melon_stem; break;
             case 106: id = blocks::minecraft::vine; break;
             case 107: id = blocks::minecraft::oak_fence_gate; break;
-            case 108: id = blocks::minecraft::brick_stairs; break;
-            case 109: id = blocks::minecraft::stone_brick_stairs; break;
+            case 108: id = blocks::minecraft::brick_stairs;
+                Stairs(data, properties);
+                break;
+            case 109: id = blocks::minecraft::stone_brick_stairs;
+                Stairs(data, properties);
+                break;
             case 110: id = blocks::minecraft::mycelium; break;
             case 111: id = blocks::minecraft::lily_pad; break;
             case 112: id = blocks::minecraft::nether_bricks; break;
             case 113: id = blocks::minecraft::nether_brick_fence; break;
-            case 114: id = blocks::minecraft::nether_brick_stairs; break;
+            case 114: id = blocks::minecraft::nether_brick_stairs;
+                Stairs(data, properties);
+                break;
             case 115: id = blocks::minecraft::nether_wart; break;
             case 116: id = blocks::minecraft::enchanting_table; break;
             case 117: id = blocks::minecraft::brewing_stand; break;
@@ -566,15 +583,23 @@ private:
                 properties["type"] = "bottom";
                 break;
             case 127: id = blocks::minecraft::cocoa; break;
-            case 128: id = blocks::minecraft::sandstone_stairs; break;
+            case 128: id = blocks::minecraft::sandstone_stairs;
+                Stairs(data, properties);
+                break;
             case 129: id = blocks::minecraft::emerald_ore; break;
             case 130: id = blocks::minecraft::ender_chest; break;
             case 131: id = blocks::minecraft::tripwire_hook; break;
             case 132: id = blocks::minecraft::tripwire; break;
             case 133: id = blocks::minecraft::emerald_block; break;
-            case 134: id = blocks::minecraft::spruce_stairs; break;
-            case 135: id = blocks::minecraft::birch_stairs; break;
-            case 136: id = blocks::minecraft::jungle_stairs; break;
+            case 134: id = blocks::minecraft::spruce_stairs;
+                Stairs(data, properties);
+                break;
+            case 135: id = blocks::minecraft::birch_stairs;
+                Stairs(data, properties);
+                break;
+            case 136: id = blocks::minecraft::jungle_stairs;
+                Stairs(data, properties);
+                break;
             case 137: id = blocks::minecraft::command_block; break;
             case 138: id = blocks::minecraft::beacon; break;
             case 139: id = blocks::minecraft::cobblestone_wall; break;
@@ -594,7 +619,9 @@ private:
             case 153: id = blocks::minecraft::nether_quartz_ore; break;
             case 154: id = blocks::minecraft::hopper; break;
             case 155: id = blocks::minecraft::quartz_block; break;
-            case 156: id = blocks::minecraft::quartz_stairs; break;
+            case 156: id = blocks::minecraft::quartz_stairs;
+                Stairs(data, properties);
+                break;
             case 157: id = blocks::minecraft::activator_rail; break;
             case 158: id = blocks::minecraft::dropper; break;
             case 159: id = blocks::minecraft::white_glazed_terracotta; break; //??
@@ -647,8 +674,12 @@ private:
                         break;
                 }
                 break;
-            case 163: id = blocks::minecraft::acacia_stairs; break;
-            case 164: id = blocks::minecraft::dark_oak_stairs; break;
+            case 163: id = blocks::minecraft::acacia_stairs;
+                Stairs(data, properties);
+                break;
+            case 164: id = blocks::minecraft::dark_oak_stairs;
+                Stairs(data, properties);
+                break;
             case 165: id = blocks::minecraft::slime_block; break;
             case 166: id = blocks::minecraft::barrier; break;
             case 167: id = blocks::minecraft::iron_trapdoor; break;
@@ -720,7 +751,9 @@ private:
             case 177: id = blocks::minecraft::white_wall_banner; break;
             case 178: id = blocks::minecraft::daylight_detector; break; // inverted_daylight_detector
             case 179: id = blocks::minecraft::red_sandstone; break;
-            case 180: id = blocks::minecraft::red_sandstone_stairs; break;
+            case 180: id = blocks::minecraft::red_sandstone_stairs;
+                Stairs(data, properties);
+                break;
             case 181:
                 id = blocks::minecraft::red_sandstone_slab;
                 properties["type"] = "double";
@@ -758,7 +791,9 @@ private:
             case 200: id = blocks::minecraft::chorus_flower; break;
             case 201: id = blocks::minecraft::purpur_block; break;
             case 202: id = blocks::minecraft::purpur_pillar; break;
-            case 203: id = blocks::minecraft::purpur_stairs; break;
+            case 203: id = blocks::minecraft::purpur_stairs;
+                Stairs(data, properties);
+                break;
             case 204:
                 id = blocks::minecraft::purpur_slab;
                 properties["type"] = "double";
