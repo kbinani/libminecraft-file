@@ -168,6 +168,22 @@ private:
         props["half"] = half[std::clamp(data & 0x4, 0, 1)];
     }
 
+    static void Door(uint8_t data, std::map<std::string, std::string>& props) {
+        static std::string const facing[4] = {"east", "south", "west", "north"};
+        static std::string const hinge[2] = {"left", "right"};
+        static std::string const open[2] = {"false", "true"};
+        static std::string const powered[2] = {"false", "true"};
+        if (data < 8) {
+            props["half"] = "lower";
+            props["facing"] = facing[std::clamp(data & 0x3, 0, 3)];
+            props["open"] = open[std::clamp((data >> 2) & 0x1, 0, 1)];
+        } else {
+            props["half"] = "upper";
+            props["hinge"] = hinge[std::clamp(data & 0x1, 0, 1)];
+            props["powered"] = powered[std::clamp((data >> 1) & 0x1, 0, 1)];
+        }
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> properties;
@@ -449,7 +465,10 @@ private:
                 id = blocks::minecraft::furnace;
                 break;
             case 63: id = blocks::minecraft::oak_sign; break;
-            case 64: id = blocks::minecraft::oak_door; break;
+            case 64:
+                id = blocks::minecraft::oak_door;
+                Door(data, properties);
+                break;
             case 65: id = blocks::minecraft::ladder; break;
             case 66: id = blocks::minecraft::rail; break;
             case 67: id = blocks::minecraft::cobblestone_stairs;
@@ -458,7 +477,10 @@ private:
             case 68: id = blocks::minecraft::oak_wall_sign; break;
             case 69: id = blocks::minecraft::lever; break;
             case 70: id = blocks::minecraft::stone_pressure_plate; break;
-            case 71: id = blocks::minecraft::iron_door; break;
+            case 71:
+                id = blocks::minecraft::iron_door;
+                Door(data, properties);
+                break;
             case 72: id = blocks::minecraft::oak_pressure_plate; break;
             case 73: id = blocks::minecraft::redstone_ore; break;
             case 74: id = blocks::minecraft::redstone_ore; break; // glowing_redstone_ore
@@ -781,11 +803,26 @@ private:
             case 190: id = blocks::minecraft::jungle_fence; break;
             case 191: id = blocks::minecraft::dark_oak_fence; break;
             case 192: id = blocks::minecraft::acacia_fence; break;
-            case 193: id = blocks::minecraft::spruce_door; break;
-            case 194: id = blocks::minecraft::birch_door; break;
-            case 195: id = blocks::minecraft::jungle_door; break;
-            case 196: id = blocks::minecraft::acacia_door; break;
-            case 197: id = blocks::minecraft::dark_oak_door; break;
+            case 193:
+                id = blocks::minecraft::spruce_door;
+                Door(data, properties);
+                break;
+            case 194:
+                id = blocks::minecraft::birch_door;
+                Door(data, properties);
+                break;
+            case 195:
+                id = blocks::minecraft::jungle_door;
+                Door(data, properties);
+                break;
+            case 196:
+                id = blocks::minecraft::acacia_door;
+                Door(data, properties);
+                break;
+            case 197:
+                id = blocks::minecraft::dark_oak_door;
+                Door(data, properties);
+                break;
             case 198: id = blocks::minecraft::end_rod; break;
             case 199: id = blocks::minecraft::chorus_plant; break;
             case 200: id = blocks::minecraft::chorus_flower; break;
