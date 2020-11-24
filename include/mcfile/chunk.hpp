@@ -143,12 +143,7 @@ public:
             return nullptr;
         }
         vector<shared_ptr<ChunkSection>> sections;
-        for (auto sectionTag : *sectionsTag) {
-            auto section = detail::ChunkSectionGenerator::MakeChunkSection(sectionTag->asCompound(), dataVersion);
-            if (section) {
-                sections.push_back(section);
-            }
-        }
+        detail::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, sections);
 
         vector<biomes::BiomeId> biomes;
         auto biomesTag = level->query("Biomes");

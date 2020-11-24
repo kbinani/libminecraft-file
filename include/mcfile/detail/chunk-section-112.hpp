@@ -5,76 +5,22 @@ namespace detail {
 
 class ChunkSection_1_12 : public ChunkSection {
 public:
-    static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const* section) {
-        if (!section) {
-            return nullptr;
-        }
-        auto yTag = section->query("Y")->asByte();
-        if (!yTag) {
-            return nullptr;
-        }
+    static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const& tags, std::vector<std::shared_ptr<ChunkSection>> &out) {
+        using namespace std;
 
-        auto blocksTag = section->query("Blocks")->asByteArray();
-        if (!blocksTag) {
-            return nullptr;
-        }
-        std::vector<uint8_t> blocks = blocksTag->value();
-        blocks.resize(4096);
-
-        auto dataTag = section->query("Data")->asByteArray();
-        if (!dataTag) {
-            return nullptr;
-        }
-        std::vector<uint8_t> data = dataTag->value();
-        data.resize(2048);
-
-        auto addTag = section->query("Add")->asByteArray();
-        std::vector<uint8_t> add;
-        if (addTag) {
-            add = addTag->value();
-        }
-        add.resize(2048);
-
-        std::vector<uint8_t> blockLight;
-        auto blockLightTag = section->query("BlockLight")->asByteArray();
-        if (blockLightTag) {
-            blockLight = blockLightTag->value();
-        }
-
-        std::vector<uint8_t> skyLight;
-        auto skyLightTag = section->query("SkyLight")->asByteArray();
-        if (skyLightTag) {
-            skyLight = skyLightTag->value();
-        }
-
-        std::vector<std::shared_ptr<Block const>> palette;
-        std::vector<uint16_t> paletteIndices(16 * 16 * 16);
-        for (int y = 0; y < 16; y++) {
-            for (int z = 0; z < 16; z++) {
-                for (int x = 0; x < 16; x++) {
-                    int const index = BlockIndex(x, y, z);
-                    uint8_t const idLo = blocks[index];
-                    uint8_t const idHi = Nibble4(add, index);
-                    uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
-                    uint8_t const blockData = Nibble4(data, index);
-                    std::shared_ptr<Block const> block = Flatten(id, blockData);
-                    int paletteIndex = -1;
-                    for (int i = 0; i < (int)palette.size(); i++) {
-                        if (palette[i]->equals(*block)) {
-                            paletteIndex = i;
-                            break;
-                        }
-                    }
-                    if (paletteIndex < 0) {
-                        paletteIndex = (int)palette.size();
-                        palette.push_back(block);
-                    }
-                    paletteIndices[index] = (uint16_t)paletteIndex;
-                }
+        vector<shared_ptr<ChunkSection_1_12>> rawSections;
+        for (auto const& it : *tags) {
+            auto section = it->asCompound();
+            if (!section) {
+                continue;
+            }
+            auto const& converted = MakeRawSection(section);
+            if (converted) {
+                rawSections.push_back(converted);
             }
         }
 
-        return std::shared_ptr<ChunkSection>(new ChunkSection_1_12(yTag->fValue, palette, paletteIndices, blockLight, skyLight));
+        ChunkSection_1_12::Migrate(rawSections, out);
     }
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
@@ -149,6 +95,165 @@ private:
         , fSkyLight(skyLight)
     {
     }
+
+    static std::shared_ptr<ChunkSection_1_12> MakeRawSection(nbt::CompoundTag const* section) {
+        if (!section) {
+            return nullptr;
+        }
+        auto yTag = section->query("Y")->asByte();
+        if (!yTag) {
+            return nullptr;
+        }
+
+        auto blocksTag = section->query("Blocks")->asByteArray();
+        if (!blocksTag) {
+            return nullptr;
+        }
+        std::vector<uint8_t> blocks = blocksTag->value();
+        blocks.resize(4096);
+
+        auto dataTag = section->query("Data")->asByteArray();
+        if (!dataTag) {
+            return nullptr;
+        }
+        std::vector<uint8_t> data = dataTag->value();
+        data.resize(2048);
+
+        auto addTag = section->query("Add")->asByteArray();
+        std::vector<uint8_t> add;
+        if (addTag) {
+            add = addTag->value();
+        }
+        add.resize(2048);
+
+        std::vector<uint8_t> blockLight;
+        auto blockLightTag = section->query("BlockLight")->asByteArray();
+        if (blockLightTag) {
+            blockLight = blockLightTag->value();
+        }
+
+        std::vector<uint8_t> skyLight;
+        auto skyLightTag = section->query("SkyLight")->asByteArray();
+        if (skyLightTag) {
+            skyLight = skyLightTag->value();
+        }
+
+        std::vector<std::shared_ptr<Block const>> palette;
+        std::vector<uint16_t> paletteIndices(16 * 16 * 16);
+        for (int y = 0; y < 16; y++) {
+            for (int z = 0; z < 16; z++) {
+                for (int x = 0; x < 16; x++) {
+                    int const index = BlockIndex(x, y, z);
+                    uint8_t const idLo = blocks[index];
+                    uint8_t const idHi = Nibble4(add, index);
+                    uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
+                    uint8_t const blockData = Nibble4(data, index);
+                    std::shared_ptr<Block const> block = Flatten(id, blockData);
+                    int paletteIndex = -1;
+                    for (int i = 0; i < (int)palette.size(); i++) {
+                        if (palette[i]->equals(*block)) {
+                            paletteIndex = i;
+                            break;
+                        }
+                    }
+                    if (paletteIndex < 0) {
+                        paletteIndex = (int)palette.size();
+                        palette.push_back(block);
+                    }
+                    paletteIndices[index] = (uint16_t)paletteIndex;
+                }
+            }
+        }
+
+        return std::shared_ptr<ChunkSection_1_12>(new ChunkSection_1_12(yTag->fValue, palette, paletteIndices, blockLight, skyLight));
+    }
+
+    static void Migrate(std::vector<std::shared_ptr<ChunkSection_1_12>> const& raw, std::vector<std::shared_ptr<ChunkSection>> &out) {
+        using namespace std;
+
+        out.reserve(raw.size());
+        for (auto const& it : raw) {
+            vector<shared_ptr<Block const>> palette;
+            vector<uint16_t> paletteIndices;
+            paletteIndices.reserve(16 * 16 * 16);
+            if (it->fY < 0 || 16 <= it->fY) {
+                continue;
+            }
+
+            for (int y = 0; y < 16; y++) {
+                int const by = it->fY * 16 + y;
+                for (int z = 0; z < 16; z++) {
+                    for (int x = 0; x < 16; x++) {
+                        auto const& block = it->blockAt(x, y, z);
+                        assert(block);
+                        shared_ptr<Block const> converted;
+                        if (block->fName.ends_with("_door")) {
+                            string half = block->property("half", "lower");
+                            string hinge;
+                            string powered;
+                            string facing;
+                            string open;
+                            if (half == "lower") {
+                                facing = block->property("facing", "east");
+                                open = block->property("open", "false");
+
+                                auto upper = GetBlockAt(x, by + 1, z, raw);
+                                if (upper) {
+                                    hinge = upper->property("hinge", "left");
+                                    powered = upper->property("powered", "false");
+                                }
+                            } else {
+                                hinge = block->property("hinge", "left");
+                                powered = block->property("powered", "false");
+
+                                auto lower = GetBlockAt(x, by - 1, z, raw);
+                                if (lower) {
+                                    facing = lower->property("facing", "east");
+                                    open = lower->property("open", "false");
+                                }
+                            }
+                            map<string, string> props(block->fProperties);
+                            props["hinge"] = hinge;
+                            props["powered"] = powered;
+                            props["facing"] = facing;
+                            props["open"] = open;
+                            converted.reset(new Block(block->fName, props));
+                        } else {
+                            converted = block;
+                        }
+
+                        auto found = find_if(palette.begin(), palette.end(), [converted](shared_ptr<Block const> const& p) {
+                            return p->equals(*converted);
+                        });
+                        if (found == palette.end()) {
+                            uint16_t index = (uint16_t)palette.size();
+                            palette.push_back(converted);
+                            paletteIndices.push_back(index);
+                        } else {
+                            uint16_t index = (uint16_t)distance(palette.begin(), found);
+                            paletteIndices.push_back(index);
+                        }
+                    }
+                }
+            }
+
+            shared_ptr<ChunkSection_1_12> section(new ChunkSection_1_12(it->fY, palette, paletteIndices, it->fBlockLight, it->fSkyLight));
+            out.push_back(section);
+        }
+    }
+
+    static std::shared_ptr<Block const> GetBlockAt(int offsetX, int blockY, int offsetZ, std::vector<std::shared_ptr<ChunkSection_1_12>> const& raw) {
+        if (offsetX < 0 || 16 <= offsetX || offsetZ < 0 || 16 <= offsetZ) {
+            return nullptr;
+        }
+        int const chunkY = blockY / 16;
+        int const offsetY = blockY - 16 * chunkY;
+        auto found = find_if(raw.begin(), raw.end(), [chunkY](auto const& item) { return item->fY == chunkY; });
+        if (found == raw.end()) {
+            return nullptr;
+        }
+        return (*found)->blockAt(offsetX, offsetY, offsetZ);
+    } 
 
     static inline int BlockIndex(int offsetX, int offsetY, int offsetZ) {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
