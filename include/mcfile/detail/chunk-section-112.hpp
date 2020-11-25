@@ -187,7 +187,7 @@ private:
                         auto const& block = it->blockAt(x, y, z);
                         assert(block);
                         shared_ptr<Block const> converted;
-                        if (block->fName.ends_with("_door")) {
+                        if (String::EndsWith(block->fName, "_door")) {
                             string half = block->property("half", "lower");
                             string hinge;
                             string powered;

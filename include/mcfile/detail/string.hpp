@@ -15,6 +15,20 @@ public:
         }
         return tokens;
     }
+
+    static bool EndsWith(std::string const& s, std::string const& search) {
+        if (s.size() < search.size()) {
+            return false;
+        }
+        if (search.empty()) {
+            return false;
+        }
+        auto idx = s.rfind(search);
+        if (idx == std::string::npos) {
+            return false;
+        }
+        return idx + search.size() == s.size();
+    }
 };
 
 } // namespace mcfile
