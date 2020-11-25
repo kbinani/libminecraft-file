@@ -90,7 +90,10 @@ public:
     }
 
 private:
-    ChunkSection_1_12(int y, std::vector<std::shared_ptr<Block const>> const& palette, std::vector<uint16_t> const& paletteIndices, std::vector<uint8_t> const& blockLight, std::vector<uint8_t> const& skyLight)
+    ChunkSection_1_12(int y,
+                      std::vector<std::shared_ptr<Block const>> const& palette, std::vector<uint16_t> const& paletteIndices,
+                      std::vector<uint8_t> const& blockLight,
+                      std::vector<uint8_t> const& skyLight)
         : fY(y)
         , fPalette(palette)
         , fPaletteIndices(paletteIndices)
@@ -220,10 +223,10 @@ private:
                         }
                         if (String::EndsWith(name, "_door")) {
                             string half = block->property("half", "lower");
-                            string hinge;
-                            string powered;
-                            string facing;
-                            string open;
+                            string hinge = "left";
+                            string powered = "false";
+                            string facing = "east";
+                            string open = "false";
                             if (half == "lower") {
                                 facing = block->property("facing", "east");
                                 open = block->property("open", "false");
@@ -384,7 +387,7 @@ private:
     }
 
     static void Leaves(uint8_t data, std::map<std::string, std::string> & props) {
-        if ((data >> 2) & 0x1) {
+        if ((data >> 2) & 0x1 == 0x1) {
             props["persistent"] = "true";
         } else {
             props["persistent"] = "false";
@@ -602,56 +605,34 @@ private:
                 props["type"] = "double";
                 break;
             case 44:
-                switch (data) {
-                    case 1:
-                    case 9:
-                        id = blocks::minecraft::sandstone_slab;
-                        break;
-                    case 2:
-                    case 10:
-                        id = blocks::minecraft::oak_slab;
-                        break;
-                    case 3:
-                    case 11:
-                        id = blocks::minecraft::cobblestone_slab;
-                        break;
-                    case 4:
-                    case 12:
-                        id = blocks::minecraft::brick_slab;
-                        break;
-                    case 5:
-                    case 13:
-                        id = blocks::minecraft::stone_brick_slab;
-                        break;
-                    case 6:
-                    case 14:
-                        id = blocks::minecraft::nether_brick_slab;
-                        break;
-                    case 7:
-                    case 15:
-                        id = blocks::minecraft::quartz_slab;
-                        break;
-                    case 0:
-                    case 8:
-                    default:
-                        id = id = blocks::minecraft::stone_slab;
-                        break;
+                switch (data & 0x7) {
+                case 1:
+                    id = blocks::minecraft::sandstone_slab;
+                    break;
+                case 2:
+                    id = blocks::minecraft::oak_slab;
+                    break;
+                case 3:
+                    id = blocks::minecraft::cobblestone_slab;
+                    break;
+                case 4:
+                    id = blocks::minecraft::brick_slab;
+                    break;
+                case 5:
+                    id = blocks::minecraft::stone_brick_slab;
+                    break;
+                case 6:
+                    id = blocks::minecraft::nether_brick_slab;
+                    break;
+                case 7:
+                    id = blocks::minecraft::quartz_slab;
+                    break;
+                case 0:
+                default:
+                    id = id = blocks::minecraft::stone_slab;
+                    break;
                 }
-                switch (data) {
-                    case 8:
-                    case 9:
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                    case 15:
-                        props["type"] = "top";
-                        break;
-                    default:
-                        props["type"] = "bottom";
-                        break;
-                }
+                props["type"] = ((data >> 3) & 0x1) == 0x1 ? "top" : "bottom";
                 break;
             case 45: id = blocks::minecraft::bricks; break;
             case 46: id = blocks::minecraft::tnt; break;
