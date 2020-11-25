@@ -289,6 +289,21 @@ private:
         }
     }
 
+    static void Log(uint8_t data, std::map<std::string, std::string>& props) {
+        switch ((data >> 2) & 0x3) {
+        case 1:
+            props["axis"] = "x";
+            break;
+        case 2:
+            props["axis"] = "z";
+            break;
+        case 0:
+        default:
+            props["axis"] = "y";
+            break;
+        }
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> properties;
@@ -348,9 +363,15 @@ private:
                 break;
             case 7: id = blocks::minecraft::bedrock; break;
             case 8: id = blocks::minecraft::water; break; //TODO: flowing_water
-            case 9: id = blocks::minecraft::water; break;
+            case 9:
+                id = blocks::minecraft::water;
+                properties["level"] = std::to_string(data);
+                break;
             case 10: id = blocks::minecraft::lava; break; //TODO: flowing_lava
-            case 11: id = blocks::minecraft::lava; break;
+            case 11:
+                id = blocks::minecraft::lava;
+                properties["level"] = std::to_string(data);
+                break;
             case 12:
                 switch (data) {
                     case 1: id = blocks::minecraft::red_sand; break;
@@ -373,6 +394,7 @@ private:
                         id = blocks::minecraft::oak_log;
                         break;
                 }
+                Log(data, properties);
                 break;
             case 18:
                 switch (data) {
@@ -800,6 +822,7 @@ private:
                         id = blocks::minecraft::acacia_log;
                         break;
                 }
+                Log(data, properties);
                 break;
             case 163: id = blocks::minecraft::acacia_stairs;
                 Stairs(data, properties);
