@@ -304,6 +304,14 @@ private:
         }
     }
 
+    static void Leaves(uint8_t data, std::map<std::string, std::string> & props) {
+        if ((data >> 2) & 0x1) {
+            props["persistent"] = "true";
+        } else {
+            props["persistent"] = "false";
+        }
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> properties;
@@ -397,33 +405,22 @@ private:
                 Log(data, properties);
                 break;
             case 18:
-                switch (data) {
-                    case 1:
-                    case 5:
-                    case 9:
-                    case 13:
-                        id = blocks::minecraft::spruce_leaves;
-                        break;
-                    case 2:
-                    case 6:
-                    case 10:
-                    case 14:
-                        id = blocks::minecraft::birch_leaves;
-                        break;
-                    case 3:
-                    case 7:
-                    case 11:
-                    case 15:
-                        id = blocks::minecraft::jungle_leaves;
-                        break;
-                    case 0:
-                    case 4:
-                    case 8:
-                    case 12:
-                    default:
-                        id = blocks::minecraft::oak_leaves;
-                        break;
+                switch (data & 0x3) {
+                case 1:
+                    id = blocks::minecraft::spruce_leaves;
+                    break;
+                case 2:
+                    id = blocks::minecraft::birch_leaves;
+                    break;
+                case 3:
+                    id = blocks::minecraft::jungle_leaves;
+                    break;
+                case 0:
+                default:
+                    id = blocks::minecraft::oak_leaves;
+                    break;
                 }
+                Leaves(data, properties);
                 break;
             case 19:
                 switch (data) {
@@ -798,21 +795,16 @@ private:
                 }
                 break;
             case 161:
-                switch (data) {
+                switch (data & 0x3) {
                     case 1:
-                    case 5:
-                    case 9:
-                    case 13:
                         id = blocks::minecraft::dark_oak_leaves;
                         break;
                     case 0:
-                    case 4:
-                    case 8:
-                    case 12:
                     default:
                         id = blocks::minecraft::acacia_leaves;
                         break;
                 }
+                Leaves(data, properties);
                 break;
             case 162:
                 switch (data & 0x3) {
