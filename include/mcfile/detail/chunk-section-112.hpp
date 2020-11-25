@@ -5,7 +5,10 @@ namespace detail {
 
 class ChunkSection_1_12 : public ChunkSection {
 public:
-    static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const& tags, std::vector<std::shared_ptr<ChunkSection>> &out) {
+    static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const& tags,
+                                  int chunkX, int chunkZ,
+                                  std::vector<std::shared_ptr<nbt::CompoundTag>> const& tileEntities,
+                                  std::vector<std::shared_ptr<ChunkSection>> &out) {
         using namespace std;
 
         vector<shared_ptr<ChunkSection_1_12>> rawSections;
@@ -20,7 +23,7 @@ public:
             }
         }
 
-        ChunkSection_1_12::Migrate(rawSections, out);
+        ChunkSection_1_12::Migrate(rawSections, chunkX, chunkZ, tileEntities, out);
     }
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
@@ -168,8 +171,32 @@ private:
         return std::shared_ptr<ChunkSection_1_12>(new ChunkSection_1_12(yTag->fValue, palette, paletteIndices, blockLight, skyLight));
     }
 
-    static void Migrate(std::vector<std::shared_ptr<ChunkSection_1_12>> const& raw, std::vector<std::shared_ptr<ChunkSection>> &out) {
+    static void Migrate(std::vector<std::shared_ptr<ChunkSection_1_12>> const& raw,
+                        int chunkX, int chunkZ,
+                        std::vector<std::shared_ptr<nbt::CompoundTag>> const& inTileEntities,
+                        std::vector<std::shared_ptr<ChunkSection>> &out) {
         using namespace std;
+
+        map<tuple<int, int, int>, std::shared_ptr<nbt::CompoundTag>> tileEntities;
+        for (auto const& it : inTileEntities) {
+            auto x = it->int32("x");
+            auto y = it->int32("y");
+            auto z = it->int32("z");
+            if (!x || !y || !z) {
+                continue;
+            }
+            tileEntities[make_tuple(*x - 16 * chunkX, *y, *z - 16 * chunkZ)] = it;
+        }
+
+        auto tileAt = [&tileEntities](int offsetX, int blockY, int offsetZ) -> shared_ptr<nbt::CompoundTag> {
+            auto pos = make_tuple(offsetX, blockY, offsetZ);
+            auto found = tileEntities.find(pos);
+            if (found == tileEntities.end()) {
+                return nullptr;
+            } else {
+                return found->second;
+            }
+        };
 
         out.reserve(raw.size());
         for (auto const& it : raw) {
@@ -187,7 +214,11 @@ private:
                         auto const& block = it->blockAt(x, y, z);
                         assert(block);
                         shared_ptr<Block const> converted;
-                        if (String::EndsWith(block->fName, "_door")) {
+                        string name = block->fName;
+                        if (name.size() > 10 && name.substr(0, 10) == "minecraft:") {
+                            name = name.substr(10);
+                        }
+                        if (String::EndsWith(name, "_door")) {
                             string half = block->property("half", "lower");
                             string hinge;
                             string powered;
@@ -218,11 +249,20 @@ private:
                             props["facing"] = facing;
                             props["open"] = open;
                             converted.reset(new Block(block->fName, props));
+                        } else if (name == "red_bed") {
+                            auto tile = tileAt(x, by, z);
+                            if (tile && tile->string("id", "") == "minecraft:bed") {
+                                auto colorCode = tile->int32("color", 0);
+                                auto color = ColorNameFromCode(colorCode);
+                                converted.reset(new Block("minecraft:" + color + "_bed", block->fProperties));
+                            } else {
+                                converted = block;
+                            }
                         } else {
                             converted = block;
                         }
 
-                        auto found = find_if(palette.begin(), palette.end(), [converted](shared_ptr<Block const> const& p) {
+                        auto found = find_if(palette.begin(), palette.end(), [&converted](shared_ptr<Block const> const& p) {
                             return p->equals(*converted);
                         });
                         if (found == palette.end()) {
@@ -240,6 +280,45 @@ private:
             shared_ptr<ChunkSection_1_12> section(new ChunkSection_1_12(it->fY, palette, paletteIndices, it->fBlockLight, it->fSkyLight));
             out.push_back(section);
         }
+    }
+
+    static std::string ColorNameFromCode(int32_t code) {
+        switch (code % 16) {
+        case 0:
+            return "white";
+        case 1:
+            return "orange";
+        case 2:
+            return "magenta";
+        case 3:
+            return "light_blue";
+        case 4:
+            return "yellow";
+        case 5:
+            return "lime";
+        case 6:
+            return "pink";
+        case 7:
+            return "gray";
+        case 8:
+            return "light_gray";
+        case 9:
+            return "cyan";
+        case 10:
+            return "purple";
+        case 11:
+            return "blue";
+        case 12:
+            return "brown";
+        case 13:
+            return "green";
+        case 14:
+            return "red";
+        case 15:
+            return "black";
+        }
+        assert(false);
+        return "";
     }
 
     static std::shared_ptr<Block const> GetBlockAt(int offsetX, int blockY, int offsetZ, std::vector<std::shared_ptr<ChunkSection_1_12>> const& raw) {
@@ -312,9 +391,28 @@ private:
         }
     }
 
+    static void Bed(uint8_t data, std::map<std::string, std::string> & props) {
+        switch (data & 0x3) {
+        case 2:
+            props["facing"] = "north";
+            break;
+        case 3:
+            props["facing"] = "east";
+        case 1:
+            props["facing"] = "west";
+            break;
+        case 0:
+        default:
+            props["facing"] = "south";
+            break;
+        }
+        props["occupied"] = (data >> 2) & 0x1 == 0x1 ? "true" : "false";
+        props["part"] = (data >> 3) & 0x1 == 0x1 ? "head" : "foot";
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
-        std::map<std::string, std::string> properties;
+        std::map<std::string, std::string> props;
         switch (blockId) {
             case 0: id = blocks::minecraft::air; break;
             case 1:
@@ -373,12 +471,12 @@ private:
             case 8: id = blocks::minecraft::water; break; //TODO: flowing_water
             case 9:
                 id = blocks::minecraft::water;
-                properties["level"] = std::to_string(data);
+                props["level"] = std::to_string(data);
                 break;
             case 10: id = blocks::minecraft::lava; break; //TODO: flowing_lava
             case 11:
                 id = blocks::minecraft::lava;
-                properties["level"] = std::to_string(data);
+                props["level"] = std::to_string(data);
                 break;
             case 12:
                 switch (data) {
@@ -402,7 +500,7 @@ private:
                         id = blocks::minecraft::oak_log;
                         break;
                 }
-                Log(data, properties);
+                Log(data, props);
                 break;
             case 18:
                 switch (data & 0x3) {
@@ -420,7 +518,7 @@ private:
                     id = blocks::minecraft::oak_leaves;
                     break;
                 }
-                Leaves(data, properties);
+                Leaves(data, props);
                 break;
             case 19:
                 switch (data) {
@@ -446,7 +544,10 @@ private:
                 }
                 break;
             case 25: id = blocks::minecraft::note_block; break;
-            case 26: id = blocks::minecraft::white_bed; break;
+            case 26:
+                id = blocks::minecraft::red_bed;
+                Bed(data, props);
+                break;
             case 27: id = blocks::minecraft::powered_rail; break;
             case 28: id = blocks::minecraft::detector_rail; break;
             case 29: id = blocks::minecraft::sticky_piston; break;
@@ -498,7 +599,7 @@ private:
                         id = blocks::minecraft::stone_slab;
                         break;
                 }
-                properties["type"] = "double";
+                props["type"] = "double";
                 break;
             case 44:
                 switch (data) {
@@ -545,10 +646,10 @@ private:
                     case 13:
                     case 14:
                     case 15:
-                        properties["type"] = "top";
+                        props["type"] = "top";
                         break;
                     default:
-                        properties["type"] = "bottom";
+                        props["type"] = "bottom";
                         break;
                 }
                 break;
@@ -575,7 +676,7 @@ private:
             case 51: id = blocks::minecraft::fire; break;
             case 52: id = blocks::minecraft::spawner; break;
             case 53: id = blocks::minecraft::oak_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 54: id = blocks::minecraft::chest; break;
             case 55: id = blocks::minecraft::redstone_wire; break;
@@ -591,19 +692,19 @@ private:
             case 63: id = blocks::minecraft::oak_sign; break;
             case 64:
                 id = blocks::minecraft::oak_door;
-                Door(data, properties);
+                Door(data, props);
                 break;
             case 65: id = blocks::minecraft::ladder; break;
             case 66: id = blocks::minecraft::rail; break;
             case 67: id = blocks::minecraft::cobblestone_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 68: id = blocks::minecraft::oak_wall_sign; break;
             case 69: id = blocks::minecraft::lever; break;
             case 70: id = blocks::minecraft::stone_pressure_plate; break;
             case 71:
                 id = blocks::minecraft::iron_door;
-                Door(data, properties);
+                Door(data, props);
                 break;
             case 72: id = blocks::minecraft::oak_pressure_plate; break;
             case 73: id = blocks::minecraft::redstone_ore; break;
@@ -698,17 +799,17 @@ private:
             case 106: id = blocks::minecraft::vine; break;
             case 107: id = blocks::minecraft::oak_fence_gate; break;
             case 108: id = blocks::minecraft::brick_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 109: id = blocks::minecraft::stone_brick_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 110: id = blocks::minecraft::mycelium; break;
             case 111: id = blocks::minecraft::lily_pad; break;
             case 112: id = blocks::minecraft::nether_bricks; break;
             case 113: id = blocks::minecraft::nether_brick_fence; break;
             case 114: id = blocks::minecraft::nether_brick_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 115: id = blocks::minecraft::nether_wart; break;
             case 116: id = blocks::minecraft::enchanting_table; break;
@@ -722,15 +823,15 @@ private:
             case 124: id = blocks::minecraft::redstone_lamp; break; // lit_redstone_lamp
             case 125:
                 id = blocks::minecraft::oak_slab;
-                properties["type"] = "double";
+                props["type"] = "double";
                 break;
             case 126:
                 id = blocks::minecraft::oak_slab;
-                properties["type"] = "bottom";
+                props["type"] = "bottom";
                 break;
             case 127: id = blocks::minecraft::cocoa; break;
             case 128: id = blocks::minecraft::sandstone_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 129: id = blocks::minecraft::emerald_ore; break;
             case 130: id = blocks::minecraft::ender_chest; break;
@@ -738,13 +839,13 @@ private:
             case 132: id = blocks::minecraft::tripwire; break;
             case 133: id = blocks::minecraft::emerald_block; break;
             case 134: id = blocks::minecraft::spruce_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 135: id = blocks::minecraft::birch_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 136: id = blocks::minecraft::jungle_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 137: id = blocks::minecraft::command_block; break;
             case 138: id = blocks::minecraft::beacon; break;
@@ -766,7 +867,7 @@ private:
             case 154: id = blocks::minecraft::hopper; break;
             case 155: id = blocks::minecraft::quartz_block; break;
             case 156: id = blocks::minecraft::quartz_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 157: id = blocks::minecraft::activator_rail; break;
             case 158: id = blocks::minecraft::dropper; break;
@@ -804,7 +905,7 @@ private:
                         id = blocks::minecraft::acacia_leaves;
                         break;
                 }
-                Leaves(data, properties);
+                Leaves(data, props);
                 break;
             case 162:
                 switch (data & 0x3) {
@@ -814,13 +915,13 @@ private:
                         id = blocks::minecraft::acacia_log;
                         break;
                 }
-                Log(data, properties);
+                Log(data, props);
                 break;
             case 163: id = blocks::minecraft::acacia_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 164: id = blocks::minecraft::dark_oak_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 165: id = blocks::minecraft::slime_block; break;
             case 166: id = blocks::minecraft::barrier; break;
@@ -894,22 +995,22 @@ private:
             case 178: id = blocks::minecraft::daylight_detector; break; // inverted_daylight_detector
             case 179: id = blocks::minecraft::red_sandstone; break;
             case 180: id = blocks::minecraft::red_sandstone_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 181:
                 id = blocks::minecraft::red_sandstone_slab;
-                properties["type"] = "double";
+                props["type"] = "double";
                 break;
             case 182:
                 switch (data) {
                     case 8:
                         id = blocks::minecraft::red_sandstone_slab;
-                        properties["type"] = "top";
+                        props["type"] = "top";
                         break;
                     case 0:
                     default:
                         id = blocks::minecraft::red_sandstone_slab;
-                        properties["type"] = "bottom";
+                        props["type"] = "bottom";
                         break;
                 }
                 break;
@@ -925,23 +1026,23 @@ private:
             case 192: id = blocks::minecraft::acacia_fence; break;
             case 193:
                 id = blocks::minecraft::spruce_door;
-                Door(data, properties);
+                Door(data, props);
                 break;
             case 194:
                 id = blocks::minecraft::birch_door;
-                Door(data, properties);
+                Door(data, props);
                 break;
             case 195:
                 id = blocks::minecraft::jungle_door;
-                Door(data, properties);
+                Door(data, props);
                 break;
             case 196:
                 id = blocks::minecraft::acacia_door;
-                Door(data, properties);
+                Door(data, props);
                 break;
             case 197:
                 id = blocks::minecraft::dark_oak_door;
-                Door(data, properties);
+                Door(data, props);
                 break;
             case 198: id = blocks::minecraft::end_rod; break;
             case 199: id = blocks::minecraft::chorus_plant; break;
@@ -949,18 +1050,18 @@ private:
             case 201: id = blocks::minecraft::purpur_block; break;
             case 202: id = blocks::minecraft::purpur_pillar; break;
             case 203: id = blocks::minecraft::purpur_stairs;
-                Stairs(data, properties);
+                Stairs(data, props);
                 break;
             case 204:
                 id = blocks::minecraft::purpur_slab;
-                properties["type"] = "double";
+                props["type"] = "double";
                 break;
             case 205:
                 id = blocks::minecraft::purpur_slab;
                 if (data == 8) {
-                    properties["type"] = "top";
+                    props["type"] = "top";
                 } else {
-                    properties["type"] = "bottom";
+                    props["type"] = "bottom";
                 }
                 break;
             case 206: id = blocks::minecraft::end_stone_bricks; break;
@@ -1013,7 +1114,7 @@ private:
             case 255: id = blocks::minecraft::structure_block; break;
             default: id = blocks::minecraft::air; break;
         }
-        return std::make_shared<Block>(id, properties);
+        return std::make_shared<Block>(id, props);
     }
 
 private:

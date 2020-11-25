@@ -138,12 +138,27 @@ public:
             // *.mca created by Minecraft 1.2.1 does not have /DataVersion tag
             dataVersion = dataVersionTag->fValue;
         }
+
+        vector<shared_ptr<nbt::CompoundTag>> tileEntities;
+        auto tileEntitiesList = level->listTag("TileEntities");
+        if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::TAG_Compound) {
+            for (auto it : *tileEntitiesList) {
+                auto comp = it->asCompound();
+                if (!comp) {
+                    continue;
+                }
+                auto copy = make_shared<nbt::CompoundTag>();
+                copy->fValue = comp->fValue;
+                tileEntities.push_back(copy);
+            }
+        }
+
         auto sectionsTag = level->listTag("Sections");
         if (!sectionsTag) {
             return nullptr;
         }
         vector<shared_ptr<ChunkSection>> sections;
-        detail::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, sections);
+        detail::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, tileEntities, sections);
 
         vector<biomes::BiomeId> biomes;
         auto biomesTag = level->query("Biomes");
@@ -161,20 +176,6 @@ public:
                 auto copy = make_shared<nbt::CompoundTag>();
                 copy->fValue = comp->fValue;
                 entities.push_back(copy);
-            }
-        }
-
-        vector<shared_ptr<nbt::CompoundTag>> tileEntities;
-        auto tileEntitiesList = level->listTag("TileEntities");
-        if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::TAG_Compound) {
-            for (auto it : *tileEntitiesList) {
-                auto comp = it->asCompound();
-                if (!comp) {
-                    continue;
-                }
-                auto copy = make_shared<nbt::CompoundTag>();
-                copy->fValue = comp->fValue;
-                tileEntities.push_back(copy);
             }
         }
 

@@ -5,7 +5,7 @@ namespace detail {
 
 class ChunkSectionGenerator {
 public:
-    static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const& sections, int const dataVersion, std::vector<std::shared_ptr<ChunkSection>> &result) {
+    static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const& sections, int const dataVersion, int chunkX, int chunkZ, std::vector<std::shared_ptr<nbt::CompoundTag>> const& tileEntities, std::vector<std::shared_ptr<ChunkSection>> &result) {
         using namespace std;
 
         result.clear();
@@ -18,7 +18,7 @@ public:
             //1444 (17w43a)
             //1449 (17w46a)
 
-            detail::ChunkSection_1_12::MakeChunkSections(sections, result);
+            detail::ChunkSection_1_12::MakeChunkSections(sections, chunkX, chunkZ, tileEntities, result);
         } else if (dataVersion <= 2526) {
             //1451 (17w47a)
             //1453 (17w48a)
