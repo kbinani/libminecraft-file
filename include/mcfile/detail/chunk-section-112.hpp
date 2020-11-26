@@ -998,7 +998,29 @@ private:
                 PoweredRail(data, props);
                 break;
             case 158: id = blocks::minecraft::dropper; break;
-            case 159: id = blocks::minecraft::white_glazed_terracotta; break; //??
+            case 159:
+                switch (data) {
+                    case 1: id = blocks::minecraft::orange_terracotta; break;
+                    case 2: id = blocks::minecraft::magenta_terracotta; break;
+                    case 3: id = blocks::minecraft::light_blue_terracotta; break;
+                    case 4: id = blocks::minecraft::yellow_terracotta; break;
+                    case 5: id = blocks::minecraft::lime_terracotta; break;
+                    case 6: id = blocks::minecraft::pink_terracotta; break;
+                    case 7: id = blocks::minecraft::gray_terracotta; break;
+                    case 8: id = blocks::minecraft::light_gray_terracotta; break;
+                    case 9: id = blocks::minecraft::cyan_terracotta; break;
+                    case 10: id = blocks::minecraft::purple_terracotta; break;
+                    case 11: id = blocks::minecraft::blue_terracotta; break;
+                    case 12: id = blocks::minecraft::brown_terracotta; break;
+                    case 13: id = blocks::minecraft::green_terracotta; break;
+                    case 14: id = blocks::minecraft::red_terracotta; break;
+                    case 15: id = blocks::minecraft::black_terracotta; break;
+                    default:
+                    case 0:
+                        id = blocks::minecraft::white_terracotta;
+                        break;
+                }
+                break;
             case 160:
                 switch (data) {
                     case 1: id = blocks::minecraft::orange_stained_glass_pane; break;
@@ -1079,29 +1101,7 @@ private:
                         break;
                 }
                 break;
-            case 172:
-                switch (data) {
-                    case 1: id = blocks::minecraft::orange_terracotta; break;
-                    case 2: id = blocks::minecraft::magenta_terracotta; break;
-                    case 3: id = blocks::minecraft::light_blue_terracotta; break;
-                    case 4: id = blocks::minecraft::yellow_terracotta; break;
-                    case 5: id = blocks::minecraft::lime_terracotta; break;
-                    case 6: id = blocks::minecraft::pink_terracotta; break;
-                    case 7: id = blocks::minecraft::gray_terracotta; break;
-                    case 8: id = blocks::minecraft::light_gray_terracotta; break;
-                    case 9: id = blocks::minecraft::cyan_terracotta; break;
-                    case 10: id = blocks::minecraft::purple_terracotta; break;
-                    case 11: id = blocks::minecraft::blue_terracotta; break;
-                    case 12: id = blocks::minecraft::brown_terracotta; break;
-                    case 13: id = blocks::minecraft::green_terracotta; break;
-                    case 14: id = blocks::minecraft::red_terracotta; break;
-                    case 15: id = blocks::minecraft::black_terracotta; break;
-                    case 0:
-                    default:
-                        id = blocks::minecraft::white_terracotta;
-                        break;
-                }
-                break;
+            case 172: id = blocks::minecraft::terracotta; break;
             case 173: id = blocks::minecraft::coal_block; break;
             case 174: id = blocks::minecraft::packed_ice; break;
             case 175:
