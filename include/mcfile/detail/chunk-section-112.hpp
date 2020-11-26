@@ -734,18 +734,12 @@ private:
             case 48: id = blocks::minecraft::mossy_cobblestone; break;
             case 49: id = blocks::minecraft::obsidian; break;
             case 50:
-                switch (data) {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                        id = blocks::minecraft::wall_torch;
-                        break;
-                    case 0:
-                    case 5:
-                    default:
-                        id = blocks::minecraft::torch;
-                        break;
+                if (data < 4) {
+                    static std::string const facing[4] = {"east", "west", "south", "north"};
+                    props["facing"] = facing[std::clamp<uint8_t>(data, 1, 4) - 1];
+                    id = blocks::minecraft::wall_torch;
+                } else {
+                    id = blocks::minecraft::torch;
                 }
                 break;
             case 51: id = blocks::minecraft::fire; break;
