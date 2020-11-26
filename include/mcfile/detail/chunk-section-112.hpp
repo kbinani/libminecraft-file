@@ -797,7 +797,18 @@ private:
                 id = blocks::minecraft::oak_door;
                 Door(data, props);
                 break;
-            case 65: id = blocks::minecraft::ladder; break;
+            case 65:
+                id = blocks::minecraft::ladder;
+                switch (data) {
+                case 5: props["facing"] = "east"; break;
+                case 3: props["facing"] = "south"; break;
+                case 4: props["facing"] = "west"; break;
+                case 2:
+                default:
+                    props["facing"] = "north";
+                    break;
+                }
+                break;
             case 66:
                 id = blocks::minecraft::rail;
                 Rail(data, props);
