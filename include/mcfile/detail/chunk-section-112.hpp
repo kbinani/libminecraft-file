@@ -967,7 +967,29 @@ private:
             case 152: id = blocks::minecraft::redstone_block; break;
             case 153: id = blocks::minecraft::nether_quartz_ore; break;
             case 154: id = blocks::minecraft::hopper; break;
-            case 155: id = blocks::minecraft::quartz_block; break;
+            case 155:
+                switch (data) {
+                case 0:
+                    id = blocks::minecraft::quartz_block;
+                    break;
+                case 1:
+                    id = blocks::minecraft::chiseled_quartz_block;
+                    break;
+                case 3:
+                    id = blocks::minecraft::quartz_pillar;
+                    props["axis"] = "x";
+                    break;
+                case 4:
+                    id = blocks::minecraft::quartz_pillar;
+                    props["axis"] = "z";
+                    break;
+                case 2:
+                default:
+                    id = blocks::minecraft::quartz_pillar;
+                    props["axis"] = "y";
+                    break;
+                }
+                break;
             case 156: id = blocks::minecraft::quartz_stairs;
                 Stairs(data, props);
                 break;
