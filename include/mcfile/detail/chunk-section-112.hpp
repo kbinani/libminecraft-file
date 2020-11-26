@@ -904,12 +904,32 @@ private:
             case 123: id = blocks::minecraft::redstone_lamp; break;
             case 124: id = blocks::minecraft::redstone_lamp; break; // lit_redstone_lamp
             case 125:
-                id = blocks::minecraft::oak_slab;
+                switch (data) {
+                case 1: id = blocks::minecraft::spruce_slab; break;
+                case 2: id = blocks::minecraft::birch_slab; break;
+                case 3: id = blocks::minecraft::jungle_slab; break;
+                case 4: id = blocks::minecraft::acacia_slab; break;
+                case 5: id = blocks::minecraft::dark_oak_slab; break;
+                case 0:
+                default:
+                    id = blocks::minecraft::oak_slab;
+                    break;
+                }
                 props["type"] = "double";
                 break;
             case 126:
-                id = blocks::minecraft::oak_slab;
-                props["type"] = "bottom";
+                switch (data & 0x7) {
+                case 1: id = blocks::minecraft::spruce_slab; break;
+                case 2: id = blocks::minecraft::birch_slab; break;
+                case 3: id = blocks::minecraft::jungle_slab; break;
+                case 4: id = blocks::minecraft::acacia_slab; break;
+                case 5: id = blocks::minecraft::dark_oak_slab; break;
+                case 0:
+                default:
+                    id = blocks::minecraft::oak_slab;
+                    break;
+                }
+                props["type"] = data < 8 ? "bottom" : "top";
                 break;
             case 127: id = blocks::minecraft::cocoa; break;
             case 128: id = blocks::minecraft::sandstone_stairs;
