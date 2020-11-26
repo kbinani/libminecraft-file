@@ -950,7 +950,19 @@ private:
             case 117: id = blocks::minecraft::brewing_stand; break;
             case 118: id = blocks::minecraft::cauldron; break;
             case 119: id = blocks::minecraft::end_portal; break;
-            case 120: id = blocks::minecraft::end_portal_frame; break;
+            case 120:
+                id = blocks::minecraft::end_portal_frame;
+                switch (data & 0x3) {
+                case 1: props["facing"] = "west"; break;
+                case 2: props["facing"] = "north"; break;
+                case 3: props["facing"] = "east"; break;
+                case 0:
+                default:
+                    props["facing"] = "south";
+                    break;
+                }
+                props["eye"] = data > 3 ? "true" : "false";
+                break;
             case 121: id = blocks::minecraft::end_stone; break;
             case 122: id = blocks::minecraft::dragon_egg; break;
             case 123: id = blocks::minecraft::redstone_lamp; break;
