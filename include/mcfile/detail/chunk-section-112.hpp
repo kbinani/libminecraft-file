@@ -454,6 +454,17 @@ private:
         props["powered"] = ((data >> 3) & 0x1) == 0x1 ? "true" : "false";
     }
 
+    static std::string Facing(uint8_t data) {
+        static std::string const facing[6] = {"down", "up", "north", "south", "west", "east"};
+        return facing[std::clamp<uint8_t>(data, 0, 5)];
+    }
+
+    static void Piston(uint8_t data, std::map<std::string, std::string>& props) {
+        auto facing = Facing(data & 0x7);
+        props["facing"] = facing;
+        props["extended"] = ((data >> 3) & 0x1) == 0x1 ? "true" : "false";
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> props;
@@ -600,11 +611,17 @@ private:
                 id = blocks::minecraft::detector_rail;
                 PoweredRail(data, props);
                 break;
-            case 29: id = blocks::minecraft::sticky_piston; break;
+            case 29:
+                id = blocks::minecraft::sticky_piston;
+                Piston(data, props);
+                break;
             case 30: id = blocks::minecraft::cobweb; break;
             case 31: id = blocks::minecraft::grass; break;
             case 32: id = blocks::minecraft::dead_bush; break;
-            case 33: id = blocks::minecraft::piston; break;
+            case 33:
+                id = blocks::minecraft::piston;
+                Piston(data, props);
+                break;
             case 34: id = blocks::minecraft::piston_head; break;
             case 35:
                 switch (data) {
