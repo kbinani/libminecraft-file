@@ -464,6 +464,18 @@ private:
         return facing[std::clamp<uint8_t>(data, 0, 3)];
     }
 
+    static void Chest(uint8_t data, std::map<std::string, std::string>& props) {
+        switch (data) {
+        case 3: props["facing"] = "south"; break;
+        case 4: props["facing"] = "west"; break;
+        case 5: props["facing"] = "east"; break;
+        case 2:
+        default:
+            props["facing"] = "north";
+            break;
+        }
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> props;
@@ -754,7 +766,10 @@ private:
             case 53: id = blocks::minecraft::oak_stairs;
                 Stairs(data, props);
                 break;
-            case 54: id = blocks::minecraft::chest; break;
+            case 54:
+                id = blocks::minecraft::chest;
+                Chest(data, props);
+                break;
             case 55: id = blocks::minecraft::redstone_wire; break;
             case 56: id = blocks::minecraft::diamond_ore; break;
             case 57: id = blocks::minecraft::diamond_block; break;
@@ -767,6 +782,15 @@ private:
             case 61:
             case 62: // lit
                 id = blocks::minecraft::furnace;
+                switch (data) {
+                    case 3: props["facing"] = "south"; break;
+                    case 4: props["facing"] = "west"; break;
+                    case 5: props["facing"] = "east"; break;
+                    case 2:
+                    default:
+                        props["facing"] = "north";
+                        break;
+                }
                 break;
             case 63: id = blocks::minecraft::oak_sign; break;
             case 64:
@@ -978,7 +1002,10 @@ private:
             case 143: id = blocks::minecraft::oak_button; break;
             case 144: id = blocks::minecraft::skeleton_skull; break;
             case 145: id = blocks::minecraft::anvil; break;
-            case 146: id = blocks::minecraft::trapped_chest; break;
+            case 146:
+                id = blocks::minecraft::trapped_chest;
+                Chest(data, props);
+                break;
             case 147: id = blocks::minecraft::light_weighted_pressure_plate; break;
             case 148: id = blocks::minecraft::heavy_weighted_pressure_plate; break;
             case 149: id = blocks::minecraft::comparator; break; //unpowered_comparator
