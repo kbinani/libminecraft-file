@@ -383,19 +383,13 @@ private:
         }
     }
 
+    static std::string Axis(uint8_t v) {
+        static std::string const axis[3] = {"y", "x", "z"};
+        return axis[std::clamp<uint8_t>(v, 0, 2)];
+    }
+
     static void Log(uint8_t data, std::map<std::string, std::string>& props) {
-        switch ((data >> 2) & 0x3) {
-        case 1:
-            props["axis"] = "x";
-            break;
-        case 2:
-            props["axis"] = "z";
-            break;
-        case 0:
-        default:
-            props["axis"] = "y";
-            break;
-        }
+        props["axis"] = Axis((data >> 2) & 0x3);
     }
 
     static void Leaves(uint8_t data, std::map<std::string, std::string> & props) {
@@ -1085,7 +1079,10 @@ private:
                 }
                 break;
             case 169: id = blocks::minecraft::sea_lantern; break;
-            case 170: id = blocks::minecraft::hay_block; break;
+            case 170:
+                id = blocks::minecraft::hay_block;
+                props["axis"] = Axis(data >> 2);
+                break;
             case 171:
                 switch (data) {
                     case 1: id = blocks::minecraft::orange_carpet; break;
@@ -1183,7 +1180,11 @@ private:
             case 199: id = blocks::minecraft::chorus_plant; break;
             case 200: id = blocks::minecraft::chorus_flower; break;
             case 201: id = blocks::minecraft::purpur_block; break;
-            case 202: id = blocks::minecraft::purpur_pillar; break;
+            case 202:
+                id = blocks::minecraft::purpur_pillar;
+                std::cout << (int)data << std::endl;
+                props["axis"] = Axis(data >> 2);
+                break;
             case 203: id = blocks::minecraft::purpur_stairs;
                 Stairs(data, props);
                 break;
@@ -1209,7 +1210,10 @@ private:
             case 213: id = blocks::minecraft::magma_block; break;
             case 214: id = blocks::minecraft::nether_wart_block; break;
             case 215: id = blocks::minecraft::red_nether_bricks; break;
-            case 216: id = blocks::minecraft::bone_block; break;
+            case 216:
+                id = blocks::minecraft::bone_block;
+                props["axis"] = Axis(data >> 2);
+                break;
             case 217: id = blocks::minecraft::structure_void; break;
             case 218: id = blocks::minecraft::observer; break;
             case 219: id = blocks::minecraft::white_shulker_box; break;
