@@ -1075,7 +1075,15 @@ private:
             case 165: id = blocks::minecraft::slime_block; break;
             case 166: id = blocks::minecraft::barrier; break;
             case 167: id = blocks::minecraft::iron_trapdoor; break;
-            case 168: id = blocks::minecraft::prismarine; break;
+            case 168:
+                switch (data) {
+                case 1: id = blocks::minecraft::prismarine_bricks; break;
+                case 2: id = blocks::minecraft::dark_prismarine; break;
+                case 0:
+                default:
+                    id = blocks::minecraft::prismarine;
+                }
+                break;
             case 169: id = blocks::minecraft::sea_lantern; break;
             case 170: id = blocks::minecraft::hay_block; break;
             case 171:
