@@ -454,15 +454,20 @@ private:
         props["powered"] = ((data >> 3) & 0x1) == 0x1 ? "true" : "false";
     }
 
-    static std::string Facing(uint8_t data) {
+    static std::string FacingA(uint8_t data) {
         static std::string const facing[6] = {"down", "up", "north", "south", "west", "east"};
         return facing[std::clamp<uint8_t>(data, 0, 5)];
     }
 
     static void Piston(uint8_t data, std::map<std::string, std::string>& props) {
-        auto facing = Facing(data & 0x7);
+        auto facing = FacingA(data & 0x7);
         props["facing"] = facing;
         props["extended"] = ((data >> 3) & 0x1) == 0x1 ? "true" : "false";
+    }
+
+    static std::string FacingB(uint8_t data) {
+        static std::string const facing[4] = { "south", "west", "north", "east"};
+        return facing[std::clamp<uint8_t>(data, 0, 3)];
     }
 
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
@@ -804,12 +809,17 @@ private:
             case 83: id = blocks::minecraft::sugar_cane; break;
             case 84: id = blocks::minecraft::jukebox; break;
             case 85: id = blocks::minecraft::oak_fence; break;
-            case 86: id = blocks::minecraft::pumpkin; break;
+            case 86: id = blocks::minecraft::carved_pumpkin;
+                props["facing"] = FacingB(data);
+                break;
             case 87: id = blocks::minecraft::netherrack; break;
             case 88: id = blocks::minecraft::soul_sand; break;
             case 89: id = blocks::minecraft::glowstone; break;
             case 90: id = blocks::minecraft::nether_portal; break;
-            case 91: id = blocks::minecraft::jack_o_lantern; break;
+            case 91:
+                id = blocks::minecraft::jack_o_lantern;
+                props["facing"] = FacingB(data);
+                break;
             case 92: id = blocks::minecraft::cake; break;
             case 93: id = blocks::minecraft::repeater; break;
             case 94: id = blocks::minecraft::repeater; break; // powered_repeater
