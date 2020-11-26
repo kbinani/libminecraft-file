@@ -841,7 +841,10 @@ private:
                 }
                 break;
             case 77: id = blocks::minecraft::stone_button; break;
-            case 78: id = blocks::minecraft::snow; break;
+            case 78:
+                id = blocks::minecraft::snow;
+                props["layers"] = std::to_string(std::clamp(data + 1, 1, 8));
+                break;
             case 79: id = blocks::minecraft::ice; break;
             case 80: id = blocks::minecraft::snow_block; break;
             case 81: id = blocks::minecraft::cactus; break;
