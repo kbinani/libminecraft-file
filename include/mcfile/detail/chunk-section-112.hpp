@@ -647,7 +647,37 @@ private:
                 }
                 break;
             case 37: id = blocks::minecraft::dandelion; break;
-            case 38: id = blocks::minecraft::poppy; break;
+            case 38:
+                switch (data) {
+                case 0:
+                    id = blocks::minecraft::poppy;
+                    break;
+                case 1:
+                    id = blocks::minecraft::blue_orchid;
+                    break;
+                case 2:
+                    id = blocks::minecraft::allium;
+                    break;
+                case 3:
+                    id = blocks::minecraft::azure_bluet;
+                    break;
+                case 4:
+                    id = blocks::minecraft::red_tulip;
+                    break;
+                case 5:
+                    id = blocks::minecraft::orange_tulip;
+                    break;
+                case 6:
+                    id = blocks::minecraft::white_tulip;
+                    break;
+                case 7:
+                    id = blocks::minecraft::pink_tulip;
+                    break;
+                case 8:
+                    id = blocks::minecraft::oxeye_daisy;
+                    break;
+                }
+                break;
             case 39: id = blocks::minecraft::brown_mushroom; break;
             case 40: id = blocks::minecraft::red_mushroom; break;
             case 41: id = blocks::minecraft::gold_block; break;
