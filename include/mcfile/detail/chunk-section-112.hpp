@@ -261,6 +261,18 @@ private:
                             } else {
                                 converted = block;
                             }
+                        } else if (name == "note_block") {
+                            auto tile = tileAt(x, by, z);
+                            if (tile && tile->string("id", "") == "minecraft:noteblock") {
+                                auto note = tile->byte("note", 0);
+                                auto powered = tile->boolean("powered", false);
+                                map<string, string> props(block->fProperties);
+                                props["note"] = to_string(note);
+                                props["powered"] = powered ? "true" : "false";
+                                converted.reset(new Block(block->fName, props));
+                            } else {
+                                converted = block;
+                            }
                         } else {
                             converted = block;
                         }
