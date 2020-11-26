@@ -751,7 +751,10 @@ private:
             case 56: id = blocks::minecraft::diamond_ore; break;
             case 57: id = blocks::minecraft::diamond_block; break;
             case 58: id = blocks::minecraft::crafting_table; break;
-            case 59: id = blocks::minecraft::wheat; break;
+            case 59:
+                id = blocks::minecraft::wheat;
+                props["age"] = std::to_string(data);
+                break;
             case 60: id = blocks::minecraft::farmland; break;
             case 61:
             case 62: // lit
@@ -870,8 +873,14 @@ private:
             case 101: id = blocks::minecraft::iron_bars; break;
             case 102: id = blocks::minecraft::glass_pane; break;
             case 103: id = blocks::minecraft::melon; break;
-            case 104: id = blocks::minecraft::pumpkin_stem; break;
-            case 105: id = blocks::minecraft::melon_stem; break;
+            case 104:
+                id = blocks::minecraft::pumpkin_stem;
+                props["age"] = std::to_string(data);
+                break;
+            case 105:
+                id = blocks::minecraft::melon_stem;
+                props["age"] = std::to_string(data);
+                break;
             case 106: id = blocks::minecraft::vine; break;
             case 107: id = blocks::minecraft::oak_fence_gate; break;
             case 108: id = blocks::minecraft::brick_stairs;
@@ -887,7 +896,10 @@ private:
             case 114: id = blocks::minecraft::nether_brick_stairs;
                 Stairs(data, props);
                 break;
-            case 115: id = blocks::minecraft::nether_wart; break;
+            case 115:
+                id = blocks::minecraft::nether_wart;
+                props["age"] = std::to_string(data);
+                break;
             case 116: id = blocks::minecraft::enchanting_table; break;
             case 117: id = blocks::minecraft::brewing_stand; break;
             case 118: id = blocks::minecraft::cauldron; break;
@@ -947,8 +959,14 @@ private:
             case 138: id = blocks::minecraft::beacon; break;
             case 139: id = blocks::minecraft::cobblestone_wall; break;
             case 140: id = blocks::minecraft::flower_pot; break;
-            case 141: id = blocks::minecraft::carrots; break;
-            case 142: id = blocks::minecraft::potatoes; break;
+            case 141:
+                id = blocks::minecraft::carrots;
+                props["age"] = std::to_string(data);
+                break;
+            case 142:
+                id = blocks::minecraft::potatoes;
+                props["age"] = std::to_string(data);
+                break;
             case 143: id = blocks::minecraft::oak_button; break;
             case 144: id = blocks::minecraft::skeleton_skull; break;
             case 145: id = blocks::minecraft::anvil; break;
@@ -1182,7 +1200,6 @@ private:
             case 201: id = blocks::minecraft::purpur_block; break;
             case 202:
                 id = blocks::minecraft::purpur_pillar;
-                std::cout << (int)data << std::endl;
                 props["axis"] = Axis(data >> 2);
                 break;
             case 203: id = blocks::minecraft::purpur_stairs;
@@ -1201,7 +1218,10 @@ private:
                 }
                 break;
             case 206: id = blocks::minecraft::end_stone_bricks; break;
-            case 207: id = blocks::minecraft::beetroots; break;
+            case 207:
+                id = blocks::minecraft::beetroots;
+                props["age"] = std::to_string(data);
+                break;
             case 208: id = blocks::minecraft::grass_path; break;
             case 209: id = blocks::minecraft::end_gateway; break;
             case 210: id = blocks::minecraft::repeating_command_block; break;
