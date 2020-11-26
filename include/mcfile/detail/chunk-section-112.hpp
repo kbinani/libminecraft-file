@@ -739,7 +739,7 @@ private:
             case 48: id = blocks::minecraft::mossy_cobblestone; break;
             case 49: id = blocks::minecraft::obsidian; break;
             case 50:
-                if (data < 4) {
+                if (data < 5) {
                     static std::string const facing[4] = {"east", "west", "south", "north"};
                     props["facing"] = facing[std::clamp<uint8_t>(data, 1, 4) - 1];
                     id = blocks::minecraft::wall_torch;
