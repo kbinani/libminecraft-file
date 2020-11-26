@@ -615,7 +615,15 @@ private:
                 Piston(data, props);
                 break;
             case 30: id = blocks::minecraft::cobweb; break;
-            case 31: id = blocks::minecraft::grass; break;
+            case 31:
+                switch (data) {
+                case 2: id = blocks::minecraft::fern; break;
+                case 1:
+                default:
+                    id = blocks::minecraft::grass;
+                    break;
+                }
+                break;
             case 32: id = blocks::minecraft::dead_bush; break;
             case 33:
                 id = blocks::minecraft::piston;
