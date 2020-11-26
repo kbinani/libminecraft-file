@@ -689,8 +689,8 @@ private:
                     case 3: id = blocks::minecraft::cobblestone_slab; break;
                     case 4: id = blocks::minecraft::brick_slab; break;
                     case 5: id = blocks::minecraft::stone_brick_slab; break;
-                    case 6: id = blocks::minecraft::quartz_slab; break;
-                    case 7: id = blocks::minecraft::nether_brick_slab; break;
+                    case 6: id = blocks::minecraft::nether_brick_slab; break;
+                    case 7: id = blocks::minecraft::quartz_slab; break;
                     case 0:
                     default:
                         id = blocks::minecraft::stone_slab;
