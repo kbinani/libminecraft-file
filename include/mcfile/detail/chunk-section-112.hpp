@@ -413,6 +413,35 @@ private:
         props["part"] = (data >> 3) & 0x1 == 0x1 ? "head" : "foot";
     }
 
+    static void Rail(uint8_t data, std::map<std::string, std::string>& props) {
+        static std::string const shape[10] = {
+            "north_south", // 0
+            "east_west", // 1
+            "ascending_east", // 2
+            "ascending_west", // 3
+            "ascending_north", // 4
+            "ascending_south", // 5
+            "south_east", // 6
+            "south_west", // 7
+            "north_west", // 8
+            "north_east", // 9
+        };
+        props["shape"] = shape[std::clamp<uint8_t>(data, 0, 9)];
+    }
+
+    static void PoweredRail(uint8_t data, std::map<std::string, std::string>& props) {
+        static std::string const shape[6] = {
+            "north_south", // 0
+            "east_west", // 1
+            "ascending_east", // 2
+            "ascending_west", // 3
+            "ascending_north", // 4
+            "ascending_south" // 5
+        };
+        props["shape"] = shape[std::clamp(data & 0x7, 0, 5)];
+        props["powered"] = ((data >> 3) & 0x1) == 0x1 ? "true" : "false";
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> props;
@@ -551,8 +580,14 @@ private:
                 id = blocks::minecraft::red_bed;
                 Bed(data, props);
                 break;
-            case 27: id = blocks::minecraft::powered_rail; break;
-            case 28: id = blocks::minecraft::detector_rail; break;
+            case 27:
+                id = blocks::minecraft::powered_rail;
+                PoweredRail(data, props);
+                break;
+            case 28:
+                id = blocks::minecraft::detector_rail;
+                PoweredRail(data, props);
+                break;
             case 29: id = blocks::minecraft::sticky_piston; break;
             case 30: id = blocks::minecraft::cobweb; break;
             case 31: id = blocks::minecraft::grass; break;
@@ -676,7 +711,10 @@ private:
                 Door(data, props);
                 break;
             case 65: id = blocks::minecraft::ladder; break;
-            case 66: id = blocks::minecraft::rail; break;
+            case 66:
+                id = blocks::minecraft::rail;
+                Rail(data, props);
+                break;
             case 67: id = blocks::minecraft::cobblestone_stairs;
                 Stairs(data, props);
                 break;
@@ -850,7 +888,10 @@ private:
             case 156: id = blocks::minecraft::quartz_stairs;
                 Stairs(data, props);
                 break;
-            case 157: id = blocks::minecraft::activator_rail; break;
+            case 157:
+                id = blocks::minecraft::activator_rail;
+                PoweredRail(data, props);
+                break;
             case 158: id = blocks::minecraft::dropper; break;
             case 159: id = blocks::minecraft::white_glazed_terracotta; break; //??
             case 160:
