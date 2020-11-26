@@ -1248,8 +1248,52 @@ private:
             case 248: id = blocks::minecraft::green_glazed_terracotta; break;
             case 249: id = blocks::minecraft::red_glazed_terracotta; break;
             case 250: id = blocks::minecraft::black_glazed_terracotta; break;
-            case 251: id = blocks::minecraft::white_concrete; break;
-            case 252: id = blocks::minecraft::white_concrete_powder; break;
+            case 251:
+                switch (data) {
+                case 1: id = blocks::minecraft::orange_concrete; break;
+                case 2: id = blocks::minecraft::magenta_concrete; break;
+                case 3: id = blocks::minecraft::light_blue_concrete; break;
+                case 4: id = blocks::minecraft::yellow_concrete; break;
+                case 5: id = blocks::minecraft::lime_concrete; break;
+                case 6: id = blocks::minecraft::pink_concrete; break;
+                case 7: id = blocks::minecraft::gray_concrete; break;
+                case 8: id = blocks::minecraft::light_gray_concrete; break;
+                case 9: id = blocks::minecraft::cyan_concrete; break;
+                case 10: id = blocks::minecraft::purple_concrete; break;
+                case 11: id = blocks::minecraft::blue_concrete; break;
+                case 12: id = blocks::minecraft::brown_concrete; break;
+                case 13: id = blocks::minecraft::green_concrete; break;
+                case 14: id = blocks::minecraft::red_concrete; break;
+                case 15: id = blocks::minecraft::black_concrete; break;
+                case 0:
+                default:
+                    id = blocks::minecraft::white_concrete;
+                    break;
+                }
+                break;
+            case 252:
+                switch (data) {
+                case 1: id = blocks::minecraft::orange_concrete_powder; break;
+                case 2: id = blocks::minecraft::magenta_concrete_powder; break;
+                case 3: id = blocks::minecraft::light_blue_concrete_powder; break;
+                case 4: id = blocks::minecraft::yellow_concrete_powder; break;
+                case 5: id = blocks::minecraft::lime_concrete_powder; break;
+                case 6: id = blocks::minecraft::pink_concrete_powder; break;
+                case 7: id = blocks::minecraft::gray_concrete_powder; break;
+                case 8: id = blocks::minecraft::light_gray_concrete_powder; break;
+                case 9: id = blocks::minecraft::cyan_concrete_powder; break;
+                case 10: id = blocks::minecraft::purple_concrete_powder; break;
+                case 11: id = blocks::minecraft::blue_concrete_powder; break;
+                case 12: id = blocks::minecraft::brown_concrete_powder; break;
+                case 13: id = blocks::minecraft::green_concrete_powder; break;
+                case 14: id = blocks::minecraft::red_concrete_powder; break;
+                case 15: id = blocks::minecraft::black_concrete_powder; break;
+                case 0:
+                default:
+                    id = blocks::minecraft::white_concrete_powder;
+                    break;
+                }
+                break;
             case 255: id = blocks::minecraft::structure_block; break;
             default: id = blocks::minecraft::air; break;
         }
