@@ -1306,7 +1306,10 @@ private:
                 props["facing"] = FacingA(data);
                 break;
             case 199: id = blocks::minecraft::chorus_plant; break;
-            case 200: id = blocks::minecraft::chorus_flower; break;
+            case 200:
+                id = blocks::minecraft::chorus_flower;
+                props["age"] = std::to_string(data);
+                break;
             case 201: id = blocks::minecraft::purpur_block; break;
             case 202:
                 id = blocks::minecraft::purpur_pillar;
