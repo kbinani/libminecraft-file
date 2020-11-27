@@ -494,6 +494,15 @@ private:
         }
     }
 
+    static void GlazedTerracotta(uint8_t data, std::map<std::string, std::string>& props) {
+        switch (data) {
+        case 0: props["facing"] = "south"; break;
+        case 1: props["facing"] = "west"; break;
+        case 2: props["facing"] = "north"; break;
+        case 3: props["facing"] = "east"; break;
+        }
+    }
+
     static inline std::shared_ptr<Block const> Flatten(uint16_t blockId, uint8_t data) {
         auto id = blocks::minecraft::air;
         std::map<std::string, std::string> props;
@@ -1413,22 +1422,70 @@ private:
                 id = blocks::minecraft::black_shulker_box;
                 props["facing"] = FacingA(data);
                 break;
-            case 235: id = blocks::minecraft::white_glazed_terracotta; break;
-            case 236: id = blocks::minecraft::orange_glazed_terracotta; break;
-            case 237: id = blocks::minecraft::magenta_glazed_terracotta; break;
-            case 238: id = blocks::minecraft::light_blue_glazed_terracotta; break;
-            case 239: id = blocks::minecraft::yellow_glazed_terracotta; break;
-            case 240: id = blocks::minecraft::lime_glazed_terracotta; break;
-            case 241: id = blocks::minecraft::pink_glazed_terracotta; break;
-            case 242: id = blocks::minecraft::gray_glazed_terracotta; break;
-            case 243: id = blocks::minecraft::light_gray_glazed_terracotta; break;
-            case 244: id = blocks::minecraft::cyan_glazed_terracotta; break;
-            case 245: id = blocks::minecraft::purple_glazed_terracotta; break;
-            case 246: id = blocks::minecraft::blue_glazed_terracotta; break;
-            case 247: id = blocks::minecraft::brown_glazed_terracotta; break;
-            case 248: id = blocks::minecraft::green_glazed_terracotta; break;
-            case 249: id = blocks::minecraft::red_glazed_terracotta; break;
-            case 250: id = blocks::minecraft::black_glazed_terracotta; break;
+            case 235:
+                id = blocks::minecraft::white_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 236:
+                id = blocks::minecraft::orange_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 237:
+                id = blocks::minecraft::magenta_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 238:
+                id = blocks::minecraft::light_blue_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 239:
+                id = blocks::minecraft::yellow_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 240:
+                id = blocks::minecraft::lime_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 241:
+                id = blocks::minecraft::pink_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 242:
+                id = blocks::minecraft::gray_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 243:
+                id = blocks::minecraft::light_gray_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 244:
+                id = blocks::minecraft::cyan_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 245:
+                id = blocks::minecraft::purple_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 246:
+                id = blocks::minecraft::blue_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 247:
+                id = blocks::minecraft::brown_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 248:
+                id = blocks::minecraft::green_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 249:
+                id = blocks::minecraft::red_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
+            case 250:
+                id = blocks::minecraft::black_glazed_terracotta;
+                GlazedTerracotta(data, props);
+                break;
             case 251:
                 switch (data) {
                 case 1: id = blocks::minecraft::orange_concrete; break;
