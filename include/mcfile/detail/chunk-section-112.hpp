@@ -273,6 +273,23 @@ private:
                             } else {
                                 converted = block;
                             }
+                        } else if (name == "sunflower") {
+                            auto lower = GetBlockAt(x, by - 1, z, raw);
+                            if (lower) {
+                                if (lower->fName == "minecraft:lilac" || lower->fName == "minecraft:tall_grass" || lower->fName == "minecraft:large_fern" || lower->fName == "minecraft:rose_bush" || lower->fName == "minecraft:peony") {
+                                    map<string, string> props;
+                                    props["half"] = "upper";
+                                    converted.reset(new Block(lower->fName, props));
+                                } else {
+                                    map<string, string> props;
+                                    props["half"] = lower->fName == "minecraft:sunflower" ? "upper" : "lower";
+                                    converted.reset(new Block(block->fName, props));
+                                }
+                            } else {
+                                map<string, string> props(block->fProperties);
+                                props["half"] = "lower"; // sunflower on y = 0?
+                                converted.reset(new Block(block->fName, props));
+                            }
                         } else {
                             converted = block;
                         }
