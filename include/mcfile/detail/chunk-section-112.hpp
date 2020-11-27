@@ -258,8 +258,6 @@ private:
                                 auto colorCode = tile->int32("color", 0);
                                 auto color = ColorNameFromCode(colorCode);
                                 converted.reset(new Block("minecraft:" + color + "_bed", block->fProperties));
-                            } else {
-                                converted = block;
                             }
                         } else if (name == "note_block") {
                             auto tile = tileAt(x, by, z);
@@ -270,8 +268,6 @@ private:
                                 props["note"] = to_string(note);
                                 props["powered"] = powered ? "true" : "false";
                                 converted.reset(new Block(block->fName, props));
-                            } else {
-                                converted = block;
                             }
                         } else if (name == "sunflower") {
                             auto lower = GetBlockAt(x, by - 1, z, raw);
@@ -290,7 +286,33 @@ private:
                                 props["half"] = "lower"; // sunflower on y = 0?
                                 converted.reset(new Block(block->fName, props));
                             }
-                        } else {
+                        } else if (name == "skeleton_skull" || name == "skeleton_wall_skull") {
+                            auto tile = tileAt(x, by, z);
+                            if (tile) {
+                                auto rot = tile->byte("Rot");
+                                auto type = tile->byte("SkullType");
+                                if (rot && type) {
+                                    map<string, string> props(block->fProperties);
+                                    string n = "skeleton";
+                                    string p = "skull";
+                                    switch (*type) {
+                                    case 0: n = "skeleton"; p = "skull"; break;
+                                    case 1: n = "wither_skeleton"; p = "skull"; break;
+                                    case 2: n = "zombie"; p = "head"; break;
+                                    case 3: n = "player"; p = "head"; break;
+                                    case 4: n = "creeper"; p = "head"; break;
+                                    case 5: n = "dragon"; p = "head"; break;
+                                    }
+                                    if (name == "skeleton_skull") {
+                                        props["rotation"] = std::to_string(*rot);
+                                        converted.reset(new Block("minecraft:" + n + "_" + p, props));
+                                    } else {
+                                        converted.reset(new Block("minecraft:" + n + "_wall_" + p, props));
+                                    }
+                                }
+                            }
+                        }
+                        if (!converted) {
                             converted = block;
                         }
 
@@ -1063,7 +1085,27 @@ private:
                 props["age"] = std::to_string(data);
                 break;
             case 143: id = blocks::minecraft::oak_button; break;
-            case 144: id = blocks::minecraft::skeleton_skull; break;
+            case 144:
+                switch (data) {
+                case 1: id = blocks::minecraft::skeleton_skull; break;
+                case 3:
+                    id = blocks::minecraft::skeleton_wall_skull;
+                    props["facing"] = "south";
+                    break;
+                case 4:
+                    id = blocks::minecraft::skeleton_wall_skull;
+                    props["facing"] = "west";
+                    break;
+                case 2:
+                    id = blocks::minecraft::skeleton_wall_skull;
+                    props["facing"] = "north";
+                    break;
+                case 5:
+                    id = blocks::minecraft::skeleton_wall_skull;
+                    props["facing"] = "east";
+                    break;
+                }
+                break;
             case 145:
                 switch (data & 0x3) {
                 case 3: props["facing"] = "east"; break;
