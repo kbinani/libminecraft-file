@@ -1356,7 +1356,7 @@ private:
             case 226: id = blocks::minecraft::gray_shulker_box; break;
             case 227: id = blocks::minecraft::light_gray_shulker_box; break;
             case 228: id = blocks::minecraft::cyan_shulker_box; break;
-            case 229: id = blocks::minecraft::purple_shulker_box; break;
+            case 229: id = blocks::minecraft::shulker_box; break;
             case 230: id = blocks::minecraft::blue_shulker_box; break;
             case 231: id = blocks::minecraft::brown_shulker_box; break;
             case 232: id = blocks::minecraft::green_shulker_box; break;
