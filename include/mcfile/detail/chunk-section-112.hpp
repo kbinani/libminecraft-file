@@ -1001,7 +1001,10 @@ private:
                 Stairs(data, props);
                 break;
             case 129: id = blocks::minecraft::emerald_ore; break;
-            case 130: id = blocks::minecraft::ender_chest; break;
+            case 130:
+                id = blocks::minecraft::ender_chest;
+                Chest(data, props);
+                break;
             case 131: id = blocks::minecraft::tripwire_hook; break;
             case 132: id = blocks::minecraft::tripwire; break;
             case 133: id = blocks::minecraft::emerald_block; break;
