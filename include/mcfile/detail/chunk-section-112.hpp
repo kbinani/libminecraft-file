@@ -1027,7 +1027,25 @@ private:
                 break;
             case 143: id = blocks::minecraft::oak_button; break;
             case 144: id = blocks::minecraft::skeleton_skull; break;
-            case 145: id = blocks::minecraft::anvil; break;
+            case 145:
+                switch (data & 0x3) {
+                case 3: props["facing"] = "east"; break;
+                case 1: props["facing"] = "west"; break;
+                case 2: props["facing"] = "north"; break;
+                case 0:
+                default:
+                    props["facing"] = "south";
+                    break;
+                }
+                switch (data >> 2) {
+                case 1: id = blocks::minecraft::chipped_anvil; break;
+                case 2: id = blocks::minecraft::damaged_anvil; break;
+                case 0:
+                default:
+                    id = blocks::minecraft::anvil;
+                    break;
+                }
+                break;
             case 146:
                 id = blocks::minecraft::trapped_chest;
                 Chest(data, props);
