@@ -1301,7 +1301,10 @@ private:
                 id = blocks::minecraft::dark_oak_door;
                 Door(data, props);
                 break;
-            case 198: id = blocks::minecraft::end_rod; break;
+            case 198:
+                id = blocks::minecraft::end_rod;
+                props["facing"] = FacingA(data);
+                break;
             case 199: id = blocks::minecraft::chorus_plant; break;
             case 200: id = blocks::minecraft::chorus_flower; break;
             case 201: id = blocks::minecraft::purpur_block; break;
