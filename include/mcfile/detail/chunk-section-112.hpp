@@ -407,6 +407,7 @@ private:
             break;
         case 3:
             props["facing"] = "east";
+            break;
         case 1:
             props["facing"] = "west";
             break;
