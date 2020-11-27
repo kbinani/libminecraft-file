@@ -1346,22 +1346,70 @@ private:
                 break;
             case 217: id = blocks::minecraft::structure_void; break;
             case 218: id = blocks::minecraft::observer; break;
-            case 219: id = blocks::minecraft::white_shulker_box; break;
-            case 220: id = blocks::minecraft::orange_shulker_box; break;
-            case 221: id = blocks::minecraft::magenta_shulker_box; break;
-            case 222: id = blocks::minecraft::light_blue_shulker_box; break;
-            case 223: id = blocks::minecraft::yellow_shulker_box; break;
-            case 224: id = blocks::minecraft::lime_shulker_box; break;
-            case 225: id = blocks::minecraft::pink_shulker_box; break;
-            case 226: id = blocks::minecraft::gray_shulker_box; break;
-            case 227: id = blocks::minecraft::light_gray_shulker_box; break;
-            case 228: id = blocks::minecraft::cyan_shulker_box; break;
-            case 229: id = blocks::minecraft::shulker_box; break;
-            case 230: id = blocks::minecraft::blue_shulker_box; break;
-            case 231: id = blocks::minecraft::brown_shulker_box; break;
-            case 232: id = blocks::minecraft::green_shulker_box; break;
-            case 233: id = blocks::minecraft::red_shulker_box; break;
-            case 234: id = blocks::minecraft::black_shulker_box; break;
+            case 219:
+                id = blocks::minecraft::white_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 220:
+                id = blocks::minecraft::orange_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 221:
+                id = blocks::minecraft::magenta_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 222:
+                id = blocks::minecraft::light_blue_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 223:
+                id = blocks::minecraft::yellow_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 224:
+                id = blocks::minecraft::lime_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 225:
+                id = blocks::minecraft::pink_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 226:
+                id = blocks::minecraft::gray_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 227:
+                id = blocks::minecraft::light_gray_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 228:
+                id = blocks::minecraft::cyan_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 229:
+                id = blocks::minecraft::shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 230:
+                id = blocks::minecraft::blue_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 231:
+                id = blocks::minecraft::brown_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 232:
+                id = blocks::minecraft::green_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 233:
+                id = blocks::minecraft::red_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
+            case 234:
+                id = blocks::minecraft::black_shulker_box;
+                props["facing"] = FacingA(data);
+                break;
             case 235: id = blocks::minecraft::white_glazed_terracotta; break;
             case 236: id = blocks::minecraft::orange_glazed_terracotta; break;
             case 237: id = blocks::minecraft::magenta_glazed_terracotta; break;
