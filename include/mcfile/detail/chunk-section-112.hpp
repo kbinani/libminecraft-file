@@ -1061,9 +1061,6 @@ private:
             case 154: id = blocks::minecraft::hopper; break;
             case 155:
                 switch (data) {
-                case 0:
-                    id = blocks::minecraft::quartz_block;
-                    break;
                 case 1:
                     id = blocks::minecraft::chiseled_quartz_block;
                     break;
@@ -1076,9 +1073,12 @@ private:
                     props["axis"] = "z";
                     break;
                 case 2:
-                default:
                     id = blocks::minecraft::quartz_pillar;
                     props["axis"] = "y";
+                    break;
+                case 0:
+                default:
+                    id = blocks::minecraft::quartz_block;
                     break;
                 }
                 break;
