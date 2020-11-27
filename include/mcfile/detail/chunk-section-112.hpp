@@ -1019,7 +1019,14 @@ private:
                 break;
             case 137: id = blocks::minecraft::command_block; break;
             case 138: id = blocks::minecraft::beacon; break;
-            case 139: id = blocks::minecraft::cobblestone_wall; break;
+            case 139:
+                switch (data) {
+                case 1: id = blocks::minecraft::mossy_cobblestone_wall; break;
+                case 0:
+                default:
+                    id = blocks::minecraft::cobblestone_wall;
+                }
+                break;
             case 140: id = blocks::minecraft::flower_pot; break;
             case 141:
                 id = blocks::minecraft::carrots;
