@@ -432,7 +432,7 @@ private:
     }
 
     static void Leaves(uint8_t data, std::map<std::string, std::string> & props) {
-        if ((data >> 2) & 0x1 == 0x1) {
+        if (((data >> 2) & 0x1) == 0x1) {
             props["persistent"] = "true";
         } else {
             props["persistent"] = "false";
@@ -455,8 +455,8 @@ private:
             props["facing"] = "south";
             break;
         }
-        props["occupied"] = (data >> 2) & 0x1 == 0x1 ? "true" : "false";
-        props["part"] = (data >> 3) & 0x1 == 0x1 ? "head" : "foot";
+        props["occupied"] = ((data >> 2) & 0x1) == 0x1 ? "true" : "false";
+        props["part"] = ((data >> 3) & 0x1) == 0x1 ? "head" : "foot";
     }
 
     static void Rail(uint8_t data, std::map<std::string, std::string>& props) {
