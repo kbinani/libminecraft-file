@@ -173,7 +173,7 @@ public:
                 return Status::UNKNOWN;
             }
         } else if (fDataVersion >= 1466) {
-            if (fStatus == "postprocessed" || "fStatus" == "finalized") {
+            if (fStatus == "postprocessed" || fStatus == "finalized") {
                 return Status::FULL;
             } else {
                 return Status::UNKNOWN;
