@@ -124,6 +124,69 @@ public:
     int minBlockZ() const { return fChunkZ * 16; }
     int maxBlockZ() const { return fChunkZ * 16 + 15; }
 
+    enum class Status {
+        UNKNOWN,
+        FULL,
+    };
+
+    Status status() const {
+        // Java Edition 1.15.2 2230 "full"
+        // Java Edition 1.14.1 1957 "full"
+        // Java Edition 19w02a 1921 "full"
+        // Java Edition 18w47a 1912 "full"
+        // Java Edition 18w46a 1910 "fullchunk"
+        // Java Edition 18w45a 1908 "fullchunk"
+        // Java Edition 18w44a 1907 "fullchunk"
+        // Java Edition 18w43a 1901 "fullchunk"
+        // Java Edition 1.13.2 1631 "fullchunk"
+        // Java Edition 1.13.2-pre2 1630 "postprocessed"
+        // Java Edition 1.13.2-pre1 1629 "postprocessed"
+        // Java Edition 1.13.1-pre1 1626 "postprocessed"
+        // ...
+        // Java Edition 18w30a 1620 "postprocessed"
+        // ...
+        // Java Edition 1.13-pre1 1501 "postprocessed"
+        // ...
+        // Java Edition 18w15a 1482 "finalized"
+        // Java Edition 18w14b 1481 "postprocessed"
+        // Java Edition 18w14a 1479 "postprocessed"
+        // Java Edition 18w11a 1478 "postprocessed"
+        // Java Edition 18w08a 1470 "postprocessed"
+        // ...
+        // Java Edition 18w07a 1467 "postprocessed"
+        // Java Edition 18w06a 1466 "postprocessed"
+        // Java Edition 18w05a 1464 TerrianPopulated 1
+        // ...
+        // Java Edition 18w01a 1459 TerrianPopulated 1
+        // ...
+        // Java Edition 17w47a 1451 TerrianPopulated 1
+        if (fDataVersion >= 1912) {
+            if (fStatus == "full") {
+                return Status::FULL;
+            } else {
+                return Status::UNKNOWN;
+            }
+        } else if (fDataVersion >= 1631) {
+            if (fStatus == "fullchunk") {
+                return Status::FULL;
+            } else {
+                return Status::UNKNOWN;
+            }
+        } else if (fDataVersion >= 1466) {
+            if (fStatus == "postprocessed" || "fStatus" == "finalized") {
+                return Status::FULL;
+            } else {
+                return Status::UNKNOWN;
+            }
+        } else {
+            if (fTerrianPopulated && *fTerrianPopulated) {
+                return Status::FULL;
+            } else {
+                return Status::UNKNOWN;
+            }
+        }
+    }
+
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, nbt::CompoundTag const& root) {
         using namespace std;
 
@@ -184,10 +247,11 @@ public:
         if (status) {
             s = status->fValue;
         }
+        std::optional<bool> terrianPopulated = level->boolean("TerrianPopulated");
 
         auto structures = level->compoundTag("Structures");
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities, s, structures));
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities, structures, s, terrianPopulated));
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
@@ -211,15 +275,24 @@ public:
         }
         return MakeChunk(chunkX, chunkZ, *root);
     }
-    
+
 private:
-    explicit Chunk(int chunkX, int chunkZ, std::vector<std::shared_ptr<ChunkSection>> const& sections, int dataVersion, std::vector<biomes::BiomeId> & biomes, std::vector<std::shared_ptr<nbt::CompoundTag>> &entities, std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities, std::string const& status, std::shared_ptr<nbt::CompoundTag> const& structures)
+    explicit Chunk(int chunkX, int chunkZ,
+                   std::vector<std::shared_ptr<ChunkSection>> const& sections,
+                   int dataVersion,
+                   std::vector<biomes::BiomeId> & biomes,
+                   std::vector<std::shared_ptr<nbt::CompoundTag>> &entities,
+                   std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities,
+                   std::shared_ptr<nbt::CompoundTag> const& structures,
+                   std::string const& status,
+                   std::optional<bool> terrianPopulated)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
         , fSections(16, nullptr)
         , fDataVersion(dataVersion)
-        , fStatus(status)
         , fStructures(structures)
+        , fStatus(status)
+        , fTerrianPopulated(terrianPopulated)
     {
         for (auto section : sections) {
             int const y = section->y();
@@ -264,8 +337,11 @@ public:
     int const fDataVersion;
     std::vector<std::shared_ptr<nbt::CompoundTag>> fEntities;
     std::vector<std::shared_ptr<nbt::CompoundTag>> fTileEntities;
-    std::string const fStatus;
     std::shared_ptr<mcfile::nbt::CompoundTag> fStructures;
+
+private:
+    std::string const fStatus;
+    std::optional<bool> fTerrianPopulated;
 };
 
 } // namespace mcfile
