@@ -10,17 +10,13 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return nullptr;
         }
-        if (y < 0 || 256 <= y) {
-            return nullptr;
-        }
-        int const sectionY = y / 16;
-        auto const& section = fSections[sectionY];
+        auto const& section = sectionAtBlock(y);
         if (!section) {
             return nullptr;
         }
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
-        int const offsetY = y - sectionY * 16;
+        int const offsetY = y - section->y() * 16;
         return section->blockAt(offsetX, offsetY, offsetZ);
     }
 
@@ -30,17 +26,13 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return blocks::unknown;
         }
-        if (y < 0 || 256 <= y) {
-            return blocks::unknown;
-        }
-        int const sectionY = y / 16;
-        auto const& section = fSections[sectionY];
+        auto const& section = sectionAtBlock(y);
         if (!section) {
             return blocks::unknown;
         }
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
-        int const offsetY = y - sectionY * 16;
+        int const offsetY = y - section->y() * 16;
         return section->blockIdAt(offsetX, offsetY, offsetZ);
     }
 
@@ -50,17 +42,13 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return 0;
         }
-        if (y < 0 || 256 <= y) {
-            return -1;
-        }
-        int const sectionY = y / 16;
-        auto const& section = fSections[sectionY];
+        auto const& section = sectionAtBlock(y);
         if (!section) {
             return -1;
         }
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
-        int const offsetY = y - sectionY * 16;
+        int const offsetY = y - section->y() * 16;
         return section->blockLightAt(offsetX, offsetY, offsetZ);
     }
 
@@ -70,26 +58,22 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return 0;
         }
-        if (y < 0 || 256 <= y) {
-            return -1;
-        }
-        int const sectionY = y / 16;
-        auto const& section = fSections[sectionY];
+        auto const& section = sectionAtBlock(y);
         if (!section) {
             return -1;
         }
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
-        int const offsetY = y - sectionY * 16;
+        int const offsetY = y - section->y() * 16;
         return section->skyLightAt(offsetX, offsetY, offsetZ);
     }
 
     biomes::BiomeId biomeAt(int x, int y, int z) const {
         if (fDataVersion >= 2203) { // 19w36a
             int const offsetX = (x - fChunkX * 16) / 4;
-            int const offsetY = y / 4;
+            int const offsetY = (y - fMinChunkSectionY * 16) / 4;
             int const offsetZ = (z - fChunkZ * 16) / 4;
-            if (offsetX < 0 || 4 <= offsetX || offsetZ < 0 || 4 <= offsetZ || offsetY < 0 || 64 <= offsetY) {
+            if (offsetX < 0 || 4 <= offsetX || offsetZ < 0 || 4 <= offsetZ || offsetY < 0) {
                 return biomes::unknown;
             }
             int const index = offsetX + offsetZ * 4 + offsetY * 16;
@@ -120,6 +104,9 @@ public:
 
     int minBlockX() const { return fChunkX * 16; }
     int maxBlockX() const { return fChunkX * 16 + 15; }
+
+    int minBlockY() const { return fMinChunkSectionY * 16; }
+    int maxBlockY() const { return fMaxChunkSectionY * 16 + 15; }
 
     int minBlockZ() const { return fChunkZ * 16; }
     int maxBlockZ() const { return fChunkZ * 16 + 15; }
@@ -288,21 +275,41 @@ private:
                    std::optional<bool> terrianPopulated)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
-        , fSections(16, nullptr)
         , fDataVersion(dataVersion)
         , fStructures(structures)
         , fStatus(status)
         , fTerrianPopulated(terrianPopulated)
     {
-        for (auto section : sections) {
-            int const y = section->y();
-            if (0 <= y && y < 16) {
-                fSections[y] = section;
+        if (sections.empty()) {
+            fMinChunkSectionY = 0;
+            fMaxChunkSectionY = -1;
+        } else {
+            fMinChunkSectionY = fMaxChunkSectionY = sections[0]->y();
+            for (int i = 1; i < sections.size(); i++) {
+                int const y = sections[i]->y();
+                fMinChunkSectionY = std::min(fMinChunkSectionY, y);
+                fMaxChunkSectionY = std::max(fMaxChunkSectionY, y);
+            }
+            fSections.resize(fMaxChunkSectionY - fMinChunkSectionY + 1);
+            for (auto const& section : sections) {
+                int const y = section->y();
+                int const idx = y - fMinChunkSectionY;
+                fSections[idx] = section;
             }
         }
         fBiomes.swap(biomes);
         fEntities.swap(entities);
         fTileEntities.swap(tileEntities);
+    }
+
+    std::shared_ptr<ChunkSection> const& sectionAtBlock(int y) const {
+        int const sectionIndex = y / 16;
+        int const idx = sectionIndex - fMinChunkSectionY;
+        if (idx < 0 || fSections.size() <= idx) {
+            return nullptr;
+        } else {
+            return fSections[idx];
+        }
     }
 
     static void ParseBiomes(nbt::Tag const* biomesTag, std::vector<biomes::BiomeId> &result) {
@@ -312,7 +319,7 @@ private:
         if (biomesTag->id() == nbt::Tag::TAG_Int_Array) {
             std::vector<int32_t> const& value = biomesTag->asIntArray()->value();
             size_t const size = value.size();
-            if (size == 256 || size == 1024) {
+            if (size == 256 || size == 1024 || size == 1536) {
                 result.resize(size);
                 for (int i = 0; i < size; i++) {
                     result[i] = biomes::FromInt(value[i]);
@@ -342,6 +349,8 @@ public:
 private:
     std::string const fStatus;
     std::optional<bool> fTerrianPopulated;
+    int fMinChunkSectionY;
+    int fMaxChunkSectionY;
 };
 
 } // namespace mcfile

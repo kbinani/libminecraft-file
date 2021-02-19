@@ -66,7 +66,7 @@ public:
     }
 
     int y() const override {
-        return fY;
+        return fY > 251 ? fY - 256 : fY;
     }
 
     std::vector<std::shared_ptr<Block const>> const& palette() const override {
