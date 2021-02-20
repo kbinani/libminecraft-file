@@ -21,6 +21,8 @@ TEST_CASE("1.13.2") {
         CHECK(chunk != nullptr);
         CHECK(chunk->minBlockX() == 0);
         CHECK(chunk->maxBlockX() == 15);
+        CHECK(chunk->minBlockY() == 0);
+        CHECK(chunk->maxBlockY() == 255);
         CHECK(chunk->minBlockZ() == 0);
         CHECK(chunk->maxBlockZ() == 15);
         for (int y = 0; y < 256; y++) {

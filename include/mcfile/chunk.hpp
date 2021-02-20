@@ -106,7 +106,7 @@ public:
     int maxBlockX() const { return fChunkX * 16 + 15; }
 
     int minBlockY() const { return fMinChunkSectionY * 16; }
-    int maxBlockY() const { return fMaxChunkSectionY * 16 + 15; }
+    int maxBlockY() const { return fMinChunkSectionY < 0 ? 319 : 255; }
 
     int minBlockZ() const { return fChunkZ * 16; }
     int maxBlockZ() const { return fChunkZ * 16 + 15; }
@@ -280,29 +280,28 @@ private:
         , fStatus(status)
         , fTerrianPopulated(terrianPopulated)
     {
-        if (sections.empty()) {
-            fMinChunkSectionY = 0;
-            fMaxChunkSectionY = -1;
+        if (dataVersion >= 2694) { // 21w06a
+            fMinChunkSectionY = -4;
         } else {
-            fMinChunkSectionY = fMaxChunkSectionY = sections[0]->y();
-            for (int i = 1; i < sections.size(); i++) {
-                int const y = sections[i]->y();
-                fMinChunkSectionY = std::min(fMinChunkSectionY, y);
-                fMaxChunkSectionY = std::max(fMaxChunkSectionY, y);
-            }
-            fSections.resize(fMaxChunkSectionY - fMinChunkSectionY + 1);
-            for (auto const& section : sections) {
-                int const y = section->y();
-                int const idx = y - fMinChunkSectionY;
-                fSections[idx] = section;
-            }
+            fMinChunkSectionY = 0;
+        }
+        int maxChunkSectionY = fMinChunkSectionY;
+        for (auto const& section : sections) {
+            int const y = section->y();
+            maxChunkSectionY = std::max(maxChunkSectionY, y);
+        }
+        fSections.resize(maxChunkSectionY - fMinChunkSectionY + 1);
+        for (auto const& section : sections) {
+            int const y = section->y();
+            int const idx = y - fMinChunkSectionY;
+            fSections[idx] = section;
         }
         fBiomes.swap(biomes);
         fEntities.swap(entities);
         fTileEntities.swap(tileEntities);
     }
 
-    std::shared_ptr<ChunkSection> const& sectionAtBlock(int y) const {
+    std::shared_ptr<ChunkSection> sectionAtBlock(int y) const {
         int const sectionIndex = y / 16;
         int const idx = sectionIndex - fMinChunkSectionY;
         if (idx < 0 || fSections.size() <= idx) {
@@ -350,7 +349,6 @@ private:
     std::string const fStatus;
     std::optional<bool> fTerrianPopulated;
     int fMinChunkSectionY;
-    int fMaxChunkSectionY;
 };
 
 } // namespace mcfile
