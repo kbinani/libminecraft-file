@@ -125,7 +125,7 @@ public:
         // Java Edition 18w45a 1908 "fullchunk"
         // Java Edition 18w44a 1907 "fullchunk"
         // Java Edition 18w43a 1901 "fullchunk"
-        // Java Edition 1.13.2 1631 "postprocessed"
+        // Java Edition 1.13.2 1631 "postprocessed" | "fullchunk"
         // Java Edition 1.13.2-pre2 1630 "postprocessed"
         // Java Edition 1.13.2-pre1 1629 "postprocessed"
         // Java Edition 1.13.1-pre1 1626 "postprocessed"
@@ -153,14 +153,8 @@ public:
             } else {
                 return Status::UNKNOWN;
             }
-        } else if (fDataVersion >= 1901) {
-            if (fStatus == "fullchunk") {
-                return Status::FULL;
-            } else {
-                return Status::UNKNOWN;
-            }
         } else if (fDataVersion >= 1466) {
-            if (fStatus == "postprocessed" || fStatus == "finalized") {
+            if (fStatus == "postprocessed" || fStatus == "finalized" || fStatus == "fullchunk") {
                 return Status::FULL;
             } else {
                 return Status::UNKNOWN;
