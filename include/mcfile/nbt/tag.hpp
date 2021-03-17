@@ -55,6 +55,8 @@ public:
     IntArrayTag  const* asIntArray() const  { return this->id() == TAG_Int_Array ? reinterpret_cast<IntArrayTag const*>(this) : nullptr; }
     LongArrayTag const* asLongArray() const { return this->id() == TAG_Long_Array ? reinterpret_cast<LongArrayTag const*>(this) : nullptr; }
 
+    virtual std::shared_ptr<Tag> clone() const = 0;
+    
 protected:
     virtual bool readImpl(::mcfile::stream::InputStreamReader& reader) = 0;
     virtual void writeImpl(::mcfile::stream::OutputStreamWriter& writer) const = 0;

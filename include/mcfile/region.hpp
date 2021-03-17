@@ -7,7 +7,7 @@ public:
     Region(Region const&) = delete;
     Region& operator = (Region const&) = delete;
 
-    using LoadChunkCallback = std::function<bool(Chunk const&)>;
+    using LoadChunkCallback = std::function<bool(Chunk &)>;
 
     bool loadAllChunks(bool& error, LoadChunkCallback callback) const {
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);

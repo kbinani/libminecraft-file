@@ -25,6 +25,10 @@ public:
     
     uint8_t id() const override { return Tag::TAG_String; }
 
+    std::shared_ptr<Tag> clone() const override {
+        return std::make_shared<StringTag>(fValue);
+    }
+    
 public:
     std::string fValue;
 };

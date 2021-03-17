@@ -69,6 +69,10 @@ public:
         return fY;
     }
 
+    int rawY() const override {
+        return fY;
+    }
+
     std::vector<std::shared_ptr<Block const>> const& palette() const override {
         return fPalette;
     }

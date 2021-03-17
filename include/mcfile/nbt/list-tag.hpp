@@ -51,6 +51,15 @@ public:
     std::shared_ptr<Tag> at(size_t idx) const { return fValue[idx]; }
     std::shared_ptr<Tag>& at(size_t idx) { return fValue[idx]; }
 
+    std::shared_ptr<Tag> clone() const override {
+        auto ret = std::make_shared<ListTag>();
+        ret->fType = fType;
+        for (auto const& value : fValue) {
+            ret->fValue.push_back(value->clone());
+        }
+        return ret;
+    }
+
 public:
     uint8_t fType;
     std::vector<std::shared_ptr<Tag>> fValue;

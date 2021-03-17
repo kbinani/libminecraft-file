@@ -24,6 +24,10 @@ public:
     
     uint8_t id() const override { return Tag::TAG_Float; }
 
+    std::shared_ptr<Tag> clone() const override {
+        return std::make_shared<FloatTag>(fValue);
+    }
+    
 public:
     float fValue;
 };

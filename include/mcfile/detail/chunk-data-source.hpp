@@ -37,10 +37,10 @@ public:
         if (!root->valid()) {
             return nullptr;
         }
-        return Chunk::MakeChunk(fChunkX, fChunkZ, *root);
+        return Chunk::MakeChunk(fChunkX, fChunkZ, root);
     }
     
-    bool load(::mcfile::stream::InputStreamReader &reader, std::function<void(Chunk const &chunk)> callback) const {
+    bool load(::mcfile::stream::InputStreamReader &reader, std::function<void(Chunk &chunk)> callback) const {
         if (!reader.valid()) {
             return false;
         }
@@ -68,7 +68,7 @@ public:
         if (!root->valid()) {
             return false;
         }
-        auto chunk = Chunk::MakeChunk(fChunkX, fChunkZ, *root);
+        auto chunk = Chunk::MakeChunk(fChunkX, fChunkZ, root);
         if (!chunk) {
             return false;
         }

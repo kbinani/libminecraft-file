@@ -63,6 +63,20 @@ public:
         return value->second;
     }
     
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
+        using namespace std;
+        auto root = make_shared<nbt::CompoundTag>();
+        root->set("Name", make_shared<nbt::StringTag>(fName));
+        if (!fProperties.empty()) {
+            auto properties = make_shared<nbt::CompoundTag>();
+            for (auto it : fProperties) {
+                properties->set(it.first, make_shared<nbt::StringTag>(it.second));
+            }
+            root->set("Properties", properties);
+        }
+        return root;
+    }
+    
 public:
     std::string const fName;
     std::map<std::string, std::string> const fProperties;

@@ -22,6 +22,14 @@ public:
         fValue.swap(input);
     }
 
+    explicit VectorTag(size_t size)
+        : Tag()
+        , fPrepared(true)
+        , fLittleEndian(false)
+    {
+        fValue.resize(size);
+    }
+
     bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         uint32_t length;
         if (!r.read(&length)) {

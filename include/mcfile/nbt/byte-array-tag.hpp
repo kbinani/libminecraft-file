@@ -9,6 +9,13 @@ public:
 
     explicit ByteArrayTag(std::vector<uint8_t>& input) : VectorTag(input) {}
 
+    explicit ByteArrayTag(size_t size) : VectorTag(size) {}
+
+    std::shared_ptr<Tag> clone() const override {
+        std::vector<uint8_t> copy = value();
+        return std::shared_ptr<ByteArrayTag>(new ByteArrayTag(copy));
+    }
+
 private:
     uint8_t convert(uint8_t v, bool littleEndian) const override { return v; }
 };

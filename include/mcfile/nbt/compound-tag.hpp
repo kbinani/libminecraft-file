@@ -47,21 +47,21 @@ public:
     Tag const* query(std::string const& path) const {
         // path: /Level/Sections
         if (path.empty()) {
-            return EndTag::instance();
+            return EndTag::Instance();
         }
         std::string p = path;
         Tag const* pivot = this;
         while (!p.empty()) {
             if (p[0] == '/') {
                 if (fValue.size() != 1) {
-                    return EndTag::instance();
+                    return EndTag::Instance();
                 }
                 auto child = fValue.begin()->second;
                 if (p.size() == 1) {
                     return child.get();
                 }
                 if (child->id() != Tag::TAG_Compound) {
-                    return EndTag::instance();
+                    return EndTag::Instance();
                 }
                 pivot = child->asCompound();
                 p = p.substr(1);
@@ -75,12 +75,12 @@ public:
                 }
                 if (pivot->id() == Tag::TAG_List) {
                     auto list = pivot->asList();
-                    if (!list) return EndTag::instance();
+                    if (!list) return EndTag::Instance();
                     int index;
                     try {
                         index = std::stoi(name);
                         if (index < 0 || list->size() <= index) {
-                            return EndTag::instance();
+                            return EndTag::Instance();
                         }
                         auto child = list->at(index);
                         if (pos == std::string::npos) {
@@ -88,34 +88,34 @@ public:
                         }
                         auto id = child->id();
                         if (id != Tag::TAG_Compound && id != Tag::TAG_List) {
-                            return EndTag::instance();
+                            return EndTag::Instance();
                         }
                         pivot = child.get();
                         p = p.substr(pos + 1);
                     } catch (...) {
-                        return EndTag::instance();
+                        return EndTag::Instance();
                     }
                 } else if (pivot->id() == Tag::TAG_Compound) {
                     auto comp = pivot->asCompound();
-                    if (!comp) return EndTag::instance();
+                    if (!comp) return EndTag::Instance();
 
                     auto child = comp->fValue.find(name);
                     if (child == comp->fValue.end()) {
-                        return EndTag::instance();
+                        return EndTag::Instance();
                     }
                     if (pos == std::string::npos) {
                         return child->second.get();
                     }
                     auto id = child->second->id();
                     if (id != Tag::TAG_Compound && id != Tag::TAG_List) {
-                        return EndTag::instance();
+                        return EndTag::Instance();
                     }
                     pivot = child->second.get();
                     p = p.substr(pos + 1);
                 }
             }
         }
-        return EndTag::instance();
+        return EndTag::Instance();
     }
 
     std::shared_ptr<Tag>& operator[](std::string const& name) {
@@ -352,6 +352,14 @@ public:
         fValue[name] = value;
     }
 
+    std::shared_ptr<Tag> clone() const override {
+        auto ret = std::make_shared<CompoundTag>();
+        for (auto it : fValue) {
+            ret->set(it.first, it.second->clone());
+        }
+        return ret;
+    }
+    
 public:
     std::map<std::string, std::shared_ptr<Tag>> fValue;
 };

@@ -13,7 +13,7 @@ public:
         fValue = v;
         fValid = true;
     }
-    
+
     bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         T v;
         if (!r.read(&v)) {
@@ -26,8 +26,12 @@ public:
     void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
         w.write(fValue);
     }
-    
+
     uint8_t id() const override { return ID; }
+
+    std::shared_ptr<Tag> clone() const override {
+        return std::make_shared<ScalarTag>(fValue);
+    }
 
 public:
     T fValue;

@@ -36,6 +36,22 @@ public:
         return section->blockIdAt(offsetX, offsetY, offsetZ);
     }
 
+    bool setBlockAt(int x, int y, int z, std::shared_ptr<Block const> const& block) {
+        int const chunkX = Coordinate::ChunkFromBlock(x);
+        int const chunkZ = Coordinate::ChunkFromBlock(z);
+        if (chunkX != fChunkX || chunkZ != fChunkZ) {
+            return false;
+        }
+        auto const& section = sectionAtBlock(y);
+        if (!section) {
+            return false;
+        }
+        int const offsetX = x - chunkX * 16;
+        int const offsetZ = z - chunkZ * 16;
+        int const offsetY = y - section->y() * 16;
+        return section->setBlockAt(offsetX, offsetY, offsetZ, block);
+    }
+
     int blockLightAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
@@ -168,16 +184,116 @@ public:
         }
     }
 
-    static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, nbt::CompoundTag const& root) {
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
+        using namespace std;
+        using namespace mcfile::nbt;
+        auto root = make_shared<CompoundTag>();
+        root->set("DataVersion", make_shared<IntTag>(fDataVersion));
+
+        auto level = make_shared<CompoundTag>();
+
+        level->set("xPos", make_shared<IntTag>(fChunkX));
+        level->set("zPos", make_shared<IntTag>(fChunkZ));
+
+        vector<shared_ptr<ChunkSection>> sections;
+        for (auto const& section : fSections) {
+            if (section) {
+                sections.push_back(section);
+            }
+        }
+        sort(sections.begin(), sections.end(), [](auto const& a, auto const& b) {
+            return a->rawY() < b->rawY();
+        });
+        auto sectionsList = make_shared<ListTag>();
+        sectionsList->fType = Tag::TAG_Compound;
+        if (sections[0]->rawY() == 0) {
+            auto s = make_shared<CompoundTag>();
+            int8_t y = -1;
+            s->set("Y", make_shared<ByteTag>(*(uint8_t*)&y));
+            s->set("SkyLight", make_shared<ByteArrayTag>(2048));
+            sectionsList->push_back(s);
+        }
+        for (auto const& section : sections) {
+            sectionsList->push_back(section->toCompoundTag());
+        }
+        level->set("Sections", sectionsList);
+        
+        std::vector<int32_t> biomes;
+        for (biomes::BiomeId biome : fBiomes) {
+            biomes.push_back(static_cast<int32_t>(biome));
+        }
+        level->set("Biomes", make_shared<IntArrayTag>(biomes));
+        
+        auto entities = make_shared<ListTag>();
+        entities->fType = Tag::TAG_Compound;
+        for (auto const& entity : fEntities) {
+            entities->push_back(entity->clone());
+        }
+        level->set("Entities", entities);
+        
+        auto tileEntities = make_shared<ListTag>();
+        tileEntities->fType = Tag::TAG_Compound;
+        for (auto const& tileEntity : fTileEntities) {
+            tileEntities->push_back(tileEntity->clone());
+        }
+        level->set("TileEntities", tileEntities);
+
+        if (fStructures) {
+            level->set("Structures", fStructures->clone());
+        }
+        
+        level->set("Status", make_shared<StringTag>(fStatus));
+
+        static set<string> const whitelist = {
+            "DataVersion",
+            "xPos",
+            "zPos",
+            "Sections",
+            "Biomes",
+            "Entities",
+            "TileEntities",
+            "Structures",
+            "Status",
+        };
+        CompoundTag const* existingLevel = fRoot->query("/Level")->asCompound();
+            if (existingLevel) {
+            for (auto it : *existingLevel) {
+                if (whitelist.find(it.first) != whitelist.end()) {
+                    continue;
+                }
+                level->set(it.first, it.second->clone());
+            }
+        }
+
+        root->set("Level", level);
+        return root;
+    }
+    
+    void write(stream::OutputStream &s) const {
+        using namespace std;
+        using namespace mcfile;
+        auto compound = toCompoundTag();
+        auto stream = make_shared<stream::ByteStream>();
+        auto writer = make_shared<stream::OutputStreamWriter>(stream, stream::WriteOption{.fLittleEndian = false});
+        auto root = make_shared<nbt::CompoundTag>();
+        root->set("", compound);
+        root->write(*writer);
+        std::vector<uint8_t> buffer;
+        stream->drain(buffer);
+        detail::Compression::compress(buffer);
+        s.write(buffer.data(), buffer.size());
+    }
+    
+    static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const& root) {
         using namespace std;
 
-        auto level = root.query("/Level")->asCompound();
+        auto level = root->query("/Level")->asCompound();
         if (!level) {
             return nullptr;
         }
 
         int dataVersion = 0;
-        auto dataVersionTag = root.query("/DataVersion")->asInt();
+        auto dataVersionTag = root->query("/DataVersion")->asInt();
         if (dataVersionTag) {
             // *.mca created by Minecraft 1.2.1 does not have /DataVersion tag
             dataVersion = dataVersionTag->fValue;
@@ -232,7 +348,7 @@ public:
 
         auto structures = level->compoundTag("Structures");
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities, structures, s, terrianPopulated));
+        return std::shared_ptr<Chunk>(new Chunk(root, chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities, structures, s, terrianPopulated));
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
@@ -254,11 +370,12 @@ public:
         if (!root->valid()) {
             return nullptr;
         }
-        return MakeChunk(chunkX, chunkZ, *root);
+        return MakeChunk(chunkX, chunkZ, root);
     }
 
 private:
-    explicit Chunk(int chunkX, int chunkZ,
+    explicit Chunk(std::shared_ptr<nbt::CompoundTag> const& root,
+                   int chunkX, int chunkZ,
                    std::vector<std::shared_ptr<ChunkSection>> const& sections,
                    int dataVersion,
                    std::vector<biomes::BiomeId> & biomes,
@@ -267,7 +384,8 @@ private:
                    std::shared_ptr<nbt::CompoundTag> const& structures,
                    std::string const& status,
                    std::optional<bool> terrianPopulated)
-        : fChunkX(chunkX)
+        : fRoot(root)
+        , fChunkX(chunkX)
         , fChunkZ(chunkZ)
         , fDataVersion(dataVersion)
         , fStructures(structures)
@@ -330,6 +448,7 @@ private:
     }
 
 public:
+    std::shared_ptr<mcfile::nbt::CompoundTag> fRoot;
     int const fChunkX;
     int const fChunkZ;
     std::vector<std::shared_ptr<ChunkSection>> fSections;

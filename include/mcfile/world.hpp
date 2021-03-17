@@ -16,6 +16,22 @@ public:
         return Region::MakeRegion(fileName);
     }
 
+    std::shared_ptr<Region> regionAtBlock(int blockX, int blockZ) {
+        int rx = Coordinate::RegionFromBlock(blockX);
+        int rz = Coordinate::RegionFromBlock(blockZ);
+        return region(rx, rz);
+    }
+
+    std::shared_ptr<Chunk> chunkAtBlock(int blockX, int blockZ) {
+        auto const& region = regionAtBlock(blockX, blockZ);
+        if (!region) {
+            return nullptr;
+        }
+        int cx = Coordinate::ChunkFromBlock(blockX);
+        int cz = Coordinate::ChunkFromBlock(blockZ);
+        return region->chunkAt(cx, cz);
+    }
+    
     bool eachBlock(int minX, int minZ, int maxX, int maxZ, std::function<bool(int x, int y, int z, std::shared_ptr<Block const>)> callback) const {
         if (minX > maxX || minZ > maxZ) {
             return false;
