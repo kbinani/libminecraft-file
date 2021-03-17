@@ -409,33 +409,34 @@ public:
                     continue;
                 }
                 long const currentLocation = ftell(out);
-                size_t const size = fs::file_size(filepath) + 1;
                 long const location = Ceil(currentLocation, kSectorSize);
                 if (fseek(out, location, SEEK_SET) != 0) {
                     fclose(in);
                     fclose(out);
                     return false;
                 }
-                uint32_t s = detail::Int32BEFromNative(size);
+                size_t const size = fs::file_size(filepath);
+                uint8_t compressionType = 2;
+                uint32_t s = detail::Int32BEFromNative(size + sizeof(compressionType));
                 if (fwrite(&s, sizeof(s), 1, out) != 1) {
                     fclose(in);
                     fclose(out);
                     return false;
                 }
-                uint8_t compressionType = 2;
                 if (fwrite(&compressionType, sizeof(compressionType), 1, out) != 1) {
                     fclose(in);
                     fclose(out);
                     return false;
                 }
-                if (!stream::FileInputStream::Copy(in, out, size - 1)) {
+                if (!stream::FileInputStream::Copy(in, out, size)) {
                     fclose(in);
                     fclose(out);
                     return false;
                 }
                 fclose(in);
 
-                uint32_t const numSectors = Ceil(size, kSectorSize) / kSectorSize;
+                size_t headerSize = sizeof(s) + sizeof(compressionType);
+                uint32_t const numSectors = Ceil(size + headerSize, kSectorSize) / kSectorSize;
                 uint32_t const loc = (((((uint32_t)location) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
                 locationLut[index] = detail::Int32BEFromNative(loc);
             }
