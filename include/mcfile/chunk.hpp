@@ -206,7 +206,7 @@ public:
         });
         auto sectionsList = make_shared<ListTag>();
         sectionsList->fType = Tag::TAG_Compound;
-        if (sections[0]->rawY() == 0) {
+        if (!sections.empty() && sections[0]->rawY() == 0) {
             auto s = make_shared<CompoundTag>();
             int8_t y = -1;
             s->set("Y", make_shared<ByteTag>(*(uint8_t*)&y));
@@ -214,7 +214,11 @@ public:
             sectionsList->push_back(s);
         }
         for (auto const& section : sections) {
-            sectionsList->push_back(section->toCompoundTag());
+            auto s = section->toCompoundTag();
+            if (!s) {
+                return nullptr;
+            }
+            sectionsList->push_back(s);
         }
         level->set("Sections", sectionsList);
         
@@ -269,10 +273,13 @@ public:
         return root;
     }
     
-    void write(stream::OutputStream &s) const {
+    bool write(stream::OutputStream &s) const {
         using namespace std;
         using namespace mcfile;
         auto compound = toCompoundTag();
+        if (!compound) {
+            return false;
+        }
         auto stream = make_shared<stream::ByteStream>();
         auto writer = make_shared<stream::OutputStreamWriter>(stream, stream::WriteOption{.fLittleEndian = false});
         auto root = make_shared<nbt::CompoundTag>();
@@ -282,6 +289,7 @@ public:
         stream->drain(buffer);
         detail::Compression::compress(buffer);
         s.write(buffer.data(), buffer.size());
+        return true;
     }
     
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const& root) {
