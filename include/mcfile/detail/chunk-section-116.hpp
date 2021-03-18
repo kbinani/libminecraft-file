@@ -300,31 +300,25 @@ private:
         
         uint8_t bitsPerBlock;
         int blocksPerLong;
-//        if (numPaletteEntries <= 2) {
-//            bitsPerBlock = 1;
-//            blocksPerLong = 64;
-//        } else if (numPaletteEntries <= 4) {
-//            bitsPerBlock = 2;
-//            blocksPerLong = 32;
-//        } else if (numPaletteEntries <= 8) {
-//            bitsPerBlock = 3;
-//            blocksPerLong = 20;
-//        } else if (numPaletteEntries <= 16) {
-//            bitsPerBlock = 4;
-//            blocksPerLong = 16;
-//        } else if (numPaletteEntries <= 32) {
-//            bitsPerBlock = 5;
-//            blocksPerLong = 12;
-//        } else if (numPaletteEntries <= 64) {
-//            bitsPerBlock = 6;
-//            blocksPerLong = 10;
-//        } else if (numPaletteEntries <= 256) {
-//            bitsPerBlock = 8;
-//            blocksPerLong = 8;
-//        } else {
+        if (numPaletteEntries <= 16) {
+            bitsPerBlock = 4;
+            blocksPerLong = 16;
+        } else if (numPaletteEntries <= 32) {
+            bitsPerBlock = 5;
+            blocksPerLong = 12;
+        } else if (numPaletteEntries <= 64) {
+            bitsPerBlock = 6;
+            blocksPerLong = 10;
+        } else if (numPaletteEntries <= 128) {
+            bitsPerBlock = 7;
+            blocksPerLong = 9;
+        } else if (numPaletteEntries <= 256) {
+            bitsPerBlock = 8;
+            blocksPerLong = 8;
+        } else {
             bitsPerBlock = 16;
             blocksPerLong = 4;
-//        }
+        }
         uint64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerBlock);
         int count = 0;
         uint64_t v = 0;
