@@ -1,8 +1,8 @@
 #pragma once
 
-namespace mcfile::detail {
+namespace mcfile::chunksection {
 
-class BlockStatesParser_1_13 {
+class BlockStatesParser113 {
 public:
     static void PaletteIndicesFromBlockStates(std::vector<int64_t> const& blockStates, std::vector<uint16_t> &paletteIndices) {
         paletteIndices.resize(16 * 16 * 16);
@@ -79,7 +79,7 @@ public:
     }
 
 private:
-    BlockStatesParser_1_13() = delete;
+    BlockStatesParser113() = delete;
 };
 
 }

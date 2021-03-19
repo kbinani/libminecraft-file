@@ -1,9 +1,8 @@
 #pragma once
 
-namespace mcfile {
-namespace detail {
+namespace mcfile::chunksection {
 
-class ChunkSection_1_12 : public ChunkSection {
+class ChunkSection112 : public ChunkSection {
 public:
     static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const& tags,
                                   int chunkX, int chunkZ,
@@ -11,7 +10,7 @@ public:
                                   std::vector<std::shared_ptr<ChunkSection>> &out) {
         using namespace std;
 
-        vector<shared_ptr<ChunkSection_1_12>> rawSections;
+        vector<shared_ptr<ChunkSection112>> rawSections;
         for (auto const& it : *tags) {
             auto section = it->asCompound();
             if (!section) {
@@ -23,7 +22,7 @@ public:
             }
         }
 
-        ChunkSection_1_12::Migrate(rawSections, chunkX, chunkZ, tileEntities, out);
+        ChunkSection112::Migrate(rawSections, chunkX, chunkZ, tileEntities, out);
     }
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
@@ -94,10 +93,10 @@ public:
     }
 
 private:
-    ChunkSection_1_12(int y,
-                      std::vector<std::shared_ptr<Block const>> const& palette, std::vector<uint16_t> const& paletteIndices,
-                      std::vector<uint8_t> const& blockLight,
-                      std::vector<uint8_t> const& skyLight)
+    ChunkSection112(int y,
+                    std::vector<std::shared_ptr<Block const>> const& palette, std::vector<uint16_t> const& paletteIndices,
+                    std::vector<uint8_t> const& blockLight,
+                    std::vector<uint8_t> const& skyLight)
         : fY(y)
         , fPalette(palette)
         , fPaletteIndices(paletteIndices)
@@ -106,7 +105,7 @@ private:
     {
     }
 
-    static std::shared_ptr<ChunkSection_1_12> MakeRawSection(nbt::CompoundTag const* section) {
+    static std::shared_ptr<ChunkSection112> MakeRawSection(nbt::CompoundTag const* section) {
         if (!section) {
             return nullptr;
         }
@@ -175,14 +174,15 @@ private:
             }
         }
 
-        return std::shared_ptr<ChunkSection_1_12>(new ChunkSection_1_12(yTag->fValue, palette, paletteIndices, blockLight, skyLight));
+        return std::shared_ptr<ChunkSection112>(new ChunkSection112(yTag->fValue, palette, paletteIndices, blockLight, skyLight));
     }
 
-    static void Migrate(std::vector<std::shared_ptr<ChunkSection_1_12>> const& raw,
+    static void Migrate(std::vector<std::shared_ptr<ChunkSection112>> const& raw,
                         int chunkX, int chunkZ,
                         std::vector<std::shared_ptr<nbt::CompoundTag>> const& inTileEntities,
                         std::vector<std::shared_ptr<ChunkSection>> &out) {
         using namespace std;
+        using mcfile::detail::String;
 
         map<tuple<int, int, int>, std::shared_ptr<nbt::CompoundTag>> tileEntities;
         for (auto const& it : inTileEntities) {
@@ -335,7 +335,7 @@ private:
                 }
             }
 
-            shared_ptr<ChunkSection_1_12> section(new ChunkSection_1_12(it->fY, palette, paletteIndices, it->fBlockLight, it->fSkyLight));
+            shared_ptr<ChunkSection112> section(new ChunkSection112(it->fY, palette, paletteIndices, it->fBlockLight, it->fSkyLight));
             out.push_back(section);
         }
     }
@@ -379,7 +379,7 @@ private:
         return "";
     }
 
-    static std::shared_ptr<Block const> GetBlockAt(int offsetX, int blockY, int offsetZ, std::vector<std::shared_ptr<ChunkSection_1_12>> const& raw) {
+    static std::shared_ptr<Block const> GetBlockAt(int offsetX, int blockY, int offsetZ, std::vector<std::shared_ptr<ChunkSection112>> const& raw) {
         if (offsetX < 0 || 16 <= offsetX || offsetZ < 0 || 16 <= offsetZ) {
             return nullptr;
         }
@@ -1592,5 +1592,4 @@ private:
     std::vector<uint8_t> fSkyLight;
 };
 
-} // namespace detail
-} // namespace mcfile
+} // namespace mcfile::chunksection

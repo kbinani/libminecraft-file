@@ -1,11 +1,14 @@
 #pragma once
 
-namespace mcfile {
-namespace detail {
+namespace mcfile::chunksection {
 
 class ChunkSectionGenerator {
 public:
-    static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const& sections, int const dataVersion, int chunkX, int chunkZ, std::vector<std::shared_ptr<nbt::CompoundTag>> const& tileEntities, std::vector<std::shared_ptr<ChunkSection>> &result) {
+    static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const& sections,
+                                  int const dataVersion,
+                                  int chunkX, int chunkZ,
+                                  std::vector<std::shared_ptr<nbt::CompoundTag>> const& tileEntities,
+                                  std::vector<std::shared_ptr<ChunkSection>> &result) {
         using namespace std;
 
         result.clear();
@@ -18,7 +21,7 @@ public:
             //1444 (17w43a)
             //1449 (17w46a)
 
-            detail::ChunkSection_1_12::MakeChunkSections(sections, chunkX, chunkZ, tileEntities, result);
+            chunksection::ChunkSection112::MakeChunkSections(sections, chunkX, chunkZ, tileEntities, result);
         } else if (dataVersion <= 2526) {
             //1451 (17w47a)
             //1453 (17w48a)
@@ -31,7 +34,7 @@ public:
                 if (!section) {
                     continue;
                 }
-                auto const& converted = detail::ChunkSection_1_13::MakeChunkSection(section);
+                auto const& converted = chunksection::ChunkSection113::MakeChunkSection(section);
                 if (converted) {
                     result.push_back(converted);
                 }
@@ -44,7 +47,7 @@ public:
                 if (!section) {
                     continue;
                 }
-                auto const& converted = detail::ChunkSection_1_16::MakeChunkSection(section);
+                auto const& converted = chunksection::ChunkSection116::MakeChunkSection(section);
                 if (converted) {
                     result.push_back(converted);
                 }
@@ -56,5 +59,4 @@ private:
     ChunkSectionGenerator() = delete;
 };
 
-} // namespace detail
-} // namespace mcfile
+} // namespace mcfile::chunksection

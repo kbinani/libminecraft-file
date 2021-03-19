@@ -1,9 +1,9 @@
 #pragma once
 
-namespace mcfile::detail {
+namespace mcfile::chunksection {
 
 template <class BlockStatesParser>
-class ChunkSection_1_13_Base : public ChunkSection {
+class ChunkSection113Base : public ChunkSection {
 public:
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
         auto const index = paletteIndexAt(offsetX, offsetY, offsetZ);
@@ -226,7 +226,7 @@ public:
             skyLight = skyLightTag->value();
         }
         
-        return std::shared_ptr<ChunkSection>(new ChunkSection_1_13_Base((int)yTag->fValue,
+        return std::shared_ptr<ChunkSection>(new ChunkSection113Base((int)yTag->fValue,
                                                                         palette,
                                                                         paletteIndices,
                                                                         blockIdPalette,
@@ -235,12 +235,12 @@ public:
     }
     
 private:
-    ChunkSection_1_13_Base(int y,
-                           std::vector<std::shared_ptr<Block const>> const& palette,
-                           std::vector<uint16_t> const& paletteIndices,
-                           std::vector<blocks::BlockId> const& blockIdPalette,
-                           std::vector<uint8_t> const& blockLight,
-                           std::vector<uint8_t> const& skyLight)
+    ChunkSection113Base(int y,
+                        std::vector<std::shared_ptr<Block const>> const& palette,
+                        std::vector<uint16_t> const& paletteIndices,
+                        std::vector<blocks::BlockId> const& blockIdPalette,
+                        std::vector<uint8_t> const& blockLight,
+                        std::vector<uint8_t> const& skyLight)
         : fY(y)
         , fPalette(palette)
         , fPaletteIndices(paletteIndices)

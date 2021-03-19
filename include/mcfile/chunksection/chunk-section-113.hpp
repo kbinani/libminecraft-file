@@ -1,8 +1,8 @@
 #pragma once
 
-namespace mcfile::detail {
+namespace mcfile::chunksection {
 
-class ChunkSection_1_13 : public ChunkSection_1_13_Base<BlockStatesParser_1_13>
+class ChunkSection113 : public ChunkSection113Base<BlockStatesParser113>
 {};
 
 } // namespace mcfile::detail

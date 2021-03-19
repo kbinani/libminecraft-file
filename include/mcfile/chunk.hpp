@@ -326,7 +326,7 @@ public:
             return nullptr;
         }
         vector<shared_ptr<ChunkSection>> sections;
-        detail::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, tileEntities, sections);
+        chunksection::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, tileEntities, sections);
 
         vector<biomes::BiomeId> biomes;
         auto biomesTag = level->query("Biomes");
