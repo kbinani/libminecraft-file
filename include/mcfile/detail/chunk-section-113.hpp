@@ -13,6 +13,32 @@ public:
         return fPalette[index];
     }
 
+    bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const& block) override {
+        using namespace std;
+        if (!block) {
+            return false;
+        }
+        int index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (index < 0) {
+            return false;
+        }
+        int idx = -1;
+        string s = block->toString();
+        for (int i = 0; i < fPalette.size(); i++) {
+            if (s == fPalette[i]->toString()) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx < 0) {
+            idx = fPalette.size();
+            fPalette.push_back(block);
+            fBlockIdPalette.push_back(blocks::FromName(block->fName));
+        }
+        fPaletteIndices[index] = idx;
+        return true;
+    }
+
     uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const override {
         int const index = BlockIndex(offsetX, offsetY, offsetZ);
         if (index < 0) {
@@ -85,6 +111,43 @@ public:
         return index;
     }
 
+    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
+        using namespace std;
+        using namespace mcfile::nbt;
+        auto root = make_shared<CompoundTag>();
+        
+        root->set("Y", make_shared<ByteTag>(fY));
+        
+        if (!fBlockLight.empty()) {
+            vector<uint8_t> buf;
+            copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(buf));
+            root->set("BlockLight", make_shared<ByteArrayTag>(buf));
+        }
+        
+        if (!fSkyLight.empty()) {
+            vector<uint8_t> buf;
+            copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(buf));
+            root->set("SkyLight", make_shared<ByteArrayTag>(buf));
+        }
+        
+        if (!fPaletteIndices.empty()) {
+            vector<int64_t> blockStates;
+            BlockStatesFromPaletteIndices(fPalette.size(), fPaletteIndices, blockStates);
+            root->set("BlockStates", make_shared<LongArrayTag>(blockStates));
+        }
+    
+        if (!fPalette.empty()) {
+            auto palette = make_shared<ListTag>();
+            palette->fType = Tag::TAG_Compound;
+            for (auto p : fPalette) {
+                palette->push_back(p->toCompoundTag());
+            }
+            root->set("Palette", palette);
+        }
+    
+        return root;
+    }
+
     static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const* section) {
         if (!section) {
             return nullptr;
@@ -136,7 +199,9 @@ public:
         if (!blockStatesTag) {
             return nullptr;
         }
-
+        std::vector<uint16_t> paletteIndices;
+        PaletteIndicesFromBlockStates(blockStatesTag->value(), paletteIndices);
+        
         std::vector<uint8_t> blockLight;
         auto blockLightTag = section->query("BlockLight")->asByteArray();
         if (blockLightTag) {
@@ -152,115 +217,55 @@ public:
         return std::shared_ptr<ChunkSection>(new ChunkSection_1_13((int)yTag->fValue,
                                                                    palette,
                                                                    blockIdPalette,
-                                                                   blockStatesTag->value(),
+                                                                   paletteIndices,
                                                                    blockLight,
                                                                    skyLight));
     }
 
 private:
-    ChunkSection_1_13(int y, std::vector<std::shared_ptr<Block const>> const& palette, std::vector<blocks::BlockId> const& blockIdPalette, std::vector<int64_t> const& blockStates, std::vector<uint8_t> const& blockLight, std::vector<uint8_t> const& skyLight)
+    ChunkSection_1_13(int y,
+                      std::vector<std::shared_ptr<Block const>> const& palette,
+                      std::vector<blocks::BlockId> const& blockIdPalette,
+                      std::vector<uint16_t> const& paletteIndices,
+                      std::vector<uint8_t> const& blockLight,
+                      std::vector<uint8_t> const& skyLight)
         : fY(y)
         , fPalette(palette)
         , fBlockIdPalette(blockIdPalette)
-        , fBlockStates(blockStates)
+        , fPaletteIndices(paletteIndices)
         , fBlockLight(blockLight)
         , fSkyLight(skyLight)
-    {
-    }
+    {}
 
     int paletteIndex(int offsetX, int offsetY, int offsetZ) const {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
+        int index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (index < 0 || fPaletteIndices.size() <= index) {
             return -1;
         }
-        size_t const numBits = fBlockStates.size() * 64;
-        if (numBits % 4096 != 0) {
+        int i = fPaletteIndices[index];
+        if (i < 0 || fPalette.size() <= i) {
             return -1;
         }
-        size_t const bitsPerIndex = numBits >> 12;
-        int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
-
-        size_t const index = (size_t)offsetY * 16 * 16 + (size_t)offsetZ * 16 + (size_t)offsetX;
-        size_t const bitIndex = index * bitsPerIndex;
-        size_t const uint64Index = bitIndex >> 6;
-
-        if (fBlockStates.size() <= uint64Index) {
-            return -1;
-        }
-        uint64_t const v0 = *(uint64_t *)(fBlockStates.data() + uint64Index);
-        uint64_t const v1 = (uint64Index + 1) < fBlockStates.size() ? *(uint64_t *)(fBlockStates.data() + uint64Index + 1) : 0;
-
-        int const v0Offset = (int)(bitIndex - uint64Index * 64);
-        int const v0Bits = (int)std::min((uint64Index + 1) * 64 - bitIndex, bitsPerIndex);
-
-        uint64_t const paletteIndex = ((v0 >> v0Offset) & mask) | ((v1 << v0Bits) & mask);
-
-        /*
-                   uint64Index                         uint64Index + 1
-        |-----------------------------------||-----------------------------------|
-        |63                                0||63                                0|
-        |-------------------^====^----------||-----------------------------------|
-                                 |   <--   0
-                                 v0Offset
-
-
-                   uint64Index                         uint64Index + 1
-        |-----------------------------------||-----------------------------------|
-        |63                                0||63                                0|
-        |===^-------------------------------||---------------------------------^=|
-            |    <--        <--       <--   0                                    0
-            v0Offset
-        */
-
-        if (fPalette.size() <= paletteIndex) {
-            return -1;
-        }
-
-        return (int)paletteIndex;
+        return i;
     }
 
     bool eachPaletteIndexWithY(int offsetY, std::function<bool(int offsetX, int offsetZ, int paletteIndex)> callback) const {
-        size_t const numBits = fBlockStates.size() * 64;
-        if (numBits % 4096 != 0) {
+        if (offsetY < 0 || 16 <= offsetY) {
             return false;
         }
-        size_t const bitsPerIndex = numBits >> 12;
-        int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
-
-        size_t index = (size_t)offsetY * 16 * 16;
-        size_t bitIndex = index * index * bitsPerIndex;
-        size_t uint64Index = bitIndex / 64;
-        uint64_t v0 = uint64Index < fBlockStates.size() ? *(uint64_t *)(fBlockStates.data() + uint64Index) : 0;
-        uint64_t v1 = (uint64Index + 1) < fBlockStates.size() ? *(uint64_t *)(fBlockStates.data() + uint64Index + 1) : 0;
-        size_t v0Remaining = 64;
-        size_t v1Remaining = 64;
-
+        int index = BlockIndex(offsetY, 0, 0);
         for (int offsetZ = 0; offsetZ < 16; offsetZ++) {
             for (int offsetX = 0; offsetX < 16; offsetX++) {
-                assert(v0Remaining > 0 && v1Remaining > 0);
-                uint64_t paletteIndex = v0 & mask;
-                int const v0Bits = (int)std::min(v0Remaining, bitsPerIndex);
-                int const v1Bits = (int)(bitsPerIndex - v0Bits);
-                v0Remaining -= v0Bits;
-                if (v1Bits == 0) {
-                    v0 >>= v0Bits;
-                } else {
-                    assert(v0Remaining == 0);
-                    paletteIndex |= (v1 << v0Bits) & mask;
-                    v1 >>= v1Bits;
-                    v1Remaining -= v1Bits;
-                    v0 = v1;
-                    v0Remaining = v1Remaining;
-                    uint64Index++;
-                    v1 = (uint64Index + 1) < fBlockStates.size() ? *(uint64_t *)(fBlockStates.data() + uint64Index + 1) : 0;
-                    v1Remaining = 64;
+                if (fPaletteIndices.size() <= index) {
+                    return false;
                 }
+                int paletteIndex = fPaletteIndices[index];
                 if (!callback(offsetX, offsetZ, paletteIndex)) {
                     return false;
                 }
                 index++;
             }
         }
-
         return true;
     }
 
@@ -271,11 +276,85 @@ private:
         return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
     }
 
+    static void PaletteIndicesFromBlockStates(std::vector<int64_t> const& blockStates, std::vector<uint16_t> &paletteIndices) {
+        paletteIndices.resize(16 * 16 * 16);
+        size_t const numBits = blockStates.size() * 64;
+        if (numBits % 4096 != 0) {
+            return;
+        }
+        size_t const bitsPerIndex = numBits >> 12;
+        if (64 % bitsPerIndex != 0) {
+            int a =0 ;
+        }
+        size_t u64Index = 0;
+        size_t bitIndex = 0;
+        for (int i = 0; i < 4096; i++) {
+            size_t bitIndex = bitsPerIndex * i;
+            size_t u64Index = bitIndex / 64;
+            size_t v0Bits = std::min(bitsPerIndex, (u64Index + 1) * 64 - bitIndex);
+            size_t v0BitOffset = bitIndex - 64 * u64Index;
+            size_t v1Bits = bitsPerIndex - v0Bits;
+            uint64_t v0 = *(uint64_t*)(blockStates.data() + u64Index);
+            uint64_t paletteIndex = (v0 >> v0BitOffset) & ((1 << v0Bits) - 1);
+            if (v1Bits > 0) {
+                uint64_t v1 = *(uint64_t*)(blockStates.data() + (u64Index + 1));
+                uint64_t t = v1 & ((1 << v1Bits) - 1);
+                paletteIndex = (t << v0Bits) | paletteIndex;
+            }
+            paletteIndices[i] = (uint16_t)(paletteIndex & 0xffff);
+        }
+    }
+
+    static void BlockStatesFromPaletteIndices(size_t numPaletteEntries, std::vector<uint16_t> const& paletteIndices, std::vector<int64_t> &blockStates) {
+        using namespace std;
+        blockStates.clear();
+
+        uint8_t bitsPerBlock;
+        int blocksPerLong;
+        if (numPaletteEntries <= 16) {
+            bitsPerBlock = 4;
+            blocksPerLong = 16;
+        } else if (numPaletteEntries <= 32) {
+            bitsPerBlock = 5;
+            blocksPerLong = 12;
+        } else if (numPaletteEntries <= 64) {
+            bitsPerBlock = 6;
+            blocksPerLong = 10;
+        } else if (numPaletteEntries <= 128) {
+            bitsPerBlock = 7;
+            blocksPerLong = 9;
+        } else if (numPaletteEntries <= 256) {
+            bitsPerBlock = 8;
+            blocksPerLong = 8;
+        } else {
+            bitsPerBlock = 16;
+            blocksPerLong = 4;
+        }
+        vector<bool> bitset;
+        bitset.reserve(bitsPerBlock * 4096);
+        assert(paletteIndices.size() == 4096);
+        for (int i = 0; i < 4096; i++) {
+            uint16_t v = paletteIndices[i];
+            for (int j = 0; j < bitsPerBlock; j++) {
+                bitset.push_back((v & 1) == 1);
+                v >>= 1;
+            }
+        }
+        for (int i = 0; i < bitset.size(); i += 64) {
+            uint64_t v = 0;
+            for (int j = i; j < i + 64 && j < bitset.size(); j++) {
+                uint64_t t = ((uint64_t)(bitset[j] ? 1 : 0)) << (j - i);
+                v |= t;
+            }
+            blockStates.push_back(*(int64_t*)&v);
+        }
+    }
+
 public:
     int const fY;
-    std::vector<std::shared_ptr<Block const>> const fPalette;
-    std::vector<blocks::BlockId> const fBlockIdPalette;
-    std::vector<int64_t> const fBlockStates;
+    std::vector<std::shared_ptr<Block const>> fPalette;
+    std::vector<blocks::BlockId> fBlockIdPalette;
+    std::vector<uint16_t> fPaletteIndices;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
 };
