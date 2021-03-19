@@ -61,6 +61,9 @@
 #include <mcfile/biomes/name.hpp>
 #include <mcfile/chunk-section.hpp>
 #include <mcfile/detail/chunk-section-112.hpp>
+#include <mcfile/detail/chunk-section-113-base.hpp>
+#include <mcfile/detail/block-states-parser-113.hpp>
+#include <mcfile/detail/block-states-parser-116.hpp>
 #include <mcfile/detail/chunk-section-113.hpp>
 #include <mcfile/detail/chunk-section-116.hpp>
 #include <mcfile/detail/chunk-section-generator.hpp>
