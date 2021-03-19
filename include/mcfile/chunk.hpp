@@ -201,26 +201,21 @@ public:
                 sections.push_back(section);
             }
         }
-        sort(sections.begin(), sections.end(), [](auto const& a, auto const& b) {
-            return a->rawY() < b->rawY();
-        });
-        auto sectionsList = make_shared<ListTag>();
-        sectionsList->fType = Tag::TAG_Compound;
-        if (!sections.empty() && sections[0]->rawY() == 0) {
-            auto s = make_shared<CompoundTag>();
-            int8_t y = -1;
-            s->set("Y", make_shared<ByteTag>(*(uint8_t*)&y));
-            s->set("SkyLight", make_shared<ByteArrayTag>(2048));
-            sectionsList->push_back(s);
-        }
-        for (auto const& section : sections) {
-            auto s = section->toCompoundTag();
-            if (!s) {
-                return nullptr;
+        if (!sections.empty()) {
+            sort(sections.begin(), sections.end(), [](auto const& a, auto const& b) {
+                return a->rawY() < b->rawY();
+            });
+            auto sectionsList = make_shared<ListTag>();
+            sectionsList->fType = Tag::TAG_Compound;
+            for (auto const& section : sections) {
+                auto s = section->toCompoundTag();
+                if (!s) {
+                    return nullptr;
+                }
+                sectionsList->push_back(s);
             }
-            sectionsList->push_back(s);
+            level->set("Sections", sectionsList);
         }
-        level->set("Sections", sectionsList);
         
         std::vector<int32_t> biomes;
         for (biomes::BiomeId biome : fBiomes) {
@@ -400,21 +395,31 @@ private:
         , fStatus(status)
         , fTerrianPopulated(terrianPopulated)
     {
-        if (dataVersion >= 2694) { // 21w06a
-            fMinChunkSectionY = -4;
-        } else {
+        if (sections.empty()) {
             fMinChunkSectionY = 0;
-        }
-        int maxChunkSectionY = fMinChunkSectionY;
-        for (auto const& section : sections) {
-            int const y = section->y();
-            maxChunkSectionY = std::max(maxChunkSectionY, y);
-        }
-        fSections.resize(maxChunkSectionY - fMinChunkSectionY + 1);
-        for (auto const& section : sections) {
-            int const y = section->y();
-            int const idx = y - fMinChunkSectionY;
-            fSections[idx] = section;
+        } else {
+            std::optional<int> minChunkSectionY;
+            std::optional<int> maxChunkSectionY;
+            for (auto const& section : sections) {
+                int const y = section->y();
+                if (minChunkSectionY) {
+                    minChunkSectionY = std::min(*minChunkSectionY, y);
+                } else {
+                    minChunkSectionY = y;
+                }
+                if (maxChunkSectionY) {
+                    maxChunkSectionY = std::max(*maxChunkSectionY, y);
+                } else {
+                    maxChunkSectionY = y;
+                }
+            }
+            fMinChunkSectionY = *minChunkSectionY;
+            fSections.resize(*maxChunkSectionY - *minChunkSectionY + 1);
+            for (auto const& section : sections) {
+                int const y = section->y();
+                int const idx = y - fMinChunkSectionY;
+                fSections[idx] = section;
+            }
         }
         fBiomes.swap(biomes);
         fEntities.swap(entities);
