@@ -12,6 +12,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <set>
 #include <algorithm>
 #include <sstream>
 #include <limits>
