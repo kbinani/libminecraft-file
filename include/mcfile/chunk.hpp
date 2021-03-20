@@ -36,7 +36,7 @@ public:
         return section->blockIdAt(offsetX, offsetY, offsetZ);
     }
 
-    bool setBlockAt(int x, int y, int z, std::shared_ptr<Block const> const& block) {
+    bool setBlockAt(int x, int y, int z, std::shared_ptr<Block const> const& block, SetBlockOptions options = SetBlockOptions()) {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
@@ -49,9 +49,38 @@ public:
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - section->y() * 16;
-        return section->setBlockAt(offsetX, offsetY, offsetZ, block);
+        if (!section->setBlockAt(offsetX, offsetY, offsetZ, block)) {
+            return false;
+        }
+        if (options.fRemoveTileEntity) {
+            return removeTileEntityAt(x, y, z);
+        } else {
+            return true;
+        }
     }
 
+    bool removeTileEntityAt(int x, int y, int z) {
+        int const chunkX = Coordinate::ChunkFromBlock(x);
+        int const chunkZ = Coordinate::ChunkFromBlock(z);
+        if (chunkX != fChunkX || chunkZ != fChunkZ) {
+            return false;
+        }
+        for (size_t i = 0; i < fTileEntities.size(); i++) {
+            auto const& te = fTileEntities[i];
+            auto tx = te->int32("x");
+            auto ty = te->int32("y");
+            auto tz = te->int32("z");
+            if (!tx || !ty || !tz) {
+                continue;
+            }
+            if (*tx == x && *ty == y && *tz == z) {
+                fTileEntities.erase(fTileEntities.begin() + i);
+                break;
+            }
+        }
+        return true;
+    }
+    
     int blockLightAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);

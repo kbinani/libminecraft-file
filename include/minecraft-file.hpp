@@ -67,6 +67,7 @@
 #include <mcfile/chunksection/chunk-section-113.hpp>
 #include <mcfile/chunksection/chunk-section-116.hpp>
 #include <mcfile/chunksection/chunk-section-generator.hpp>
+#include <mcfile/set-block-options.hpp>
 #include <mcfile/chunk.hpp>
 #include <mcfile/detail/chunk-data-source.hpp>
 #include <mcfile/region.hpp>
