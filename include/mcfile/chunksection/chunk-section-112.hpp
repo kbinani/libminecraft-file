@@ -25,6 +25,15 @@ public:
         ChunkSection112::Migrate(rawSections, chunkX, chunkZ, tileEntities, out);
     }
 
+    static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
+        using namespace std;
+        vector<shared_ptr<Block const>> palette;
+        vector<uint16_t> indices;
+        vector<uint8_t> blockLight;
+        vector<uint8_t> skyLight(2048, 0xff);
+        return shared_ptr<ChunkSection112>(new ChunkSection112(sectionY, palette, indices, blockLight, skyLight));
+    }
+    
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
         int const index = BlockIndex(offsetX, offsetY, offsetZ);
         if (index < 0) {

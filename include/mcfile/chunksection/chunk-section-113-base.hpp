@@ -22,6 +22,12 @@ public:
         if (index < 0) {
             return false;
         }
+        if (fPaletteIndices.size() != 4096) {
+            fPaletteIndices.resize(4096);
+            auto air = std::make_shared<Block>("minecraft:air");
+            fPalette.push_back(air);
+            fBlockIdPalette.push_back(blocks::minecraft::air);
+        }
         int idx = -1;
         string s = block->toString();
         for (int i = 0; i < fPalette.size(); i++) {
@@ -170,6 +176,9 @@ public:
         if (!yTag) {
             return nullptr;
         }
+        if (15 < yTag->fValue) {
+            return nullptr;
+        }
         
         auto paletteTag = section->query("Palette")->asList();
         std::vector<std::shared_ptr<Block const>> palette;
@@ -234,7 +243,7 @@ public:
                                                                         skyLight));
     }
     
-private:
+protected:
     ChunkSection113Base(int y,
                         std::vector<std::shared_ptr<Block const>> const& palette,
                         std::vector<uint16_t> const& paletteIndices,
@@ -250,6 +259,7 @@ private:
     {
     }
     
+private:
     static int BlockIndex(int offsetX, int offsetY, int offsetZ) {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
             return -1;
