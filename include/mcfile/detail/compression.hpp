@@ -11,6 +11,7 @@ public:
         z_stream zs;
         char buff[kSegSize];
         std::vector<uint8_t> outData;
+        unsigned long prevOut = 0;
 
         memset(&zs, 0, sizeof(zs));
         if (deflateInit(&zs, Z_BEST_COMPRESSION) != Z_OK) {
@@ -25,7 +26,8 @@ public:
             zs.avail_out = kSegSize;
 
             ret = deflate(&zs, Z_FINISH);
-            outData.insert(outData.end(), buff, buff + zs.total_out);
+            outData.insert(outData.end(), buff, buff + (zs.total_out - prevOut));
+            prevOut = zs.total_out;
         } while (ret == Z_OK);
 
         int r = deflateEnd(&zs);
