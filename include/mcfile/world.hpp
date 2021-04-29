@@ -16,13 +16,13 @@ public:
         return Region::MakeRegion(fileName);
     }
 
-    std::shared_ptr<Region> regionAtBlock(int blockX, int blockZ) {
+    std::shared_ptr<Region> regionAtBlock(int blockX, int blockZ) const {
         int rx = Coordinate::RegionFromBlock(blockX);
         int rz = Coordinate::RegionFromBlock(blockZ);
         return region(rx, rz);
     }
 
-    std::shared_ptr<Chunk> chunkAtBlock(int blockX, int blockZ) {
+    std::shared_ptr<Chunk> chunkAtBlock(int blockX, int blockZ) const {
         auto const& region = regionAtBlock(blockX, blockZ);
         if (!region) {
             return nullptr;
@@ -30,6 +30,16 @@ public:
         int cx = Coordinate::ChunkFromBlock(blockX);
         int cz = Coordinate::ChunkFromBlock(blockZ);
         return region->chunkAt(cx, cz);
+    }
+
+    std::shared_ptr<Chunk> chunkAt(int chunkX, int chunkZ) const {
+        int rx = Coordinate::RegionFromChunk(chunkX);
+        int rz = Coordinate::RegionFromChunk(chunkZ);
+        auto const& r = region(rx, rz);
+        if (!r) {
+            return nullptr;
+        }
+        return r->chunkAt(chunkX, chunkZ);
     }
     
     bool eachBlock(int minX, int minZ, int maxX, int maxZ, std::function<bool(int x, int y, int z, std::shared_ptr<Block const>)> callback) const {
