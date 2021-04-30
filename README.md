@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/kbinani/libminecraft-file/workflows/CI/badge.svg)
 
-Header-only Minecraft region file parser
+Header-only Minecraft region file reader / writer.
 
 # example
 
