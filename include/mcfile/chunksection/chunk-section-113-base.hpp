@@ -26,7 +26,6 @@ public:
             fPaletteIndices.resize(4096);
             auto air = std::make_shared<Block>("minecraft:air");
             fPalette.push_back(air);
-            fBlockIdPalette.push_back(blocks::minecraft::air);
         }
         int idx = -1;
         string s = block->toString();
@@ -39,7 +38,6 @@ public:
         if (idx < 0) {
             idx = fPalette.size();
             fPalette.push_back(block);
-            fBlockIdPalette.push_back(blocks::FromName(block->fName));
         }
         fPaletteIndices[index] = idx;
         return true;
@@ -76,32 +74,13 @@ public:
     }
     
     blocks::BlockId blockIdAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const index = paletteIndexAt(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return blocks::unknown;
+        auto const& block = blockAt(offsetX, offsetY, offsetZ);
+        if (!block) {
+            return blocks::minecraft::air;
         }
-        return fBlockIdPalette[*index];
+        return block->fId;
     }
-    
-    bool blockIdWithYOffset(int offsetY, std::function<bool(int offsetX, int offsetZ, blocks::BlockId blockId)> callback) const override {
-        if (offsetY < 0 || 16 <= offsetY) {
-            return false;
-        }
-        for (int offsetZ = 0; offsetZ < 16; offsetZ++) {
-            for (int offsetX = 0; offsetX < 16; offsetX++) {
-                auto index = paletteIndexAt(offsetX, offsetY, offsetZ);
-                blocks::BlockId id = blocks::unknown;
-                if (index) {
-                    id = fBlockIdPalette[*index];
-                }
-                if (!callback(offsetX, offsetZ, id)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    
+
     int y() const override {
         return fY > 251 ? fY - 256 : fY;
     }
@@ -210,13 +189,7 @@ public:
                 palette.push_back(std::make_shared<Block const>(nameTag->fValue, properties));
             }
         }
-        
-        std::vector<blocks::BlockId> blockIdPalette(palette.size());
-        for (int i = 0; i < palette.size(); i++) {
-            auto block = palette[i];
-            blockIdPalette[i] = blocks::FromName(block->fName);
-        }
-        
+
         auto blockStatesTag = section->query("BlockStates")->asLongArray();
         std::vector<uint16_t> paletteIndices;
         if (blockStatesTag) {
@@ -238,7 +211,6 @@ public:
         return std::shared_ptr<ChunkSection>(new ChunkSection113Base((int)yTag->fValue,
                                                                         palette,
                                                                         paletteIndices,
-                                                                        blockIdPalette,
                                                                         blockLight,
                                                                         skyLight));
     }
@@ -247,13 +219,11 @@ protected:
     ChunkSection113Base(int y,
                         std::vector<std::shared_ptr<Block const>> const& palette,
                         std::vector<uint16_t> const& paletteIndices,
-                        std::vector<blocks::BlockId> const& blockIdPalette,
                         std::vector<uint8_t> const& blockLight,
                         std::vector<uint8_t> const& skyLight)
         : fY(y)
         , fPalette(palette)
         , fPaletteIndices(paletteIndices)
-        , fBlockIdPalette(blockIdPalette)
         , fBlockLight(blockLight)
         , fSkyLight(skyLight)
     {
@@ -270,7 +240,6 @@ private:
 public:
     int const fY;
     std::vector<std::shared_ptr<Block const>> fPalette;
-    std::vector<blocks::BlockId> fBlockIdPalette;
     std::vector<uint16_t> fPaletteIndices;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;

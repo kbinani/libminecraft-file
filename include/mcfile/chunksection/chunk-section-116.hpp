@@ -9,14 +9,12 @@ public:
         using namespace std;
         vector<shared_ptr<Block const>> palette;
         vector<uint16_t> paletteIndices;
-        vector<blocks::BlockId> blockIdPalette;
         vector<uint8_t> blockLight;
         vector<uint8_t> skyLight(2048, 0xff);
         return shared_ptr<ChunkSection116>(
             new ChunkSection116(sectionY,
                                 palette,
                                 paletteIndices,
-                                blockIdPalette,
                                 blockLight,
                                 skyLight));
     }
@@ -25,10 +23,9 @@ private:
     ChunkSection116(int y,
                     std::vector<std::shared_ptr<Block const>> const& palette,
                     std::vector<uint16_t> const& paletteIndices,
-                    std::vector<blocks::BlockId> const& blockIdPalette,
                     std::vector<uint8_t> const& blockLight,
                     std::vector<uint8_t> const& skyLight)
-        : ChunkSection113Base<BlockStatesParser116>(y, palette, paletteIndices, blockIdPalette, blockLight, skyLight)
+        : ChunkSection113Base<BlockStatesParser116>(y, palette, paletteIndices, blockLight, skyLight)
     {
     }
 };

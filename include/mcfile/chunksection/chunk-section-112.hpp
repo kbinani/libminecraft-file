@@ -69,18 +69,6 @@ public:
         return blocks::FromName(block->fName);
     }
 
-    bool blockIdWithYOffset(int offsetY, std::function<bool(int offsetX, int offsetZ, blocks::BlockId blockId)> callback) const override {
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                auto id = blockIdAt(x, offsetY, z);
-                if (callback(x, z, id)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     int y() const override {
         return fY;
     }

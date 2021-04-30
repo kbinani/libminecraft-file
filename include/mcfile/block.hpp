@@ -5,13 +5,15 @@ namespace mcfile {
 class Block {
 public:
     explicit Block(std::string const& name, std::map<std::string, std::string> const& properties = std::map<std::string, std::string>())
-        : fName(name)
+        : fId(blocks::FromName(name))
+        , fName(name)
         , fProperties(properties)
     {
     }
 
     explicit Block(blocks::BlockId id, std::map<std::string, std::string> const& properties = std::map<std::string, std::string>())
-        : fName(blocks::Name(id))
+        : fId(id)
+        , fName(blocks::Name(id))
         , fProperties(properties)
     {
     }
@@ -78,6 +80,7 @@ public:
     }
     
 public:
+    blocks::BlockId const fId;
     std::string const fName;
     std::map<std::string, std::string> const fProperties;
 };
