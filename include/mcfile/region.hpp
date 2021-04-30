@@ -43,7 +43,7 @@ public:
 
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath) {
         // ../directory/r.5.13.mca
-        namespace fs = detail::filesystem;
+        namespace fs = std::filesystem;
         using mcfile::detail::String;
         using namespace std;
 
@@ -370,7 +370,7 @@ public:
     }
 
     static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const& directory, std::string const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) {
-        namespace fs = mcfile::detail::filesystem;
+        namespace fs = std::filesystem;
 
         int const minChunkX = regionX * 32;
         int const maxChunkX = minChunkX + 31;
@@ -469,7 +469,7 @@ public:
     static bool IterateRegionForCompressedNbtFiles(std::string const& chunkFilesDirectory,
                                                    std::function<bool(int regionX, int regionZ, std::string const& chunkFilesDirectory)> callback,
                                                    std::function<std::string(int regionX, int regionZ)> regionFileName = Region::GetDefaultRegionFileName) {
-        namespace fs = mcfile::detail::filesystem;
+        namespace fs = std::filesystem;
 
         int minRegionX = 1;
         int maxRegionX = -1;

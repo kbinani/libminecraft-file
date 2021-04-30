@@ -76,7 +76,7 @@ public:
     }
 
     bool eachRegions(std::function<bool(std::shared_ptr<Region> const&)> callback) const {
-        namespace fs = mcfile::detail::filesystem;
+        namespace fs = std::filesystem;
         auto regionDir = fs::path(fRootDirectory).append("region");
         if (!fs::exists(regionDir)) {
             return  true;

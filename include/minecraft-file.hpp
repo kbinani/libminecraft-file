@@ -20,8 +20,8 @@
 #include <cmath>
 #include <optional>
 #include <initializer_list>
+#include <filesystem>
 
-#include <mcfile/detail/filesystem.hpp>
 #include <mcfile/detail/endianness.hpp>
 #include <mcfile/stream/input-stream.hpp>
 #include <mcfile/stream/output-stream.hpp>
