@@ -33,7 +33,6 @@ add_executable(mcfile-test
   ../include/mcfile/detail/chunk-data-source.hpp
   ../include/mcfile/detail/compression.hpp
   ../include/mcfile/detail/endianness.hpp
-  ../include/mcfile/detail/filesystem.hpp
   ../include/mcfile/detail/string.hpp
   ../include/mcfile/nbt/byte-array-tag.hpp
   ../include/mcfile/nbt/byte-tag.hpp
@@ -54,6 +53,7 @@ add_executable(mcfile-test
   ../include/mcfile/nbt/tag-factory.hpp
   ../include/mcfile/nbt/tag.hpp
   ../include/mcfile/region.hpp
+  ../include/mcfile/set-block-options.hpp
   ../include/mcfile/stream/byte-stream.hpp
   ../include/mcfile/stream/file-input-stream.hpp
   ../include/mcfile/stream/file-output-stream.hpp
