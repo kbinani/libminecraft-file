@@ -111,7 +111,7 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::brown_concrete, {.name = "minecraft:brown_concrete", .opaque = false}},
         {minecraft::brown_concrete_powder, {.name = "minecraft:brown_concrete_powder", .opaque = true}},
         {minecraft::brown_glazed_terracotta, {.name = "minecraft:brown_glazed_terracotta", .opaque = true}},
-        {minecraft::brown_mushroom, {.name = "minecraft:brown_mushroom", .opaque = true}},
+        {minecraft::brown_mushroom, {.name = "minecraft:brown_mushroom", .opaque = false}},
         {minecraft::brown_mushroom_block, {.name = "minecraft:brown_mushroom_block", .opaque = true}},
         {minecraft::brown_shulker_box, {.name = "minecraft:brown_shulker_box", .opaque = false}},
         {minecraft::brown_stained_glass, {.name = "minecraft:brown_stained_glass", .opaque = false}},
