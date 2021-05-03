@@ -50,6 +50,7 @@
 #include <mcfile/nbt/list-tag.hpp>
 #include <mcfile/nbt/compound-tag.hpp>
 #include <mcfile/nbt/tag-factory-impl.hpp>
+#include <mcfile/nbt/print-as-json.hpp>
 #include <mcfile/coordinate.hpp>
 #include <mcfile/blocks/block-id.hpp>
 #include <mcfile/blocks/minecraft.hpp>
