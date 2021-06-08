@@ -125,6 +125,8 @@ enum : BlockId {
     cartography_table,
     carved_pumpkin,
     cauldron,
+    water_cauldron,
+    lava_cauldron,
     cave_air,
     chain_command_block,
     chest,

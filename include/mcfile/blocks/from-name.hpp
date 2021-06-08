@@ -125,6 +125,8 @@ static inline BlockId FromName(std::string const& name) {
         {"minecraft:cartography_table", minecraft::cartography_table},
         {"minecraft:carved_pumpkin", minecraft::carved_pumpkin},
         {"minecraft:cauldron", minecraft::cauldron},
+        {"minecraft:water_cauldron", minecraft::water_cauldron},
+        {"minecraft:lava_cauldron", minecraft::lava_cauldron},
         {"minecraft:cave_air", minecraft::cave_air},
         {"minecraft:chain_command_block", minecraft::chain_command_block},
         {"minecraft:chest", minecraft::chest},

@@ -803,6 +803,8 @@ static inline std::string Name(BlockId id, int dataVersion = -1) {
     if (dataVersion > 0) {
         if (id == minecraft::dirt_path && dataVersion < 2724) {
             return "minecraft:grass_path";
+        } else if (id == minecraft::water_cauldron && dataVersion < 2724) {
+            return "minecraft:cauldron";
         }
     }
     auto characteristic = impl::BlockCharacteristic(id);
