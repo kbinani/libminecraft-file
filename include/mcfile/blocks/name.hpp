@@ -262,7 +262,7 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::granite_wall, {.name = "minecraft:granite_wall", .opaque = false}},
         {minecraft::grass, {.name = "minecraft:grass", .opaque = false}},
         {minecraft::grass_block, {.name = "minecraft:grass_block", .opaque = true}},
-        {minecraft::grass_path, {.name = "minecraft:grass_path", .opaque = false}},
+        {minecraft::dirt_path, {.name = "minecraft:dirt_path", .opaque = false}},
         {minecraft::gravel, {.name = "minecraft:gravel", .opaque = true}},
         {minecraft::gray_banner, {.name = "minecraft:gray_banner", .opaque = false}},
         {minecraft::gray_bed, {.name = "minecraft:gray_bed", .opaque = false}},
@@ -799,7 +799,12 @@ static inline std::optional<Characteristics> BlockCharacteristic(BlockId id) {
 
 } // namespace impl
 
-static inline std::string Name(BlockId id) {
+static inline std::string Name(BlockId id, int dataVersion = -1) {
+    if (dataVersion > 0) {
+        if (id == minecraft::dirt_path && dataVersion < 2724) {
+            return "minecraft:grass_path";
+        }
+    }
     auto characteristic = impl::BlockCharacteristic(id);
     if (!characteristic) {
         return "";

@@ -256,7 +256,7 @@ enum : BlockId {
     granite_wall,
     grass,
     grass_block,
-    grass_path,
+    dirt_path,
     gravel,
     gray_banner,
     gray_bed,

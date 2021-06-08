@@ -1387,7 +1387,7 @@ private:
                 id = blocks::minecraft::beetroots;
                 props["age"] = std::to_string(data);
                 break;
-            case 208: id = blocks::minecraft::grass_path; break;
+            case 208: id = blocks::minecraft::dirt_path; break;
             case 209: id = blocks::minecraft::end_gateway; break;
             case 210: id = blocks::minecraft::repeating_command_block; break;
             case 211: id = blocks::minecraft::chain_command_block; break;
