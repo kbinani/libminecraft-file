@@ -71,6 +71,6 @@
 #include <mcfile/chunksection/chunk-section-generator.hpp>
 #include <mcfile/set-block-options.hpp>
 #include <mcfile/chunk.hpp>
-#include <mcfile/detail/chunk-data-source.hpp>
+#include <mcfile/detail/mca-data-source.hpp>
 #include <mcfile/region.hpp>
 #include <mcfile/world.hpp>

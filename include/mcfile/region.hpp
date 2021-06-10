@@ -30,13 +30,54 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<detail::ChunkDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<detail::McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
             return nullptr;
         }
-        return src->load(sr);
+        return src->loadChunk(sr);
     }
-    
+
+    bool entitiesAt(int chunkX, int chunkZ, std::vector<std::shared_ptr<nbt::CompoundTag>> &buffer) const {
+        namespace fs = std::filesystem;
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
+        if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
+            return false;
+        }
+        std::string name = fs::path(fFilePath).filename().string();
+        auto path = fs::path(fFilePath).remove_filename().parent_path().parent_path().append("entities").append(name);
+        auto fin = std::make_shared<stream::FileInputStream>(path.string());
+        stream::InputStreamReader sr(fin);
+        std::shared_ptr<detail::McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        if (!src) {
+            return false;
+        }
+        auto compound = src->load(sr);
+        if (!compound) {
+            return false;
+        }
+        auto root = compound->compoundTag("");
+        if (!root) {
+            return false;
+        }
+        auto entities = root->listTag("Entities");
+        if (!entities) {
+            return false;
+        }
+        buffer.clear();
+        for (auto const& e : entities->fValue) {
+            if (e->id() != nbt::Tag::TAG_Compound) {
+                continue;
+            }
+            auto c = std::dynamic_pointer_cast<nbt::CompoundTag>(e);
+            if (!c) {
+                continue;
+            }
+            buffer.push_back(c);
+        }
+        return true;
+    }
+
     static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
         return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
@@ -524,7 +565,7 @@ private:
     {
     }
 
-    std::shared_ptr<detail::ChunkDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader& sr) const {
+    std::shared_ptr<detail::McaDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader& sr) const {
         int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
         if (!sr.valid()) {
             return nullptr;
@@ -558,7 +599,7 @@ private:
 
         int const chunkX = this->fX * 32 + localChunkX;
         int const chunkZ = this->fZ * 32 + localChunkZ;
-        return std::make_shared<detail::ChunkDataSource>(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
+        return std::make_shared<detail::McaDataSource>(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
     }
     
     bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader& sr, bool& error, LoadChunkCallback callback) const {
@@ -567,7 +608,7 @@ private:
             error = true;
             return true;
         }
-        if (data->load(sr, callback)) {
+        if (data->loadChunk(sr, callback)) {
             return true;
         } else {
             error = true;
