@@ -30,9 +30,9 @@ add_executable(mcfile-test
   ../include/mcfile/chunksection/chunk-section-116.hpp
   ../include/mcfile/chunksection/chunk-section-generator.hpp
   ../include/mcfile/coordinate.hpp
-  ../include/mcfile/detail/chunk-data-source.hpp
   ../include/mcfile/detail/compression.hpp
   ../include/mcfile/detail/endianness.hpp
+  ../include/mcfile/detail/mca-data-source.hpp
   ../include/mcfile/detail/string.hpp
   ../include/mcfile/nbt/byte-array-tag.hpp
   ../include/mcfile/nbt/byte-tag.hpp
