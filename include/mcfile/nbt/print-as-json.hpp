@@ -65,6 +65,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
         out << "[" << std::endl;
         auto list = value.asList();
         for (int i = 0; i < list->fValue.size(); i++) {
+            out << Indent(depth + 1);
             PrintAsJsonImpl(out, *list->fValue[i], options, i + 1 < list->fValue.size(), depth + 1);
         }
         out << Indent(depth) << "]";
