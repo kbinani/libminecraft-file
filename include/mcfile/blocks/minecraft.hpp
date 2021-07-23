@@ -127,6 +127,7 @@ enum : BlockId {
     cauldron,
     water_cauldron,
     lava_cauldron,
+    powder_snow_cauldron,
     cave_air,
     chain_command_block,
     chest,

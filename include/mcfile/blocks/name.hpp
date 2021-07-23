@@ -770,6 +770,10 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::warped_sign, {.name = "minecraft:warped_sign", .opaque = false}},
         {minecraft::polished_blackstone_pressure_plate, {.name = "minecraft:polished_blackstone_pressure_plate", .opaque = false}},
         {minecraft::polished_blackstone_button, {.name = "minecraft:polished_blackstone_button", .opaque = false}},
+
+        {minecraft::water_cauldron, {.name = "minecraft:water_cauldron", .opaque = false}},
+        {minecraft::lava_cauldron, {.name = "minecraft:lava_cauldron", .opaque = false}},
+        {minecraft::powder_snow_cauldron, {.name = "minecraft:powder_snow_cauldron", .opaque = false}},
     };
     
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
