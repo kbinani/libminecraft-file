@@ -656,7 +656,7 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::wall_torch, {.name = "minecraft:wall_torch", .opaque = false}},
         {minecraft::water, {.name = "minecraft:water", .opaque = false}},
         {minecraft::wet_sponge, {.name = "minecraft:wet_sponge", .opaque = true}},
-        {minecraft::wheat, {.name = "minecraft:wheat, .opaque = false"}},
+        {minecraft::wheat, {.name = "minecraft:wheat", .opaque = false}},
         {minecraft::white_banner, {.name = "minecraft:white_banner", .opaque = false}},
         {minecraft::white_bed, {.name = "minecraft:white_bed", .opaque = false}},
         {minecraft::white_carpet, {.name = "minecraft:white_carpet", .opaque = false}},
