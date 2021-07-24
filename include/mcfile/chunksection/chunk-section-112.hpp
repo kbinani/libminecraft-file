@@ -998,7 +998,7 @@ private:
                 break;
             case 116: id = blocks::minecraft::enchanting_table; break;
             case 117: id = blocks::minecraft::brewing_stand; break;
-            case 118: id = blocks::minecraft::cauldron; break;
+            case 118: id = blocks::minecraft::water_cauldron; break;
             case 119: id = blocks::minecraft::end_portal; break;
             case 120:
                 id = blocks::minecraft::end_portal_frame;
