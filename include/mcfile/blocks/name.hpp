@@ -758,7 +758,6 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::crimson_door, {.name = "minecraft:crimson_door", .opaque = false}},
         {minecraft::warped_door, {.name = "minecraft:warped_door", .opaque = false}},
         {minecraft::target, {.name = "minecraft:target", .opaque = true}},
-
         {minecraft::twisting_vines_plant, {.name = "minecraft:twisting_vines_plant", .opaque = false}},
         {minecraft::warped_wart_block, {.name = "minecraft:warped_wart_block", .opaque = true}},
         {minecraft::quartz_bricks, {.name = "minecraft:quartz_bricks", .opaque = true}},
@@ -824,7 +823,6 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::potted_azalea_bush, {.name = "minecraft:potted_azalea_bush", .opaque = false}},
         {minecraft::potted_flowering_azalea_bush, {.name = "minecraft:potted_flowering_azalea_bush", .opaque = false}},
         {minecraft::powder_snow, {.name = "minecraft:powder_snow", .opaque = true}},
-
         {minecraft::water_cauldron, {.name = "minecraft:water_cauldron", .opaque = false}},
         {minecraft::lava_cauldron, {.name = "minecraft:lava_cauldron", .opaque = false}},
         {minecraft::powder_snow_cauldron, {.name = "minecraft:powder_snow_cauldron", .opaque = false}},

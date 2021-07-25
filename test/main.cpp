@@ -111,3 +111,15 @@ TEST_CASE("20w06a") {
         }
     }
 }
+
+TEST_CASE("block-id") {
+    for (mcfile::blocks::BlockId id = 1; id < blocks::minecraft::minecraft_max_block_id; id++) {
+        auto name = blocks::Name(id);
+        CHECK(!name.empty());
+        auto reverse = blocks::FromName(name);
+        CHECK(reverse == id);
+        if (reverse != id) {
+            std::cout << name << std::endl;
+        }
+    }
+}
