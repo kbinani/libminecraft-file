@@ -4,8 +4,9 @@ namespace mcfile {
 
 class Region {
 public:
-    Region(Region const&) = delete;
-    Region& operator = (Region const&) = delete;
+    Region(Region const& other) : fX(other.fX), fZ(other.fZ), fFilePath(other.fFilePath) {}
+
+    Region& operator = (Region const& rh) = delete;
 
     using LoadChunkCallback = std::function<bool(Chunk &)>;
 

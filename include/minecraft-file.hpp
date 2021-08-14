@@ -51,7 +51,6 @@
 #include <mcfile/nbt/list-tag.hpp>
 #include <mcfile/nbt/compound-tag.hpp>
 #include <mcfile/nbt/tag-factory-impl.hpp>
-#include <mcfile/nbt/print-as-json.hpp>
 #include <mcfile/coordinate.hpp>
 #include <mcfile/blocks/block-id.hpp>
 #include <mcfile/blocks/minecraft.hpp>
@@ -76,3 +75,7 @@
 #include <mcfile/detail/mca-data-source.hpp>
 #include <mcfile/region.hpp>
 #include <mcfile/world.hpp>
+
+#include <mcfile/nbt/print-as-json.hpp>
+#include <mcfile/pos2.hpp>
+#include <mcfile/cached-chunk-loader.hpp>

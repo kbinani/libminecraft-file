@@ -10,7 +10,7 @@ add_executable(mcfile-test
   Path.hpp
   Point3D.hpp
   BlockData.hpp
-  # git ls-files | grep 'hpp$' | grep -v ^test/ | sed 's:\(.*\):../\1:g' | pbcopy
+  # git ls-files | grep 'hpp$' | grep -v ^test/ | sed 's:\(.*\):  ../\1:g' | pbcopy
   ../include/mcfile/biomes/biome-id.hpp
   ../include/mcfile/biomes/from-int.hpp
   ../include/mcfile/biomes/minecraft.hpp
@@ -20,6 +20,7 @@ add_executable(mcfile-test
   ../include/mcfile/blocks/from-name.hpp
   ../include/mcfile/blocks/minecraft.hpp
   ../include/mcfile/blocks/name.hpp
+  ../include/mcfile/cached-chunk-loader.hpp
   ../include/mcfile/chunk-section.hpp
   ../include/mcfile/chunk.hpp
   ../include/mcfile/chunksection/block-states-parser-113.hpp
@@ -53,6 +54,7 @@ add_executable(mcfile-test
   ../include/mcfile/nbt/tag-factory-impl.hpp
   ../include/mcfile/nbt/tag-factory.hpp
   ../include/mcfile/nbt/tag.hpp
+  ../include/mcfile/pos2.hpp
   ../include/mcfile/pos3.hpp
   ../include/mcfile/region.hpp
   ../include/mcfile/set-block-options.hpp
