@@ -32,6 +32,16 @@ public:
     }
 };
 
+template <class T>
+inline Pos2<T> operator + (Pos2<T> const& lhs, Pos2<T> const& rhs) {
+    return Pos2<T>(lhs.fX + rhs.fX, lhs.fZ + rhs.fZ);
+}
+
+template <class T>
+inline Pos2<T> operator - (Pos2<T> const& lhs, Pos2<T> const& rhs) {
+    return Pos2<T>(lhs.fX - rhs.fX, lhs.fZ - rhs.fZ);
+}
+
 }
 
 using Pos2i = detail::Pos2<int>;
