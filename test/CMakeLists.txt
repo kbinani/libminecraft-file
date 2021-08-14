@@ -47,11 +47,13 @@ add_executable(mcfile-test
   ../include/mcfile/nbt/list-tag.hpp
   ../include/mcfile/nbt/long-array-tag.hpp
   ../include/mcfile/nbt/long-tag.hpp
+  ../include/mcfile/nbt/print-as-json.hpp
   ../include/mcfile/nbt/short-tag.hpp
   ../include/mcfile/nbt/string-tag.hpp
   ../include/mcfile/nbt/tag-factory-impl.hpp
   ../include/mcfile/nbt/tag-factory.hpp
   ../include/mcfile/nbt/tag.hpp
+  ../include/mcfile/pos3.hpp
   ../include/mcfile/region.hpp
   ../include/mcfile/set-block-options.hpp
   ../include/mcfile/stream/byte-stream.hpp

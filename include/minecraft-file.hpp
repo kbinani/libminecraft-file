@@ -21,6 +21,7 @@
 #include <optional>
 #include <initializer_list>
 #include <filesystem>
+#include <type_traits>
 
 #include <mcfile/detail/endianness.hpp>
 #include <mcfile/stream/input-stream.hpp>
@@ -70,6 +71,7 @@
 #include <mcfile/chunksection/chunk-section-116.hpp>
 #include <mcfile/chunksection/chunk-section-generator.hpp>
 #include <mcfile/set-block-options.hpp>
+#include <mcfile/pos3.hpp>
 #include <mcfile/chunk.hpp>
 #include <mcfile/detail/mca-data-source.hpp>
 #include <mcfile/region.hpp>

@@ -65,19 +65,8 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return false;
         }
-        for (size_t i = 0; i < fTileEntities.size(); i++) {
-            auto const& te = fTileEntities[i];
-            auto tx = te->int32("x");
-            auto ty = te->int32("y");
-            auto tz = te->int32("z");
-            if (!tx || !ty || !tz) {
-                continue;
-            }
-            if (*tx == x && *ty == y && *tz == z) {
-                fTileEntities.erase(fTileEntities.begin() + i);
-                break;
-            }
-        }
+        Pos3i pos(x, y, z);
+        fTileEntities.erase(pos);
         return true;
     }
     
@@ -261,8 +250,8 @@ public:
         
         auto tileEntities = make_shared<ListTag>();
         tileEntities->fType = Tag::TAG_Compound;
-        for (auto const& tileEntity : fTileEntities) {
-            tileEntities->push_back(tileEntity->clone());
+        for (auto const& it : fTileEntities) {
+            tileEntities->push_back(it.second->clone());
         }
         level->set("TileEntities", tileEntities);
 
@@ -454,7 +443,17 @@ private:
         }
         fBiomes.swap(biomes);
         fEntities.swap(entities);
-        fTileEntities.swap(tileEntities);
+        for (auto const& item : tileEntities) {
+            assert(item);
+            auto x = item->int32("x");
+            auto y = item->int32("y");
+            auto z = item->int32("z");
+            if (!x || !y || !z) {
+                continue;
+            }
+            Pos3i pos(*x, *y, *z);
+            fTileEntities.insert(std::make_pair(pos, item));
+        }
     }
 
     std::shared_ptr<ChunkSection> unsafeSectionAtBlock(int y) const {
@@ -529,7 +528,7 @@ public:
     std::vector<biomes::BiomeId> fBiomes;
     int const fDataVersion;
     std::vector<std::shared_ptr<nbt::CompoundTag>> fEntities;
-    std::vector<std::shared_ptr<nbt::CompoundTag>> fTileEntities;
+    std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher> fTileEntities;
     std::shared_ptr<mcfile::nbt::CompoundTag> fStructures;
 
 private:
