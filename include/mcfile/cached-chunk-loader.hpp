@@ -21,20 +21,20 @@ public:
         }
     }
 
-    void eachTileEntitiesInRange(int centerBlockX, int centerBlockY, int centerBlockZ, int radius, std::function<bool(nbt::CompoundTag const&, Pos3i)> callback) {
+    void eachTileEntitiesInRange(Pos3i blockCenter, int radius, std::function<bool(std::shared_ptr<nbt::CompoundTag> const&, Pos3i)> callback) {
         if (radius < 0) {
             return;
         }
-        int minBx = centerBlockX - radius;
-        int maxBx = centerBlockX + radius;
+        int minBx = blockCenter.fX - radius;
+        int maxBx = blockCenter.fX + radius;
         int minCx = Coordinate::ChunkFromBlock(minBx);
         int maxCx = Coordinate::ChunkFromBlock(maxBx);
 
-        int minBy = centerBlockY - radius;
-        int maxBy = centerBlockY + radius;
+        int minBy = blockCenter.fY - radius;
+        int maxBy = blockCenter.fY + radius;
 
-        int minBz = centerBlockZ - radius;
-        int maxBz = centerBlockZ + radius;
+        int minBz = blockCenter.fZ - radius;
+        int maxBz = blockCenter.fZ + radius;
         int minCz = Coordinate::ChunkFromBlock(minBz);
         int maxCz = Coordinate::ChunkFromBlock(maxBz);
 
@@ -55,7 +55,7 @@ public:
                     if (pos.fZ < minBz || maxBz < pos.fZ) {
                         continue;
                     }
-                    if (!callback(*it.second, pos)) {
+                    if (!callback(it.second, pos)) {
                         return;
                     }
                 }
