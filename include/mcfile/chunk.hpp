@@ -20,6 +20,10 @@ public:
         return section->blockAt(offsetX, offsetY, offsetZ);
     }
 
+    std::shared_ptr<Block const> blockAt(Pos3i pos) const {
+        return blockAt(pos.fX, pos.fY, pos.fZ);
+    }
+
     blocks::BlockId blockIdAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
@@ -34,6 +38,10 @@ public:
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - section->y() * 16;
         return section->blockIdAt(offsetX, offsetY, offsetZ);
+    }
+
+    blocks::BlockId blockIdAt(Pos3i pos) const {
+        return blockIdAt(pos.fX, pos.fY, pos.fZ);
     }
 
     bool setBlockAt(int x, int y, int z, std::shared_ptr<Block const> const& block, SetBlockOptions options = SetBlockOptions()) {
@@ -59,6 +67,10 @@ public:
         }
     }
 
+    bool setBlockAt(Pos3i pos, std::shared_ptr<Block const> const& block, SetBlockOptions options = SetBlockOptions()) {
+        return setBlockAt(pos.fX, pos.fY, pos.fZ, block, options);
+    }
+
     bool removeTileEntityAt(int x, int y, int z) {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
@@ -69,7 +81,11 @@ public:
         fTileEntities.erase(pos);
         return true;
     }
-    
+
+    bool removeTileEntityAt(Pos3i pos) {
+        return removeTileEntityAt(pos.fX, pos.fY, pos.fZ);
+    }
+
     int blockLightAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
@@ -86,6 +102,10 @@ public:
         return section->blockLightAt(offsetX, offsetY, offsetZ);
     }
 
+    int blockLightAt(Pos3i pos) const {
+        return blockLightAt(pos.fX, pos.fY, pos.fZ);
+    }
+
     int skyLightAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
@@ -100,6 +120,10 @@ public:
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - section->y() * 16;
         return section->skyLightAt(offsetX, offsetY, offsetZ);
+    }
+
+    int skyLightAt(Pos3i pos) const {
+        return skyLightAt(pos.fX, pos.fY, pos.fZ);
     }
 
     biomes::BiomeId biomeAt(int x, int y, int z) const {
@@ -130,6 +154,10 @@ public:
                 return biomes::unknown;
             }
         }
+    }
+
+    biomes::BiomeId biomeAt(Pos3i pos) const {
+        return biomeAt(pos.fX, pos.fY, pos.fZ);
     }
 
     biomes::BiomeId biomeAt(int x, int z) const {
