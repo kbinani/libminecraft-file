@@ -12,55 +12,25 @@ public:
         fCache.insert(std::make_pair(pos, chunk));
     }
 
-    std::shared_ptr<Block const> blockAt(int bx, int by, int bz) {
-        auto chunk = chunkAtBlock(bx, bz);
+    std::shared_ptr<Block const> blockAt(Pos3i pos) {
+        auto chunk = chunkAtBlock(pos.fX, pos.fZ);
         if (chunk) {
-            return chunk->blockAt(bx, by, bz);
+            return chunk->blockAt(pos);
         } else {
             return nullptr;
         }
     }
 
-    void eachTileEntitiesInRange(Pos3i blockCenter, int radius, std::function<bool(std::shared_ptr<nbt::CompoundTag> const&, Pos3i)> callback) {
-        if (radius < 0) {
-            return;
+    std::shared_ptr<nbt::CompoundTag> tileEntityAt(Pos3i pos) {
+        auto chunk = chunkAtBlock(pos.fX, pos.fZ);
+        if (!chunk) {
+            return nullptr;
         }
-        int minBx = blockCenter.fX - radius;
-        int maxBx = blockCenter.fX + radius;
-        int minCx = Coordinate::ChunkFromBlock(minBx);
-        int maxCx = Coordinate::ChunkFromBlock(maxBx);
-
-        int minBy = blockCenter.fY - radius;
-        int maxBy = blockCenter.fY + radius;
-
-        int minBz = blockCenter.fZ - radius;
-        int maxBz = blockCenter.fZ + radius;
-        int minCz = Coordinate::ChunkFromBlock(minBz);
-        int maxCz = Coordinate::ChunkFromBlock(maxBz);
-
-        for (int cx = minCx; cx <= maxCx; cx++) {
-            for (int cz = minCz; cz <= maxCz; cz++) {
-                auto const& chunk = chunkAt(cx, cz);
-                if (!chunk) {
-                    continue;
-                }
-                for (auto const& it : chunk->fTileEntities) {
-                    auto pos = it.first;
-                    if (pos.fX < minBx || maxBx < pos.fX) {
-                        continue;
-                    }
-                    if (pos.fY < minBy || maxBy < pos.fY) {
-                        continue;
-                    }
-                    if (pos.fZ < minBz || maxBz < pos.fZ) {
-                        continue;
-                    }
-                    if (!callback(it.second, pos)) {
-                        return;
-                    }
-                }
-            }
+        auto found = chunk->fTileEntities.find(pos);
+        if (found == chunk->fTileEntities.end()) {
+            return nullptr;
         }
+        return found->second;
     }
 
 private:
