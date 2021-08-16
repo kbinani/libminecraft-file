@@ -22,6 +22,7 @@
 #include <initializer_list>
 #include <filesystem>
 #include <type_traits>
+#include <unordered_map>
 
 #include <mcfile/detail/endianness.hpp>
 #include <mcfile/stream/input-stream.hpp>
