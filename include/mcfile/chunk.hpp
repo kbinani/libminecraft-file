@@ -397,7 +397,15 @@ public:
 
         auto structures = level->compoundTag("Structures");
 
-        return std::shared_ptr<Chunk>(new Chunk(root, chunkX, chunkZ, sections, dataVersion, biomes, entities, tileEntities, structures, s, terrianPopulated, createEmptySection));
+        auto lastUpdateTag = level->int64("LastUpdate");
+        int64_t lastUpdate = 0;
+        if (lastUpdateTag) {
+            lastUpdate = *lastUpdateTag;
+        }
+
+        return std::shared_ptr<Chunk>(new Chunk(root, chunkX, chunkZ, sections, dataVersion,
+                                                biomes, entities, tileEntities, structures, lastUpdate,
+                                                s, terrianPopulated, createEmptySection));
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
@@ -431,6 +439,7 @@ private:
                    std::vector<std::shared_ptr<nbt::CompoundTag>> &entities,
                    std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities,
                    std::shared_ptr<nbt::CompoundTag> const& structures,
+                   int64_t lastUpdate,
                    std::string const& status,
                    std::optional<bool> terrianPopulated,
                    std::function<std::shared_ptr<ChunkSection>(int sectionY)> createEmptySection)
@@ -439,6 +448,7 @@ private:
         , fChunkZ(chunkZ)
         , fDataVersion(dataVersion)
         , fStructures(structures)
+        , fLastUpdate(lastUpdate)
         , fStatus(status)
         , fTerrianPopulated(terrianPopulated)
         , fCreateEmptySection(createEmptySection)
@@ -558,6 +568,7 @@ public:
     std::vector<std::shared_ptr<nbt::CompoundTag>> fEntities;
     std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher> fTileEntities;
     std::shared_ptr<mcfile::nbt::CompoundTag> fStructures;
+    int64_t fLastUpdate;
 
 private:
     std::string const fStatus;
