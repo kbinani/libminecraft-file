@@ -65,6 +65,7 @@ add_executable(mcfile-test
   ../include/mcfile/stream/input-stream.hpp
   ../include/mcfile/stream/output-stream-writer.hpp
   ../include/mcfile/stream/output-stream.hpp
+  ../include/mcfile/tile-tick.hpp
   ../include/mcfile/world.hpp
   ../include/minecraft-file.hpp)
 list(APPEND mcfile_test_link_libraries "z")
