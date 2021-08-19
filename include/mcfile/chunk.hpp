@@ -251,8 +251,7 @@ public:
             sort(sections.begin(), sections.end(), [](auto const& a, auto const& b) {
                 return a->rawY() < b->rawY();
             });
-            auto sectionsList = make_shared<ListTag>();
-            sectionsList->fType = Tag::TAG_Compound;
+            auto sectionsList = make_shared<ListTag>(Tag::TAG_Compound);
             for (auto const& section : sections) {
                 auto s = section->toCompoundTag();
                 if (!s) {
@@ -269,15 +268,13 @@ public:
         }
         level->set("Biomes", make_shared<IntArrayTag>(biomes));
         
-        auto entities = make_shared<ListTag>();
-        entities->fType = Tag::TAG_Compound;
+        auto entities = make_shared<ListTag>(Tag::TAG_Compound);
         for (auto const& entity : fEntities) {
             entities->push_back(entity->clone());
         }
         level->set("Entities", entities);
         
-        auto tileEntities = make_shared<ListTag>();
-        tileEntities->fType = Tag::TAG_Compound;
+        auto tileEntities = make_shared<ListTag>(Tag::TAG_Compound);
         for (auto const& it : fTileEntities) {
             tileEntities->push_back(it.second->clone());
         }

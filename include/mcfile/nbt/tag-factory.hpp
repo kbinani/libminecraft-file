@@ -12,7 +12,7 @@ public:
 private:
     template<typename T>
     static std::shared_ptr<T> makeNamedTag(std::string const& name) {
-        auto p = std::make_shared<T>();
+        auto p = std::shared_ptr<T>(new T);
         p->fName = name;
         return p;
     }

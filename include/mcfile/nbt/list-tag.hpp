@@ -4,7 +4,14 @@ namespace mcfile {
 namespace nbt {
 
 class ListTag : public Tag {
+    friend class TagFactory;
+
+private:
+    ListTag() {}
+
 public:
+    explicit ListTag(uint8_t type) : fType(type) {}
+
     bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         uint8_t type;
         if (!r.read(&type)) {
@@ -52,8 +59,7 @@ public:
     std::shared_ptr<Tag>& at(size_t idx) { return fValue[idx]; }
 
     std::shared_ptr<Tag> clone() const override {
-        auto ret = std::make_shared<ListTag>();
-        ret->fType = fType;
+        auto ret = std::make_shared<ListTag>(fType);
         for (auto const& value : fValue) {
             ret->fValue.push_back(value->clone());
         }
