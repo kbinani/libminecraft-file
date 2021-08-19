@@ -7,7 +7,7 @@ class ListTag : public Tag {
     friend class TagFactory;
 
 private:
-    ListTag() {}
+    ListTag() : fType(Tag::TAG_End) {}
 
 public:
     explicit ListTag(uint8_t type) : fType(type) {}
@@ -51,7 +51,20 @@ public:
     decltype(auto) begin() const { return fValue.begin(); }
     decltype(auto) end() const { return fValue.end(); }
 
-    void push_back(std::shared_ptr<Tag> const& item) { fValue.push_back(item); }
+    void push_back(std::shared_ptr<Tag> const& item) {
+        if (!item) {
+            return;
+        }
+        uint8_t id = item->id();
+        if (fValue.empty() && fType == Tag::TAG_End) {
+            fType = id;
+        }
+        assert(fType == id);
+        if (fType != id) {
+            return;
+        }
+        fValue.push_back(item);
+    }
 
     size_t size() const { return fValue.size(); }
     bool empty() const { return fValue.empty(); }
