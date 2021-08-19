@@ -4,11 +4,7 @@ namespace mcfile {
 namespace nbt {
 
 struct JsonPrintOptions {
-    bool fTypeHint;
-
-    JsonPrintOptions()
-        : fTypeHint(false)
-    {}
+    bool fTypeHint = false;
 };
 
 namespace detail {
