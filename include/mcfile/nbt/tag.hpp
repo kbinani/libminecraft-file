@@ -21,6 +21,22 @@ class Tag {
 public:
     friend class TagFactory;
 
+    enum class Type : uint8_t {
+        End = 0,
+        Byte = 1,
+        Short = 2,
+        Int = 3,
+        Long = 4,
+        Float = 5,
+        Double = 6,
+        ByteArray = 7,
+        String = 8,
+        List = 9,
+        Compound = 10,
+        IntArray = 11,
+        LongArray = 12,
+    };
+
     Tag() : fValid(false) {}
     virtual ~Tag() {}
 
@@ -37,44 +53,29 @@ public:
     
     bool valid() const { return fValid; }
 
-    virtual uint8_t id() const = 0;
+    virtual Type type() const = 0;
 
     std::string name() const { return fName; }
 
-    EndTag       const* asEnd() const       { return this->id() == TAG_End ? reinterpret_cast<EndTag const*>(this) : nullptr; }
-    ByteTag      const* asByte() const      { return this->id() == TAG_Byte ? reinterpret_cast<ByteTag const*>(this) : nullptr; }
-    ShortTag     const* asShort() const     { return this->id() == TAG_Short ? reinterpret_cast<ShortTag const*>(this) : nullptr; }
-    IntTag       const* asInt() const       { return this->id() == TAG_Int ? reinterpret_cast<IntTag const*>(this) : nullptr; }
-    LongTag      const* asLong() const      { return this->id() == TAG_Long ? reinterpret_cast<LongTag const*>(this) : nullptr; }
-    FloatTag     const* asFloat() const     { return this->id() == TAG_Float ? reinterpret_cast<FloatTag const*>(this) : nullptr; }
-    DoubleTag    const* asDouble() const    { return this->id() == TAG_Double ? reinterpret_cast<DoubleTag const*>(this) : nullptr; }
-    ByteArrayTag const* asByteArray() const { return this->id() == TAG_Byte_Array ? reinterpret_cast<ByteArrayTag const*>(this) : nullptr; }
-    StringTag    const* asString() const    { return this->id() == TAG_String ? reinterpret_cast<StringTag const*>(this) : nullptr; }
-    ListTag      const* asList() const      { return this->id() == TAG_List ? reinterpret_cast<ListTag const*>(this) : nullptr; }
-    CompoundTag  const* asCompound() const  { return this->id() == TAG_Compound ? reinterpret_cast<CompoundTag const*>(this) : nullptr; }
-    IntArrayTag  const* asIntArray() const  { return this->id() == TAG_Int_Array ? reinterpret_cast<IntArrayTag const*>(this) : nullptr; }
-    LongArrayTag const* asLongArray() const { return this->id() == TAG_Long_Array ? reinterpret_cast<LongArrayTag const*>(this) : nullptr; }
+    EndTag       const* asEnd() const       { return this->type() == Type::End ? reinterpret_cast<EndTag const*>(this) : nullptr; }
+    ByteTag      const* asByte() const      { return this->type() == Type::Byte ? reinterpret_cast<ByteTag const*>(this) : nullptr; }
+    ShortTag     const* asShort() const     { return this->type() == Type::Short ? reinterpret_cast<ShortTag const*>(this) : nullptr; }
+    IntTag       const* asInt() const       { return this->type() == Type::Int ? reinterpret_cast<IntTag const*>(this) : nullptr; }
+    LongTag      const* asLong() const      { return this->type() == Type::Long ? reinterpret_cast<LongTag const*>(this) : nullptr; }
+    FloatTag     const* asFloat() const     { return this->type() == Type::Float ? reinterpret_cast<FloatTag const*>(this) : nullptr; }
+    DoubleTag    const* asDouble() const    { return this->type() == Type::Double ? reinterpret_cast<DoubleTag const*>(this) : nullptr; }
+    ByteArrayTag const* asByteArray() const { return this->type() == Type::ByteArray ? reinterpret_cast<ByteArrayTag const*>(this) : nullptr; }
+    StringTag    const* asString() const    { return this->type() == Type::String ? reinterpret_cast<StringTag const*>(this) : nullptr; }
+    ListTag      const* asList() const      { return this->type() == Type::List ? reinterpret_cast<ListTag const*>(this) : nullptr; }
+    CompoundTag  const* asCompound() const  { return this->type() == Type::Compound ? reinterpret_cast<CompoundTag const*>(this) : nullptr; }
+    IntArrayTag  const* asIntArray() const  { return this->type() == Type::IntArray ? reinterpret_cast<IntArrayTag const*>(this) : nullptr; }
+    LongArrayTag const* asLongArray() const { return this->type() == Type::LongArray ? reinterpret_cast<LongArrayTag const*>(this) : nullptr; }
 
     virtual std::shared_ptr<Tag> clone() const = 0;
     
 protected:
     virtual bool readImpl(::mcfile::stream::InputStreamReader& reader) = 0;
     virtual void writeImpl(::mcfile::stream::OutputStreamWriter& writer) const = 0;
-
-public:
-    static uint8_t const TAG_End = 0;
-    static uint8_t const TAG_Byte = 1;
-    static uint8_t const TAG_Short = 2;
-    static uint8_t const TAG_Int = 3;
-    static uint8_t const TAG_Long = 4;
-    static uint8_t const TAG_Float = 5;
-    static uint8_t const TAG_Double = 6;
-    static uint8_t const TAG_Byte_Array = 7;
-    static uint8_t const TAG_String = 8;
-    static uint8_t const TAG_List = 9;
-    static uint8_t const TAG_Compound = 10;
-    static uint8_t const TAG_Int_Array = 11;
-    static uint8_t const TAG_Long_Array = 12;
 
 protected:
     std::string fName;

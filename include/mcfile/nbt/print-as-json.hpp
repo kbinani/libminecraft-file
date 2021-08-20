@@ -16,35 +16,35 @@ static inline std::string Indent(int level) {
 template<class Stream>
 static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, JsonPrintOptions options, bool comma = false, int depth = 0) {
     std::string hint = "";
-    switch (value.id()) {
-    case Tag::TAG_Byte:
+    switch (value.type()) {
+    case Tag::Type::Byte:
         out << (int)value.asByte()->fValue;
         hint = "byte";
         break;
-    case Tag::TAG_Int:
+    case Tag::Type::Int:
         out << value.asInt()->fValue;
         hint = "int";
         break;
-    case Tag::TAG_Long:
+    case Tag::Type::Long:
         out << value.asLong()->fValue;
         hint = "long";
         break;
-    case Tag::TAG_Short:
+    case Tag::Type::Short:
         out << (int)value.asShort()->fValue;
         hint = "short";
         break;
-    case Tag::TAG_Double:
+    case Tag::Type::Double:
         out << value.asDouble()->fValue;
         hint = "double";
         break;
-    case Tag::TAG_Float:
+    case Tag::Type::Float:
         out << value.asFloat()->fValue;
         hint = "float";
         break;
-    case Tag::TAG_String:
+    case Tag::Type::String:
         out << "\"" << value.asString()->fValue << "\"";
         break;
-    case Tag::TAG_Compound: {
+    case Tag::Type::Compound: {
         auto compound = value.asCompound();
         out << "{" << std::endl;
         for (auto it = compound->begin(); it != compound->end();) {
@@ -57,7 +57,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
         out << Indent(depth) << "}";
         break;
     }
-    case Tag::TAG_List: {
+    case Tag::Type::List: {
         out << "[" << std::endl;
         auto list = value.asList();
         for (int i = 0; i < list->fValue.size(); i++) {
@@ -67,7 +67,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
         out << Indent(depth) << "]";
         break;
     }
-    case Tag::TAG_Byte_Array: {
+    case Tag::Type::ByteArray: {
         out << "[";
         if (options.fTypeHint) {
             out << " // byte[]";
@@ -80,7 +80,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
         out << Indent(depth) << "]";
         break;
     }
-    case Tag::TAG_Int_Array: {
+    case Tag::Type::IntArray: {
         out << "[";
         if (options.fTypeHint) {
             out << " // int[]";
@@ -93,7 +93,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
         out << Indent(depth) << "]";
         break;
     }
-    case Tag::TAG_Long_Array: {
+    case Tag::Type::LongArray: {
         out << "[";
         if (options.fTypeHint) {
             out << " // long[]";

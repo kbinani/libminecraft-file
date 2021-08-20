@@ -67,7 +67,7 @@ public:
         }
         buffer.clear();
         for (auto const& e : entities->fValue) {
-            if (e->id() != nbt::Tag::TAG_Compound) {
+            if (e->type() != nbt::Tag::Type::Compound) {
                 continue;
             }
             auto c = std::dynamic_pointer_cast<nbt::CompoundTag>(e);

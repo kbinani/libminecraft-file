@@ -3,7 +3,7 @@
 namespace mcfile {
 namespace nbt {
 
-class LongArrayTag : public detail::VectorTag<int64_t, Tag::TAG_Long_Array> {
+class LongArrayTag : public detail::VectorTag<int64_t, Tag::Type::LongArray> {
 public:
     LongArrayTag() : VectorTag() {}
 

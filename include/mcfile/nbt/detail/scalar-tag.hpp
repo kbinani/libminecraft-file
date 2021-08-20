@@ -4,7 +4,7 @@ namespace mcfile {
 namespace nbt {
 namespace detail {
 
-template< typename T, uint8_t ID>
+template< typename T, Tag::Type ID>
 class ScalarTag : public Tag {
 public:
     ScalarTag() : Tag() {}
@@ -27,7 +27,7 @@ public:
         w.write(fValue);
     }
 
-    uint8_t id() const override { return ID; }
+    Tag::Type type() const override { return ID; }
 
     std::shared_ptr<Tag> clone() const override {
         return std::make_shared<ScalarTag>(fValue);

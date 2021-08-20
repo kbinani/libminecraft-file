@@ -22,7 +22,7 @@ public:
         w.write(v);
     }
     
-    uint8_t id() const override { return Tag::TAG_Float; }
+    Tag::Type type() const override { return Tag::Type::Float; }
 
     std::shared_ptr<Tag> clone() const override {
         return std::make_shared<FloatTag>(fValue);

@@ -12,7 +12,7 @@ public:
             if (!r.read(&type)) {
                 break;
             }
-            if (type == Tag::TAG_End) {
+            if (type == static_cast<uint8_t>(Tag::Type::End)) {
                 break;
             }
 
@@ -34,15 +34,15 @@ public:
     
     void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
         for (auto it = fValue.begin(); it != fValue.end(); it++) {
-            uint8_t type = it->second->id();
-            w.write(type);
+            Tag::Type type = it->second->type();
+            w.write(static_cast<uint8_t>(type));
             w.write(it->first);
             it->second->write(w);
         }
         w.write((uint8_t)0);
     }
 
-    uint8_t id() const override { return Tag::TAG_Compound; }
+    Tag::Type type() const override { return Tag::Type::Compound; }
 
     Tag const* query(std::string const& path) const {
         // path: /Level/Sections
@@ -60,7 +60,7 @@ public:
                 if (p.size() == 1) {
                     return child.get();
                 }
-                if (child->id() != Tag::TAG_Compound) {
+                if (child->type() != Tag::Type::Compound) {
                     return EndTag::Instance();
                 }
                 pivot = child->asCompound();
@@ -73,7 +73,7 @@ public:
                 } else {
                     name = p.substr(0, pos);
                 }
-                if (pivot->id() == Tag::TAG_List) {
+                if (pivot->type() == Tag::Type::List) {
                     auto list = pivot->asList();
                     if (!list) return EndTag::Instance();
                     int index;
@@ -86,8 +86,8 @@ public:
                         if (pos == std::string::npos) {
                             return child.get();
                         }
-                        auto id = child->id();
-                        if (id != Tag::TAG_Compound && id != Tag::TAG_List) {
+                        auto id = child->type();
+                        if (id != Tag::Type::Compound && id != Tag::Type::List) {
                             return EndTag::Instance();
                         }
                         pivot = child.get();
@@ -95,7 +95,7 @@ public:
                     } catch (...) {
                         return EndTag::Instance();
                     }
-                } else if (pivot->id() == Tag::TAG_Compound) {
+                } else if (pivot->type() == Tag::Type::Compound) {
                     auto comp = pivot->asCompound();
                     if (!comp) return EndTag::Instance();
 
@@ -106,8 +106,8 @@ public:
                     if (pos == std::string::npos) {
                         return child->second.get();
                     }
-                    auto id = child->second->id();
-                    if (id != Tag::TAG_Compound && id != Tag::TAG_List) {
+                    auto id = child->second->type();
+                    if (id != Tag::Type::Compound && id != Tag::Type::List) {
                         return EndTag::Instance();
                     }
                     pivot = child->second.get();
@@ -144,7 +144,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_String) return nullptr;
+        if (found->second->type() != Tag::Type::String) return nullptr;
         return std::dynamic_pointer_cast<StringTag>(found->second);
     }
 
@@ -152,7 +152,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Byte) return nullptr;
+        if (found->second->type() != Tag::Type::Byte) return nullptr;
         return std::dynamic_pointer_cast<ByteTag>(found->second);
     }
 
@@ -160,7 +160,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Compound) return nullptr;
+        if (found->second->type() != Tag::Type::Compound) return nullptr;
         return std::dynamic_pointer_cast<CompoundTag>(found->second);
     }
 
@@ -168,7 +168,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_List) return nullptr;
+        if (found->second->type() != Tag::Type::List) return nullptr;
         return std::dynamic_pointer_cast<ListTag>(found->second);
     }
 
@@ -176,7 +176,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Int) return nullptr;
+        if (found->second->type() != Tag::Type::Int) return nullptr;
         return std::dynamic_pointer_cast<IntTag>(found->second);
     }
 
@@ -184,7 +184,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Long) return nullptr;
+        if (found->second->type() != Tag::Type::Long) return nullptr;
         return std::dynamic_pointer_cast<LongTag>(found->second);
     }
 
@@ -192,7 +192,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Short) return nullptr;
+        if (found->second->type() != Tag::Type::Short) return nullptr;
         return std::dynamic_pointer_cast<ShortTag>(found->second);
     }
 
@@ -200,7 +200,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Float) return nullptr;
+        if (found->second->type() != Tag::Type::Float) return nullptr;
         return std::dynamic_pointer_cast<FloatTag>(found->second);
     }
 
@@ -208,7 +208,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Double) return nullptr;
+        if (found->second->type() != Tag::Type::Double) return nullptr;
         return std::dynamic_pointer_cast<DoubleTag>(found->second);
     }
 
@@ -216,7 +216,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Int_Array) return nullptr;
+        if (found->second->type() != Tag::Type::IntArray) return nullptr;
         return std::dynamic_pointer_cast<IntArrayTag>(found->second);
     }
 
@@ -224,7 +224,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Byte_Array) return nullptr;
+        if (found->second->type() != Tag::Type::ByteArray) return nullptr;
         return std::dynamic_pointer_cast<ByteArrayTag>(found->second);
     }
 
@@ -232,7 +232,7 @@ public:
         auto found = fValue.find(name);
         if (found == fValue.end()) return nullptr;
         if (!found->second) return nullptr;
-        if (found->second->id() != Tag::TAG_Long_Array) return nullptr;
+        if (found->second->type() != Tag::Type::LongArray) return nullptr;
         return std::dynamic_pointer_cast<LongArrayTag>(found->second);
     }
 

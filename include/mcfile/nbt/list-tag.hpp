@@ -7,10 +7,10 @@ class ListTag : public Tag {
     friend class TagFactory;
 
 private:
-    ListTag() : fType(Tag::TAG_End) {}
+    ListTag() : fType(Tag::Type::End) {}
 
 public:
-    explicit ListTag(uint8_t type) : fType(type) {}
+    explicit ListTag(Tag::Type type) : fType(type) {}
 
     bool readImpl(::mcfile::stream::InputStreamReader& r) override {
         uint8_t type;
@@ -30,20 +30,20 @@ public:
             }
             tmp.push_back(tag);
         }
-        fType = type;
+        fType = static_cast<Tag::Type>(type);
         tmp.swap(fValue);
         return true;
     }
 
     void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
-        w.write(fType);
+        w.write(static_cast<uint8_t>(fType));
         w.write((int32_t)fValue.size());
         for (auto const& v : fValue) {
             v->write(w);
         }
     }
     
-    uint8_t id() const override { return Tag::TAG_List; }
+    Tag::Type type() const override { return Tag::Type::List; }
 
     decltype(auto) begin() { return fValue.begin(); }
     decltype(auto) end() { return fValue.end(); }
@@ -55,8 +55,8 @@ public:
         if (!item) {
             return;
         }
-        uint8_t id = item->id();
-        if (fValue.empty() && fType == Tag::TAG_End) {
+        Tag::Type id = item->type();
+        if (fValue.empty() && fType == Tag::Type::End) {
             fType = id;
         }
         assert(fType == id);
@@ -80,7 +80,7 @@ public:
     }
 
 public:
-    uint8_t fType;
+    Tag::Type fType;
     std::vector<std::shared_ptr<Tag>> fValue;
 };
 

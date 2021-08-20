@@ -3,7 +3,7 @@
 namespace mcfile {
 namespace nbt {
 
-class ByteArrayTag : public detail::VectorTag<uint8_t, Tag::TAG_Byte_Array> {
+class ByteArrayTag : public detail::VectorTag<uint8_t, Tag::Type::ByteArray> {
 public:
     ByteArrayTag() : VectorTag() {}
 

@@ -136,7 +136,7 @@ public:
         }
     
         if (!fPalette.empty()) {
-            auto palette = make_shared<ListTag>(Tag::TAG_Compound);
+            auto palette = make_shared<ListTag>(Tag::Type::Compound);
             for (auto p : fPalette) {
                 palette->push_back(p->toCompoundTag());
             }

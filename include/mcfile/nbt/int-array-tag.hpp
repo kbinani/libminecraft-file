@@ -3,7 +3,7 @@
 namespace mcfile {
 namespace nbt {
 
-class IntArrayTag : public detail::VectorTag<int32_t, Tag::TAG_Int_Array> {
+class IntArrayTag : public detail::VectorTag<int32_t, Tag::Type::IntArray> {
 public:
     IntArrayTag() : VectorTag() {}
 

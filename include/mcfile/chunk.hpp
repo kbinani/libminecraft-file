@@ -251,7 +251,7 @@ public:
             sort(sections.begin(), sections.end(), [](auto const& a, auto const& b) {
                 return a->rawY() < b->rawY();
             });
-            auto sectionsList = make_shared<ListTag>(Tag::TAG_Compound);
+            auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
             for (auto const& section : sections) {
                 auto s = section->toCompoundTag();
                 if (!s) {
@@ -268,13 +268,13 @@ public:
         }
         level->set("Biomes", make_shared<IntArrayTag>(biomes));
         
-        auto entities = make_shared<ListTag>(Tag::TAG_Compound);
+        auto entities = make_shared<ListTag>(Tag::Type::Compound);
         for (auto const& entity : fEntities) {
             entities->push_back(entity->clone());
         }
         level->set("Entities", entities);
         
-        auto tileEntities = make_shared<ListTag>(Tag::TAG_Compound);
+        auto tileEntities = make_shared<ListTag>(Tag::Type::Compound);
         for (auto const& it : fTileEntities) {
             tileEntities->push_back(it.second->clone());
         }
@@ -347,7 +347,7 @@ public:
 
         vector<shared_ptr<nbt::CompoundTag>> tileEntities;
         auto tileEntitiesList = level->listTag("TileEntities");
-        if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::TAG_Compound) {
+        if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::Type::Compound) {
             for (auto it : *tileEntitiesList) {
                 auto comp = it->asCompound();
                 if (!comp) {
@@ -372,7 +372,7 @@ public:
 
         vector<shared_ptr<nbt:: CompoundTag>> entities;
         auto entitiesTag = level->listTag("Entities");
-        if (entitiesTag && entitiesTag->fType == nbt::Tag::TAG_Compound) {
+        if (entitiesTag && entitiesTag->fType == nbt::Tag::Type::Compound) {
             auto entitiesList = entitiesTag->asList();
             for (auto it : *entitiesList) {
                 auto comp = it->asCompound();
@@ -565,7 +565,7 @@ private:
         if (!biomesTag) {
             return;
         }
-        if (biomesTag->id() == nbt::Tag::TAG_Int_Array) {
+        if (biomesTag->type() == nbt::Tag::Type::IntArray) {
             std::vector<int32_t> const& value = biomesTag->asIntArray()->value();
             size_t const size = value.size();
             if (size == 256 || size == 1024 || size == 1536) {
@@ -574,7 +574,7 @@ private:
                     result[i] = biomes::FromInt(value[i]);
                 }
             }
-        } else if (biomesTag->id() == nbt::Tag::TAG_Byte_Array) {
+        } else if (biomesTag->type() == nbt::Tag::Type::ByteArray) {
             std::vector<uint8_t> const& value = biomesTag->asByteArray()->value();
             if (value.size() == 256) {
                 result.resize(256);

@@ -4,7 +4,7 @@ namespace mcfile {
 namespace nbt {
 namespace detail {
 
-template<typename T, uint8_t ID>
+template<typename T, Tag::Type ID>
 class VectorTag : public Tag {
 public:
     VectorTag()
@@ -51,7 +51,7 @@ public:
         }
     }
 
-    uint8_t id() const override { return ID; }
+    Tag::Type type() const override { return ID; }
 
     std::vector<T> const& value() const {
         if (!fPrepared) {
