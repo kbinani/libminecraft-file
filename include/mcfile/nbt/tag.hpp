@@ -37,6 +37,11 @@ public:
         LongArray = 12,
     };
 
+    enum class TypeLimits : uint8_t {
+        Min = static_cast<uint8_t>(Type::End),
+        Max = static_cast<uint8_t>(Type::LongArray),
+    };
+
     Tag() : fValid(false) {}
     virtual ~Tag() {}
 

@@ -17,6 +17,9 @@ public:
         if (!r.read(&type)) {
             return false;
         }
+        if (type < static_cast<uint8_t>(TypeLimits::Min) || static_cast<uint8_t>(TypeLimits::Max) < type) {
+            return false;
+        }
         int32_t size;
         if (!r.read(&size)) {
             return false;
