@@ -41,7 +41,27 @@ public:
         }
         return r->chunkAt(chunkX, chunkZ);
     }
-    
+
+    std::shared_ptr<WritableChunk> writableChunkAtBlock(int blockX, int blockZ) const {
+        auto const& region = regionAtBlock(blockX, blockZ);
+        if (!region) {
+            return nullptr;
+        }
+        int cx = Coordinate::ChunkFromBlock(blockX);
+        int cz = Coordinate::ChunkFromBlock(blockZ);
+        return region->writableChunkAt(cx, cz);
+    }
+
+    std::shared_ptr<WritableChunk> writableChunkAt(int chunkX, int chunkZ) const {
+        int rx = Coordinate::RegionFromChunk(chunkX);
+        int rz = Coordinate::RegionFromChunk(chunkZ);
+        auto const& r = region(rx, rz);
+        if (!r) {
+            return nullptr;
+        }
+        return r->writableChunkAt(chunkX, chunkZ);
+    }
+
     bool eachBlock(int minX, int minZ, int maxX, int maxZ, std::function<bool(int x, int y, int z, std::shared_ptr<Block const>)> callback) const {
         if (minX > maxX || minZ > maxZ) {
             return false;

@@ -58,6 +58,24 @@ public:
         return true;
     }
 
+    std::shared_ptr<WritableChunk> loadWritableChunk(::mcfile::stream::InputStreamReader &reader) const {
+        auto root = load(reader);
+        if (root) {
+            return WritableChunk::MakeChunk(fChunkX, fChunkZ, root);
+        } else {
+            return nullptr;
+        }
+    }
+
+    bool loadWritableChunk(::mcfile::stream::InputStreamReader &reader, std::function<void(WritableChunk &chunk)> callback) const {
+        auto chunk = loadWritableChunk(reader);
+        if (!chunk) {
+            return false;
+        }
+        callback(*chunk);
+        return true;
+    }
+
 public:
     int const fChunkX;
     int const fChunkZ;

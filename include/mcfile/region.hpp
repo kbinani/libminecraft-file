@@ -38,6 +38,21 @@ public:
         return src->loadChunk(sr);
     }
 
+    std::shared_ptr<WritableChunk> writableChunkAt(int chunkX, int chunkZ) const {
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
+        if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
+            return nullptr;
+        }
+        auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
+        stream::InputStreamReader sr(fs);
+        std::shared_ptr<detail::McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        if (!src) {
+            return nullptr;
+        }
+        return src->loadWritableChunk(sr);
+    }
+
     bool entitiesAt(int chunkX, int chunkZ, std::vector<std::shared_ptr<nbt::CompoundTag>> &buffer) const {
         namespace fs = std::filesystem;
         int const localChunkX = chunkX - fX * 32;

@@ -74,6 +74,7 @@
 #include <mcfile/pos3.hpp>
 #include <mcfile/tile-tick.hpp>
 #include <mcfile/chunk.hpp>
+#include <mcfile/writable-chunk.hpp>
 #include <mcfile/detail/mca-data-source.hpp>
 #include <mcfile/region.hpp>
 #include <mcfile/world.hpp>
