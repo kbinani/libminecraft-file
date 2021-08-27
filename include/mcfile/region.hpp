@@ -60,9 +60,9 @@ public:
         if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
             return false;
         }
-        std::string name = fs::path(fFilePath).filename().string();
+        std::string name = fFilePath.filename().string();
         auto path = fs::path(fFilePath).remove_filename().parent_path().parent_path().append("entities").append(name);
-        auto fin = std::make_shared<stream::FileInputStream>(path.string());
+        auto fin = std::make_shared<stream::FileInputStream>(path);
         stream::InputStreamReader sr(fin);
         std::shared_ptr<detail::McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
@@ -94,17 +94,19 @@ public:
         return true;
     }
 
-    static std::shared_ptr<Region> MakeRegion(std::string const& filePath, int x, int z) {
+    static std::shared_ptr<Region> MakeRegion(std::filesystem::path const& filePath, int x, int z) {
         return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
 
-    static std::shared_ptr<Region> MakeRegion(std::string const& filePath) {
+    static std::shared_ptr<Region> MakeRegion(std::string const&, int, int) = delete;
+
+    static std::shared_ptr<Region> MakeRegion(std::filesystem::path const& filePath) {
         // ../directory/r.5.13.mca
         namespace fs = std::filesystem;
         using mcfile::detail::String;
         using namespace std;
 
-        string basename = fs::path(filePath).filename().string();
+        string basename = filePath.filename().string();
 
         vector<string> tokens = String::Split(basename, '.');
         if (tokens.size() != 4) {
@@ -124,6 +126,8 @@ public:
 
         return shared_ptr<Region>(new Region(filePath, x, z));
     }
+
+    static std::shared_ptr<Region> MakeRegion(std::string const&) = delete;
 
     int minBlockX() const { return fX * 32 * 16; }
     int maxBlockX() const { return (fX + 1) * 32 * 16 - 1; }
@@ -145,7 +149,7 @@ public:
             return false;
         }
 
-        FILE *fp = fopen(fFilePath.c_str(), "r+b");
+        FILE *fp = File::Open(fFilePath, File::Mode::Read);
         if (!fp) {
             return false;
         }
@@ -242,7 +246,9 @@ public:
         return s.str();
     }
 
-    bool exportAllToNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::GetDefaultChunkNbtFileName) const {
+    bool exportAllToNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::GetDefaultChunkNbtFileName) const = delete;
+
+    bool exportAllToNbt(std::filesystem::path const& directory, std::function<std::string(int, int)> name = Region::GetDefaultChunkNbtFileName) const {
         int const minX = minChunkX();
         int const minZ = minChunkZ();
         int const maxX = maxChunkX();
@@ -250,7 +256,7 @@ public:
         for (int z = minZ; z <= maxZ; z++) {
             for (int x = minX; x <= maxX; x++) {
                 std::string const n = name(x, z);
-                std::string const path = directory + "/" + n;
+                auto path = directory / n;
                 if (!exportToNbt(x, z, path)) {
                     return false;
                 }
@@ -259,7 +265,9 @@ public:
         return true;
     }
 
-    bool exportAllToCompressedNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::GetDefaultCompressedChunkNbtFileName) const {
+    bool exportAllToCompressedNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::GetDefaultCompressedChunkNbtFileName) const = delete;
+
+    bool exportAllToCompressedNbt(std::filesystem::path const& directory, std::function<std::string(int, int)> name = Region::GetDefaultCompressedChunkNbtFileName) const {
         int const minX = minChunkX();
         int const minZ = minChunkZ();
         int const maxX = maxChunkX();
@@ -267,7 +275,7 @@ public:
         for (int z = minZ; z <= maxZ; z++) {
             for (int x = minX; x <= maxX; x++) {
                 std::string const n = name(x, z);
-                std::string const path = directory + "/" + n;
+                auto path = directory / n;
                 if (!exportToCompressedNbt(x, z, path)) {
                     return false;
                 }
@@ -276,7 +284,9 @@ public:
         return true;
     }
 
-    bool exportToNbt(int chunkX, int chunkZ, std::string const& filePath) const {
+    bool exportToNbt(int chunkX, int chunkZ, std::string const& filePath) const = delete;
+
+    bool exportToNbt(int chunkX, int chunkZ, std::filesystem::path const& filePath) const {
         int const localChunkX = chunkX - fX * 32;
         int const localChunkZ = chunkZ - fZ * 32;
         if (localChunkX < 0 || 32 <= localChunkX) {
@@ -286,7 +296,7 @@ public:
             return false;
         }
 
-        FILE *in = fopen(fFilePath.c_str(), "rb");
+        FILE *in = File::Open(fFilePath, File::Mode::Read);
         if (!in) {
             return false;
         }
@@ -331,7 +341,7 @@ public:
             return false;
         }
 
-        FILE* out = fopen(filePath.c_str(), "wb");
+        FILE* out = File::Open(filePath, File::Mode::Write);
         if (!out) {
             fclose(in);
             return false;
@@ -360,7 +370,9 @@ public:
         return true;
     }
 
-    bool exportToCompressedNbt(int chunkX, int chunkZ, std::string const& filePath) const {
+    bool exportToCompressedNbt(int chunkX, int chunkZ, std::string const& filePath) const = delete;
+
+    bool exportToCompressedNbt(int chunkX, int chunkZ, std::filesystem::path const& filePath) const {
         int const localChunkX = chunkX - fX * 32;
         int const localChunkZ = chunkZ - fZ * 32;
         if (localChunkX < 0 || 32 <= localChunkX) {
@@ -370,7 +382,7 @@ public:
             return false;
         }
 
-        FILE *in = fopen(fFilePath.c_str(), "rb");
+        FILE *in = File::Open(fFilePath, File::Mode::Read);
         if (!in) {
             return false;
         }
@@ -408,7 +420,7 @@ public:
             return false;
         }
 
-        FILE* out = fopen(filePath.c_str(), "wb");
+        FILE* out = File::Open(filePath, File::Mode::Write);
         if (!out) {
             fclose(in);
             return false;
@@ -426,7 +438,9 @@ public:
         return true;
     }
 
-    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const& directory, std::string const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) {
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const& directory, std::string const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) = delete;
+
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const& directory, std::filesystem::path const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) {
         namespace fs = std::filesystem;
 
         int const minChunkX = regionX * 32;
@@ -448,7 +462,7 @@ public:
             return true;
         }
 
-        FILE* out = fopen(resultMcaFilePath.c_str(), "wb");
+        FILE* out = File::Open(resultMcaFilePath, File::Mode::Write);
         if (!out) {
             return false;
         }
@@ -460,8 +474,8 @@ public:
             for (int x = minChunkX; x <= maxChunkX; x++) {
                 int const localChunkX = x - minChunkX;
                 int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
-                std::string const filepath = directory + "/" + name(x, z);
-                FILE *in = fopen(filepath.c_str(), "rb");
+                fs::path const filepath = directory / name(x, z);
+                FILE *in = File::Open(filepath, File::Mode::Read);
                 if (!in) {
                     continue;
                 }
@@ -574,7 +588,7 @@ public:
     }
 
 private:
-    Region(std::string const& filePath, int x, int z)
+    Region(std::filesystem::path const& filePath, int x, int z)
         : fX(x)
         , fZ(z)
         , fFilePath(filePath)
@@ -644,7 +658,7 @@ public:
     int const fZ;
 
 private:
-    std::string const fFilePath;
+    std::filesystem::path const fFilePath;
 
     static long const kSectorSize = 4096;
 };

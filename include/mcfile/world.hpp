@@ -4,16 +4,17 @@ namespace mcfile {
 
 class World {
 public:
-    explicit World(std::string const& rootDirectory)
+    explicit World(std::filesystem::path const& rootDirectory)
         : fRootDirectory(rootDirectory)
     {
     }
 
+    World(std::string const&) = delete;
+
     std::shared_ptr<Region> region(int regionX, int regionZ) const {
-        std::ostringstream ss;
-        ss << fRootDirectory << "/region/r." << regionX << "." << regionZ << ".mca";
-        auto fileName = ss.str();
-        return Region::MakeRegion(fileName);
+        namespace fs = std::filesystem;
+        fs::path regionFilePath = fRootDirectory / "region" / ("r." + std::to_string(regionX) +  "." + std::to_string( regionZ) +  ".mca");
+        return Region::MakeRegion(regionFilePath);
     }
 
     std::shared_ptr<Region> regionAtBlock(int blockX, int blockZ) const {
@@ -97,13 +98,13 @@ public:
 
     bool eachRegions(std::function<bool(std::shared_ptr<Region> const&)> callback) const {
         namespace fs = std::filesystem;
-        auto regionDir = fs::path(fRootDirectory).append("region");
+        auto regionDir = fRootDirectory / "region";
         if (!fs::exists(regionDir)) {
             return  true;
         }
-        fs::directory_iterator it(regionDir);
-        for (auto const& path : it) {
-            auto region = Region::MakeRegion(path.path().string());
+        fs::directory_iterator itr(regionDir);
+        for (auto const& sub : itr) {
+            auto region = Region::MakeRegion(sub.path());
             if (!region) {
                 continue;
             }
@@ -115,7 +116,7 @@ public:
     }
 
 public:
-    std::string const fRootDirectory;
+    std::filesystem::path const fRootDirectory;
 };
 
 } // namespace mcfile

@@ -333,7 +333,7 @@ public:
                                                 tileTicks, s, terrianPopulated, createEmptySection));
     }
 
-    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const& filePath, int chunkX, int chunkZ) {
+    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::filesystem::path const& filePath, int chunkX, int chunkZ) {
         auto stream = std::make_shared<mcfile::stream::FileInputStream>(filePath);
         if (!stream->valid()) {
             return nullptr;

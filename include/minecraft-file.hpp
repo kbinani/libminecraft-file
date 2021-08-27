@@ -25,6 +25,7 @@
 #include <unordered_map>
 
 #include <mcfile/detail/endianness.hpp>
+#include <mcfile/file.hpp>
 #include <mcfile/stream/input-stream.hpp>
 #include <mcfile/stream/output-stream.hpp>
 #include <mcfile/stream/file-input-stream.hpp>

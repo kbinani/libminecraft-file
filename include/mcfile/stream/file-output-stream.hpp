@@ -5,15 +5,17 @@ namespace stream {
 
 class FileOutputStream : public OutputStream {
 public:
-    explicit FileOutputStream(std::string const &filePath)
+    explicit FileOutputStream(std::filesystem::path const &filePath)
         : fFile(nullptr) {
-        FILE *fp = fopen(filePath.c_str(), "wb");
+        FILE *fp = File::Open(filePath, File::Mode::Write);
 
         if (!fp) {
             return;
         }
         this->fFile = fp;
     }
+
+    FileOutputStream(std::string const &) = delete;
 
     ~FileOutputStream() {
         if (fFile) {

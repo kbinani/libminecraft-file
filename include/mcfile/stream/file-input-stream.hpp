@@ -5,9 +5,9 @@ namespace stream {
 
 class FileInputStream : public InputStream {
 public:
-    explicit FileInputStream(std::string const &filePath)
+    explicit FileInputStream(std::filesystem::path const &filePath)
             : fFile(nullptr), fLoc(0) {
-        FILE *fp = fopen(filePath.c_str(), "rb");
+        FILE *fp = File::Open(filePath, File::Mode::Read);
 
         if (!fp) {
             return;
@@ -28,6 +28,8 @@ public:
         this->fFile = fp;
         this->fLength = length;
     }
+
+    FileInputStream(std::string const &) = delete;
 
     ~FileInputStream() {
         if (fFile) {
