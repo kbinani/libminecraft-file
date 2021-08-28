@@ -34,24 +34,14 @@ public:
     static gzFile GzOpen(std::filesystem::path const& path, Mode mode) {
         auto m = ModeString(mode);
         auto p = path.c_str();
-        if constexpr (std::is_same<std::filesystem::path::string_type, std::wstring>::value) {
-            return GzFile(p, m.c_str());
-        } else if constexpr (std::is_same<std::filesystem::path::string_type, std::string>::value) {
-            return GzFile(p, m.c_str());
-        } else {
-            return nullptr;
-        }
+#if defined(_WIN32)
+        return gzopen_w(p, m.c_str());
+#else
+        return gzopen(p, m.c_str());
+#endif
     }
 
 private:
-    static gzFile GzFile(wchar_t const* p, char const* mode) {
-        return gzopen_w(p, mode);
-    }
-
-    static gzFile GzFile(char const* p, char const* mode) {
-        return gzopen(p, mode);
-    }
-
     static std::string ModeString(Mode mode) {
         switch (mode) {
         case Mode::Read:

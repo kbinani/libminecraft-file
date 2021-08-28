@@ -12,7 +12,7 @@ TEST_CASE("1.13.2") {
     std::map<Point3D, BlockData> expected;
     BlockData::ReadAll(dir + std::string("/data/1.13.2/mitomitoyapparikawaiiyo/region/r.0.0-c.0.0.csv"), expected);
 
-    World world(dir + std::string("/data/1.13.2/mitomitoyapparikawaiiyo"));
+    World world(std::filesystem::path(dir) / "data" / "1.13.2" / "mitomitoyapparikawaiiyo");
 
     SUBCASE("Chunk::{blockAt,blockLightAt,skyLightAt}") {
         auto region = world.region(0, 0);
@@ -93,8 +93,8 @@ TEST_CASE("1.13.2") {
 }
 
 TEST_CASE("20w06a") {
-    const auto dir = Path::Dirname(__FILE__);
-    World world(dir + std::string("/data/20w06a/world/DIM-1"));
+    std::filesystem::path dir(Path::Dirname(__FILE__));
+    World world(dir / "data" / "20w06a" / "world" / "DIM-1");
 
     SUBCASE("biomeAt") {
         auto const& region = world.region(-1, -1);
