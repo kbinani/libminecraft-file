@@ -73,7 +73,7 @@
 #include <mcfile/chunksection/chunk-section-generator.hpp>
 #include <mcfile/set-block-options.hpp>
 #include <mcfile/pos3.hpp>
-#include <mcfile/tile-tick.hpp>
+#include <mcfile/ticking-block.hpp>
 #include <mcfile/chunk.hpp>
 #include <mcfile/writable-chunk.hpp>
 #include <mcfile/detail/mca-data-source.hpp>

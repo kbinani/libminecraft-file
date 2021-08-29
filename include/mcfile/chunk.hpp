@@ -301,36 +301,40 @@ public:
         }
 
         auto tileTicksTag = level->listTag("TileTicks");
-        std::vector<TileTick> tileTicks;
+        std::vector<TickingBlock> tileTicks;
         if (tileTicksTag) {
             for (auto it : *tileTicksTag) {
                 auto item = it->asCompound();
                 if (!item) {
                     continue;
                 }
-                auto i = item->string("i");
-                auto p = item->int32("p");
-                auto t = item->int32("t");
-                auto x = item->int32("x");
-                auto y = item->int32("y");
-                auto z = item->int32("z");
-                if (!i || !p || !t || !x || !y || !z) {
+                auto tb = TickingBlock::FromCompound(*item);
+                if (!tb) {
                     continue;
                 }
-                TileTick tt;
-                tt.fI = *i;
-                tt.fP = *p;
-                tt.fT = *t;
-                tt.fX = *x;
-                tt.fY = *y;
-                tt.fZ = *z;
-                tileTicks.push_back(tt);
+                tileTicks.push_back(*tb);
+            }
+        }
+
+        auto liquidTicksTag = level->listTag("LiquidTicks");
+        std::vector<TickingBlock> liquidTicks;
+        if (liquidTicksTag) {
+            for (auto it : *liquidTicksTag) {
+                auto item = it->asCompound();
+                if (!item) {
+                    continue;
+                }
+                auto tb = TickingBlock::FromCompound(*item);
+                if (!tb) {
+                    continue;
+                }
+                liquidTicks.push_back(*tb);
             }
         }
 
         return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion,
                                                 biomes, entities, tileEntities, structures, lastUpdate,
-                                                tileTicks, s, terrianPopulated, createEmptySection));
+                                                tileTicks, liquidTicks, s, terrianPopulated, createEmptySection));
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::filesystem::path const& filePath, int chunkX, int chunkZ) {
@@ -379,7 +383,8 @@ private:
           std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities,
           std::shared_ptr<nbt::CompoundTag> const& structures,
           int64_t lastUpdate,
-          std::vector<TileTick> tileTicks,
+          std::vector<TickingBlock> tileTicks,
+          std::vector<TickingBlock> liquidTicks,
           std::string const& status,
           std::optional<bool> terrianPopulated,
           std::function<std::shared_ptr<ChunkSection>(int sectionY)> createEmptySection)
@@ -389,6 +394,7 @@ private:
         , fStructures(structures)
         , fLastUpdate(lastUpdate)
         , fTileTicks(tileTicks)
+        , fLiquidTicks(liquidTicks)
         , fStatus(status)
         , fTerrianPopulated(terrianPopulated)
         , fCreateEmptySection(createEmptySection)
@@ -509,7 +515,8 @@ public:
     std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher> fTileEntities;
     std::shared_ptr<mcfile::nbt::CompoundTag> fStructures;
     int64_t fLastUpdate;
-    std::vector<TileTick> fTileTicks;
+    std::vector<TickingBlock> fTileTicks;
+    std::vector<TickingBlock> fLiquidTicks;
 
 protected:
     std::string const fStatus;
