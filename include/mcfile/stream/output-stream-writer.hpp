@@ -24,27 +24,27 @@ public:
     
     void write(uint64_t v) {
         if (fLittleEndian) {
-            v = detail::Int64LEFromNative(v);
+            v = mcfile::Int64LEFromNative(v);
         } else {
-            v = detail::Int64BEFromNative(v);
+            v = mcfile::Int64BEFromNative(v);
         }
         fStream->write(&v, sizeof(v));
     }
 
     void write(uint32_t v) {
         if (fLittleEndian) {
-            v = detail::Int32LEFromNative(v);
+            v = mcfile::Int32LEFromNative(v);
         } else {
-            v = detail::Int32BEFromNative(v);
+            v = mcfile::Int32BEFromNative(v);
         }
         fStream->write(&v, sizeof(v));
     }
 
     void write(uint16_t v) {
         if (fLittleEndian) {
-            v = detail::Int16LEFromNative(v);
+            v = mcfile::Int16LEFromNative(v);
         } else {
-            v = detail::Int16BEFromNative(v);
+            v = mcfile::Int16BEFromNative(v);
         }
         fStream->write(&v, sizeof(v));
     }
@@ -52,9 +52,9 @@ public:
     void write(int64_t v) {
         uint64_t t;
         if (fLittleEndian) {
-            t = detail::Int64LEFromNative(*(int64_t *) &v);
+            t = mcfile::Int64LEFromNative(*(int64_t *) &v);
         } else {
-            t = detail::Int64BEFromNative(*(int64_t *) &v);
+            t = mcfile::Int64BEFromNative(*(int64_t *) &v);
         }
         fStream->write(&t, sizeof(t));
     }
@@ -62,9 +62,9 @@ public:
     void write(int32_t v) {
         uint32_t t;
         if (fLittleEndian) {
-            t = detail::Int32LEFromNative(*(int32_t *) &v);
+            t = mcfile::Int32LEFromNative(*(int32_t *) &v);
         } else {
-            t = detail::Int32BEFromNative(*(int32_t*)&v);
+            t = mcfile::Int32BEFromNative(*(int32_t*)&v);
         }
         fStream->write(&t, sizeof(t));
     }
@@ -72,9 +72,9 @@ public:
     void write(int16_t v) {
         uint16_t t;
         if (fLittleEndian) {
-            t = detail::Int16LEFromNative(*(int16_t *) &v);
+            t = mcfile::Int16LEFromNative(*(int16_t *) &v);
         } else {
-            t = detail::Int16BEFromNative(*(int16_t*)&v);
+            t = mcfile::Int16BEFromNative(*(int16_t*)&v);
         }
         fStream->write(&t, sizeof(t));
     }
@@ -92,25 +92,25 @@ public:
 private:
     uint64_t int64LE(uint64_t v) const {
         if (fLittleEndian) {
-            return detail::Int64LEFromNative(v);
+            return mcfile::Int64LEFromNative(v);
         } else {
-            return detail::Int64LEFromNative(v);
+            return mcfile::Int64LEFromNative(v);
         }
     }
 
     uint32_t int32FromRaw(uint32_t v) const {
         if (fLittleEndian) {
-            return detail::Int32LEFromNative(v);
+            return mcfile::Int32LEFromNative(v);
         } else {
-            return detail::Int32FromBE(v);
+            return mcfile::Int32FromBE(v);
         }
     }
 
     uint16_t int16FromRaw(uint16_t v) const {
         if (fLittleEndian) {
-            return detail::Int16FromLE(v);
+            return mcfile::Int16FromLE(v);
         } else {
-            return detail::Int16FromBE(v);
+            return mcfile::Int16FromBE(v);
         }
     }
 

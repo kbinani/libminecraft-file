@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mcfile::chunksection {
+namespace mcfile::je::chunksection {
 
 class BlockStatesParser116 {
 public:

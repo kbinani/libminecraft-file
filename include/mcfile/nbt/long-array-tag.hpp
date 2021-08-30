@@ -20,9 +20,9 @@ private:
     int64_t convert(int64_t v, bool littleEndian) const override {
         uint64_t t = *(uint64_t *)&v;
         if (littleEndian) {
-            t = ::mcfile::detail::Int64FromLE(t);
+            t = ::mcfile::Int64FromLE(t);
         } else {
-            t = ::mcfile::detail::Int64FromBE(t);
+            t = ::mcfile::Int64FromBE(t);
         }
         return *(int64_t *)&t;
     }

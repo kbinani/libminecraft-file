@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mcfile {
+namespace mcfile::je {
 
 class Chunk {
 public:
@@ -346,7 +346,7 @@ public:
         if (!stream->read(buffer.data(), 1, buffer.size())) {
             return nullptr;
         }
-        if (!detail::Compression::decompress(buffer)) {
+        if (!Compression::decompress(buffer)) {
             return nullptr;
         }
         auto root = std::make_shared<mcfile::nbt::CompoundTag>();

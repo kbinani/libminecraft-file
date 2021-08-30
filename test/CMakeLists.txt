@@ -15,26 +15,31 @@ add_executable(mcfile-test
   ../include/mcfile/biomes/from-int.hpp
   ../include/mcfile/biomes/minecraft.hpp
   ../include/mcfile/biomes/name.hpp
-  ../include/mcfile/block.hpp
   ../include/mcfile/blocks/block-id.hpp
   ../include/mcfile/blocks/from-name.hpp
   ../include/mcfile/blocks/minecraft.hpp
   ../include/mcfile/blocks/name.hpp
-  ../include/mcfile/cached-chunk-loader.hpp
-  ../include/mcfile/chunk-section.hpp
-  ../include/mcfile/chunk.hpp
-  ../include/mcfile/chunksection/block-states-parser-113.hpp
-  ../include/mcfile/chunksection/block-states-parser-116.hpp
-  ../include/mcfile/chunksection/chunk-section-112.hpp
-  ../include/mcfile/chunksection/chunk-section-113-base.hpp
-  ../include/mcfile/chunksection/chunk-section-113.hpp
-  ../include/mcfile/chunksection/chunk-section-116.hpp
-  ../include/mcfile/chunksection/chunk-section-generator.hpp
+  ../include/mcfile/compression.hpp
   ../include/mcfile/coordinate.hpp
-  ../include/mcfile/detail/compression.hpp
-  ../include/mcfile/detail/endianness.hpp
-  ../include/mcfile/detail/mca-data-source.hpp
-  ../include/mcfile/detail/string.hpp
+  ../include/mcfile/endianness.hpp
+  ../include/mcfile/file.hpp
+  ../include/mcfile/je/block.hpp
+  ../include/mcfile/je/cached-chunk-loader.hpp
+  ../include/mcfile/je/chunk-section.hpp
+  ../include/mcfile/je/chunk.hpp
+  ../include/mcfile/je/chunksection/block-states-parser-113.hpp
+  ../include/mcfile/je/chunksection/block-states-parser-116.hpp
+  ../include/mcfile/je/chunksection/chunk-section-112.hpp
+  ../include/mcfile/je/chunksection/chunk-section-113-base.hpp
+  ../include/mcfile/je/chunksection/chunk-section-113.hpp
+  ../include/mcfile/je/chunksection/chunk-section-116.hpp
+  ../include/mcfile/je/chunksection/chunk-section-generator.hpp
+  ../include/mcfile/je/mca-data-source.hpp
+  ../include/mcfile/je/region.hpp
+  ../include/mcfile/je/set-block-options.hpp
+  ../include/mcfile/je/ticking-block.hpp
+  ../include/mcfile/je/world.hpp
+  ../include/mcfile/je/writable-chunk.hpp
   ../include/mcfile/nbt/byte-array-tag.hpp
   ../include/mcfile/nbt/byte-tag.hpp
   ../include/mcfile/nbt/compound-tag.hpp
@@ -56,8 +61,6 @@ add_executable(mcfile-test
   ../include/mcfile/nbt/tag.hpp
   ../include/mcfile/pos2.hpp
   ../include/mcfile/pos3.hpp
-  ../include/mcfile/region.hpp
-  ../include/mcfile/set-block-options.hpp
   ../include/mcfile/stream/byte-stream.hpp
   ../include/mcfile/stream/file-input-stream.hpp
   ../include/mcfile/stream/file-output-stream.hpp
@@ -65,8 +68,7 @@ add_executable(mcfile-test
   ../include/mcfile/stream/input-stream.hpp
   ../include/mcfile/stream/output-stream-writer.hpp
   ../include/mcfile/stream/output-stream.hpp
-  ../include/mcfile/ticking-block.hpp
-  ../include/mcfile/world.hpp
+  ../include/mcfile/string.hpp
   ../include/minecraft-file.hpp)
 list(APPEND mcfile_test_link_libraries "z")
 

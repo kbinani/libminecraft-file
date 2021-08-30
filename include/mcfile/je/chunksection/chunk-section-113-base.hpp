@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mcfile::chunksection {
+namespace mcfile::je::chunksection {
 
 template <class BlockStatesParser>
 class ChunkSection113Base : public ChunkSection {

@@ -1,6 +1,7 @@
 #pragma once
 
-namespace mcfile {
+namespace mcfile::je {
+
 class WritableChunk : public Chunk {
 public:
     static std::shared_ptr<WritableChunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const& root) {
@@ -103,7 +104,7 @@ public:
         root->write(*writer);
         std::vector<uint8_t> buffer;
         stream->drain(buffer);
-        detail::Compression::compress(buffer);
+        Compression::compress(buffer);
         s.write(buffer.data(), buffer.size());
         return true;
     }

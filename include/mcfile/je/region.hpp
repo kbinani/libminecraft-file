@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mcfile {
+namespace mcfile::je {
 
 class Region {
 public:
@@ -31,7 +31,7 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<detail::McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
             return nullptr;
         }
@@ -46,7 +46,7 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<detail::McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
             return nullptr;
         }
@@ -64,7 +64,7 @@ public:
         auto path = fs::path(fFilePath).remove_filename().parent_path().parent_path().append("entities").append(name);
         auto fin = std::make_shared<stream::FileInputStream>(path);
         stream::InputStreamReader sr(fin);
-        std::shared_ptr<detail::McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
             return false;
         }
@@ -103,7 +103,7 @@ public:
     static std::shared_ptr<Region> MakeRegion(std::filesystem::path const& filePath) {
         // ../directory/r.5.13.mca
         namespace fs = std::filesystem;
-        using mcfile::detail::String;
+        using mcfile::String;
         using namespace std;
 
         string basename = filePath.filename().string();
@@ -163,7 +163,7 @@ public:
             fclose(fp);
             return false;
         }
-        loc = detail::Int32FromBE(loc);
+        loc = Int32FromBE(loc);
         if (loc == 0) {
             fclose(fp);
             return true;
@@ -197,7 +197,7 @@ public:
             fclose(fp);
             return false;
         }
-        chunkSize = detail::Int32FromBE(chunkSize);
+        chunkSize = Int32FromBE(chunkSize);
         for (uint32_t i = 0; i < chunkSize; i++) {
             uint8_t zero = 0;
             if (fwrite(&zero, sizeof(zero), 1, fp) != 1) {
@@ -310,7 +310,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = detail::Int32FromBE(loc);
+        loc = Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             return true;
@@ -329,7 +329,7 @@ public:
             fclose(in);
             return false;
         }
-        chunkSize = detail::Int32FromBE(chunkSize) - 1;
+        chunkSize = Int32FromBE(chunkSize) - 1;
         
         uint8_t compressionType;
         if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
@@ -353,7 +353,7 @@ public:
             fclose(out);
             return false;
         }
-        if (!detail::Compression::decompress(buffer)) {
+        if (!Compression::decompress(buffer)) {
             fclose(in);
             fclose(out);
             return false;
@@ -396,7 +396,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = detail::Int32FromBE(loc);
+        loc = Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             return true;
@@ -412,7 +412,7 @@ public:
             fclose(in);
             return false;
         }
-        chunkSize = detail::Int32FromBE(chunkSize) - 1;
+        chunkSize = Int32FromBE(chunkSize) - 1;
 
         uint8_t compressionType;
         if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
@@ -488,7 +488,7 @@ public:
                 }
                 size_t const size = fs::file_size(filepath);
                 uint8_t compressionType = 2;
-                uint32_t s = detail::Int32BEFromNative(size + sizeof(compressionType));
+                uint32_t s = Int32BEFromNative(size + sizeof(compressionType));
                 if (fwrite(&s, sizeof(s), 1, out) != 1) {
                     fclose(in);
                     fclose(out);
@@ -509,7 +509,7 @@ public:
                 size_t headerSize = sizeof(s) + sizeof(compressionType);
                 uint32_t const numSectors = Ceil(size + headerSize, kSectorSize) / kSectorSize;
                 uint32_t const loc = (((((uint32_t)location) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
-                locationLut[index] = detail::Int32BEFromNative(loc);
+                locationLut[index] = Int32BEFromNative(loc);
             }
         }
         long const current = ftell(out);
@@ -595,7 +595,7 @@ private:
     {
     }
 
-    std::shared_ptr<detail::McaDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader& sr) const {
+    std::shared_ptr<McaDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader& sr) const {
         int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
         if (!sr.valid()) {
             return nullptr;
@@ -629,7 +629,7 @@ private:
 
         int const chunkX = this->fX * 32 + localChunkX;
         int const chunkZ = this->fZ * 32 + localChunkZ;
-        return std::make_shared<detail::McaDataSource>(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
+        return std::make_shared<McaDataSource>(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
     }
     
     bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader& sr, bool& error, LoadChunkCallback callback) const {

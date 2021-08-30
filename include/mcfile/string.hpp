@@ -1,7 +1,6 @@
 #pragma once
 
 namespace mcfile {
-namespace detail {
 
 class String {
 public:
@@ -32,4 +31,3 @@ public:
 };
 
 } // namespace mcfile
-} // namespace detail

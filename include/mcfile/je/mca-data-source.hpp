@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace detail {
+namespace mcfile::je {
 
 class McaDataSource {
 public:
@@ -84,5 +83,4 @@ public:
     long const fLength;
 };
 
-} // namespace detail
-} // namespace mcfile
+} // namespace mcfile::je

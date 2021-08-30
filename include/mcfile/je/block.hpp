@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mcfile {
+namespace mcfile::je {
 
 class Block {
 public:

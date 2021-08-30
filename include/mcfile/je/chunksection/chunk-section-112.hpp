@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mcfile::chunksection {
+namespace mcfile::je::chunksection {
 
 class ChunkSection112 : public ChunkSection {
 public:
@@ -179,7 +179,7 @@ private:
                         std::vector<std::shared_ptr<nbt::CompoundTag>> const& inTileEntities,
                         std::vector<std::shared_ptr<ChunkSection>> &out) {
         using namespace std;
-        using mcfile::detail::String;
+        using mcfile::String;
 
         map<tuple<int, int, int>, std::shared_ptr<nbt::CompoundTag>> tileEntities;
         for (auto const& it : inTileEntities) {

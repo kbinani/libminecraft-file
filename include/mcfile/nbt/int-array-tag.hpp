@@ -20,9 +20,9 @@ private:
     int32_t convert(int32_t v, bool littleEndian) const override {
         uint32_t t = *(uint32_t *)&v;
         if (littleEndian) {
-            t = ::mcfile::detail::Int32FromLE(t);
+            t = ::mcfile::Int32FromLE(t);
         } else {
-            t = ::mcfile::detail::Int32FromBE(t);
+            t = ::mcfile::Int32FromBE(t);
         }
         return *(int32_t *)&t;
     }

@@ -1,7 +1,6 @@
 #pragma once
 
 namespace mcfile {
-namespace detail {
 
 class Compression {
 public:
@@ -80,4 +79,3 @@ private:
 };
 
 } // namespace mcfile
-} // namespace detail

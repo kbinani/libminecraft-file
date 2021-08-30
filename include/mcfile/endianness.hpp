@@ -1,7 +1,6 @@
 #pragma once
 
 namespace mcfile {
-namespace detail {
 
 inline uint64_t SwapInt64(uint64_t v) {
     return ((v & 0x00000000000000ffLL) << 56)
@@ -102,5 +101,4 @@ inline uint16_t Int16LEFromNative(uint16_t v) {
     return Int16FromLE(v);
 }
 
-}
 }

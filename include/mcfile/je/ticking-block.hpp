@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mcfile {
+namespace mcfile::je {
 
 struct TickingBlock {
     std::string fI;
