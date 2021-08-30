@@ -12,7 +12,7 @@ TEST_CASE("1.13.2") {
     std::map<Point3D, BlockData> expected;
     BlockData::ReadAll(dir + std::string("/data/1.13.2/mitomitoyapparikawaiiyo/region/r.0.0-c.0.0.csv"), expected);
 
-    World world(std::filesystem::path(dir) / "data" / "1.13.2" / "mitomitoyapparikawaiiyo");
+    je::World world(std::filesystem::path(dir) / "data" / "1.13.2" / "mitomitoyapparikawaiiyo");
 
     SUBCASE("Chunk::{blockAt,blockLightAt,skyLightAt}") {
         auto region = world.region(0, 0);
@@ -76,7 +76,7 @@ TEST_CASE("1.13.2") {
     }
 
     SUBCASE("World::eachBlock") {
-        auto const ret = world.eachBlock(0, 0, 15, 15, [&expected](int x, int y, int z, std::shared_ptr<Block const> const& block) {
+        auto const ret = world.eachBlock(0, 0, 15, 15, [&expected](int x, int y, int z, std::shared_ptr<je::Block const> const& block) {
             auto pos = MakePoint3D(x, y, z);
             auto expectedIt = expected.find(pos);
             assert(expectedIt != expected.end());
@@ -94,7 +94,7 @@ TEST_CASE("1.13.2") {
 
 TEST_CASE("20w06a") {
     std::filesystem::path dir(Path::Dirname(__FILE__));
-    World world(dir / "data" / "20w06a" / "world" / "DIM-1");
+    je::World world(dir / "data" / "20w06a" / "world" / "DIM-1");
 
     SUBCASE("biomeAt") {
         auto const& region = world.region(-1, -1);
