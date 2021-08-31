@@ -80,6 +80,9 @@
 #include <mcfile/je/region.hpp>
 #include <mcfile/je/world.hpp>
 
+#include <mcfile/be/block.hpp>
+#include <mcfile/be/chunk-section.hpp>
+
 #include <mcfile/nbt/print-as-json.hpp>
 #include <mcfile/pos2.hpp>
 #include <mcfile/je/cached-chunk-loader.hpp>
