@@ -29,84 +29,32 @@ public:
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
 
-        auto checksums = db.get(DbKey::Checksums(chunkX, chunkZ, d));
-        if (!checksums) {
-            return nullptr;
-        }
-
         shared_ptr<SubChunk> subChunks[16];
         fill_n(&subChunks[0], 16, nullptr);
 
-        unordered_map<Pos3i, shared_ptr<CompoundTag>, Pos3iHasher> blockEntities;
-        vector<shared_ptr<CompoundTag>> entities;
-        unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
-
-        for (int i = 4; i + 11 < checksums->size(); i += 11) {
-            uint8_t tag = *(uint8_t*)checksums->data();
-            uint8_t unknown = *(uint8_t*)(checksums->data() + 1);
-            uint8_t y = *(uint8_t*)(checksums->data() + 2);
-            uint64_t hash = *(uint64_t*)(checksums->data() + 3);
-            if (tag == static_cast<uint8_t>(DbKey::Tag::SubChunk)) {
-                auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
-                if (!subChunkData) {
-                    continue;
-                }
-                auto subChunk = SubChunk::Parse(*subChunkData);
-                if (!subChunk) {
-                    continue;
-                }
-                if (y < 16) {
-                    subChunks[y] = subChunk;
-                }
-            } else if (tag == static_cast<uint8_t>(DbKey::Tag::BlockEntity)) {
-                auto value = db.get(DbKey::BlockEntity(chunkX, chunkZ, d));
-                if (!value) {
-                    continue;
-                }
-                vector<uint8_t> buffer;
-                copy(value->begin(), value->end(), back_inserter(buffer));
-                auto stream = make_shared<ByteStream>(buffer);
-                InputStreamReader sr(stream, {.fLittleEndian = true});
-                CompoundTag::ReadUntilEos(sr, [&blockEntities](shared_ptr<CompoundTag> const& tag) {
-                    auto bx = tag->int32("x");
-                    auto by = tag->int32("y");
-                    auto bz = tag->int32("z");
-                    if (!bx || !by || !bz) {
-                        return;
-                    }
-                    Pos3i pos(*bx, *by, *bz);
-                    blockEntities.insert(make_pair(pos, tag));
-                });
-            } else if (tag == static_cast<uint8_t>(DbKey::Tag::Entity)) {
-                auto value = db.get(DbKey::Entity(chunkX, chunkZ, d));
-                if (!value) {
-                    continue;
-                }
-                vector<uint8_t> buffer;
-                copy(value->begin(), value->end(), back_inserter(buffer));
-                auto stream = make_shared<ByteStream>(buffer);
-                InputStreamReader sr(stream, {.fLittleEndian = true});
-                CompoundTag::ReadUntilEos(sr, [&entities](shared_ptr<CompoundTag> const& tag) {
-                    entities.push_back(tag);
-                });
-            } else if (tag == static_cast<uint8_t>(DbKey::Tag::PendingTicks)) {
-                auto value = db.get(DbKey::PendingTicks(chunkX, chunkZ, d));
-                if (!value) {
-                    continue;
-                }
-                vector<uint8_t> buffer;
-                copy(value->begin(), value->end(), back_inserter(buffer));
-                auto stream = make_shared<ByteStream>(buffer);
-                InputStreamReader sr(stream, {.fLittleEndian = true});
-                CompoundTag::ReadUntilEos(sr, [&pendingTicks](shared_ptr<CompoundTag> const& tag) {
-                    auto pair = PendingTick::FromCompound(*tag);
-                    if (!pair) {
-                        return;
-                    }
-                    pendingTicks.insert(*pair);
-                });
+        for (int y = 0; y < 16; y++) {
+            auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
+            if (!subChunkData) {
+                continue;
+            }
+            auto subChunk = SubChunk::Parse(*subChunkData);
+            if (!subChunk) {
+                continue;
+            }
+            if (y < 16) {
+                subChunks[y] = subChunk;
             }
         }
+
+        unordered_map<Pos3i, shared_ptr<CompoundTag>, Pos3iHasher> blockEntities;
+        LoadBlockEntities(chunkX, chunkZ, d, db, blockEntities);
+
+        vector<shared_ptr<CompoundTag>> entities;
+        LoadEntities(chunkX, chunkZ, d, db, entities);
+
+        unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
+        LoadPendingTicks(chunkX, chunkZ, d, db, pendingTicks);
+
         return shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks));
     }
 
@@ -134,6 +82,71 @@ private:
         } else {
             return nullptr;
         }
+    }
+
+    static void LoadBlockEntities(int chunkX, int chunkZ, Dimension d, DbInterface& db, std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher>& result) {
+        using namespace std;
+        using namespace mcfile::nbt;
+        using namespace mcfile::stream;
+
+        auto value = db.get(DbKey::BlockEntity(chunkX, chunkZ, d));
+        if (!value) {
+            return;
+        }
+        vector<uint8_t> buffer;
+        copy(value->begin(), value->end(), back_inserter(buffer));
+        auto stream = make_shared<ByteStream>(buffer);
+        InputStreamReader sr(stream, {.fLittleEndian = true});
+        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const& tag) {
+            auto bx = tag->int32("x");
+            auto by = tag->int32("y");
+            auto bz = tag->int32("z");
+            if (!bx || !by || !bz) {
+                return;
+            }
+            Pos3i pos(*bx, *by, *bz);
+            result.insert(make_pair(pos, tag));
+        });
+    }
+
+    static void LoadEntities(int chunkX, int chunkZ, Dimension d, DbInterface& db, std::vector<std::shared_ptr<nbt::CompoundTag>> &result) {
+        using namespace std;
+        using namespace mcfile::nbt;
+        using namespace mcfile::stream;
+
+        auto value = db.get(DbKey::Entity(chunkX, chunkZ, d));
+        if (!value) {
+            return;
+        }
+        vector<uint8_t> buffer;
+        copy(value->begin(), value->end(), back_inserter(buffer));
+        auto stream = make_shared<ByteStream>(buffer);
+        InputStreamReader sr(stream, {.fLittleEndian = true});
+        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const& tag) {
+            result.push_back(tag);
+        });
+    }
+
+    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface&db, std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &result) {
+        using namespace std;
+        using namespace mcfile::nbt;
+        using namespace mcfile::stream;
+
+        auto value = db.get(DbKey::PendingTicks(chunkX, chunkZ, d));
+        if (!value) {
+            return;
+        }
+        vector<uint8_t> buffer;
+        copy(value->begin(), value->end(), back_inserter(buffer));
+        auto stream = make_shared<ByteStream>(buffer);
+        InputStreamReader sr(stream, {.fLittleEndian = true});
+        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const& tag) {
+            auto pair = PendingTick::FromCompound(*tag);
+            if (!pair) {
+                return;
+            }
+            result.insert(*pair);
+        });
     }
 
 public:
