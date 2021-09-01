@@ -34,7 +34,7 @@ public:
         shared_ptr<SubChunk> subChunks[16];
         fill_n(&subChunks[0], 16, nullptr);
 
-        for (int i = 0; i < checksums->size(); i += 10) {
+        for (int i = 4; i + 10 < checksums->size(); i += 10) {
             uint8_t tag = *(uint8_t*)checksums->data();
             uint8_t y = *(uint8_t*)(checksums->data() + 1);
             uint64_t hash = *(uint64_t*)(checksums->data() + 2);
