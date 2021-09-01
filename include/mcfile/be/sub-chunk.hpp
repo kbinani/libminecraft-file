@@ -2,7 +2,7 @@
 
 namespace mcfile::be {
 
-class ChunkSection {
+class SubChunk {
 public:
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const {
         auto const index = paletteIndexAt(offsetX, offsetY, offsetZ);
@@ -12,7 +12,7 @@ public:
         return fPalette[*index];
     }
 
-    static std::shared_ptr<ChunkSection> Parse(std::string const& data) {
+    static std::shared_ptr<SubChunk> Parse(std::string const& data) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
@@ -96,11 +96,11 @@ public:
             palette.push_back(block);
         }
 
-        return shared_ptr<ChunkSection>(new ChunkSection(palette, index));
+        return shared_ptr<SubChunk>(new SubChunk(palette, index));
     }
 
 private:
-    ChunkSection(std::vector<std::shared_ptr<Block const>>& palette, std::vector<uint16_t>& paletteIndices) {
+    SubChunk(std::vector<std::shared_ptr<Block const>>& palette, std::vector<uint16_t>& paletteIndices) {
         fPalette.swap(palette);
         fPaletteIndices.swap(paletteIndices);
     }

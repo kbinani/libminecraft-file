@@ -63,6 +63,7 @@
 #include <mcfile/biomes/minecraft.hpp>
 #include <mcfile/biomes/from-int.hpp>
 #include <mcfile/biomes/name.hpp>
+#include <mcfile/dimension.hpp>
 #include <mcfile/je/chunk-section.hpp>
 #include <mcfile/je/chunksection/chunk-section-112.hpp>
 #include <mcfile/je/chunksection/chunk-section-113-base.hpp>
@@ -80,8 +81,11 @@
 #include <mcfile/je/region.hpp>
 #include <mcfile/je/world.hpp>
 
+#include <mcfile/be/db-key.hpp>
+#include <mcfile/be/db-interface.hpp>
 #include <mcfile/be/block.hpp>
-#include <mcfile/be/chunk-section.hpp>
+#include <mcfile/be/sub-chunk.hpp>
+#include <mcfile/be/chunk.hpp>
 
 #include <mcfile/nbt/print-as-json.hpp>
 #include <mcfile/pos2.hpp>
