@@ -366,7 +366,40 @@ public:
         }
         return ret;
     }
-    
+
+    static void ReadUntilEos(stream::InputStreamReader& reader, std::function<bool(std::shared_ptr<CompoundTag> const& value)> callback) {
+        ReadUntilEosImpl(reader, callback);
+    }
+
+    static void ReadUntilEos(stream::InputStreamReader& reader, std::function<void(std::shared_ptr<CompoundTag> const& value)> callback) {
+        ReadUntilEosImpl(reader, [callback](std::shared_ptr<CompoundTag> const& value) {
+            callback(value);
+            return true;
+        });
+    }
+
+private:
+    static void ReadUntilEosImpl(stream::InputStreamReader& reader, std::function<bool(std::shared_ptr<CompoundTag> const& value)> callback) {
+        while (reader.valid()) {
+            uint8_t type;
+            if (!reader.read(&type)) {
+                break;
+            }
+            std::string name;
+            if (!reader.read(name)) {
+                break;
+            }
+            auto tag = std::make_shared<CompoundTag>();
+            tag->read(reader);
+            if (!tag->valid()) {
+                break;
+            }
+            if (!callback(tag)) {
+                break;
+            }
+        }
+    }
+
 public:
     std::map<std::string, std::shared_ptr<Tag>> fValue;
 };

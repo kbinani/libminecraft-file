@@ -13,6 +13,16 @@ public:
         }
     }
 
+    static std::shared_ptr<Block> FromCompound(nbt::CompoundTag const& tag) {
+        auto name = tag.string("name");
+        auto states = tag.compoundTag("states");
+        auto version = tag.int32("version");
+        if (!name || !version) {
+            return nullptr;
+        }
+        return std::make_shared<Block>(*name, states, *version);
+    }
+
 public:
     std::string const fName;
     std::map<std::string, std::shared_ptr<nbt::Tag>> fStates;

@@ -86,13 +86,10 @@ public:
             if (!tag->valid()) {
                 return nullptr;
             }
-            auto name = tag->string("name");
-            auto states = tag->compoundTag("states");
-            auto version = tag->int32("version");
-            if (!name || !version) {
+            auto block = Block::FromCompound(*tag);
+            if (!block) {
                 return nullptr;
             }
-            auto block = make_shared<Block const>(*name, states, *version);
             palette.push_back(block);
         }
 
