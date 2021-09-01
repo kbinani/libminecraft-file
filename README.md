@@ -59,9 +59,9 @@ int main() {
     // restore *.mca file from compressed chunk files
     int const regionX = 0;
     int const regionZ = 1;
-    Region::ConcatCompressedNbt(regionX, regionZ,
-                                std::filesystem::path("./chunk_data_output_directory"),
-                                std::filesystem::path("./region_data_output_directory"));
+    mcfile::je::Region::ConcatCompressedNbt(regionX, regionZ,
+                                            std::filesystem::path("./chunk_data_output_directory"),
+                                            std::filesystem::path("./region_data_output_directory"));
 }
 ```
 
