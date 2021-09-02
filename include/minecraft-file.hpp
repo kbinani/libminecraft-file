@@ -24,6 +24,10 @@
 #include <type_traits>
 #include <unordered_map>
 
+#if __has_include(<leveldb/db.h>)
+#include <leveldb/db.h>
+#endif
+
 #include <mcfile/endianness.hpp>
 #include <mcfile/file.hpp>
 #include <mcfile/stream/input-stream.hpp>
@@ -83,6 +87,7 @@
 
 #include <mcfile/be/db-key.hpp>
 #include <mcfile/be/db-interface.hpp>
+#include <mcfile/be/db.hpp>
 #include <mcfile/be/block.hpp>
 #include <mcfile/be/pending-tick.hpp>
 #include <mcfile/be/sub-chunk.hpp>
