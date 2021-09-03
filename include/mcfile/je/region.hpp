@@ -554,6 +554,11 @@ public:
             std::string name = p.path().filename().string();
             int chunkX;
             int chunkZ;
+#if defined(_WIN32) || (__STDC_LIB_EXT1__ == 1 && __STDC_WANT_LIB_EXT1__ == 1)
+            auto sscanf = sscanf_s;
+#else
+            auto sscanf = std::sscanf;
+#endif
             if (sscanf(name.c_str(), "c.%d.%d.nbt.z", &chunkX, &chunkZ) != 2) {
                 continue;
             }
