@@ -1,9 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
-#include "minecraft-file.hpp"
+#include "BlockData.hpp"
 #include "Path.hpp"
 #include "Point3D.hpp"
-#include "BlockData.hpp"
+#include "minecraft-file.hpp"
+#include <doctest/doctest.h>
 
 using namespace mcfile;
 
@@ -17,7 +17,7 @@ TEST_CASE("1.13.2") {
     SUBCASE("Chunk::{blockAt,blockLightAt,skyLightAt}") {
         auto region = world.region(0, 0);
         CHECK(region != nullptr);
-        auto const& chunk = region->chunkAt(0, 0);
+        auto const &chunk = region->chunkAt(0, 0);
         CHECK(chunk != nullptr);
         CHECK(chunk->minBlockX() == 0);
         CHECK(chunk->maxBlockX() == 15);
@@ -31,7 +31,7 @@ TEST_CASE("1.13.2") {
                     auto pos = MakePoint3D(x, y, z);
                     auto expectedIt = expected.find(pos);
                     assert(expectedIt != expected.end());
-                    auto const& e = expectedIt->second;
+                    auto const &e = expectedIt->second;
 
                     auto block = chunk->blockAt(x, y, z);
                     if (block) {
@@ -53,7 +53,7 @@ TEST_CASE("1.13.2") {
     SUBCASE("Chunk::blockIdAt") {
         auto region = world.region(0, 0);
         CHECK(region != nullptr);
-        auto const& chunk = region->chunkAt(0, 0);
+        auto const &chunk = region->chunkAt(0, 0);
         CHECK(chunk != nullptr);
         for (int y = 0; y < 256; y++) {
             for (int z = chunk->minBlockZ(); z <= chunk->maxBlockZ(); z++) {
@@ -61,7 +61,7 @@ TEST_CASE("1.13.2") {
                     auto pos = MakePoint3D(x, y, z);
                     auto expectedIt = expected.find(pos);
                     assert(expectedIt != expected.end());
-                    auto const& e = expectedIt->second;
+                    auto const &e = expectedIt->second;
 
                     auto blockId = chunk->blockIdAt(x, y, z);
                     if (e.fName == "NULL") {
@@ -76,11 +76,11 @@ TEST_CASE("1.13.2") {
     }
 
     SUBCASE("World::eachBlock") {
-        auto const ret = world.eachBlock(0, 0, 15, 15, [&expected](int x, int y, int z, std::shared_ptr<je::Block const> const& block) {
+        auto const ret = world.eachBlock(0, 0, 15, 15, [&expected](int x, int y, int z, std::shared_ptr<je::Block const> const &block) {
             auto pos = MakePoint3D(x, y, z);
             auto expectedIt = expected.find(pos);
             assert(expectedIt != expected.end());
-            auto const& e = expectedIt->second;
+            auto const &e = expectedIt->second;
             if (block) {
                 CHECK(block->fName == e.fName);
             } else {
@@ -97,9 +97,9 @@ TEST_CASE("20w06a") {
     je::World world(dir / "data" / "20w06a" / "world" / "DIM-1");
 
     SUBCASE("biomeAt") {
-        auto const& region = world.region(-1, -1);
+        auto const &region = world.region(-1, -1);
         CHECK(region);
-        auto const& chunk = region->chunkAt(-12, -5);
+        auto const &chunk = region->chunkAt(-12, -5);
         CHECK(chunk);
         {
             auto const biome = chunk->biomeAt(-190, 54, -79);
@@ -107,7 +107,7 @@ TEST_CASE("20w06a") {
         }
         {
             auto const biome = chunk->biomeAt(-180, 75, -69);
-            CHECK((int)biome  == (int)biomes::minecraft::soul_sand_valley);
+            CHECK((int)biome == (int)biomes::minecraft::soul_sand_valley);
         }
     }
 }

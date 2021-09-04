@@ -3,7 +3,7 @@
 namespace mcfile {
 namespace blocks {
 
-static inline BlockId FromName(std::string const& name) {
+static inline BlockId FromName(std::string const &name) {
     static std::map<std::string, BlockId> const mapping = {
         {"minecraft:acacia_button", minecraft::acacia_button},
         {"minecraft:acacia_door", minecraft::acacia_door},

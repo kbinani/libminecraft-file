@@ -12,12 +12,12 @@ public:
         Write,
     };
 
-    static FILE* Open(std::string const& path, Mode mode) = delete;
+    static FILE *Open(std::string const &path, Mode mode) = delete;
 
-    static FILE* Open(std::filesystem::path const& path, Mode mode) {
+    static FILE *Open(std::filesystem::path const &path, Mode mode) {
 #if defined(_WIN32)
         auto m = ModeWString(mode);
-        FILE* ret = nullptr;
+        FILE *ret = nullptr;
         if (_wfopen_s(&ret, path.c_str(), m.c_str()) == 0) {
             return ret;
         } else {
@@ -29,9 +29,9 @@ public:
 #endif
     }
 
-    static gzFile GzOpen(std::string const& path, Mode mode) = delete;
+    static gzFile GzOpen(std::string const &path, Mode mode) = delete;
 
-    static gzFile GzOpen(std::filesystem::path const& path, Mode mode) {
+    static gzFile GzOpen(std::filesystem::path const &path, Mode mode) {
         auto m = ModeString(mode);
         auto p = path.c_str();
 #if defined(_WIN32)
@@ -63,4 +63,4 @@ private:
     }
 };
 
-}
+} // namespace mcfile

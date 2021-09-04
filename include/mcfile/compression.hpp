@@ -16,7 +16,7 @@ public:
         if (deflateInit(&zs, Z_BEST_COMPRESSION) != Z_OK) {
             return false;
         }
-        zs.next_in = (Bytef *) inout.data();
+        zs.next_in = (Bytef *)inout.data();
         zs.avail_in = inout.size();
 
         int ret;
@@ -53,7 +53,7 @@ public:
             return false;
         }
 
-        zs.next_in = (Bytef *) inout.data();
+        zs.next_in = (Bytef *)inout.data();
         zs.avail_in = inout.size();
 
         do {

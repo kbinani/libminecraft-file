@@ -5,11 +5,14 @@ namespace nbt {
 
 class IntArrayTag : public detail::VectorTag<int32_t, Tag::Type::IntArray> {
 public:
-    IntArrayTag() : VectorTag() {}
+    IntArrayTag()
+        : VectorTag() {}
 
-    explicit IntArrayTag(std::vector<int32_t>& input) : VectorTag(input) {}
+    explicit IntArrayTag(std::vector<int32_t> &input)
+        : VectorTag(input) {}
 
-    explicit IntArrayTag(size_t size) : VectorTag(size) {}
+    explicit IntArrayTag(size_t size)
+        : VectorTag(size) {}
 
     std::shared_ptr<Tag> clone() const override {
         std::vector<int32_t> copy = value();

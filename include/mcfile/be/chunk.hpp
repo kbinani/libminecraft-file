@@ -36,7 +36,7 @@ public:
         return fBiomeMap[i];
     }
 
-    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface& db) {
+    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface &db) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
@@ -102,10 +102,9 @@ private:
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
           std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &pendingTicks,
           std::vector<uint16_t> &heightMap,
-          std::vector<biomes::BiomeId>& biomeMap)
+          std::vector<biomes::BiomeId> &biomeMap)
         : fChunkX(chunkX)
-        , fChunkZ(chunkZ)
-    {
+        , fChunkZ(chunkZ) {
         for (int i = 0; i < 16; i++) {
             fSubChunks[i] = subChunks[i];
         }
@@ -125,7 +124,7 @@ private:
         }
     }
 
-    static void LoadBlockEntities(int chunkX, int chunkZ, Dimension d, DbInterface& db, std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher>& result) {
+    static void LoadBlockEntities(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher> &result) {
         using namespace std;
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
@@ -138,7 +137,7 @@ private:
         copy(value->begin(), value->end(), back_inserter(buffer));
         auto stream = make_shared<ByteStream>(buffer);
         InputStreamReader sr(stream, {.fLittleEndian = true});
-        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const& tag) {
+        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
             auto bx = tag->int32("x");
             auto by = tag->int32("y");
             auto bz = tag->int32("z");
@@ -150,7 +149,7 @@ private:
         });
     }
 
-    static void LoadEntities(int chunkX, int chunkZ, Dimension d, DbInterface& db, std::vector<std::shared_ptr<nbt::CompoundTag>>& result) {
+    static void LoadEntities(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::vector<std::shared_ptr<nbt::CompoundTag>> &result) {
         using namespace std;
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
@@ -163,12 +162,12 @@ private:
         copy(value->begin(), value->end(), back_inserter(buffer));
         auto stream = make_shared<ByteStream>(buffer);
         InputStreamReader sr(stream, {.fLittleEndian = true});
-        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const& tag) {
+        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
             result.push_back(tag);
         });
     }
 
-    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface& db, std::unordered_map<Pos3i, PendingTick, Pos3iHasher>& result) {
+    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &result) {
         using namespace std;
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
@@ -181,7 +180,7 @@ private:
         copy(value->begin(), value->end(), back_inserter(buffer));
         auto stream = make_shared<ByteStream>(buffer);
         InputStreamReader sr(stream, {.fLittleEndian = true});
-        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const& tag) {
+        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
             auto pair = PendingTick::FromCompound(*tag);
             if (!pair) {
                 return;
@@ -203,4 +202,4 @@ private:
     std::shared_ptr<SubChunk> fSubChunks[16];
 };
 
-}
+} // namespace mcfile::be

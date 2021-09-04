@@ -10,7 +10,7 @@ struct TickingBlock {
     int32_t fY;
     int32_t fZ;
 
-    static std::optional<TickingBlock> FromCompound(nbt::CompoundTag const& tag) {
+    static std::optional<TickingBlock> FromCompound(nbt::CompoundTag const &tag) {
         auto i = tag.string("i");
         auto p = tag.int32("p");
         auto t = tag.int32("t");
@@ -31,4 +31,4 @@ struct TickingBlock {
     }
 };
 
-}
+} // namespace mcfile::je

@@ -10,27 +10,24 @@ public:
     VectorTag()
         : Tag()
         , fPrepared(false)
-        , fLittleEndian(false)
-    {
+        , fLittleEndian(false) {
     }
 
-    explicit VectorTag(std::vector<T>& input)
+    explicit VectorTag(std::vector<T> &input)
         : Tag()
         , fPrepared(true)
-        , fLittleEndian(false)
-    {
+        , fLittleEndian(false) {
         fValue.swap(input);
     }
 
     explicit VectorTag(size_t size)
         : Tag()
         , fPrepared(true)
-        , fLittleEndian(false)
-    {
+        , fLittleEndian(false) {
         fValue.resize(size);
     }
 
-    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint32_t length;
         if (!r.read(&length)) {
             return false;
@@ -43,8 +40,8 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
-        std::vector<T> const& b = value();
+    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
+        std::vector<T> const &b = value();
         w.write((uint32_t)fValue.size());
         for (size_t i = 0; i < b.size(); i++) {
             w.write(b[i]);
@@ -53,7 +50,7 @@ public:
 
     Tag::Type type() const override { return ID; }
 
-    std::vector<T> const& value() const {
+    std::vector<T> const &value() const {
         if (!fPrepared) {
             for (size_t i = 0; i < fValue.size(); i++) {
                 fValue[i] = convert(fValue[i], fLittleEndian);

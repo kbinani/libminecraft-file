@@ -7,12 +7,14 @@ class ListTag : public Tag {
     friend class TagFactory;
 
 private:
-    ListTag() : fType(Tag::Type::End) {}
+    ListTag()
+        : fType(Tag::Type::End) {}
 
 public:
-    explicit ListTag(Tag::Type type) : fType(type) {}
+    explicit ListTag(Tag::Type type)
+        : fType(type) {}
 
-    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint8_t type;
         if (!r.read(&type)) {
             return false;
@@ -38,14 +40,14 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
+    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
         w.write(static_cast<uint8_t>(fType));
         w.write((int32_t)fValue.size());
-        for (auto const& v : fValue) {
+        for (auto const &v : fValue) {
             v->write(w);
         }
     }
-    
+
     Tag::Type type() const override { return Tag::Type::List; }
 
     decltype(auto) begin() { return fValue.begin(); }
@@ -54,7 +56,7 @@ public:
     decltype(auto) begin() const { return fValue.begin(); }
     decltype(auto) end() const { return fValue.end(); }
 
-    void push_back(std::shared_ptr<Tag> const& item) {
+    void push_back(std::shared_ptr<Tag> const &item) {
         if (!item) {
             return;
         }
@@ -72,11 +74,11 @@ public:
     size_t size() const { return fValue.size(); }
     bool empty() const { return fValue.empty(); }
     std::shared_ptr<Tag> at(size_t idx) const { return fValue[idx]; }
-    std::shared_ptr<Tag>& at(size_t idx) { return fValue[idx]; }
+    std::shared_ptr<Tag> &at(size_t idx) { return fValue[idx]; }
 
     std::shared_ptr<Tag> clone() const override {
         auto ret = std::make_shared<ListTag>(fType);
-        for (auto const& value : fValue) {
+        for (auto const &value : fValue) {
             ret->fValue.push_back(value->clone());
         }
         return ret;

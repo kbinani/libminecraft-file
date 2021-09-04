@@ -2,8 +2,7 @@
 
 namespace mcfile::je::chunksection {
 
-class ChunkSection116 : public ChunkSection113Base<BlockStatesParser116>
-{
+class ChunkSection116 : public ChunkSection113Base<BlockStatesParser116> {
 public:
     static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
         using namespace std;
@@ -21,13 +20,12 @@ public:
 
 private:
     ChunkSection116(int y,
-                    std::vector<std::shared_ptr<Block const>> const& palette,
-                    std::vector<uint16_t> const& paletteIndices,
-                    std::vector<uint8_t> const& blockLight,
-                    std::vector<uint8_t> const& skyLight)
-        : ChunkSection113Base<BlockStatesParser116>(y, palette, paletteIndices, blockLight, skyLight)
-    {
+                    std::vector<std::shared_ptr<Block const>> const &palette,
+                    std::vector<uint16_t> const &paletteIndices,
+                    std::vector<uint8_t> const &blockLight,
+                    std::vector<uint8_t> const &skyLight)
+        : ChunkSection113Base<BlockStatesParser116>(y, palette, paletteIndices, blockLight, skyLight) {
     }
 };
 
-} // namespace mcfile::detail
+} // namespace mcfile::je::chunksection

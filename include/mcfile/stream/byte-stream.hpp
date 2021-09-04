@@ -6,11 +6,12 @@ namespace stream {
 class ByteStream : public InputStream, public OutputStream {
 public:
     explicit ByteStream(std::vector<uint8_t> &buffer)
-            : fLoc(0) {
+        : fLoc(0) {
         this->fBuffer.swap(buffer);
     }
 
-    ByteStream() : fLoc(0) {}
+    ByteStream()
+        : fLoc(0) {}
 
     ~ByteStream() {}
 
@@ -22,12 +23,12 @@ public:
         if (fBuffer.size() < fLoc + size * count) {
             return false;
         }
-        std::copy(fBuffer.begin() + fLoc, fBuffer.begin() + fLoc + size * count, (uint8_t *) buf);
+        std::copy(fBuffer.begin() + fLoc, fBuffer.begin() + fLoc + size * count, (uint8_t *)buf);
         fLoc += size * count;
         return true;
     }
 
-    bool write(void* buf, size_t size) override {
+    bool write(void *buf, size_t size) override {
         if (fBuffer.size() <= fLoc + size) {
             size_t add = fLoc + size - fBuffer.size();
             try {
@@ -39,7 +40,7 @@ public:
             }
         }
         for (int i = 0; i < size; i++) {
-            fBuffer[fLoc + i] = ((uint8_t*)buf)[i];
+            fBuffer[fLoc + i] = ((uint8_t *)buf)[i];
         }
         fLoc += size;
         return true;
@@ -59,7 +60,7 @@ public:
 
     long pos() const override { return fLoc; }
 
-    void drain(std::vector<uint8_t>& out) {
+    void drain(std::vector<uint8_t> &out) {
         out.clear();
         out.swap(fBuffer);
         fLoc = 0;

@@ -1,4 +1,5 @@
 #include <minecraft-file.hpp>
+
 #include <iostream>
 
 int main() {
@@ -27,7 +28,7 @@ int main() {
 
     // accessing all chunks in the region
     bool err = false;
-    region->loadAllChunks(err, [](Chunk const& c) -> bool {
+    region->loadAllChunks(err, [](Chunk const &c) -> bool {
         blocks::BlockId b = c.blockIdAt(c.minBlockX(), 0, c.maxBlockZ());
         std::cout << blocks::Name(b) << std::endl;
         return true; // continue

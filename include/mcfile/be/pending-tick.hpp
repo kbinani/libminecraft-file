@@ -4,7 +4,7 @@ namespace mcfile::be {
 
 class PendingTick {
 public:
-    static std::optional<std::pair<Pos3i, PendingTick>> FromCompound(nbt::CompoundTag const& tag) {
+    static std::optional<std::pair<Pos3i, PendingTick>> FromCompound(nbt::CompoundTag const &tag) {
         auto blockState = tag.compoundTag("blockState");
         auto time = tag.int64("time");
         auto x = tag.int32("x");
@@ -30,4 +30,4 @@ public:
     int64_t fTime;
 };
 
-}
+} // namespace mcfile::be

@@ -6,7 +6,8 @@ namespace stream {
 class FileInputStream : public InputStream {
 public:
     explicit FileInputStream(std::filesystem::path const &filePath)
-            : fFile(nullptr), fLoc(0) {
+        : fFile(nullptr)
+        , fLoc(0) {
         FILE *fp = File::Open(filePath, File::Mode::Read);
 
         if (!fp) {
@@ -72,7 +73,7 @@ public:
         if (length == 0) {
             return true;
         }
-        uint8_t buffer[512]= { 0 };
+        uint8_t buffer[512] = {0};
         size_t const size = sizeof(buffer[0]);
         size_t const nitems = sizeof(buffer) / size;
         size_t remain = length;
@@ -91,7 +92,7 @@ public:
         }
         return true;
     }
-    
+
 private:
     FILE *fFile;
     long fLength;

@@ -5,12 +5,12 @@ namespace nbt {
 
 class EndTag : public Tag {
 public:
-    bool readImpl(::mcfile::stream::InputStreamReader&) override { return true; }
-    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {}
+    bool readImpl(::mcfile::stream::InputStreamReader &) override { return true; }
+    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {}
     Tag::Type type() const override { return Tag::Type::End; }
     std::shared_ptr<Tag> clone() const override { return Shared(); }
 
-    static EndTag const* Instance() {
+    static EndTag const *Instance() {
         return EndTag::Shared().get();
     }
 

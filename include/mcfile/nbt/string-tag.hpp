@@ -5,12 +5,14 @@ namespace nbt {
 
 class StringTag : public Tag {
 public:
-    StringTag() : Tag() {}
-    explicit StringTag(std::string v) : fValue(v) {
+    StringTag()
+        : Tag() {}
+    explicit StringTag(std::string v)
+        : fValue(v) {
         fValid = true;
     }
 
-    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         std::string tmp;
         if (!r.read(tmp)) {
             return false;
@@ -19,16 +21,16 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
+    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
         w.write(fValue);
     }
-    
+
     Tag::Type type() const override { return Tag::Type::String; }
 
     std::shared_ptr<Tag> clone() const override {
         return std::make_shared<StringTag>(fValue);
     }
-    
+
 public:
     std::string fValue;
 };

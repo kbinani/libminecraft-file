@@ -8,7 +8,9 @@ class Db : public DbInterface {
 public:
     Db(std::string const &) = delete;
     Db(std::wstring const &) = delete;
-    explicit Db(std::filesystem::path const &dir) : fDb(nullptr), fValid(false) {
+    explicit Db(std::filesystem::path const &dir)
+        : fDb(nullptr)
+        , fValid(false) {
         using namespace leveldb;
 
         DB *db;
@@ -45,6 +47,6 @@ private:
     bool fValid;
 };
 
-}
+} // namespace mcfile::be
 
 #endif

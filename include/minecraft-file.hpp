@@ -4,29 +4,32 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <zlib.h>
 #include <string.h>
-#include <cstdint>
-#include <cassert>
-#include <string>
-#include <vector>
-#include <memory>
-#include <map>
-#include <set>
+#include <zlib.h>
+
 #include <algorithm>
-#include <sstream>
-#include <limits>
-#include <functional>
+#include <cassert>
 #include <cmath>
-#include <optional>
-#include <initializer_list>
+#include <cstdint>
 #include <filesystem>
+#include <functional>
+#include <initializer_list>
+#include <limits>
+#include <map>
+#include <memory>
+#include <optional>
+#include <set>
+#include <sstream>
+#include <string>
 #include <type_traits>
 #include <unordered_map>
+#include <vector>
 
 #if __has_include(<leveldb/db.h>)
 #include <leveldb/db.h>
 #endif
+
+// clang-format off
 
 #include <mcfile/endianness.hpp>
 #include <mcfile/file.hpp>

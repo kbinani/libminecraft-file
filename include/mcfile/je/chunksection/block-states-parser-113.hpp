@@ -4,7 +4,7 @@ namespace mcfile::je::chunksection {
 
 class BlockStatesParser113 {
 public:
-    static void PaletteIndicesFromBlockStates(std::vector<int64_t> const& blockStates, std::vector<uint16_t> &paletteIndices) {
+    static void PaletteIndicesFromBlockStates(std::vector<int64_t> const &blockStates, std::vector<uint16_t> &paletteIndices) {
         paletteIndices.resize(16 * 16 * 16);
         size_t const numBits = blockStates.size() * 64;
         if (numBits % 4096 != 0) {
@@ -12,7 +12,7 @@ public:
         }
         size_t const bitsPerIndex = numBits >> 12;
         if (64 % bitsPerIndex != 0) {
-            int a =0 ;
+            int a = 0;
         }
         size_t u64Index = 0;
         size_t bitIndex = 0;
@@ -22,10 +22,10 @@ public:
             size_t v0Bits = std::min(bitsPerIndex, (u64Index + 1) * 64 - bitIndex);
             size_t v0BitOffset = bitIndex - 64 * u64Index;
             size_t v1Bits = bitsPerIndex - v0Bits;
-            uint64_t v0 = *(uint64_t*)(blockStates.data() + u64Index);
+            uint64_t v0 = *(uint64_t *)(blockStates.data() + u64Index);
             uint64_t paletteIndex = (v0 >> v0BitOffset) & ((1 << v0Bits) - 1);
             if (v1Bits > 0) {
-                uint64_t v1 = *(uint64_t*)(blockStates.data() + (u64Index + 1));
+                uint64_t v1 = *(uint64_t *)(blockStates.data() + (u64Index + 1));
                 uint64_t t = v1 & ((1 << v1Bits) - 1);
                 paletteIndex = (t << v0Bits) | paletteIndex;
             }
@@ -33,7 +33,7 @@ public:
         }
     }
 
-    static void BlockStatesFromPaletteIndices(size_t numPaletteEntries, std::vector<uint16_t> const& paletteIndices, std::vector<int64_t> &blockStates) {
+    static void BlockStatesFromPaletteIndices(size_t numPaletteEntries, std::vector<uint16_t> const &paletteIndices, std::vector<int64_t> &blockStates) {
         using namespace std;
         blockStates.clear();
 
@@ -74,7 +74,7 @@ public:
                 uint64_t t = ((uint64_t)(bitset[j] ? 1 : 0)) << (j - i);
                 v |= t;
             }
-            blockStates.push_back(*(int64_t*)&v);
+            blockStates.push_back(*(int64_t *)&v);
         }
     }
 
@@ -82,4 +82,4 @@ private:
     BlockStatesParser113() = delete;
 };
 
-}
+} // namespace mcfile::je::chunksection

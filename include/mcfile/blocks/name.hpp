@@ -11,9 +11,9 @@ struct Characteristics {
 
 static inline std::vector<Characteristics> CreateTable() {
     std::map<BlockId, Characteristics> mapping = {
-        {minecraft::acacia_button, {.name = "minecraft:acacia_button", .opaque = false }},
-        {minecraft::acacia_door, {.name = "minecraft:acacia_door", .opaque = false }},
-        {minecraft::acacia_fence, {.name = "minecraft:acacia_fence", .opaque = false }},
+        {minecraft::acacia_button, {.name = "minecraft:acacia_button", .opaque = false}},
+        {minecraft::acacia_door, {.name = "minecraft:acacia_door", .opaque = false}},
+        {minecraft::acacia_fence, {.name = "minecraft:acacia_fence", .opaque = false}},
         {minecraft::acacia_fence_gate, {.name = "minecraft:acacia_fence_gate", .opaque = false}},
         {minecraft::acacia_leaves, {.name = "minecraft:acacia_leaves", .opaque = false}},
         {minecraft::acacia_log, {.name = "minecraft:acacia_log", .opaque = true}},
@@ -905,7 +905,7 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::cave_vines, {.name = "minecraft:cave_vines", .opaque = false}},
         {minecraft::cave_vines_plant, {.name = "minecraft:cave_vines_plant", .opaque = false}},
     };
-    
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);

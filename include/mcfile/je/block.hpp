@@ -4,21 +4,19 @@ namespace mcfile::je {
 
 class Block {
 public:
-    explicit Block(std::string const& name, std::map<std::string, std::string> const& properties = std::map<std::string, std::string>())
+    explicit Block(std::string const &name, std::map<std::string, std::string> const &properties = std::map<std::string, std::string>())
         : fId(blocks::FromName(name))
         , fName(name)
-        , fProperties(properties)
-    {
+        , fProperties(properties) {
     }
 
-    explicit Block(blocks::BlockId id, std::map<std::string, std::string> const& properties = std::map<std::string, std::string>())
+    explicit Block(blocks::BlockId id, std::map<std::string, std::string> const &properties = std::map<std::string, std::string>())
         : fId(id)
         , fName(blocks::Name(id))
-        , fProperties(properties)
-    {
+        , fProperties(properties) {
     }
 
-    bool equals(Block const& other) const {
+    bool equals(Block const &other) const {
         if (other.fName != fName) {
             return false;
         }
@@ -44,7 +42,7 @@ public:
             return s;
         }
         bool first = true;
-        for (auto const& it : fProperties) {
+        for (auto const &it : fProperties) {
             if (first) {
                 s += "[";
             } else {
@@ -56,15 +54,15 @@ public:
         s += "]";
         return s;
     }
-    
-    std::string property(std::string const& name, std::string const& fallback = "") const {
+
+    std::string property(std::string const &name, std::string const &fallback = "") const {
         auto value = fProperties.find(name);
         if (value == fProperties.end()) {
             return fallback;
         }
         return value->second;
     }
-    
+
     std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
         using namespace std;
         auto root = make_shared<nbt::CompoundTag>();
@@ -78,11 +76,11 @@ public:
         }
         return root;
     }
-    
+
 public:
     blocks::BlockId const fId;
     std::string const fName;
     std::map<std::string, std::string> const fProperties;
 };
 
-} // namespace mcfile
+} // namespace mcfile::je

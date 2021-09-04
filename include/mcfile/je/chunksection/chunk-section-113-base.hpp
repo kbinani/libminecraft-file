@@ -2,7 +2,7 @@
 
 namespace mcfile::je::chunksection {
 
-template <class BlockStatesParser>
+template<class BlockStatesParser>
 class ChunkSection113Base : public ChunkSection {
 public:
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
@@ -12,8 +12,8 @@ public:
         }
         return fPalette[*index];
     }
-    
-    bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const& block) override {
+
+    bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) override {
         using namespace std;
         if (!block) {
             return false;
@@ -42,7 +42,7 @@ public:
         fPaletteIndices[index] = idx;
         return true;
     }
-    
+
     uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const override {
         int const index = BlockIndex(offsetX, offsetY, offsetZ);
         if (index < 0) {
@@ -57,7 +57,7 @@ public:
         uint8_t const v = fBlockLight[byteIndex];
         return (v >> bitOffset) & 0xF;
     }
-    
+
     uint8_t skyLightAt(int offsetX, int offsetY, int offsetZ) const override {
         int const index = BlockIndex(offsetX, offsetY, offsetZ);
         if (index < 0) {
@@ -72,9 +72,9 @@ public:
         uint8_t const v = fSkyLight[byteIndex];
         return (v >> bitOffset) & 0xF;
     }
-    
+
     blocks::BlockId blockIdAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const& block = blockAt(offsetX, offsetY, offsetZ);
+        auto const &block = blockAt(offsetX, offsetY, offsetZ);
         if (!block) {
             return blocks::minecraft::air;
         }
@@ -84,15 +84,15 @@ public:
     int y() const override {
         return fY > 251 ? fY - 256 : fY;
     }
-    
+
     int rawY() const override {
         return fY;
     }
 
-    std::vector<std::shared_ptr<Block const>> const& palette() const override {
+    std::vector<std::shared_ptr<Block const>> const &palette() const override {
         return fPalette;
     }
-    
+
     std::optional<size_t> paletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
             return std::nullopt;
@@ -106,35 +106,35 @@ public:
         if (paletteIndex < 0 || fPalette.size() <= paletteIndex) {
             return std::nullopt;
         }
-        
+
         return (size_t)paletteIndex;
     }
-    
+
     std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
         using namespace std;
         using namespace mcfile::nbt;
         auto root = make_shared<CompoundTag>();
-        
+
         root->set("Y", make_shared<ByteTag>(fY));
-        
+
         if (!fBlockLight.empty()) {
             vector<uint8_t> buf;
             copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(buf));
             root->set("BlockLight", make_shared<ByteArrayTag>(buf));
         }
-        
+
         if (!fSkyLight.empty()) {
             vector<uint8_t> buf;
             copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(buf));
             root->set("SkyLight", make_shared<ByteArrayTag>(buf));
         }
-        
+
         if (!fPaletteIndices.empty()) {
             vector<int64_t> blockStates;
             BlockStatesParser::BlockStatesFromPaletteIndices(fPalette.size(), fPaletteIndices, blockStates);
             root->set("BlockStates", make_shared<LongArrayTag>(blockStates));
         }
-    
+
         if (!fPalette.empty()) {
             auto palette = make_shared<ListTag>(Tag::Type::Compound);
             for (auto p : fPalette) {
@@ -142,11 +142,11 @@ public:
             }
             root->set("Palette", palette);
         }
-    
+
         return root;
     }
-    
-    static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const* section) {
+
+    static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const *section) {
         if (!section) {
             return nullptr;
         }
@@ -157,7 +157,7 @@ public:
         if (15 < yTag->fValue) {
             return nullptr;
         }
-        
+
         auto paletteTag = section->query("Palette")->asList();
         std::vector<std::shared_ptr<Block const>> palette;
         if (paletteTag) {
@@ -200,34 +200,33 @@ public:
         if (blockLightTag) {
             blockLight = blockLightTag->value();
         }
-        
+
         std::vector<uint8_t> skyLight;
         auto skyLightTag = section->query("SkyLight")->asByteArray();
         if (skyLightTag) {
             skyLight = skyLightTag->value();
         }
-        
+
         return std::shared_ptr<ChunkSection>(new ChunkSection113Base((int)yTag->fValue,
-                                                                        palette,
-                                                                        paletteIndices,
-                                                                        blockLight,
-                                                                        skyLight));
+                                                                     palette,
+                                                                     paletteIndices,
+                                                                     blockLight,
+                                                                     skyLight));
     }
-    
+
 protected:
     ChunkSection113Base(int y,
-                        std::vector<std::shared_ptr<Block const>> const& palette,
-                        std::vector<uint16_t> const& paletteIndices,
-                        std::vector<uint8_t> const& blockLight,
-                        std::vector<uint8_t> const& skyLight)
+                        std::vector<std::shared_ptr<Block const>> const &palette,
+                        std::vector<uint16_t> const &paletteIndices,
+                        std::vector<uint8_t> const &blockLight,
+                        std::vector<uint8_t> const &skyLight)
         : fY(y)
         , fPalette(palette)
         , fPaletteIndices(paletteIndices)
         , fBlockLight(blockLight)
-        , fSkyLight(skyLight)
-    {
+        , fSkyLight(skyLight) {
     }
-    
+
 private:
     static int BlockIndex(int offsetX, int offsetY, int offsetZ) {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
@@ -244,4 +243,4 @@ public:
     std::vector<uint8_t> fSkyLight;
 };
 
-} // namespace mcfile::detail
+} // namespace mcfile::je::chunksection

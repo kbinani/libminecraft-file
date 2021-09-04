@@ -1,9 +1,9 @@
 #pragma once
 
 #if defined(__APPLE__)
-#  include <libkern/OSByteOrder.h>
+#include <libkern/OSByteOrder.h>
 #elif defined(__linux__) || defined(__CYGWIN__)
-#  include <endian.h>
+#include <endian.h>
 #endif
 
 namespace mcfile {
@@ -15,9 +15,9 @@ struct ReadOption {
 
 class InputStreamReader {
 public:
-    explicit InputStreamReader(std::shared_ptr<InputStream> stream, ReadOption option = { .fLittleEndian = false })
-            : fStream(stream)
-            , fLittleEndian(option.fLittleEndian) {
+    explicit InputStreamReader(std::shared_ptr<InputStream> stream, ReadOption option = {.fLittleEndian = false})
+        : fStream(stream)
+        , fLittleEndian(option.fLittleEndian) {
     }
 
     InputStreamReader(InputStreamReader const &) = delete;
@@ -49,7 +49,7 @@ public:
             return false;
         }
         t = int16FromRaw(t);
-        *v = *(int16_t *) &t;
+        *v = *(int16_t *)&t;
         return true;
     }
 
@@ -68,7 +68,7 @@ public:
             return false;
         }
         t = int32FromRaw(t);
-        *v = *(int32_t *) &t;
+        *v = *(int32_t *)&t;
         return true;
     }
 
@@ -87,7 +87,7 @@ public:
             return false;
         }
         t = int64FromRaw(t);
-        *v = *(int64_t *) &t;
+        *v = *(int64_t *)&t;
         return true;
     }
 
@@ -106,7 +106,7 @@ public:
     }
 
     template<typename T>
-    bool copy(std::vector<T>& buffer) {
+    bool copy(std::vector<T> &buffer) {
         return fStream->read(buffer.data(), sizeof(T), buffer.size());
     }
 
@@ -120,7 +120,7 @@ public:
             return false;
         }
         buffer.push_back(0);
-        std::string tmp((char const *) buffer.data());
+        std::string tmp((char const *)buffer.data());
         s.swap(tmp);
         return true;
     }
@@ -138,11 +138,11 @@ public:
         }
         return fStream->pos();
     }
-    
+
     bool isLittleEndian() const {
         return fLittleEndian;
     }
-    
+
 private:
     template<typename T>
     bool readRaw(T *v) {

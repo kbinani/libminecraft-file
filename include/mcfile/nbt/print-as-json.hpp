@@ -14,7 +14,7 @@ static inline std::string Indent(int level) {
 }
 
 template<class Stream>
-static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, JsonPrintOptions options, bool comma = false, int depth = 0) {
+static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, JsonPrintOptions options, bool comma = false, int depth = 0) {
     std::string hint = "";
     switch (value.type()) {
     case Tag::Type::Byte:
@@ -73,7 +73,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
             out << " // byte[]";
         }
         out << std::endl;
-        auto const& list = value.asByteArray()->value();
+        auto const &list = value.asByteArray()->value();
         for (int i = 0; i < list.size(); i++) {
             out << Indent(depth + 1) << (int)list[i] << std::endl;
         }
@@ -86,7 +86,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
             out << " // int[]";
         }
         out << std::endl;
-        auto const& list = value.asIntArray()->value();
+        auto const &list = value.asIntArray()->value();
         for (int i = 0; i < list.size(); i++) {
             out << Indent(depth + 1) << list[i] << std::endl;
         }
@@ -99,7 +99,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
             out << " // long[]";
         }
         out << std::endl;
-        auto const& list = value.asLongArray()->value();
+        auto const &list = value.asLongArray()->value();
         for (int i = 0; i < list.size(); i++) {
             out << Indent(depth + 1) << list[i] << std::endl;
         }
@@ -119,7 +119,7 @@ static inline void PrintAsJsonImpl(Stream& out, mcfile::nbt::Tag const& value, J
 } // namespace detail
 
 template<class Stream>
-static inline void PrintAsJson(Stream& out, mcfile::nbt::Tag const& tag, JsonPrintOptions options = {}) {
+static inline void PrintAsJson(Stream &out, mcfile::nbt::Tag const &tag, JsonPrintOptions options = {}) {
     detail::PrintAsJsonImpl(out, tag, options, false, 0);
 }
 

@@ -4,12 +4,11 @@ namespace mcfile::je::chunksection {
 
 class ChunkSectionGenerator {
 public:
-    static
-    std::function<std::shared_ptr<ChunkSection>(int sectionY)>
-    MakeChunkSections(std::shared_ptr<nbt::ListTag> const& sections,
+    static std::function<std::shared_ptr<ChunkSection>(int sectionY)>
+    MakeChunkSections(std::shared_ptr<nbt::ListTag> const &sections,
                       int const dataVersion,
                       int chunkX, int chunkZ,
-                      std::vector<std::shared_ptr<nbt::CompoundTag>> const& tileEntities,
+                      std::vector<std::shared_ptr<nbt::CompoundTag>> const &tileEntities,
                       std::vector<std::shared_ptr<ChunkSection>> &result) {
         using namespace std;
 
@@ -34,12 +33,12 @@ public:
 
             //2526 (20w16a)
             if (sections) {
-                for (auto const& it : *sections) {
+                for (auto const &it : *sections) {
                     auto section = it->asCompound();
                     if (!section) {
                         continue;
                     }
-                    auto const& converted = chunksection::ChunkSection113::MakeChunkSection(section);
+                    auto const &converted = chunksection::ChunkSection113::MakeChunkSection(section);
                     if (converted) {
                         result.push_back(converted);
                     }
@@ -50,12 +49,12 @@ public:
             //2529 (20w17a)
             //2555 (20w22a)
             if (sections) {
-                for (auto const& it : *sections) {
+                for (auto const &it : *sections) {
                     auto section = it->asCompound();
                     if (!section) {
                         continue;
                     }
-                    auto const& converted = chunksection::ChunkSection116::MakeChunkSection(section);
+                    auto const &converted = chunksection::ChunkSection116::MakeChunkSection(section);
                     if (converted) {
                         result.push_back(converted);
                     }
@@ -69,4 +68,4 @@ private:
     ChunkSectionGenerator() = delete;
 };
 
-} // namespace mcfile::chunksection
+} // namespace mcfile::je::chunksection

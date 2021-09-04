@@ -1,0 +1,11 @@
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 0
+IndentWidth: 4
+AllowAllConstructorInitializersOnNextLine: false
+BreakConstructorInitializers: BeforeComma
+AllowShortCaseLabelsOnASingleLine: true
+AccessModifierOffset: -4
+PointerAlignment: Right
+SpaceAfterTemplateKeyword: false
+EmptyLineBeforeAccessModifier: Always

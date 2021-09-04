@@ -4,13 +4,16 @@ namespace mcfile::je {
 
 class Region {
 public:
-    Region(Region const& other) : fX(other.fX), fZ(other.fZ), fFilePath(other.fFilePath) {}
+    Region(Region const &other)
+        : fX(other.fX)
+        , fZ(other.fZ)
+        , fFilePath(other.fFilePath) {}
 
-    Region& operator = (Region const& rh) = delete;
+    Region &operator=(Region const &rh) = delete;
 
     using LoadChunkCallback = std::function<bool(Chunk &)>;
 
-    bool loadAllChunks(bool& error, LoadChunkCallback callback) const {
+    bool loadAllChunks(bool &error, LoadChunkCallback callback) const {
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
         for (int z = 0; z < 32; z++) {
@@ -31,7 +34,7 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> const &src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
             return nullptr;
         }
@@ -46,7 +49,7 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> const &src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
             return nullptr;
         }
@@ -64,7 +67,7 @@ public:
         auto path = fs::path(fFilePath).remove_filename().parent_path().parent_path().append("entities").append(name);
         auto fin = std::make_shared<stream::FileInputStream>(path);
         stream::InputStreamReader sr(fin);
-        std::shared_ptr<McaDataSource> const& src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> const &src = dataSource(localChunkX, localChunkZ, sr);
         if (!src) {
             return false;
         }
@@ -81,7 +84,7 @@ public:
             return false;
         }
         buffer.clear();
-        for (auto const& e : entities->fValue) {
+        for (auto const &e : entities->fValue) {
             if (e->type() != nbt::Tag::Type::Compound) {
                 continue;
             }
@@ -94,13 +97,13 @@ public:
         return true;
     }
 
-    static std::shared_ptr<Region> MakeRegion(std::filesystem::path const& filePath, int x, int z) {
+    static std::shared_ptr<Region> MakeRegion(std::filesystem::path const &filePath, int x, int z) {
         return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
 
-    static std::shared_ptr<Region> MakeRegion(std::string const&, int, int) = delete;
+    static std::shared_ptr<Region> MakeRegion(std::string const &, int, int) = delete;
 
-    static std::shared_ptr<Region> MakeRegion(std::filesystem::path const& filePath) {
+    static std::shared_ptr<Region> MakeRegion(std::filesystem::path const &filePath) {
         // ../directory/r.5.13.mca
         namespace fs = std::filesystem;
         using mcfile::String;
@@ -127,7 +130,7 @@ public:
         return shared_ptr<Region>(new Region(filePath, x, z));
     }
 
-    static std::shared_ptr<Region> MakeRegion(std::string const&) = delete;
+    static std::shared_ptr<Region> MakeRegion(std::string const &) = delete;
 
     int minBlockX() const { return fX * 32 * 16; }
     int maxBlockX() const { return (fX + 1) * 32 * 16 - 1; }
@@ -209,7 +212,7 @@ public:
         fclose(fp);
         return true;
     }
-    
+
     bool chunkExists(int chunkX, int chunkZ) const {
         int const localChunkX = chunkX - fX * 32;
         int const localChunkZ = chunkZ - fZ * 32;
@@ -239,16 +242,16 @@ public:
         s << "c." << chunkX << "." << chunkZ << ".nbt.z";
         return s.str();
     }
-    
+
     static std::string GetDefaultRegionFileName(int regionX, int regionZ) {
         std::ostringstream s;
         s << "r." << regionX << "." << regionZ << ".mca";
         return s.str();
     }
 
-    bool exportAllToNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::GetDefaultChunkNbtFileName) const = delete;
+    bool exportAllToNbt(std::string const &directory, std::function<std::string(int, int)> name = Region::GetDefaultChunkNbtFileName) const = delete;
 
-    bool exportAllToNbt(std::filesystem::path const& directory, std::function<std::string(int, int)> name = Region::GetDefaultChunkNbtFileName) const {
+    bool exportAllToNbt(std::filesystem::path const &directory, std::function<std::string(int, int)> name = Region::GetDefaultChunkNbtFileName) const {
         int const minX = minChunkX();
         int const minZ = minChunkZ();
         int const maxX = maxChunkX();
@@ -265,9 +268,9 @@ public:
         return true;
     }
 
-    bool exportAllToCompressedNbt(std::string const& directory, std::function<std::string(int, int)> name = Region::GetDefaultCompressedChunkNbtFileName) const = delete;
+    bool exportAllToCompressedNbt(std::string const &directory, std::function<std::string(int, int)> name = Region::GetDefaultCompressedChunkNbtFileName) const = delete;
 
-    bool exportAllToCompressedNbt(std::filesystem::path const& directory, std::function<std::string(int, int)> name = Region::GetDefaultCompressedChunkNbtFileName) const {
+    bool exportAllToCompressedNbt(std::filesystem::path const &directory, std::function<std::string(int, int)> name = Region::GetDefaultCompressedChunkNbtFileName) const {
         int const minX = minChunkX();
         int const minZ = minChunkZ();
         int const maxX = maxChunkX();
@@ -284,9 +287,9 @@ public:
         return true;
     }
 
-    bool exportToNbt(int chunkX, int chunkZ, std::string const& filePath) const = delete;
+    bool exportToNbt(int chunkX, int chunkZ, std::string const &filePath) const = delete;
 
-    bool exportToNbt(int chunkX, int chunkZ, std::filesystem::path const& filePath) const {
+    bool exportToNbt(int chunkX, int chunkZ, std::filesystem::path const &filePath) const {
         int const localChunkX = chunkX - fX * 32;
         int const localChunkZ = chunkZ - fZ * 32;
         if (localChunkX < 0 || 32 <= localChunkX) {
@@ -330,7 +333,7 @@ public:
             return false;
         }
         chunkSize = Int32FromBE(chunkSize) - 1;
-        
+
         uint8_t compressionType;
         if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
             fclose(in);
@@ -341,12 +344,12 @@ public:
             return false;
         }
 
-        FILE* out = File::Open(filePath, File::Mode::Write);
+        FILE *out = File::Open(filePath, File::Mode::Write);
         if (!out) {
             fclose(in);
             return false;
         }
-        
+
         std::vector<uint8_t> buffer(chunkSize);
         if (fread(buffer.data(), chunkSize, 1, in) != 1) {
             fclose(in);
@@ -363,16 +366,16 @@ public:
             fclose(out);
             return false;
         }
-        
+
         fclose(in);
         fclose(out);
-        
+
         return true;
     }
 
-    bool exportToCompressedNbt(int chunkX, int chunkZ, std::string const& filePath) const = delete;
+    bool exportToCompressedNbt(int chunkX, int chunkZ, std::string const &filePath) const = delete;
 
-    bool exportToCompressedNbt(int chunkX, int chunkZ, std::filesystem::path const& filePath) const {
+    bool exportToCompressedNbt(int chunkX, int chunkZ, std::filesystem::path const &filePath) const {
         int const localChunkX = chunkX - fX * 32;
         int const localChunkZ = chunkZ - fZ * 32;
         if (localChunkX < 0 || 32 <= localChunkX) {
@@ -401,7 +404,7 @@ public:
             fclose(in);
             return true;
         }
-        
+
         long const sectorOffset = loc >> 8;
         if (fseek(in, sectorOffset * kSectorSize, SEEK_SET) != 0) {
             fclose(in);
@@ -420,7 +423,7 @@ public:
             return false;
         }
 
-        FILE* out = File::Open(filePath, File::Mode::Write);
+        FILE *out = File::Open(filePath, File::Mode::Write);
         if (!out) {
             fclose(in);
             return false;
@@ -431,16 +434,16 @@ public:
             fclose(out);
             return false;
         }
-        
+
         fclose(in);
         fclose(out);
 
         return true;
     }
 
-    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const& directory, std::string const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) = delete;
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) = delete;
 
-    static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const& directory, std::filesystem::path const& resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) {
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const &directory, std::filesystem::path const &resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) {
         namespace fs = std::filesystem;
 
         int const minChunkX = regionX * 32;
@@ -462,12 +465,12 @@ public:
             return true;
         }
 
-        FILE* out = File::Open(resultMcaFilePath, File::Mode::Write);
+        FILE *out = File::Open(resultMcaFilePath, File::Mode::Write);
         if (!out) {
             return false;
         }
         fseek(out, 2 * kSectorSize, SEEK_SET);
-        
+
         std::vector<uint32_t> locationLut(1024, 0);
         for (int z = minChunkZ; z <= maxChunkZ; z++) {
             int const localChunkZ = z - minChunkZ;
@@ -519,7 +522,7 @@ public:
             fclose(out);
             return false;
         }
-        
+
         if (fseek(out, 0, SEEK_SET) != 0) {
             fclose(out);
             return false;
@@ -536,9 +539,9 @@ public:
         fclose(out);
         return true;
     }
-    
-    static bool IterateRegionForCompressedNbtFiles(std::string const& chunkFilesDirectory,
-                                                   std::function<bool(int regionX, int regionZ, std::string const& chunkFilesDirectory)> callback,
+
+    static bool IterateRegionForCompressedNbtFiles(std::string const &chunkFilesDirectory,
+                                                   std::function<bool(int regionX, int regionZ, std::string const &chunkFilesDirectory)> callback,
                                                    std::function<std::string(int regionX, int regionZ)> regionFileName = Region::GetDefaultRegionFileName) {
         namespace fs = std::filesystem;
 
@@ -547,7 +550,7 @@ public:
         int minRegionZ = 1;
         int maxRegionZ = -1;
         std::error_code err;
-        for (auto& p : fs::directory_iterator(chunkFilesDirectory)) {
+        for (auto &p : fs::directory_iterator(chunkFilesDirectory)) {
             if (!fs::is_regular_file(p, err)) {
                 continue;
             }
@@ -593,14 +596,13 @@ public:
     }
 
 private:
-    Region(std::filesystem::path const& filePath, int x, int z)
+    Region(std::filesystem::path const &filePath, int x, int z)
         : fX(x)
         , fZ(z)
-        , fFilePath(filePath)
-    {
+        , fFilePath(filePath) {
     }
 
-    std::shared_ptr<McaDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader& sr) const {
+    std::shared_ptr<McaDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader &sr) const {
         int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
         if (!sr.valid()) {
             return nullptr;
@@ -636,8 +638,8 @@ private:
         int const chunkZ = this->fZ * 32 + localChunkZ;
         return std::make_shared<McaDataSource>(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
     }
-    
-    bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader& sr, bool& error, LoadChunkCallback callback) const {
+
+    bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader &sr, bool &error, LoadChunkCallback callback) const {
         auto data = dataSource(regionX, regionZ, sr);
         if (!data) {
             error = true;
@@ -657,7 +659,7 @@ private:
         }
         return v + (div - (v % div));
     }
-    
+
 public:
     int const fX;
     int const fZ;
@@ -668,4 +670,4 @@ private:
     static long const kSectorSize = 4096;
 };
 
-} // namespace mcfile
+} // namespace mcfile::je

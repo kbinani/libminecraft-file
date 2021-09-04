@@ -4,10 +4,11 @@ namespace mcfile::je {
 
 class CachedChunkLoader {
 public:
-    explicit CachedChunkLoader(Region region) : fRegion(region) {
+    explicit CachedChunkLoader(Region region)
+        : fRegion(region) {
     }
 
-    void addToCache(std::shared_ptr<Chunk const> const& chunk) {
+    void addToCache(std::shared_ptr<Chunk const> const &chunk) {
         Pos2i pos(chunk->fChunkX, chunk->fChunkZ);
         fCache.insert(std::make_pair(pos, chunk));
     }
@@ -54,4 +55,4 @@ private:
     Region fRegion;
     std::unordered_map<Pos2i, std::shared_ptr<Chunk const>, Pos2iHasher> fCache;
 };
-}
+} // namespace mcfile::je

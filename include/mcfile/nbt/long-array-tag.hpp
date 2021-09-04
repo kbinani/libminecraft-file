@@ -5,11 +5,14 @@ namespace nbt {
 
 class LongArrayTag : public detail::VectorTag<int64_t, Tag::Type::LongArray> {
 public:
-    LongArrayTag() : VectorTag() {}
+    LongArrayTag()
+        : VectorTag() {}
 
-    explicit LongArrayTag(std::vector<int64_t>& input) : VectorTag(input) {}
+    explicit LongArrayTag(std::vector<int64_t> &input)
+        : VectorTag(input) {}
 
-    explicit LongArrayTag(size_t size) : VectorTag(size) {}
+    explicit LongArrayTag(size_t size)
+        : VectorTag(size) {}
 
     std::shared_ptr<Tag> clone() const override {
         std::vector<int64_t> copy = value();

@@ -5,7 +5,11 @@ namespace mcfile::je {
 class McaDataSource {
 public:
     McaDataSource(int chunkX, int chunkZ, uint32_t timestamp, long offset, long length)
-        : fChunkX(chunkX), fChunkZ(chunkZ), fTimestamp(timestamp), fOffset(offset), fLength(length) {
+        : fChunkX(chunkX)
+        , fChunkZ(chunkZ)
+        , fTimestamp(timestamp)
+        , fOffset(offset)
+        , fLength(length) {
     }
 
     std::shared_ptr<nbt::CompoundTag> load(::mcfile::stream::InputStreamReader &reader) const {
@@ -38,7 +42,7 @@ public:
         }
         return root;
     }
-    
+
     std::shared_ptr<Chunk> loadChunk(::mcfile::stream::InputStreamReader &reader) const {
         auto root = load(reader);
         if (root) {

@@ -15,7 +15,7 @@ public:
         return tokens;
     }
 
-    static bool EndsWith(std::string const& s, std::string const& search) {
+    static bool EndsWith(std::string const &s, std::string const &search) {
         if (s.size() < search.size()) {
             return false;
         }

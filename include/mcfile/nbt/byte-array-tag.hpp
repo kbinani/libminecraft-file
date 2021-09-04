@@ -5,11 +5,14 @@ namespace nbt {
 
 class ByteArrayTag : public detail::VectorTag<uint8_t, Tag::Type::ByteArray> {
 public:
-    ByteArrayTag() : VectorTag() {}
+    ByteArrayTag()
+        : VectorTag() {}
 
-    explicit ByteArrayTag(std::vector<uint8_t>& input) : VectorTag(input) {}
+    explicit ByteArrayTag(std::vector<uint8_t> &input)
+        : VectorTag(input) {}
 
-    explicit ByteArrayTag(size_t size) : VectorTag(size) {}
+    explicit ByteArrayTag(size_t size)
+        : VectorTag(size) {}
 
     std::shared_ptr<Tag> clone() const override {
         std::vector<uint8_t> copy = value();

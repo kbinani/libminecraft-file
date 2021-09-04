@@ -12,7 +12,7 @@ public:
         return fPalette[*index];
     }
 
-    static std::shared_ptr<SubChunk> Parse(std::string const& data) {
+    static std::shared_ptr<SubChunk> Parse(std::string const &data) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
@@ -97,7 +97,7 @@ public:
     }
 
 private:
-    SubChunk(std::vector<std::shared_ptr<Block const>>& palette, std::vector<uint16_t>& paletteIndices) {
+    SubChunk(std::vector<std::shared_ptr<Block const>> &palette, std::vector<uint16_t> &paletteIndices) {
         fPalette.swap(palette);
         fPaletteIndices.swap(paletteIndices);
     }
@@ -131,4 +131,4 @@ private:
     std::vector<uint16_t> fPaletteIndices;
 };
 
-}
+} // namespace mcfile::be

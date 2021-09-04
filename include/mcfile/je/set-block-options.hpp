@@ -4,10 +4,9 @@ namespace mcfile::je {
 
 struct SetBlockOptions {
     SetBlockOptions()
-        : fRemoveTileEntity(true)
-    {}
-    
+        : fRemoveTileEntity(true) {}
+
     bool fRemoveTileEntity : 1;
 };
 
-} // namespace mcfile
+} // namespace mcfile::je

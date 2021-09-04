@@ -4,16 +4,15 @@ namespace mcfile::je {
 
 class World {
 public:
-    explicit World(std::filesystem::path const& rootDirectory)
-        : fRootDirectory(rootDirectory)
-    {
+    explicit World(std::filesystem::path const &rootDirectory)
+        : fRootDirectory(rootDirectory) {
     }
 
-    World(std::string const&) = delete;
+    World(std::string const &) = delete;
 
     std::shared_ptr<Region> region(int regionX, int regionZ) const {
         namespace fs = std::filesystem;
-        fs::path regionFilePath = fRootDirectory / "region" / ("r." + std::to_string(regionX) +  "." + std::to_string( regionZ) +  ".mca");
+        fs::path regionFilePath = fRootDirectory / "region" / ("r." + std::to_string(regionX) + "." + std::to_string(regionZ) + ".mca");
         return Region::MakeRegion(regionFilePath);
     }
 
@@ -24,7 +23,7 @@ public:
     }
 
     std::shared_ptr<Chunk> chunkAtBlock(int blockX, int blockZ) const {
-        auto const& region = regionAtBlock(blockX, blockZ);
+        auto const &region = regionAtBlock(blockX, blockZ);
         if (!region) {
             return nullptr;
         }
@@ -36,7 +35,7 @@ public:
     std::shared_ptr<Chunk> chunkAt(int chunkX, int chunkZ) const {
         int rx = Coordinate::RegionFromChunk(chunkX);
         int rz = Coordinate::RegionFromChunk(chunkZ);
-        auto const& r = region(rx, rz);
+        auto const &r = region(rx, rz);
         if (!r) {
             return nullptr;
         }
@@ -44,7 +43,7 @@ public:
     }
 
     std::shared_ptr<WritableChunk> writableChunkAtBlock(int blockX, int blockZ) const {
-        auto const& region = regionAtBlock(blockX, blockZ);
+        auto const &region = regionAtBlock(blockX, blockZ);
         if (!region) {
             return nullptr;
         }
@@ -56,7 +55,7 @@ public:
     std::shared_ptr<WritableChunk> writableChunkAt(int chunkX, int chunkZ) const {
         int rx = Coordinate::RegionFromChunk(chunkX);
         int rz = Coordinate::RegionFromChunk(chunkZ);
-        auto const& r = region(rx, rz);
+        auto const &r = region(rx, rz);
         if (!r) {
             return nullptr;
         }
@@ -78,7 +77,7 @@ public:
                     continue;
                 }
                 bool error = false;
-                return region->loadAllChunks(error, [minX, minZ, maxX, maxZ, callback](Chunk const& chunk) {
+                return region->loadAllChunks(error, [minX, minZ, maxX, maxZ, callback](Chunk const &chunk) {
                     for (int y = 0; y < 256; y++) {
                         for (int z = std::max(minZ, chunk.minBlockZ()); z <= std::min(maxZ, chunk.maxBlockZ()); z++) {
                             for (int x = std::max(minX, chunk.minBlockX()); x <= std::min(maxX, chunk.maxBlockX()); x++) {
@@ -96,14 +95,14 @@ public:
         return true;
     }
 
-    bool eachRegions(std::function<bool(std::shared_ptr<Region> const&)> callback) const {
+    bool eachRegions(std::function<bool(std::shared_ptr<Region> const &)> callback) const {
         namespace fs = std::filesystem;
         auto regionDir = fRootDirectory / "region";
         if (!fs::exists(regionDir)) {
-            return  true;
+            return true;
         }
         fs::directory_iterator itr(regionDir);
-        for (auto const& sub : itr) {
+        for (auto const &sub : itr) {
             auto region = Region::MakeRegion(sub.path());
             if (!region) {
                 continue;
@@ -119,4 +118,4 @@ public:
     std::filesystem::path const fRootDirectory;
 };
 
-} // namespace mcfile
+} // namespace mcfile::je

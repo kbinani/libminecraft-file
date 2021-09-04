@@ -4,17 +4,18 @@ namespace mcfile {
 namespace nbt {
 namespace detail {
 
-template< typename T, Tag::Type ID>
+template<typename T, Tag::Type ID>
 class ScalarTag : public Tag {
 public:
-    ScalarTag() : Tag() {}
+    ScalarTag()
+        : Tag() {}
 
     explicit ScalarTag(T v) {
         fValue = v;
         fValid = true;
     }
 
-    bool readImpl(::mcfile::stream::InputStreamReader& r) override {
+    bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         T v;
         if (!r.read(&v)) {
             return false;
@@ -23,7 +24,7 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter& w) const override {
+    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
         w.write(fValue);
     }
 

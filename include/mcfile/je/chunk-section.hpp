@@ -11,18 +11,18 @@ public:
     virtual blocks::BlockId blockIdAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual int y() const = 0;
     virtual int rawY() const = 0;
-    virtual std::vector<std::shared_ptr<Block const>> const& palette() const = 0;
+    virtual std::vector<std::shared_ptr<Block const>> const &palette() const = 0;
     virtual std::optional<size_t> paletteIndexAt(int offsetX, int offsetY, int offsetZ) const = 0;
 
     // optional
 
-    virtual bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const& block) {
+    virtual bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) {
         return false;
     }
-    
+
     virtual std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const {
         return nullptr;
     }
 };
 
-} // namespace mcfile
+} // namespace mcfile::je

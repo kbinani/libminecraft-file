@@ -10,7 +10,7 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return nullptr;
         }
-        auto const& section = unsafeSectionAtBlock(y);
+        auto const &section = unsafeSectionAtBlock(y);
         if (!section) {
             return nullptr;
         }
@@ -30,7 +30,7 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return blocks::unknown;
         }
-        auto const& section = unsafeSectionAtBlock(y);
+        auto const &section = unsafeSectionAtBlock(y);
         if (!section) {
             return blocks::unknown;
         }
@@ -44,13 +44,13 @@ public:
         return blockIdAt(pos.fX, pos.fY, pos.fZ);
     }
 
-    bool setBlockAt(int x, int y, int z, std::shared_ptr<Block const> const& block, SetBlockOptions options = SetBlockOptions()) {
+    bool setBlockAt(int x, int y, int z, std::shared_ptr<Block const> const &block, SetBlockOptions options = SetBlockOptions()) {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return false;
         }
-        auto const& section = sectionAtBlock(y);
+        auto const &section = sectionAtBlock(y);
         if (!section) {
             return false;
         }
@@ -67,7 +67,7 @@ public:
         }
     }
 
-    bool setBlockAt(Pos3i pos, std::shared_ptr<Block const> const& block, SetBlockOptions options = SetBlockOptions()) {
+    bool setBlockAt(Pos3i pos, std::shared_ptr<Block const> const &block, SetBlockOptions options = SetBlockOptions()) {
         return setBlockAt(pos.fX, pos.fY, pos.fZ, block, options);
     }
 
@@ -92,7 +92,7 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return 0;
         }
-        auto const& section = unsafeSectionAtBlock(y);
+        auto const &section = unsafeSectionAtBlock(y);
         if (!section) {
             return -1;
         }
@@ -112,7 +112,7 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return 0;
         }
-        auto const& section = unsafeSectionAtBlock(y);
+        auto const &section = unsafeSectionAtBlock(y);
         if (!section) {
             return -1;
         }
@@ -230,7 +230,7 @@ public:
         }
     }
 
-    static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const& root) {
+    static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const &root) {
         using namespace std;
 
         auto level = root->query("/Level")->asCompound();
@@ -270,7 +270,7 @@ public:
         auto biomesTag = level->query("Biomes");
         ParseBiomes(biomesTag, biomes);
 
-        vector<shared_ptr<nbt:: CompoundTag>> entities;
+        vector<shared_ptr<nbt::CompoundTag>> entities;
         auto entitiesTag = level->listTag("Entities");
         if (entitiesTag && entitiesTag->fType == nbt::Tag::Type::Compound) {
             auto entitiesList = entitiesTag->asList();
@@ -337,7 +337,7 @@ public:
                                                 tileTicks, liquidTicks, s, terrianPopulated, createEmptySection));
     }
 
-    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::filesystem::path const& filePath, int chunkX, int chunkZ) {
+    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::filesystem::path const &filePath, int chunkX, int chunkZ) {
         auto stream = std::make_shared<mcfile::stream::FileInputStream>(filePath);
         if (!stream->valid()) {
             return nullptr;
@@ -360,12 +360,11 @@ public:
     }
 
 protected:
-    explicit Chunk(Chunk& s)
+    explicit Chunk(Chunk &s)
         : fChunkX(s.fChunkX)
         , fChunkZ(s.fChunkZ)
         , fDataVersion(s.fDataVersion)
-        , fLastUpdate(s.fLastUpdate)
-    {
+        , fLastUpdate(s.fLastUpdate) {
         fSections.swap(s.fSections);
         fBiomes.swap(s.fBiomes);
         fEntities.swap(s.fEntities);
@@ -376,16 +375,16 @@ protected:
 
 private:
     Chunk(int chunkX, int chunkZ,
-          std::vector<std::shared_ptr<ChunkSection>> const& sections,
+          std::vector<std::shared_ptr<ChunkSection>> const &sections,
           int dataVersion,
-          std::vector<biomes::BiomeId> & biomes,
+          std::vector<biomes::BiomeId> &biomes,
           std::vector<std::shared_ptr<nbt::CompoundTag>> &entities,
-          std::vector<std::shared_ptr<nbt::CompoundTag>>& tileEntities,
-          std::shared_ptr<nbt::CompoundTag> const& structures,
+          std::vector<std::shared_ptr<nbt::CompoundTag>> &tileEntities,
+          std::shared_ptr<nbt::CompoundTag> const &structures,
           int64_t lastUpdate,
           std::vector<TickingBlock> tileTicks,
           std::vector<TickingBlock> liquidTicks,
-          std::string const& status,
+          std::string const &status,
           std::optional<bool> terrianPopulated,
           std::function<std::shared_ptr<ChunkSection>(int sectionY)> createEmptySection)
         : fChunkX(chunkX)
@@ -397,14 +396,13 @@ private:
         , fLiquidTicks(liquidTicks)
         , fStatus(status)
         , fTerrianPopulated(terrianPopulated)
-        , fCreateEmptySection(createEmptySection)
-    {
+        , fCreateEmptySection(createEmptySection) {
         if (sections.empty()) {
             fMinChunkSectionY = 0;
         } else {
             std::optional<int> minChunkSectionY;
             std::optional<int> maxChunkSectionY;
-            for (auto const& section : sections) {
+            for (auto const &section : sections) {
                 int const y = section->y();
                 if (minChunkSectionY) {
                     minChunkSectionY = std::min(*minChunkSectionY, y);
@@ -419,7 +417,7 @@ private:
             }
             fMinChunkSectionY = *minChunkSectionY;
             fSections.resize(*maxChunkSectionY - *minChunkSectionY + 1);
-            for (auto const& section : sections) {
+            for (auto const &section : sections) {
                 int const y = section->y();
                 int const idx = y - fMinChunkSectionY;
                 fSections[idx] = section;
@@ -427,7 +425,7 @@ private:
         }
         fBiomes.swap(biomes);
         fEntities.swap(entities);
-        for (auto const& item : tileEntities) {
+        for (auto const &item : tileEntities) {
             assert(item);
             auto x = item->int32("x");
             auto y = item->int32("y");
@@ -450,7 +448,7 @@ private:
             return fSections[idx];
         }
     }
-    
+
     std::shared_ptr<ChunkSection> sectionAtBlock(int y) {
         int const sectionIndex = y / 16;
         int const idx = sectionIndex - fMinChunkSectionY;
@@ -466,7 +464,7 @@ private:
                     int maxChunkSectionY = std::max(sectionIndex, fMinChunkSectionY + (int)fSections.size());
                     std::vector<std::shared_ptr<ChunkSection>> sections;
                     sections.resize(maxChunkSectionY - minChunkSectionY + 1);
-                    for (auto const& s : fSections) {
+                    for (auto const &s : fSections) {
                         if (!s) {
                             continue;
                         }
@@ -481,12 +479,12 @@ private:
         return section;
     }
 
-    static void ParseBiomes(nbt::Tag const* biomesTag, std::vector<biomes::BiomeId> &result) {
+    static void ParseBiomes(nbt::Tag const *biomesTag, std::vector<biomes::BiomeId> &result) {
         if (!biomesTag) {
             return;
         }
         if (biomesTag->type() == nbt::Tag::Type::IntArray) {
-            std::vector<int32_t> const& value = biomesTag->asIntArray()->value();
+            std::vector<int32_t> const &value = biomesTag->asIntArray()->value();
             size_t const size = value.size();
             if (size == 256 || size == 1024 || size == 1536) {
                 result.resize(size);
@@ -495,7 +493,7 @@ private:
                 }
             }
         } else if (biomesTag->type() == nbt::Tag::Type::ByteArray) {
-            std::vector<uint8_t> const& value = biomesTag->asByteArray()->value();
+            std::vector<uint8_t> const &value = biomesTag->asByteArray()->value();
             if (value.size() == 256) {
                 result.resize(256);
                 for (int i = 0; i < 256; i++) {
@@ -525,4 +523,4 @@ protected:
     std::function<std::shared_ptr<ChunkSection>(int sectionY)> const fCreateEmptySection;
 };
 
-} // namespace mcfile
+} // namespace mcfile::je
