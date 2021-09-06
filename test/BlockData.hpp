@@ -1,5 +1,11 @@
 #pragma once
 
+#include "Point3D.hpp"
+
+#include <map>
+#include <sstream>
+#include <string>
+
 class BlockData {
 public:
     BlockData(std::string const &name, int blockLight, int skyLight)

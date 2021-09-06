@@ -1,9 +1,11 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
+#include "minecraft-file.hpp"
+
 #include "BlockData.hpp"
 #include "Path.hpp"
 #include "Point3D.hpp"
-#include "minecraft-file.hpp"
-#include <doctest/doctest.h>
 
 using namespace mcfile;
 
