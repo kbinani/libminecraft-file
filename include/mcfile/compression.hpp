@@ -6,14 +6,14 @@ class Compression {
 public:
     Compression() = delete;
 
-    static bool compress(std::vector<uint8_t> &inout) {
+    static bool compress(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
         z_stream zs;
         char buff[kSegSize];
         std::vector<uint8_t> outData;
         unsigned long prevOut = 0;
 
         memset(&zs, 0, sizeof(zs));
-        if (deflateInit(&zs, Z_BEST_COMPRESSION) != Z_OK) {
+        if (deflateInit(&zs, level) != Z_OK) {
             return false;
         }
         zs.next_in = (Bytef *)inout.data();
