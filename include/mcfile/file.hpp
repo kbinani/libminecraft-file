@@ -41,6 +41,27 @@ public:
 #endif
     }
 
+    static bool Fseek(FILE *file, uint64_t pos, int origin) {
+#if defined(_WIN32)
+        return _fseeki64(file, pos, origin) == 0;
+#else
+        return fseeko(file, pos, origin) == 0;
+#endif
+    }
+
+    static std::optional<uint64_t> Ftell(FILE *file) {
+#if defined(_WIN32)
+        auto ret = _ftelli64(file);
+#else
+        auto ret = ftello(file);
+#endif
+        if (ret < 0) {
+            return std::nullopt;
+        } else {
+            return static_cast<uint64_t>(ret);
+        }
+    }
+
 private:
     static std::string ModeString(Mode mode) {
         switch (mode) {
