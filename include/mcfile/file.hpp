@@ -10,6 +10,7 @@ public:
     enum class Mode {
         Read,
         Write,
+        Append,
     };
 
     static FILE *Open(std::string const &path, Mode mode) = delete;
@@ -69,6 +70,8 @@ private:
             return "rb";
         case Mode::Write:
             return "wb";
+        case Mode::Append:
+            return "ab";
         }
         return "rb";
     }
@@ -79,6 +82,8 @@ private:
             return L"rb";
         case Mode::Write:
             return L"wb";
+        case Mode::Append:
+            return L"ab";
         }
         return L"rb";
     }
