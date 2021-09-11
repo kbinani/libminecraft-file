@@ -42,7 +42,7 @@ public:
 #endif
     }
 
-    static bool Fseek(FILE *file, uint64_t pos, int origin) {
+    [[nodiscard]] static bool Fseek(FILE *file, uint64_t pos, int origin) {
 #if defined(_WIN32)
         return _fseeki64(file, pos, origin) == 0;
 #else
@@ -61,6 +61,14 @@ public:
         } else {
             return static_cast<uint64_t>(ret);
         }
+    }
+
+    [[nodiscard]] static bool Fwrite(void const *buffer, size_t elementSize, size_t elementCount, FILE *stream) {
+        return fwrite(buffer, elementSize, elementCount, stream) == elementCount;
+    }
+
+    [[nodiscard]] static bool Fread(void *buffer, size_t elementSize, size_t elementCount, FILE *stream) {
+        return fread(buffer, elementSize, elementCount, stream) == elementCount;
     }
 
 private:

@@ -18,75 +18,77 @@ public:
 
     OutputStreamWriter &operator=(OutputStreamWriter const &) = delete;
 
-    void write(uint8_t v) {
-        fStream->write(&v, sizeof(v));
+    [[nodiscard]] bool write(uint8_t v) {
+        return fStream->write(&v, sizeof(v));
     }
 
-    void write(uint64_t v) {
+    [[nodiscard]] bool write(uint64_t v) {
         if (fLittleEndian) {
             v = mcfile::Int64LEFromNative(v);
         } else {
             v = mcfile::Int64BEFromNative(v);
         }
-        fStream->write(&v, sizeof(v));
+        return fStream->write(&v, sizeof(v));
     }
 
-    void write(uint32_t v) {
+    [[nodiscard]] bool write(uint32_t v) {
         if (fLittleEndian) {
             v = mcfile::Int32LEFromNative(v);
         } else {
             v = mcfile::Int32BEFromNative(v);
         }
-        fStream->write(&v, sizeof(v));
+        return fStream->write(&v, sizeof(v));
     }
 
-    void write(uint16_t v) {
+    [[nodiscard]] bool write(uint16_t v) {
         if (fLittleEndian) {
             v = mcfile::Int16LEFromNative(v);
         } else {
             v = mcfile::Int16BEFromNative(v);
         }
-        fStream->write(&v, sizeof(v));
+        return fStream->write(&v, sizeof(v));
     }
 
-    void write(int64_t v) {
+    [[nodiscard]] bool write(int64_t v) {
         uint64_t t;
         if (fLittleEndian) {
             t = mcfile::Int64LEFromNative(*(int64_t *)&v);
         } else {
             t = mcfile::Int64BEFromNative(*(int64_t *)&v);
         }
-        fStream->write(&t, sizeof(t));
+        return fStream->write(&t, sizeof(t));
     }
 
-    void write(int32_t v) {
+    [[nodiscard]] bool write(int32_t v) {
         uint32_t t;
         if (fLittleEndian) {
             t = mcfile::Int32LEFromNative(*(int32_t *)&v);
         } else {
             t = mcfile::Int32BEFromNative(*(int32_t *)&v);
         }
-        fStream->write(&t, sizeof(t));
+        return fStream->write(&t, sizeof(t));
     }
 
-    void write(int16_t v) {
+    [[nodiscard]] bool write(int16_t v) {
         uint16_t t;
         if (fLittleEndian) {
             t = mcfile::Int16LEFromNative(*(int16_t *)&v);
         } else {
             t = mcfile::Int16BEFromNative(*(int16_t *)&v);
         }
-        fStream->write(&t, sizeof(t));
+        return fStream->write(&t, sizeof(t));
     }
 
-    void write(std::vector<uint8_t> &buffer) {
-        fStream->write(buffer.data(), buffer.size());
+    [[nodiscard]] bool write(std::vector<uint8_t> &buffer) {
+        return fStream->write(buffer.data(), buffer.size());
     }
 
-    void write(std::string const &s) {
+    [[nodiscard]] bool write(std::string const &s) {
         uint16_t length = (uint16_t)std::min(s.size(), (size_t)std::numeric_limits<uint16_t>::max());
-        write(length);
-        fStream->write((void *)s.data(), length);
+        if (!write(length)) {
+            return false;
+        }
+        return fStream->write((void *)s.data(), length);
     }
 
 private:

@@ -6,7 +6,8 @@ namespace stream {
 class FileOutputStream : public OutputStream {
 public:
     explicit FileOutputStream(std::filesystem::path const &filePath)
-        : fFile(nullptr) {
+        : fFile(nullptr)
+        , fPos(0) {
         FILE *fp = File::Open(filePath, File::Mode::Write);
 
         if (!fp) {
@@ -29,19 +30,30 @@ public:
     FileOutputStream &operator=(FileOutputStream const &) = delete;
 
     bool write(void *buffer, size_t size) override {
-        return fwrite(buffer, size, 1, fFile) == 1;
+        if (fwrite(buffer, size, 1, fFile) == 1) {
+            fPos += size;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     bool seek(uint64_t offset) override {
-        return File::Fseek(fFile, offset, SEEK_SET);
+        if (File::Fseek(fFile, offset, SEEK_SET)) {
+            fPos = offset;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     uint64_t pos() const override {
-        return ftell(fFile);
+        return fPos;
     }
 
 private:
     FILE *fFile;
+    uint64_t fPos = 0;
 };
 
 } // namespace stream

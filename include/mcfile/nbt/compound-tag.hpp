@@ -47,11 +47,17 @@ public:
         return w.write((uint8_t)0);
     }
 
-    void writeAsRoot(mcfile::stream::OutputStreamWriter &w) const {
-        w.write(static_cast<uint8_t>(Tag::Type::Compound));
-        w.write(std::string());
-        write(w);
-        w.write(static_cast<uint8_t>(Tag::Type::End));
+    [[nodiscard]] bool writeAsRoot(mcfile::stream::OutputStreamWriter &w) const {
+        if (!w.write(static_cast<uint8_t>(Tag::Type::Compound))) {
+            return false;
+        }
+        if (!w.write(std::string())) {
+            return false;
+        }
+        if (!write(w)) {
+            return false;
+        }
+        return w.write(static_cast<uint8_t>(Tag::Type::End));
     }
 
     Tag::Type type() const override { return Tag::Type::Compound; }

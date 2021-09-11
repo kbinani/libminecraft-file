@@ -157,12 +157,12 @@ public:
             return false;
         }
         int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
-        if (fseek(fp, 4 * index, SEEK_SET) != 0) {
+        if (!File::Fseek(fp, 4 * index, SEEK_SET)) {
             fclose(fp);
             return false;
         }
         uint32_t loc;
-        if (fread(&loc, sizeof(loc), 1, fp) != 1) {
+        if (!File::Fread(&loc, sizeof(loc), 1, fp)) {
             fclose(fp);
             return false;
         }
@@ -172,38 +172,38 @@ public:
             return true;
         }
         long const sectorOffset = loc >> 8;
-        if (fseek(fp, 4 * index, SEEK_SET) != 0) {
+        if (!File::Fseek(fp, 4 * index, SEEK_SET)) {
             fclose(fp);
             return false;
         }
         loc = 0;
-        if (fwrite(&loc, sizeof(loc), 1, fp) != 1) {
+        if (!File::Fwrite(&loc, sizeof(loc), 1, fp)) {
             fclose(fp);
             return false;
         }
 
-        if (fseek(fp, kSectorSize + 4 * index, SEEK_SET) != 0) {
+        if (!File::Fseek(fp, kSectorSize + 4 * index, SEEK_SET)) {
             fclose(fp);
             return false;
         }
         uint32_t timestamp = 0;
-        if (fwrite(&timestamp, sizeof(timestamp), 1, fp) != 1) {
+        if (!File::Fwrite(&timestamp, sizeof(timestamp), 1, fp)) {
             fclose(fp);
             return false;
         }
-        if (fseek(fp, sectorOffset * kSectorSize, SEEK_SET) != 0) {
+        if (!File::Fseek(fp, sectorOffset * kSectorSize, SEEK_SET)) {
             fclose(fp);
             return false;
         }
         uint32_t chunkSize;
-        if (fread(&chunkSize, sizeof(chunkSize), 1, fp) != 1) {
+        if (!File::Fread(&chunkSize, sizeof(chunkSize), 1, fp)) {
             fclose(fp);
             return false;
         }
         chunkSize = Int32FromBE(chunkSize);
         for (uint32_t i = 0; i < chunkSize; i++) {
             uint8_t zero = 0;
-            if (fwrite(&zero, sizeof(zero), 1, fp) != 1) {
+            if (!File::Fwrite(&zero, sizeof(zero), 1, fp)) {
                 fclose(fp);
                 return false;
             }
@@ -304,12 +304,12 @@ public:
             return false;
         }
         int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
-        if (fseek(in, 4 * index, SEEK_SET) != 0) {
+        if (!File::Fseek(in, 4 * index, SEEK_SET)) {
             fclose(in);
             return false;
         }
         uint32_t loc;
-        if (fread(&loc, sizeof(loc), 1, in) != 1) {
+        if (!File::Fread(&loc, sizeof(loc), 1, in)) {
             fclose(in);
             return false;
         }
@@ -319,23 +319,23 @@ public:
             return true;
         }
         long const sectorOffset = loc >> 8;
-        if (fseek(in, 4 * index, SEEK_SET) != 0) {
+        if (!File::Fseek(in, 4 * index, SEEK_SET)) {
             fclose(in);
             return false;
         }
-        if (fseek(in, sectorOffset * kSectorSize, SEEK_SET) != 0) {
+        if (!File::Fseek(in, sectorOffset * kSectorSize, SEEK_SET)) {
             fclose(in);
             return false;
         }
         uint32_t chunkSize;
-        if (fread(&chunkSize, sizeof(chunkSize), 1, in) != 1) {
+        if (!File::Fread(&chunkSize, sizeof(chunkSize), 1, in)) {
             fclose(in);
             return false;
         }
         chunkSize = Int32FromBE(chunkSize) - 1;
 
         uint8_t compressionType;
-        if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
+        if (!File::Fread(&compressionType, sizeof(compressionType), 1, in)) {
             fclose(in);
             return false;
         }
@@ -351,7 +351,7 @@ public:
         }
 
         std::vector<uint8_t> buffer(chunkSize);
-        if (fread(buffer.data(), chunkSize, 1, in) != 1) {
+        if (!File::Fread(buffer.data(), chunkSize, 1, in)) {
             fclose(in);
             fclose(out);
             return false;
@@ -361,7 +361,7 @@ public:
             fclose(out);
             return false;
         }
-        if (fwrite(buffer.data(), buffer.size(), 1, out) != 1) {
+        if (!File::Fwrite(buffer.data(), buffer.size(), 1, out)) {
             fclose(in);
             fclose(out);
             return false;
@@ -390,12 +390,12 @@ public:
             return false;
         }
         int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
-        if (fseek(in, 4 * index, SEEK_SET) != 0) {
+        if (!File::Fseek(in, 4 * index, SEEK_SET)) {
             fclose(in);
             return false;
         }
         uint32_t loc;
-        if (fread(&loc, sizeof(loc), 1, in) != 1) {
+        if (!File::Fread(&loc, sizeof(loc), 1, in)) {
             fclose(in);
             return false;
         }
@@ -406,19 +406,19 @@ public:
         }
 
         long const sectorOffset = loc >> 8;
-        if (fseek(in, sectorOffset * kSectorSize, SEEK_SET) != 0) {
+        if (!File::Fseek(in, sectorOffset * kSectorSize, SEEK_SET)) {
             fclose(in);
             return false;
         }
         uint32_t chunkSize;
-        if (fread(&chunkSize, sizeof(chunkSize), 1, in) != 1) {
+        if (!File::Fread(&chunkSize, sizeof(chunkSize), 1, in)) {
             fclose(in);
             return false;
         }
         chunkSize = Int32FromBE(chunkSize) - 1;
 
         uint8_t compressionType;
-        if (fread(&compressionType, sizeof(compressionType), 1, in) != 1) {
+        if (!File::Fread(&compressionType, sizeof(compressionType), 1, in)) {
             fclose(in);
             return false;
         }
@@ -469,7 +469,9 @@ public:
         if (!out) {
             return false;
         }
-        fseek(out, 2 * kSectorSize, SEEK_SET);
+        if (!File::Fseek(out, 2 * kSectorSize, SEEK_SET)) {
+            return false;
+        }
 
         std::vector<uint32_t> locationLut(1024, 0);
         for (int z = minChunkZ; z <= maxChunkZ; z++) {
@@ -484,7 +486,7 @@ public:
                 }
                 long const currentLocation = ftell(out);
                 long const location = Ceil(currentLocation, kSectorSize);
-                if (fseek(out, location, SEEK_SET) != 0) {
+                if (!File::Fseek(out, location, SEEK_SET)) {
                     fclose(in);
                     fclose(out);
                     return false;
@@ -492,12 +494,12 @@ public:
                 size_t const size = fs::file_size(filepath);
                 uint8_t compressionType = 2;
                 uint32_t s = Int32BEFromNative(size + sizeof(compressionType));
-                if (fwrite(&s, sizeof(s), 1, out) != 1) {
+                if (!File::Fwrite(&s, sizeof(s), 1, out)) {
                     fclose(in);
                     fclose(out);
                     return false;
                 }
-                if (fwrite(&compressionType, sizeof(compressionType), 1, out) != 1) {
+                if (!File::Fwrite(&compressionType, sizeof(compressionType), 1, out)) {
                     fclose(in);
                     fclose(out);
                     return false;
@@ -518,21 +520,21 @@ public:
         long const current = ftell(out);
         long const numZeroFill = Ceil(current, kSectorSize) - current;
         std::vector<uint8_t> zerofill(numZeroFill);
-        if (fwrite(zerofill.data(), sizeof(uint8_t), numZeroFill, out) != numZeroFill) {
+        if (!File::Fwrite(zerofill.data(), sizeof(uint8_t), numZeroFill, out)) {
             fclose(out);
             return false;
         }
 
-        if (fseek(out, 0, SEEK_SET) != 0) {
+        if (!File::Fseek(out, 0, SEEK_SET)) {
             fclose(out);
             return false;
         }
-        if (fwrite(locationLut.data(), sizeof(uint32_t), locationLut.size(), out) != locationLut.size()) {
+        if (!File::Fwrite(locationLut.data(), sizeof(uint32_t), locationLut.size(), out)) {
             fclose(out);
             return false;
         }
         std::vector<uint32_t> timestamp(1024, std::time(nullptr));
-        if (fwrite(timestamp.data(), sizeof(uint32_t), timestamp.size(), out) != timestamp.size()) {
+        if (!File::Fwrite(timestamp.data(), sizeof(uint32_t), timestamp.size(), out)) {
             fclose(out);
             return false;
         }
