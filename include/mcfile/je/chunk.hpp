@@ -364,13 +364,18 @@ protected:
         : fChunkX(s.fChunkX)
         , fChunkZ(s.fChunkZ)
         , fDataVersion(s.fDataVersion)
-        , fLastUpdate(s.fLastUpdate) {
+        , fLastUpdate(s.fLastUpdate)
+        , fStatus(s.fStatus)
+        , fTerrianPopulated(s.fTerrianPopulated)
+        , fMinChunkSectionY(s.fMinChunkSectionY)
+        , fCreateEmptySection(s.fCreateEmptySection) {
         fSections.swap(s.fSections);
         fBiomes.swap(s.fBiomes);
         fEntities.swap(s.fEntities);
         fTileEntities.swap(s.fTileEntities);
         fStructures.swap(s.fStructures);
         fTileTicks.swap(s.fTileTicks);
+        fLiquidTicks.swap(s.fLiquidTicks);
     }
 
 private:

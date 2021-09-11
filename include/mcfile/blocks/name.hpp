@@ -951,7 +951,7 @@ static inline std::string Name(BlockId id, int dataVersion = -1) {
 static inline bool IsTransparent(BlockId id) {
     auto characteristic = impl::BlockCharacteristic(id);
     if (!characteristic) {
-        return "";
+        return false;
     }
     return !characteristic->opaque;
 }

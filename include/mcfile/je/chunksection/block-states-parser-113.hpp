@@ -11,11 +11,6 @@ public:
             return;
         }
         size_t const bitsPerIndex = numBits >> 12;
-        if (64 % bitsPerIndex != 0) {
-            int a = 0;
-        }
-        size_t u64Index = 0;
-        size_t bitIndex = 0;
         for (int i = 0; i < 4096; i++) {
             size_t bitIndex = bitsPerIndex * i;
             size_t u64Index = bitIndex / 64;

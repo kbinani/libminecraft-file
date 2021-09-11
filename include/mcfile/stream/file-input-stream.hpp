@@ -7,6 +7,7 @@ class FileInputStream : public InputStream {
 public:
     explicit FileInputStream(std::filesystem::path const &filePath)
         : fFile(nullptr)
+        , fLength(0)
         , fLoc(0) {
         FILE *fp = File::Open(filePath, File::Mode::Read);
 
