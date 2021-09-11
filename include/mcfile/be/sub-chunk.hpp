@@ -79,9 +79,13 @@ public:
         for (uint32_t i = 0; i < numPaletteEntries; i++) {
             auto tag = make_shared<CompoundTag>();
             uint8_t type;
-            sr.read(&type);
+            if (!sr.read(&type)) {
+                return nullptr;
+            }
             string empty;
-            sr.read(empty);
+            if (!sr.read(empty)) {
+                return nullptr;
+            }
             tag->read(sr);
             if (!tag->valid()) {
                 return nullptr;
@@ -123,7 +127,7 @@ private:
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
             return -1;
         }
-        return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
+        return (offsetX * 16 + offsetZ) * 16 + offsetY;
     }
 
 private:
