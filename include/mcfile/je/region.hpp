@@ -550,8 +550,16 @@ public:
         int minRegionZ = 1;
         int maxRegionZ = -1;
         std::error_code err;
-        for (auto &p : fs::directory_iterator(chunkFilesDirectory)) {
+        fs::directory_iterator itr(chunkFilesDirectory, err);
+        if (err) {
+            return false;
+        }
+        for (auto &p : itr) {
+            err.clear();
             if (!fs::is_regular_file(p, err)) {
+                continue;
+            }
+            if (err) {
                 continue;
             }
             std::string name = p.path().filename().string();

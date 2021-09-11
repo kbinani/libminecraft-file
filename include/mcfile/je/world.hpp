@@ -101,7 +101,11 @@ public:
         if (!fs::exists(regionDir)) {
             return true;
         }
-        fs::directory_iterator itr(regionDir);
+        std::error_code ec;
+        fs::directory_iterator itr(regionDir, ec);
+        if (ec) {
+            return false;
+        }
         for (auto const &sub : itr) {
             auto region = Region::MakeRegion(sub.path());
             if (!region) {
