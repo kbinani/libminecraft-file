@@ -104,8 +104,12 @@ public:
         root->write(*writer);
         std::vector<uint8_t> buffer;
         stream->drain(buffer);
-        Compression::compress(buffer);
-        s.write(buffer.data(), buffer.size());
+        if (!Compression::compress(buffer)) {
+            return false;
+        }
+        if (!s.write(buffer.data(), buffer.size())) {
+            return false;
+        }
         return true;
     }
 
