@@ -6,7 +6,7 @@ namespace nbt {
 class EndTag : public Tag {
 public:
     bool readImpl(::mcfile::stream::InputStreamReader &) override { return true; }
-    void writeImpl(::mcfile::stream::OutputStreamWriter &) const override {}
+    bool writeImpl(::mcfile::stream::OutputStreamWriter &) const override { return true; }
     Tag::Type type() const override { return Tag::Type::End; }
     std::shared_ptr<Tag> clone() const override { return Shared(); }
 

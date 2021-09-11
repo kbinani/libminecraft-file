@@ -9,7 +9,6 @@ public:
         : Tag() {}
     explicit StringTag(std::string v)
         : fValue(v) {
-        fValid = true;
     }
 
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
@@ -21,8 +20,8 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
-        w.write(fValue);
+    bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
+        return w.write(fValue);
     }
 
     Tag::Type type() const override { return Tag::Type::String; }

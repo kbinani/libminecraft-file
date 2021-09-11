@@ -22,8 +22,7 @@ public:
             }
 
             auto tag = TagFactory::makeTag(type, name);
-            tag->read(r);
-            if (!tag->valid()) {
+            if (!tag->read(r)) {
                 return false;
             }
             tmp.insert(std::make_pair(name, tag));
@@ -32,14 +31,20 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
+    bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
         for (auto it = fValue.begin(); it != fValue.end(); it++) {
             Tag::Type type = it->second->type();
-            w.write(static_cast<uint8_t>(type));
-            w.write(it->first);
-            it->second->write(w);
+            if (!w.write(static_cast<uint8_t>(type))) {
+                return false;
+            }
+            if (!w.write(it->first)) {
+                return false;
+            }
+            if (!it->second->write(w)) {
+                return false;
+            }
         }
-        w.write((uint8_t)0);
+        return w.write((uint8_t)0);
     }
 
     void writeAsRoot(mcfile::stream::OutputStreamWriter &w) const {
@@ -428,8 +433,7 @@ private:
                 break;
             }
             auto tag = std::make_shared<CompoundTag>();
-            tag->read(reader);
-            if (!tag->valid()) {
+            if (!tag->read(reader)) {
                 break;
             }
             if (!callback(tag)) {

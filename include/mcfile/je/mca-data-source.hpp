@@ -36,8 +36,7 @@ public:
         auto root = std::make_shared<nbt::CompoundTag>();
         auto bs = std::make_shared<stream::ByteStream>(buffer);
         auto sr = std::make_shared<stream::InputStreamReader>(bs);
-        root->read(*sr);
-        if (!root->valid()) {
+        if (!root->read(*sr)) {
             return nullptr;
         }
         return root;

@@ -352,8 +352,7 @@ public:
         auto root = std::make_shared<mcfile::nbt::CompoundTag>();
         auto bs = std::make_shared<mcfile::stream::ByteStream>(buffer);
         stream::InputStreamReader reader(bs);
-        root->read(reader);
-        if (!root->valid()) {
+        if (!root->read(reader)) {
             return nullptr;
         }
         return MakeChunk(chunkX, chunkZ, root);

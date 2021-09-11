@@ -20,9 +20,9 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
+    bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
         uint32_t v = *(uint32_t *)&fValue;
-        w.write(v);
+        return w.write(v);
     }
 
     Tag::Type type() const override { return Tag::Type::Float; }

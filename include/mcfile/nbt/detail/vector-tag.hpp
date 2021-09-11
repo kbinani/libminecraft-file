@@ -40,12 +40,17 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
+    bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
         std::vector<T> const &b = value();
-        w.write((uint32_t)fValue.size());
-        for (size_t i = 0; i < b.size(); i++) {
-            w.write(b[i]);
+        if (!w.write((uint32_t)fValue.size())) {
+            return false;
         }
+        for (size_t i = 0; i < b.size(); i++) {
+            if (!w.write(b[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     Tag::Type type() const override { return ID; }

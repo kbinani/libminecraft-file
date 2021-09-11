@@ -86,8 +86,7 @@ public:
             if (!sr.read(empty)) {
                 return nullptr;
             }
-            tag->read(sr);
-            if (!tag->valid()) {
+            if (!tag->read(sr)) {
                 return nullptr;
             }
             auto block = Block::FromCompound(*tag);

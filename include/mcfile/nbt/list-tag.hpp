@@ -29,8 +29,7 @@ public:
         std::vector<std::shared_ptr<Tag>> tmp;
         for (int32_t i = 0; i < size; i++) {
             auto tag = TagFactory::makeTag(type, "");
-            tag->read(r);
-            if (!tag->valid()) {
+            if (!tag->read(r)) {
                 return false;
             }
             tmp.push_back(tag);
@@ -40,12 +39,19 @@ public:
         return true;
     }
 
-    void writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
-        w.write(static_cast<uint8_t>(fType));
-        w.write((int32_t)fValue.size());
-        for (auto const &v : fValue) {
-            v->write(w);
+    bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
+        if (!w.write(static_cast<uint8_t>(fType))) {
+            return false;
         }
+        if (!w.write((int32_t)fValue.size())) {
+            return false;
+        }
+        for (auto const &v : fValue) {
+            if (!v->write(w)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     Tag::Type type() const override { return Tag::Type::List; }

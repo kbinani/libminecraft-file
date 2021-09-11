@@ -42,22 +42,19 @@ public:
         Max = static_cast<uint8_t>(Type::LongArray),
     };
 
-    Tag()
-        : fValid(false) {}
+    Tag() {}
     virtual ~Tag() {}
 
     Tag(Tag const &) = delete;
     Tag &operator=(Tag const &) = delete;
 
-    void read(::mcfile::stream::InputStreamReader &reader) {
-        fValid = readImpl(reader);
+    [[nodiscard]] bool read(::mcfile::stream::InputStreamReader &reader) {
+        return readImpl(reader);
     }
 
-    void write(::mcfile::stream::OutputStreamWriter &writer) const {
-        writeImpl(writer);
+    [[nodiscard]] bool write(::mcfile::stream::OutputStreamWriter &writer) const {
+        return writeImpl(writer);
     }
-
-    bool valid() const { return fValid; }
 
     virtual Type type() const = 0;
 
@@ -81,11 +78,10 @@ public:
 
 protected:
     virtual bool readImpl(::mcfile::stream::InputStreamReader &reader) = 0;
-    virtual void writeImpl(::mcfile::stream::OutputStreamWriter &writer) const = 0;
+    virtual bool writeImpl(::mcfile::stream::OutputStreamWriter &writer) const = 0;
 
 protected:
     std::string fName;
-    bool fValid;
 };
 
 } // namespace nbt
