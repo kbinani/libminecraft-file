@@ -31,7 +31,7 @@ public:
         return fStream->valid();
     }
 
-    bool seek(int64_t pos) {
+    bool seek(uint64_t pos) {
         return fStream->seek(pos);
     }
 
@@ -125,14 +125,14 @@ public:
         return true;
     }
 
-    long length() const {
+    uint64_t length() const {
         if (!fStream) {
             return 0;
         }
         return fStream->length();
     }
 
-    long pos() const {
+    uint64_t pos() const {
         if (!fStream) {
             return 0;
         }

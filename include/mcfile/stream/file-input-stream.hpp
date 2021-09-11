@@ -14,24 +14,25 @@ public:
         if (!fp) {
             return;
         }
-        if (fseek(fp, 0, SEEK_END) != 0) {
+        if (!File::Fseek(fp, 0, SEEK_END)) {
             fclose(fp);
             return;
         }
-        long length = ftell(fp);
-        if (length == -1L) {
+        std::optional<uint64_t> length = File::Ftell(fp);
+        if (!length) {
             fclose(fp);
             return;
         }
-        if (fseek(fp, 0, SEEK_SET) != 0) {
+        if (!File::Fseek(fp, 0, SEEK_SET)) {
             fclose(fp);
             return;
         }
         this->fFile = fp;
-        this->fLength = length;
+        this->fLength = *length;
     }
 
     FileInputStream(std::string const &) = delete;
+    FileInputStream(std::wstring const &) = delete;
 
     ~FileInputStream() {
         if (fFile) {
@@ -51,21 +52,21 @@ public:
         return fread(buffer, size, count, fFile) == count;
     }
 
-    bool seek(long offset) override {
+    bool seek(uint64_t offset) override {
         if (!fFile) {
             return false;
         }
         fLoc = offset;
-        return fseek(fFile, offset, SEEK_SET) == 0;
+        return File::Fseek(fFile, offset, SEEK_SET);
     }
 
     bool valid() const override {
         return fFile != nullptr;
     }
 
-    long length() const override { return fLength; }
+    uint64_t length() const override { return fLength; }
 
-    long pos() const override { return fLoc; }
+    uint64_t pos() const override { return fLoc; }
 
     static bool Copy(FILE *in, FILE *out, size_t length) {
         if (!in || !out) {
@@ -96,8 +97,8 @@ public:
 
 private:
     FILE *fFile;
-    long fLength;
-    long fLoc;
+    uint64_t fLength;
+    uint64_t fLoc;
 };
 
 } // namespace stream

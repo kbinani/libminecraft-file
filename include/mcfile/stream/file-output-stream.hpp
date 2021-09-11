@@ -16,6 +16,7 @@ public:
     }
 
     FileOutputStream(std::string const &) = delete;
+    FileOutputStream(std::wstring const &) = delete;
 
     ~FileOutputStream() {
         if (fFile) {
@@ -31,11 +32,11 @@ public:
         return fwrite(buffer, size, 1, fFile) == 1;
     }
 
-    bool seek(long offset) override {
-        return fseek(fFile, offset, SEEK_SET) == 0;
+    bool seek(uint64_t offset) override {
+        return File::Fseek(fFile, offset, SEEK_SET);
     }
 
-    long pos() const override {
+    uint64_t pos() const override {
         return ftell(fFile);
     }
 

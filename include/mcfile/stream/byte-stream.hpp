@@ -46,7 +46,7 @@ public:
         return true;
     }
 
-    bool seek(long offset) override {
+    bool seek(uint64_t offset) override {
         if (offset < 0 || fBuffer.size() <= offset) {
             return false;
         }
@@ -54,11 +54,11 @@ public:
         return true;
     }
 
-    long length() const override { return fBuffer.size(); }
+    uint64_t length() const override { return fBuffer.size(); }
 
     bool valid() const override { return true; }
 
-    long pos() const override { return fLoc; }
+    uint64_t pos() const override { return fLoc; }
 
     void drain(std::vector<uint8_t> &out) {
         out.clear();
@@ -68,7 +68,7 @@ public:
 
 private:
     std::vector<uint8_t> fBuffer;
-    long fLoc;
+    uint64_t fLoc;
 };
 
 } // namespace stream

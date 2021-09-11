@@ -603,7 +603,7 @@ private:
     }
 
     std::shared_ptr<McaDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader &sr) const {
-        int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
+        uint64_t const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
         if (!sr.valid()) {
             return nullptr;
         }
@@ -616,7 +616,7 @@ private:
             return nullptr;
         }
 
-        long sectorOffset = loc >> 8;
+        uint64_t sectorOffset = loc >> 8;
         if (!sr.seek(kSectorSize + 4 * index)) {
             return nullptr;
         }
@@ -667,7 +667,7 @@ public:
 private:
     std::filesystem::path const fFilePath;
 
-    static long const kSectorSize = 4096;
+    static uint64_t const kSectorSize = 4096;
 };
 
 } // namespace mcfile::je

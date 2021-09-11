@@ -4,7 +4,7 @@ namespace mcfile::je {
 
 class McaDataSource {
 public:
-    McaDataSource(int chunkX, int chunkZ, uint32_t timestamp, long offset, long length)
+    McaDataSource(int chunkX, int chunkZ, uint32_t timestamp, uint64_t offset, uint64_t length, bool foo)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
         , fTimestamp(timestamp)
@@ -83,8 +83,8 @@ public:
     int const fChunkX;
     int const fChunkZ;
     uint32_t const fTimestamp;
-    long const fOffset;
-    long const fLength;
+    uint64_t const fOffset;
+    uint64_t const fLength;
 };
 
 } // namespace mcfile::je
