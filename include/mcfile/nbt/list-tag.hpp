@@ -28,7 +28,7 @@ public:
         }
         std::vector<std::shared_ptr<Tag>> tmp;
         for (int32_t i = 0; i < size; i++) {
-            auto tag = TagFactory::makeTag(type, "");
+            auto tag = TagFactory::makeTag(type);
             if (!tag->read(r)) {
                 return false;
             }

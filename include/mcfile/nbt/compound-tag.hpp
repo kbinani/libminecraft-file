@@ -21,7 +21,7 @@ public:
                 return false;
             }
 
-            auto tag = TagFactory::makeTag(type, name);
+            auto tag = TagFactory::makeTag(type);
             if (!tag->read(r)) {
                 return false;
             }

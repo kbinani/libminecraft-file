@@ -58,8 +58,6 @@ public:
 
     virtual Type type() const = 0;
 
-    std::string name() const { return fName; }
-
     EndTag const *asEnd() const { return this->type() == Type::End ? reinterpret_cast<EndTag const *>(this) : nullptr; }
     ByteTag const *asByte() const { return this->type() == Type::Byte ? reinterpret_cast<ByteTag const *>(this) : nullptr; }
     ShortTag const *asShort() const { return this->type() == Type::Short ? reinterpret_cast<ShortTag const *>(this) : nullptr; }
@@ -79,9 +77,6 @@ public:
 protected:
     virtual bool readImpl(::mcfile::stream::InputStreamReader &reader) = 0;
     virtual bool writeImpl(::mcfile::stream::OutputStreamWriter &writer) const = 0;
-
-protected:
-    std::string fName;
 };
 
 } // namespace nbt
