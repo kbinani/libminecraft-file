@@ -48,6 +48,9 @@ public:
         if (!fFile) {
             return false;
         }
+        if (size == 0 || count == 0) {
+            return true;
+        }
         fLoc += size * count;
         return fread(buffer, size, count, fFile) == count;
     }

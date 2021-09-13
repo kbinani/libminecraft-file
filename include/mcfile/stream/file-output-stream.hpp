@@ -30,6 +30,9 @@ public:
     FileOutputStream &operator=(FileOutputStream const &) = delete;
 
     bool write(void *buffer, size_t size) override {
+        if (size == 0) {
+            return true;
+        }
         if (fwrite(buffer, size, 1, fFile) == 1) {
             fPos += size;
             return true;
