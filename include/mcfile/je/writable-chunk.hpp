@@ -101,7 +101,9 @@ public:
         auto writer = make_shared<stream::OutputStreamWriter>(stream, stream::WriteOption{.fLittleEndian = false});
         auto root = make_shared<nbt::CompoundTag>();
         root->set("", compound);
-        root->write(*writer);
+        if (!root->write(*writer)) {
+            return false;
+        }
         std::vector<uint8_t> buffer;
         stream->drain(buffer);
         if (!Compression::compress(buffer)) {
