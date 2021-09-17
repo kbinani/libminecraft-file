@@ -42,7 +42,6 @@ public:
         Max = static_cast<uint8_t>(Type::LongArray),
     };
 
-    Tag() {}
     virtual ~Tag() {}
 
     Tag(Tag const &) = delete;
@@ -75,6 +74,8 @@ public:
     virtual std::shared_ptr<Tag> clone() const = 0;
 
 protected:
+    Tag() {}
+
     virtual bool readImpl(::mcfile::stream::InputStreamReader &reader) = 0;
     virtual bool writeImpl(::mcfile::stream::OutputStreamWriter &writer) const = 0;
 };
