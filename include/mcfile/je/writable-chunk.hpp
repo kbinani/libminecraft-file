@@ -7,6 +7,7 @@ public:
     static std::shared_ptr<WritableChunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const &root) {
         auto chunk = Chunk::MakeChunk(chunkX, chunkZ, root);
         auto ret = std::shared_ptr<WritableChunk>(new WritableChunk(*chunk, root));
+        return ret;
     }
 
     std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
