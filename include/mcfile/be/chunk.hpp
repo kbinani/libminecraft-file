@@ -3,6 +3,14 @@
 namespace mcfile::be {
 
 class Chunk {
+private:
+    enum : int8_t {
+        kMinChunkY = -4,
+        kMaxChunkY = 19,
+
+        kNumSubChunks = kMaxChunkY - kMinChunkY + 1,
+    };
+
 public:
     std::shared_ptr<Block const> blockAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
@@ -41,21 +49,19 @@ public:
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
 
-        shared_ptr<SubChunk> subChunks[16];
-        fill_n(&subChunks[0], 16, nullptr);
+        shared_ptr<SubChunk> subChunks[kNumSubChunks];
+        fill_n(&subChunks[0], kNumSubChunks, nullptr);
 
-        for (int y = 0; y < 16; y++) {
+        for (int8_t y = kMinChunkY; y <= kMaxChunkY; y++) {
             auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
             if (!subChunkData) {
                 continue;
             }
-            auto subChunk = SubChunk::Parse(*subChunkData);
+            auto subChunk = SubChunk::Parse(*subChunkData, y);
             if (!subChunk) {
                 continue;
             }
-            if (y < 16) {
-                subChunks[y] = subChunk;
-            }
+            subChunks[y - kMinChunkY] = subChunk;
         }
 
         unordered_map<Pos3i, shared_ptr<CompoundTag>, Pos3iHasher> blockEntities;
@@ -97,7 +103,7 @@ public:
 
 private:
     Chunk(int32_t chunkX, int32_t chunkZ,
-          std::shared_ptr<SubChunk> subChunks[16],
+          std::shared_ptr<SubChunk> subChunks[kNumSubChunks],
           std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> &blockEntities,
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
           std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &pendingTicks,
@@ -105,7 +111,7 @@ private:
           std::vector<biomes::BiomeId> &biomeMap)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ) {
-        for (int i = 0; i < 16; i++) {
+        for (int8_t i = 0; i < kNumSubChunks; i++) {
             fSubChunks[i] = subChunks[i];
         }
         fBlockEntities.swap(blockEntities);
@@ -116,9 +122,9 @@ private:
     }
 
     std::shared_ptr<SubChunk> subChunkAtBlock(int y) const {
-        int index = y / 16;
-        if (0 <= index && index < 16) {
-            return fSubChunks[index];
+        int index = Coordinate::ChunkFromBlock(y);
+        if (kMinChunkY <= index && index <= kMaxChunkY) {
+            return fSubChunks[index - kMinChunkY];
         } else {
             return nullptr;
         }
@@ -199,7 +205,7 @@ public:
     std::vector<biomes::BiomeId> fBiomeMap;
 
 private:
-    std::shared_ptr<SubChunk> fSubChunks[16];
+    std::shared_ptr<SubChunk> fSubChunks[kNumSubChunks];
 };
 
 } // namespace mcfile::be

@@ -12,7 +12,7 @@ public:
         return fPalette[*index];
     }
 
-    static std::shared_ptr<SubChunk> Parse(std::string const &data) {
+    static std::shared_ptr<SubChunk> Parse(std::string const &data, int8_t chunkY) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
@@ -27,6 +27,32 @@ public:
         if (!sr.read(&version)) {
             return nullptr;
         }
+
+        if (version == 8) {
+            return ParseVersion8(sr, chunkY);
+        } else if (version == 9) {
+            return ParseVersion9(sr, chunkY);
+        } else {
+            return nullptr;
+        }
+    }
+
+private:
+    static std::shared_ptr<SubChunk> ParseVersion9(mcfile::stream::InputStreamReader &sr, int8_t chunkY) {
+        int8_t cy;
+        if (!sr.read(&cy)) {
+            return nullptr;
+        }
+        if (cy != chunkY) {
+            return nullptr;
+        }
+        return ParseVersion8(sr, chunkY);
+    }
+
+    static std::shared_ptr<SubChunk> ParseVersion8(mcfile::stream::InputStreamReader &sr, int8_t chunkY) {
+        using namespace std;
+        using namespace mcfile::stream;
+        using namespace mcfile::nbt;
 
         uint8_t numLayers;
         if (!sr.read(&numLayers)) {
@@ -96,11 +122,11 @@ public:
             palette.push_back(block);
         }
 
-        return shared_ptr<SubChunk>(new SubChunk(palette, index));
+        return shared_ptr<SubChunk>(new SubChunk(palette, index, chunkY));
     }
 
-private:
-    SubChunk(std::vector<std::shared_ptr<Block const>> &palette, std::vector<uint16_t> &paletteIndices) {
+    SubChunk(std::vector<std::shared_ptr<Block const>> &palette, std::vector<uint16_t> &paletteIndices, int8_t chunkY)
+        : fChunkY(chunkY) {
         fPalette.swap(palette);
         fPaletteIndices.swap(paletteIndices);
     }
@@ -132,6 +158,7 @@ private:
 private:
     std::vector<std::shared_ptr<Block const>> fPalette;
     std::vector<uint16_t> fPaletteIndices;
+    int8_t fChunkY;
 };
 
 } // namespace mcfile::be

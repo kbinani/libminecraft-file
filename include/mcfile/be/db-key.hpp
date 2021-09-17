@@ -23,8 +23,9 @@ public:
         std::vector<char> b;
         PlaceXZTag(b, chunkX, chunkZ, Tag::SubChunk);
         SetDimension(b, dim);
-        uint8_t const y = (uint8_t)(std::min)((std::max)(chunkY, 0), 255);
-        b.push_back(y);
+        int8_t const y = (int8_t)(std::min)((std::max)(chunkY, (int)std::numeric_limits<int8_t>::lowest()), (int)std::numeric_limits<int8_t>::max());
+        uint8_t rawY = *(uint8_t *)&y;
+        b.push_back(rawY);
         return std::string(b.data(), b.size());
     }
 
