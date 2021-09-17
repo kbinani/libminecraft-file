@@ -74,7 +74,7 @@ public:
                 if (fValue.size() != 1) {
                     return EndTag::Instance();
                 }
-                auto child = fValue.begin()->second;
+                auto const &child = fValue.begin()->second;
                 if (p.size() == 1) {
                     return child.get();
                 }
@@ -410,7 +410,7 @@ public:
 
     std::shared_ptr<Tag> clone() const override {
         auto ret = std::make_shared<CompoundTag>();
-        for (auto it : fValue) {
+        for (auto const &it : fValue) {
             ret->set(it.first, it.second->clone());
         }
         return ret;

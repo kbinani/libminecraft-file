@@ -34,7 +34,6 @@ inline std::shared_ptr<Tag> TagFactory::makeTag(uint8_t id) {
     default:
         return nullptr;
     }
-    return nullptr;
 }
 
 } // namespace nbt
