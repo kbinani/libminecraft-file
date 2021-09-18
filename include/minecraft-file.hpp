@@ -32,6 +32,7 @@
 // clang-format off
 
 #include <mcfile/endianness.hpp>
+#include <mcfile/algorithm.hpp>
 #include <mcfile/file.hpp>
 #include <mcfile/stream/input-stream.hpp>
 #include <mcfile/stream/output-stream.hpp>
