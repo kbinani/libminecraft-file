@@ -2,13 +2,14 @@
 
 namespace mcfile {
 
-template<class T>
-inline T Clamp(auto v) {
+template<class R>
+inline auto Clamp(auto v) -> std::enable_if<std::is_integral<R>::value == std::is_integral<decltype(v)>::value && std::is_floating_point<R>::value == std::is_floating_point<decltype(v)>::value, R>::type {
     using V = decltype(v);
-    V min = static_cast<V>(std::numeric_limits<T>::lowest());
-    V max = static_cast<V>(std::numeric_limits<T>::max());
-    V clamped = std::min<V>(std::max<V>(v, min), max);
-    return static_cast<T>(clamped);
+    using C = std::common_type<R, V>::type;
+    C constexpr min = static_cast<C>(std::numeric_limits<R>::lowest());
+    C constexpr max = static_cast<C>(std::numeric_limits<R>::max());
+    C clamped = std::min<C>(std::max<C>(v, min), max);
+    return static_cast<R>(clamped);
 }
 
 } // namespace mcfile
