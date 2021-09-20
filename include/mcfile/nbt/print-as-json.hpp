@@ -106,6 +106,8 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
         out << Indent(depth) << "]";
         break;
     }
+    case Tag::Type::End:
+        break;
     }
 
     if (comma) {
