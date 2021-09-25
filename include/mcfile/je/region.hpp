@@ -441,6 +441,86 @@ public:
         return true;
     }
 
+#if __has_include(<zopfli.h>)
+    bool exportToZopfliCompressedNbt(int chunkX, int chunkZ, std::string const &filePath) const = delete;
+    bool exportToZopfliCompressedNbt(int chunkX, int chunkZ, std::wstring const &filePath) const = delete;
+
+    bool exportToZopfliCompressedNbt(int chunkX, int chunkZ, std::filesystem::path const &filePath) const {
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
+        if (localChunkX < 0 || 32 <= localChunkX) {
+            return false;
+        }
+        if (localChunkZ < 0 || 32 <= localChunkZ) {
+            return false;
+        }
+
+        FILE *in = File::Open(fFilePath, File::Mode::Read);
+        if (!in) {
+            return false;
+        }
+        int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
+        if (!File::Fseek(in, 4 * index, SEEK_SET)) {
+            fclose(in);
+            return false;
+        }
+        uint32_t loc;
+        if (!File::Fread(&loc, sizeof(loc), 1, in)) {
+            fclose(in);
+            return false;
+        }
+        loc = Int32FromBE(loc);
+        if (loc == 0) {
+            fclose(in);
+            return true;
+        }
+
+        long const sectorOffset = loc >> 8;
+        if (!File::Fseek(in, sectorOffset * kSectorSize, SEEK_SET)) {
+            fclose(in);
+            return false;
+        }
+        uint32_t chunkSize;
+        if (!File::Fread(&chunkSize, sizeof(chunkSize), 1, in)) {
+            fclose(in);
+            return false;
+        }
+        chunkSize = Int32FromBE(chunkSize) - 1;
+
+        uint8_t compressionType;
+        if (!File::Fread(&compressionType, sizeof(compressionType), 1, in)) {
+            fclose(in);
+            return false;
+        }
+
+        std::vector<uint8_t> buffer(chunkSize);
+        if (!File::Fread(buffer.data(), chunkSize, 1, in)) {
+            fclose(in);
+            return false;
+        }
+        fclose(in);
+        in = nullptr;
+
+        if (!Compression::decompress(buffer)) {
+            return false;
+        }
+
+        if (!Compression::compressZopfli(buffer)) {
+            return false;
+        }
+
+        FILE *out = File::Open(filePath, File::Mode::Write);
+        if (!out) {
+            return false;
+        }
+
+        bool ok = File::Fwrite(buffer.data(), buffer.size(), 1, out);
+        fclose(out);
+
+        return ok;
+    }
+#endif
+
     static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) = delete;
 
     static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const &directory, std::filesystem::path const &resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) {

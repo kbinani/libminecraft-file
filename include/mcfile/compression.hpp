@@ -74,6 +74,27 @@ public:
         return true;
     }
 
+#if __has_include(<zopfli.h>)
+    static bool compressZopfli(std::vector<uint8_t> &inout) {
+        if (inout.empty()) {
+            return true;
+        }
+        ZopfliOptions options;
+        ZopfliInitOptions(&options);
+        unsigned char *out = nullptr;
+        size_t size = 0;
+        ZopfliCompress(&options, ZOPFLI_FORMAT_ZLIB,
+                       inout.data(), inout.size(),
+                       &out, &size);
+        if (!out || size == 0) {
+            return false;
+        }
+        inout.resize(size);
+        std::copy_n(out, size, inout.begin());
+        return true;
+    }
+#endif
+
 private:
     static const unsigned int kSegSize = 16384;
 };
