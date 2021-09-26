@@ -14,3 +14,9 @@ jobs:
         cmake ..
         make
         ./mcfile-test
+    - name: example
+      run: |
+        mkdir -p example/build
+        cd example/build
+        cmake ..
+        make
