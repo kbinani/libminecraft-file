@@ -9,7 +9,7 @@ endif()
 
 add_subdirectory(ext/zopfli EXCLUDE_FROM_ALL)
 
-include_directories(../include ext/svpng ext/hwm.task ext/colormap-shaders/include)
+include_directories(../include ext/thread-pool/include)
 
 add_executable(mcfile-example main.cpp ../include/minecraft-file.hpp)
 target_link_libraries(mcfile-example z)

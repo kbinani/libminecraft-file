@@ -4,6 +4,6 @@
 [submodule "example/ext/zopfli"]
 	path = example/ext/zopfli
 	url = https://github.com/google/zopfli.git
-[submodule "example/ext/hwm.task"]
-	path = example/ext/hwm.task
-	url = https://github.com/hotwatermorning/hwm.task.git
+[submodule "example/ext/thread-pool"]
+	path = example/ext/thread-pool
+	url = https://github.com/mtrebi/thread-pool.git

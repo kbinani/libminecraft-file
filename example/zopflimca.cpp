@@ -1,4 +1,4 @@
-#include <hwm/task/task_queue.hpp>
+#include <ThreadPool.h>
 #include <minecraft-file.hpp>
 
 #include <future>
@@ -57,7 +57,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    hwm::task_queue pool(std::thread::hardware_concurrency());
+    ::ThreadPool pool(std::thread::hardware_concurrency());
+    pool.init();
 
     bool ok = true;
     fs::directory_iterator it(directory);
@@ -80,11 +81,11 @@ int main(int argc, char *argv[]) {
         vector<future<bool>> futures;
         for (int cx = region->minChunkX(); cx <= region->maxChunkX(); cx++) {
             for (int cz = region->minChunkZ(); cz <= region->maxChunkZ(); cz++) {
-                futures.emplace_back(move(pool.enqueue([](shared_ptr<Region> region, int cx, int cz, fs::path temp) {
+                futures.emplace_back(move(pool.submit([](shared_ptr<Region> region, int cx, int cz, fs::path temp) {
                     fs::path chunkFile = temp / Region::GetDefaultCompressedChunkNbtFileName(cx, cz);
                     return region->exportToZopfliCompressedNbt(cx, cz, chunkFile);
                 },
-                                                       region, cx, cz, *temp)));
+                                                      region, cx, cz, *temp)));
             }
         }
         for (auto &f : futures) {
@@ -119,6 +120,8 @@ int main(int argc, char *argv[]) {
         }
         cout << ", " << (float)elapsed << " sec)" << endl;
     }
+
+    pool.shutdown();
 
     fs::remove_all(*temp);
 
