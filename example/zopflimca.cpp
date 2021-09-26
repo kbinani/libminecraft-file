@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
         auto beforeSize = fs::file_size(p);
         auto start = std::chrono::high_resolution_clock::now();
         cout << p.filename().string() << " " << (float)(beforeSize / 1024.0f) << " KiB -> ";
+        cout.flush();
         vector<future<bool>> futures;
         for (int cx = region->minChunkX(); cx <= region->maxChunkX(); cx++) {
             for (int cz = region->minChunkZ(); cz <= region->maxChunkZ(); cz++) {
