@@ -753,9 +753,9 @@ private:
 public:
     int const fX;
     int const fZ;
+    std::filesystem::path const fFilePath;
 
 private:
-    std::filesystem::path const fFilePath;
 
     static uint64_t const kSectorSize = 4096;
 };
