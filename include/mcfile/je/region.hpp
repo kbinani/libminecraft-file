@@ -402,7 +402,7 @@ public:
         loc = Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
-            return true;
+            return false;
         }
 
         long const sectorOffset = loc >> 8;
