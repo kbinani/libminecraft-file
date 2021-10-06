@@ -429,7 +429,7 @@ public:
             return false;
         }
 
-        if (!stream::FileInputStream::Copy(in, out, chunkSize)) {
+        if (!File::Copy(in, out, chunkSize)) {
             fclose(in);
             fclose(out);
             return false;
@@ -584,7 +584,7 @@ public:
                     fclose(out);
                     return false;
                 }
-                if (!stream::FileInputStream::Copy(in, out, size)) {
+                if (!File::Copy(in, out, size)) {
                     fclose(in);
                     fclose(out);
                     return false;

@@ -71,6 +71,33 @@ public:
         return fread(buffer, elementSize, elementCount, stream) == elementCount;
     }
 
+    [[nodiscard]] static bool Copy(FILE *in, FILE *out, size_t length) {
+        if (!in || !out) {
+            return false;
+        }
+        if (length == 0) {
+            return true;
+        }
+        uint8_t buffer[512] = {0};
+        size_t const size = sizeof(buffer[0]);
+        size_t const nitems = sizeof(buffer) / size;
+        size_t remain = length;
+        while (remain > 0) {
+            size_t const num = std::min(nitems, remain);
+            size_t const read = fread(buffer, size, num, in);
+            if (read != num) {
+                return false;
+            }
+            size_t const written = fwrite(buffer, size, read, out);
+            if (written != read) {
+                return false;
+            }
+            assert(remain >= read);
+            remain -= read;
+        }
+        return true;
+    }
+
 private:
     static std::string ModeString(Mode mode) {
         switch (mode) {
