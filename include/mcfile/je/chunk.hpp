@@ -337,13 +337,29 @@ public:
                                                 tileTicks, liquidTicks, s, terrianPopulated, createEmptySection));
     }
 
+    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const &filePath, int chunkX, int chunkZ) = delete;
+
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::filesystem::path const &filePath, int chunkX, int chunkZ) {
-        auto stream = std::make_shared<mcfile::stream::FileInputStream>(filePath);
-        if (!stream->valid()) {
+        std::error_code ec;
+        auto size = std::filesystem::file_size(filePath, ec);
+        if (ec) {
             return nullptr;
         }
-        std::vector<uint8_t> buffer(stream->length());
-        if (!stream->read(buffer.data(), 1, buffer.size())) {
+        FILE *in = File::Open(filePath, File::Mode::Read);
+        if (!in) {
+            return nullptr;
+        }
+        auto result = LoadFromCompressedChunkNbtFile(in, size, chunkX, chunkZ);
+        fclose(in);
+        return result;
+    }
+
+    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(FILE *in, uint64_t size, int chunkX, int chunkZ) {
+        if (!in) {
+            return nullptr;
+        }
+        std::vector<uint8_t> buffer(size);
+        if (!File::Fread(buffer.data(), size, 1, in)) {
             return nullptr;
         }
         if (!Compression::decompress(buffer)) {

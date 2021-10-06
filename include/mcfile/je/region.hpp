@@ -756,7 +756,6 @@ public:
     std::filesystem::path const fFilePath;
 
 private:
-
     static uint64_t const kSectorSize = 4096;
 };
 
