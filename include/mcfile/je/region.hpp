@@ -101,33 +101,53 @@ public:
         return std::shared_ptr<Region>(new Region(filePath, x, z));
     }
 
+    static std::optional<Pos2i> RegionXZFromFile(std::filesystem::path const &path) {
+        using namespace std;
+        namespace fs = std::filesystem;
+        string basename = path.filename().string();
+        if (basename.size() < 9) {
+            return nullopt;
+        }
+        // r.x.z.mca
+        if (basename[0] != 'r' || basename[1] != '.') {
+            return nullopt;
+        }
+        auto secondDot = basename.find('.', 2);
+        if (secondDot == string::npos) {
+            return nullopt;
+        }
+        auto thirdDot = basename.find('.', secondDot + 1);
+        if (thirdDot == string::npos) {
+            return nullopt;
+        }
+        auto trailing = basename.substr(thirdDot);
+        if (trailing != ".mca") {
+            return nullopt;
+        }
+        string rxStr;
+        string rzStr;
+        rxStr.assign(basename.begin() + 2, basename.begin() + secondDot);
+        rzStr.assign(basename.begin() + secondDot + 1, basename.begin() + thirdDot);
+        int rx;
+        int rz;
+        try {
+            rx = stoi(rxStr);
+            rz = stoi(rzStr);
+        } catch (...) {
+            return nullopt;
+        }
+        return Pos2i(rx, rz);
+    }
+
     static std::shared_ptr<Region> MakeRegion(std::string const &, int, int) = delete;
 
     static std::shared_ptr<Region> MakeRegion(std::filesystem::path const &filePath) {
-        // ../directory/r.5.13.mca
-        namespace fs = std::filesystem;
-        using mcfile::String;
-        using namespace std;
-
-        string basename = filePath.filename().string();
-
-        vector<string> tokens = String::Split(basename, '.');
-        if (tokens.size() != 4) {
-            return nullptr;
-        }
-        if (tokens[0] != "r" || tokens[3] != "mca") {
+        auto xz = RegionXZFromFile(filePath);
+        if (!xz) {
             return nullptr;
         }
 
-        int x, z;
-        try {
-            x = stoi(tokens[1]);
-            z = stoi(tokens[2]);
-        } catch (...) {
-            return nullptr;
-        }
-
-        return shared_ptr<Region>(new Region(filePath, x, z));
+        return std::shared_ptr<Region>(new Region(filePath, xz->fX, xz->fZ));
     }
 
     static std::shared_ptr<Region> MakeRegion(std::string const &) = delete;

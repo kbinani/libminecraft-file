@@ -95,27 +95,46 @@ public:
         return true;
     }
 
-    bool eachRegions(std::function<bool(std::shared_ptr<Region> const &)> callback) const {
+    bool eachRegions(std::function<bool(int rx, int rz, std::filesystem::path file)> callback) const {
         namespace fs = std::filesystem;
+        std::error_code ec;
+
         auto regionDir = fRootDirectory / "region";
-        if (!fs::exists(regionDir)) {
+        if (!fs::exists(regionDir, ec)) {
             return true;
         }
-        std::error_code ec;
+        if (ec) {
+            return false;
+        }
+        ec.clear();
+
         fs::directory_iterator itr(regionDir, ec);
         if (ec) {
             return false;
         }
         for (auto const &sub : itr) {
-            auto region = Region::MakeRegion(sub.path());
-            if (!region) {
+            auto xz = Region::RegionXZFromFile(sub.path());
+            if (!xz) {
                 continue;
             }
-            if (!callback(region)) {
+            if (!callback(xz->fX, xz->fZ, sub.path())) {
                 return false;
             }
         }
         return true;
+    }
+
+    bool eachRegions(std::function<bool(std::shared_ptr<Region> const &)> callback) const {
+        return eachRegions([callback](int rx, int rz, std::filesystem::path path) {
+            auto region = Region::MakeRegion(path, rx, rz);
+            if (!region) {
+                return true;
+            }
+            if (!callback(region)) {
+                return false;
+            }
+            return true;
+        });
     }
 
 public:

@@ -85,6 +85,7 @@
 #include <mcfile/je/chunksection/chunk-section-116.hpp>
 #include <mcfile/je/chunksection/chunk-section-generator.hpp>
 #include <mcfile/je/set-block-options.hpp>
+#include <mcfile/pos2.hpp>
 #include <mcfile/pos3.hpp>
 #include <mcfile/je/ticking-block.hpp>
 #include <mcfile/je/chunk.hpp>
