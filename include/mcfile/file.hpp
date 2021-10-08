@@ -99,10 +99,10 @@ public:
     }
 
     static std::optional<std::filesystem::path> CreateTempDir(std::filesystem::path const &tempDir) {
+        using namespace std;
         namespace fs = std::filesystem;
-        auto tmp = fs::temp_directory_path();
 #if defined(_MSC_VER)
-        wchar_t *dir = _wtempnam(tmp.native().c_str(), L"mcfile-tmp-");
+        wchar_t *dir = _wtempnam(tempDir.native().c_str(), L"mcfile-tmp-");
         if (dir) {
             fs::path ret(dir);
             fs::create_directory(ret);
@@ -112,8 +112,7 @@ public:
             return std::nullopt;
         }
 #else
-        using namespace std;
-        string tmpl("mcfile-tmp-XXXXXX");
+        string tmpl = (tempDir / "mcfile-tmp-XXXXXX").string();
         vector<char> buffer;
         copy(tmpl.begin(), tmpl.end(), back_inserter(buffer));
         buffer.push_back(0);
