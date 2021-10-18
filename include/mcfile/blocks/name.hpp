@@ -768,6 +768,13 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::polished_blackstone_pressure_plate, {.name = "minecraft:polished_blackstone_pressure_plate", .opaque = false}},
         {minecraft::polished_blackstone_button, {.name = "minecraft:polished_blackstone_button", .opaque = false}},
 
+        // bugfix for 1.16
+        {minecraft::warped_wall_sign, {.name = "minecraft:warped_wall_sign", .opaque = false}},
+        {minecraft::crimson_wall_sign, {.name = "minecraft:crimson_wall_sign", .opaque = false}},
+        {minecraft::soul_fire, {.name = "minecraft:soul_fire", .opaque = false}},
+        {minecraft::soul_wall_torch, {.name = "minecraft:soul_wall_torch", .opaque = false}},
+        {minecraft::weeping_vines_plant, {.name = "minecraft:weeping_vines_plant", .opaque = false}},
+
         // 1.17
         {minecraft::deepslate, {.name = "minecraft:deepslate", .opaque = true}},
         {minecraft::cobbled_deepslate, {.name = "minecraft:cobbled_deepslate", .opaque = true}},
@@ -904,6 +911,7 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::light, {.name = "minecraft:light", .opaque = false}},
         {minecraft::cave_vines, {.name = "minecraft:cave_vines", .opaque = false}},
         {minecraft::cave_vines_plant, {.name = "minecraft:cave_vines_plant", .opaque = false}},
+        {minecraft::glow_lichen, {.name = "minecraft:glow_lichen", .opaque = false}},
     };
 
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);

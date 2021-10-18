@@ -760,6 +760,7 @@ enum : BlockId {
     // bugfix for 1.16
 
     twisting_vines_plant,
+    weeping_vines_plant,
     warped_wart_block,
     quartz_bricks,
     stripped_crimson_hyphae,
@@ -768,6 +769,10 @@ enum : BlockId {
     warped_sign,
     polished_blackstone_pressure_plate,
     polished_blackstone_button,
+    crimson_wall_sign,
+    warped_wall_sign,
+    soul_fire,
+    soul_wall_torch,
 
     // 1.17
 
@@ -920,6 +925,7 @@ enum : BlockId {
     light,
     cave_vines,
     cave_vines_plant,
+    glow_lichen,
 
     minecraft_max_block_id,
 };

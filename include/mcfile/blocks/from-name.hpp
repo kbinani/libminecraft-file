@@ -764,6 +764,13 @@ static inline BlockId FromName(std::string const &name) {
         {"minecraft:polished_blackstone_pressure_plate", minecraft::polished_blackstone_pressure_plate},
         {"minecraft:polished_blackstone_button", minecraft::polished_blackstone_button},
 
+        // bugfix for 1.16
+        {"minecraft:warped_wall_sign", minecraft::warped_wall_sign},
+        {"minecraft:crimson_wall_sign", minecraft::crimson_wall_sign},
+        {"minecraft:soul_fire", minecraft::soul_fire},
+        {"minecraft:soul_wall_torch", minecraft::soul_wall_torch},
+        {"minecraft:weeping_vines_plant", minecraft::weeping_vines_plant},
+
         // 1.17
         {"minecraft:deepslate", minecraft::deepslate},
         {"minecraft:cobbled_deepslate", minecraft::cobbled_deepslate},
@@ -900,6 +907,7 @@ static inline BlockId FromName(std::string const &name) {
         {"minecraft:light", minecraft::light},
         {"minecraft:cave_vines", minecraft::cave_vines},
         {"minecraft:cave_vines_plant", minecraft::cave_vines_plant},
+        {"minecraft:glow_lichen", minecraft::glow_lichen},
     };
     auto mappingIt = mapping.find(name);
     if (mappingIt == mapping.end()) {
