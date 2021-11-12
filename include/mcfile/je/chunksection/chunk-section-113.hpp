@@ -15,7 +15,9 @@ public:
                                 palette,
                                 paletteIndices,
                                 blockLight,
-                                skyLight));
+                                skyLight,
+                                std::nullopt,
+                                std::nullopt));
     }
 
 private:
@@ -23,8 +25,10 @@ private:
                     std::vector<std::shared_ptr<Block const>> const &palette,
                     std::vector<uint16_t> const &paletteIndices,
                     std::vector<uint8_t> const &blockLight,
-                    std::vector<uint8_t> const &skyLight)
-        : ChunkSection113Base<BlockStatesParser113>(y, palette, paletteIndices, blockLight, skyLight) {
+                    std::vector<uint8_t> const &skyLight,
+                    std::optional<int32_t> blockLightState,
+                    std::optional<int32_t> skyLightState)
+        : ChunkSection113Base<BlockStatesParser113>(y, palette, paletteIndices, blockLight, skyLight, blockLightState, skyLightState) {
     }
 };
 

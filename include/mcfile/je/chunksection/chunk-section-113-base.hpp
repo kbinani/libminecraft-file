@@ -143,6 +143,13 @@ public:
             root->set("Palette", palette);
         }
 
+        if (fBlockLightState) {
+            root->set("starlight.blocklight_state", make_shared<IntTag>(*fBlockLightState));
+        }
+        if (fSkyLightState) {
+            root->set("starlight.skylight_state", make_shared<IntTag>(*fSkyLightState));
+        }
+
         return root;
     }
 
@@ -207,11 +214,16 @@ public:
             skyLight = skyLightTag->value();
         }
 
+        auto blockLightState = section->int32("starlight.blocklight_state");
+        auto skyLightState = section->int32("starlight.skylight_state");
+
         return std::shared_ptr<ChunkSection>(new ChunkSection113Base((int)yTag->fValue,
                                                                      palette,
                                                                      paletteIndices,
                                                                      blockLight,
-                                                                     skyLight));
+                                                                     skyLight,
+                                                                     blockLightState,
+                                                                     skyLightState));
     }
 
 protected:
@@ -219,12 +231,16 @@ protected:
                         std::vector<std::shared_ptr<Block const>> const &palette,
                         std::vector<uint16_t> const &paletteIndices,
                         std::vector<uint8_t> const &blockLight,
-                        std::vector<uint8_t> const &skyLight)
+                        std::vector<uint8_t> const &skyLight,
+                        std::optional<int32_t> blockLightState,
+                        std::optional<int32_t> skyLightState)
         : fY(y)
         , fPalette(palette)
         , fPaletteIndices(paletteIndices)
         , fBlockLight(blockLight)
-        , fSkyLight(skyLight) {
+        , fSkyLight(skyLight)
+        , fBlockLightState(blockLightState)
+        , fSkyLightState(skyLightState) {
     }
 
 private:
@@ -241,6 +257,8 @@ public:
     std::vector<uint16_t> fPaletteIndices;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
+    std::optional<int32_t> fBlockLightState;
+    std::optional<int32_t> fSkyLightState;
 };
 
 } // namespace mcfile::je::chunksection
