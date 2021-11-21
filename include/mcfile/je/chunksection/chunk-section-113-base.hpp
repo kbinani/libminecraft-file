@@ -115,6 +115,10 @@ public:
         using namespace mcfile::nbt;
         auto root = make_shared<CompoundTag>();
 
+        for (auto const &it : *fExtra) {
+            root->set(it.first, it.second->clone());
+        }
+
         root->set("Y", make_shared<ByteTag>(fY));
 
         if (!fBlockLight.empty()) {
@@ -143,13 +147,6 @@ public:
             root->set("Palette", palette);
         }
 
-        if (fBlockLightState) {
-            root->set("starlight.blocklight_state", make_shared<IntTag>(*fBlockLightState));
-        }
-        if (fSkyLightState) {
-            root->set("starlight.skylight_state", make_shared<IntTag>(*fSkyLightState));
-        }
-
         return root;
     }
 
@@ -157,6 +154,14 @@ public:
         if (!section) {
             return nullptr;
         }
+
+        static std::unordered_set<std::string> const sExclude = {
+            "Y",
+            "Palette",
+            "BlockStates",
+            "BlockLight",
+            "SkyLight",
+        };
         auto yTag = section->query("Y")->asByte();
         if (!yTag) {
             return nullptr;
@@ -214,16 +219,19 @@ public:
             skyLight = skyLightTag->value();
         }
 
-        auto blockLightState = section->int32("starlight.blocklight_state");
-        auto skyLightState = section->int32("starlight.skylight_state");
+        auto extra = std::make_shared<nbt::CompoundTag>();
+        for (auto it : *section) {
+            if (sExclude.find(it.first) == sExclude.end()) {
+                extra->set(it.first, it.second->clone());
+            }
+        }
 
         return std::shared_ptr<ChunkSection>(new ChunkSection113Base((int)yTag->fValue,
                                                                      palette,
                                                                      paletteIndices,
                                                                      blockLight,
                                                                      skyLight,
-                                                                     blockLightState,
-                                                                     skyLightState));
+                                                                     extra));
     }
 
 protected:
@@ -232,15 +240,13 @@ protected:
                         std::vector<uint16_t> const &paletteIndices,
                         std::vector<uint8_t> const &blockLight,
                         std::vector<uint8_t> const &skyLight,
-                        std::optional<int32_t> blockLightState,
-                        std::optional<int32_t> skyLightState)
+                        std::shared_ptr<nbt::CompoundTag> const &extra)
         : fY(y)
         , fPalette(palette)
         , fPaletteIndices(paletteIndices)
         , fBlockLight(blockLight)
         , fSkyLight(skyLight)
-        , fBlockLightState(blockLightState)
-        , fSkyLightState(skyLightState) {
+        , fExtra(extra) {
     }
 
 private:
@@ -257,8 +263,7 @@ public:
     std::vector<uint16_t> fPaletteIndices;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
-    std::optional<int32_t> fBlockLightState;
-    std::optional<int32_t> fSkyLightState;
+    std::shared_ptr<nbt::CompoundTag> fExtra;
 };
 
 } // namespace mcfile::je::chunksection

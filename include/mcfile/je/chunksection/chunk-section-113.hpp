@@ -10,14 +10,14 @@ public:
         vector<uint16_t> paletteIndices;
         vector<uint8_t> blockLight;
         vector<uint8_t> skyLight(2048, 0xff);
+        auto extra = make_shared<nbt::CompoundTag>();
         return shared_ptr<ChunkSection113>(
             new ChunkSection113(sectionY,
                                 palette,
                                 paletteIndices,
                                 blockLight,
                                 skyLight,
-                                std::nullopt,
-                                std::nullopt));
+                                extra));
     }
 
 private:
@@ -26,9 +26,8 @@ private:
                     std::vector<uint16_t> const &paletteIndices,
                     std::vector<uint8_t> const &blockLight,
                     std::vector<uint8_t> const &skyLight,
-                    std::optional<int32_t> blockLightState,
-                    std::optional<int32_t> skyLightState)
-        : ChunkSection113Base<BlockStatesParser113>(y, palette, paletteIndices, blockLight, skyLight, blockLightState, skyLightState) {
+                    std::shared_ptr<nbt::CompoundTag> const &extra)
+        : ChunkSection113Base<BlockStatesParser113>(y, palette, paletteIndices, blockLight, skyLight, extra) {
     }
 };
 
