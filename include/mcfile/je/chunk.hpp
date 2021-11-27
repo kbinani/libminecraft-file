@@ -231,10 +231,7 @@ public:
     }
 
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const &root) {
-        using namespace std;
-
-        auto level = root->query("/Level")->asCompound();
-        if (!level) {
+        if (!root) {
             return nullptr;
         }
 
@@ -245,96 +242,19 @@ public:
             dataVersion = dataVersionTag->fValue;
         }
 
-        vector<shared_ptr<nbt::CompoundTag>> tileEntities;
-        auto tileEntitiesList = level->listTag("TileEntities");
-        if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::Type::Compound) {
-            for (auto it : *tileEntitiesList) {
-                auto comp = it->asCompound();
-                if (!comp) {
-                    continue;
-                }
-                auto copy = make_shared<nbt::CompoundTag>();
-                copy->fValue = comp->fValue;
-                tileEntities.push_back(copy);
-            }
+        if (dataVersion <= 2840) {
+            // 2835 (21w38a)
+            // 2839 (21w41a)
+            // 2840 (21w42a)
+            return MakeChunk112(chunkX, chunkZ, *root, dataVersion);
+        } else {
+            // 2844 (21w43a)
+            // 2847 (1.18pre1)
+            // 2850 (1.18pre4)
+            // 2857 (1.19rc2)
+            // 2858 (1.18rc3)
+            return MakeChunk118(chunkX, chunkZ, *root, dataVersion);
         }
-
-        auto sectionsTag = level->listTag("Sections");
-        if (!sectionsTag) {
-            return nullptr;
-        }
-        vector<shared_ptr<ChunkSection>> sections;
-        auto createEmptySection = chunksection::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, tileEntities, sections);
-
-        vector<biomes::BiomeId> biomes;
-        auto biomesTag = level->query("Biomes");
-        ParseBiomes(biomesTag, biomes);
-
-        vector<shared_ptr<nbt::CompoundTag>> entities;
-        auto entitiesTag = level->listTag("Entities");
-        if (entitiesTag && entitiesTag->fType == nbt::Tag::Type::Compound) {
-            auto entitiesList = entitiesTag->asList();
-            for (auto it : *entitiesList) {
-                auto comp = it->asCompound();
-                if (!comp) {
-                    continue;
-                }
-                auto copy = make_shared<nbt::CompoundTag>();
-                copy->fValue = comp->fValue;
-                entities.push_back(copy);
-            }
-        }
-
-        string s;
-        auto status = level->stringTag("Status");
-        if (status) {
-            s = status->fValue;
-        }
-        std::optional<bool> terrianPopulated = level->boolean("TerrianPopulated");
-
-        auto structures = level->compoundTag("Structures");
-
-        auto lastUpdateTag = level->int64("LastUpdate");
-        int64_t lastUpdate = 0;
-        if (lastUpdateTag) {
-            lastUpdate = *lastUpdateTag;
-        }
-
-        auto tileTicksTag = level->listTag("TileTicks");
-        std::vector<TickingBlock> tileTicks;
-        if (tileTicksTag) {
-            for (auto it : *tileTicksTag) {
-                auto item = it->asCompound();
-                if (!item) {
-                    continue;
-                }
-                auto tb = TickingBlock::FromCompound(*item);
-                if (!tb) {
-                    continue;
-                }
-                tileTicks.push_back(*tb);
-            }
-        }
-
-        auto liquidTicksTag = level->listTag("LiquidTicks");
-        std::vector<TickingBlock> liquidTicks;
-        if (liquidTicksTag) {
-            for (auto it : *liquidTicksTag) {
-                auto item = it->asCompound();
-                if (!item) {
-                    continue;
-                }
-                auto tb = TickingBlock::FromCompound(*item);
-                if (!tb) {
-                    continue;
-                }
-                liquidTicks.push_back(*tb);
-            }
-        }
-
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion,
-                                                biomes, entities, tileEntities, structures, lastUpdate,
-                                                tileTicks, liquidTicks, s, terrianPopulated, createEmptySection));
     }
 
     static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const &filePath, int chunkX, int chunkZ) = delete;
@@ -459,6 +379,195 @@ private:
     }
 
 private:
+    static std::shared_ptr<Chunk> MakeChunk118(int chunkX, int chunkZ, nbt::CompoundTag const &root, int dataVersion) {
+        using namespace std;
+
+        auto level = root.compoundTag("");
+        if (!level) {
+            return nullptr;
+        }
+
+        auto sectionsTag = level->listTag("sections");
+        if (!sectionsTag) {
+            return nullptr;
+        }
+
+        vector<shared_ptr<ChunkSection>> sections;
+        //NOTE: blockEntities argument for MakeChunkSections is only used for ChunkSection112.
+        vector<shared_ptr<nbt::CompoundTag>> emptyBlockEntities;
+        auto createEmptySection = chunksection::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, emptyBlockEntities, sections);
+
+        //TODO: populate biomes from sections / or delegate biomes to ChunkSection
+        vector<biomes::BiomeId> biomes;
+
+        //NOTE: Always empty
+        vector<shared_ptr<nbt::CompoundTag>> entities;
+
+        auto structures = level->compoundTag("structures");
+
+        auto lastUpdateTag = level->int64("LastUpdate");
+        int64_t lastUpdate = 0;
+        if (lastUpdateTag) {
+            lastUpdate = *lastUpdateTag;
+        }
+
+        vector<shared_ptr<nbt::CompoundTag>> blockEntities;
+        auto blockEntitiesList = level->listTag("block_entities");
+        if (blockEntitiesList && blockEntitiesList->fType == nbt::Tag::Type::Compound) {
+            for (auto it : *blockEntitiesList) {
+                auto comp = it->asCompound();
+                if (!comp) {
+                    continue;
+                }
+                auto copy = make_shared<nbt::CompoundTag>();
+                copy->fValue = comp->fValue;
+                blockEntities.push_back(copy);
+            }
+        }
+
+        auto blockTicksTag = level->listTag("block_ticks");
+        vector<TickingBlock> blockTicks;
+        if (blockTicksTag) {
+            for (auto it : *blockTicksTag) {
+                auto item = it->asCompound();
+                if (!item) {
+                    continue;
+                }
+                auto tb = TickingBlock::FromCompound(*item);
+                if (!tb) {
+                    continue;
+                }
+                blockTicks.push_back(*tb);
+            }
+        }
+
+        auto fluidTicksTag = level->listTag("fluid_ticks");
+        vector<TickingBlock> fluidTicks;
+        if (fluidTicksTag) {
+            for (auto it : *fluidTicksTag) {
+                auto item = it->asCompound();
+                if (!item) {
+                    continue;
+                }
+                auto tb = TickingBlock::FromCompound(*item);
+                if (!tb) {
+                    continue;
+                }
+                fluidTicks.push_back(*tb);
+            }
+        }
+
+        string s;
+        auto status = level->stringTag("Status");
+        if (status) {
+            s = status->fValue;
+        }
+
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion,
+                                                biomes, entities, blockEntities, structures, lastUpdate,
+                                                blockTicks, fluidTicks, s, nullopt, createEmptySection));
+    }
+
+    static std::shared_ptr<Chunk> MakeChunk112(int chunkX, int chunkZ, nbt::CompoundTag &root, int dataVersion) {
+        using namespace std;
+
+        auto level = root.query("/Level")->asCompound();
+        if (!level) {
+            return nullptr;
+        }
+
+        vector<shared_ptr<nbt::CompoundTag>> tileEntities;
+        auto tileEntitiesList = level->listTag("TileEntities");
+        if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::Type::Compound) {
+            for (auto it : *tileEntitiesList) {
+                auto comp = it->asCompound();
+                if (!comp) {
+                    continue;
+                }
+                auto copy = make_shared<nbt::CompoundTag>();
+                copy->fValue = comp->fValue;
+                tileEntities.push_back(copy);
+            }
+        }
+
+        auto sectionsTag = level->listTag("Sections");
+        if (!sectionsTag) {
+            return nullptr;
+        }
+        vector<shared_ptr<ChunkSection>> sections;
+        auto createEmptySection = chunksection::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, tileEntities, sections);
+
+        vector<biomes::BiomeId> biomes;
+        auto biomesTag = level->query("Biomes");
+        ParseBiomes(biomesTag, biomes);
+
+        vector<shared_ptr<nbt::CompoundTag>> entities;
+        auto entitiesTag = level->listTag("Entities");
+        if (entitiesTag && entitiesTag->fType == nbt::Tag::Type::Compound) {
+            auto entitiesList = entitiesTag->asList();
+            for (auto it : *entitiesList) {
+                auto comp = it->asCompound();
+                if (!comp) {
+                    continue;
+                }
+                auto copy = make_shared<nbt::CompoundTag>();
+                copy->fValue = comp->fValue;
+                entities.push_back(copy);
+            }
+        }
+
+        string s;
+        auto status = level->stringTag("Status");
+        if (status) {
+            s = status->fValue;
+        }
+        std::optional<bool> terrianPopulated = level->boolean("TerrianPopulated");
+
+        auto structures = level->compoundTag("Structures");
+
+        auto lastUpdateTag = level->int64("LastUpdate");
+        int64_t lastUpdate = 0;
+        if (lastUpdateTag) {
+            lastUpdate = *lastUpdateTag;
+        }
+
+        auto tileTicksTag = level->listTag("TileTicks");
+        std::vector<TickingBlock> tileTicks;
+        if (tileTicksTag) {
+            for (auto it : *tileTicksTag) {
+                auto item = it->asCompound();
+                if (!item) {
+                    continue;
+                }
+                auto tb = TickingBlock::FromCompound(*item);
+                if (!tb) {
+                    continue;
+                }
+                tileTicks.push_back(*tb);
+            }
+        }
+
+        auto liquidTicksTag = level->listTag("LiquidTicks");
+        std::vector<TickingBlock> liquidTicks;
+        if (liquidTicksTag) {
+            for (auto it : *liquidTicksTag) {
+                auto item = it->asCompound();
+                if (!item) {
+                    continue;
+                }
+                auto tb = TickingBlock::FromCompound(*item);
+                if (!tb) {
+                    continue;
+                }
+                liquidTicks.push_back(*tb);
+            }
+        }
+
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion,
+                                                biomes, entities, tileEntities, structures, lastUpdate,
+                                                tileTicks, liquidTicks, s, terrianPopulated, createEmptySection));
+    }
+
     std::shared_ptr<ChunkSection> unsafeSectionAtBlock(int y) const {
         int const sectionIndex = y / 16;
         int const idx = sectionIndex - fMinChunkSectionY;
