@@ -75,6 +75,9 @@ public:
             return nullptr;
         }
         auto biomePaletteTag = biomes->listTag("palette");
+        if (!biomePaletteTag) {
+            return nullptr;
+        }
         vector<mcfile::biomes::BiomeId> biomePalette;
         for (auto entry : *biomePaletteTag) {
             auto tag = entry->asString();
@@ -85,6 +88,7 @@ public:
             if (!b) {
                 return nullptr;
             }
+            biomePalette.push_back(*b);
         }
         if (biomePalette.empty()) {
             return nullptr;
