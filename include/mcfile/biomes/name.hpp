@@ -95,6 +95,11 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
 
         // 20w15a
         {minecraft::basalt_deltas, "minecraft:basalt_deltas"},
+
+        // 1.18
+
+        {minecraft::dripstone_caves, "minecraft:dripstone_caves"},
+        {minecraft::lush_caves, "minecraft:lush_caves"},
     };
     auto mappingIt = mapping.find(id);
     if (mappingIt == mapping.end()) {

@@ -91,6 +91,10 @@ enum : BiomeId {
 
     basalt_deltas = 173,
 
+    // 1.18
+    dripstone_caves = 174,
+    lush_caves = 175,
+
     minecraft_max_biome_id
 };
 

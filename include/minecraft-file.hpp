@@ -75,6 +75,7 @@
 #include <mcfile/biomes/biome-id.hpp>
 #include <mcfile/biomes/minecraft.hpp>
 #include <mcfile/biomes/from-int.hpp>
+#include <mcfile/biomes/from-name.hpp>
 #include <mcfile/biomes/name.hpp>
 #include <mcfile/dimension.hpp>
 #include <mcfile/je/chunk-section.hpp>

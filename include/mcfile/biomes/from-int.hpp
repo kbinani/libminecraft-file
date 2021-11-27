@@ -88,6 +88,10 @@ static inline BiomeId FromInt(int v) {
 
         // 20w15a
         {173, minecraft::basalt_deltas},
+
+        // 1.18
+        {174, minecraft::dripstone_caves},
+        {175, minecraft::lush_caves},
     };
     auto mappingIt = mapping.find(v);
     if (mappingIt == mapping.end()) {

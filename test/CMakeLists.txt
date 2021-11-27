@@ -13,6 +13,7 @@ add_executable(mcfile-test
   # git ls-files | grep 'hpp$' | grep -v ^test/ | sed 's:\(.*\):  ../\1:g' | pbcopy
   ../include/mcfile/biomes/biome-id.hpp
   ../include/mcfile/biomes/from-int.hpp
+  ../include/mcfile/biomes/from-name.hpp
   ../include/mcfile/biomes/minecraft.hpp
   ../include/mcfile/biomes/name.hpp
   ../include/mcfile/blocks/block-id.hpp
