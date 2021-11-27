@@ -34,6 +34,7 @@ add_executable(mcfile-test
   ../include/mcfile/je/chunksection/chunk-section-113-base.hpp
   ../include/mcfile/je/chunksection/chunk-section-113.hpp
   ../include/mcfile/je/chunksection/chunk-section-116.hpp
+  ../include/mcfile/je/chunksection/chunk-section-118.hpp
   ../include/mcfile/je/chunksection/chunk-section-generator.hpp
   ../include/mcfile/je/mca-data-source.hpp
   ../include/mcfile/je/region.hpp

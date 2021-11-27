@@ -4,11 +4,12 @@ namespace mcfile::je::chunksection {
 
 class BlockStatesParser116 {
 public:
-    static void PaletteIndicesFromBlockStates(std::vector<int64_t> const &blockStates, std::vector<uint16_t> &paletteIndices) {
-        paletteIndices.resize(16 * 16 * 16);
+    template<size_t size>
+    static void GenericPaletteIndicesFromBlockStates(std::vector<int64_t> const &blockStates, std::vector<uint16_t> &paletteIndices) {
+        paletteIndices.resize(size * size * size);
 
         size_t const numBits = blockStates.size() * 64;
-        size_t const bitsPerIndex = std::floor((double)numBits / 4096.0);
+        size_t const bitsPerIndex = std::floor((double)numBits / (size * size * size));
         size_t const palettesPerLong = std::floor(64.0 / (double)bitsPerIndex);
         int64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerIndex);
 
@@ -16,9 +17,9 @@ public:
         size_t uint64Index = 0;
         uint64_t v = *(uint64_t *)blockStates.data();
 
-        for (int offsetY = 0; offsetY < 16; offsetY++) {
-            for (int offsetZ = 0; offsetZ < 16; offsetZ++) {
-                for (int offsetX = 0; offsetX < 16; offsetX++) {
+        for (int offsetY = 0; offsetY < size; offsetY++) {
+            for (int offsetZ = 0; offsetZ < size; offsetZ++) {
+                for (int offsetX = 0; offsetX < size; offsetX++) {
                     uint64_t const paletteIndex = v & mask;
 
                     paletteIndices[index] = (uint16_t)(0xffff & paletteIndex);
@@ -38,6 +39,10 @@ public:
         }
     last:
         return;
+    }
+
+    static void PaletteIndicesFromBlockStates(std::vector<int64_t> const &blockStates, std::vector<uint16_t> &paletteIndices) {
+        GenericPaletteIndicesFromBlockStates<16>(blockStates, paletteIndices);
     }
 
     static void BlockStatesFromPaletteIndices(size_t numPaletteEntries, std::vector<uint16_t> const &paletteIndices, std::vector<int64_t> &blockStates) {

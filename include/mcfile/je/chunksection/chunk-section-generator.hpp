@@ -45,7 +45,7 @@ public:
                 }
             }
             return chunksection::ChunkSection113::MakeEmpty;
-        } else {
+        } else if (dataVersion < 2834) {
             //2529 (20w17a)
             //2555 (20w22a)
             if (sections) {
@@ -61,6 +61,29 @@ public:
                 }
             }
             return chunksection::ChunkSection116::MakeEmpty;
+        } else {
+            //2834 (21w37a)
+            //2835 (21w38a)
+            //2839 (21w41a)
+            //2840 (21w42a)
+            //2844 (21w43a)
+            //2847 (1.18pre1)
+            //2850 (1.18pre4)
+            //2857 (1.19rc2)
+            //2858 (1.18rc3)
+            if (sections) {
+                for (auto const &it : *sections) {
+                    auto section = it->asCompound();
+                    if (!section) {
+                        continue;
+                    }
+                    auto const &converted = chunksection::ChunkSection118::MakeChunkSection(section);
+                    if (converted) {
+                        result.push_back(converted);
+                    }
+                }
+            }
+            return chunksection::ChunkSection118::MakeEmpty;
         }
     }
 

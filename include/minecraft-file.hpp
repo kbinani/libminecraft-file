@@ -85,6 +85,7 @@
 #include <mcfile/je/chunksection/block-states-parser-116.hpp>
 #include <mcfile/je/chunksection/chunk-section-113.hpp>
 #include <mcfile/je/chunksection/chunk-section-116.hpp>
+#include <mcfile/je/chunksection/chunk-section-118.hpp>
 #include <mcfile/je/chunksection/chunk-section-generator.hpp>
 #include <mcfile/je/set-block-options.hpp>
 #include <mcfile/pos2.hpp>
