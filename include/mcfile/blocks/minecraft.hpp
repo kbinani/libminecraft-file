@@ -927,6 +927,12 @@ enum : BlockId {
     cave_vines_plant,
     glow_lichen,
 
+    potted_crimson_fungus,
+    potted_warped_fungus,
+    potted_crimson_roots,
+    potted_warped_roots,
+    sculk_sensor,
+
     minecraft_max_block_id,
 };
 

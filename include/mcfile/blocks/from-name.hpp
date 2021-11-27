@@ -908,6 +908,12 @@ static inline BlockId FromName(std::string const &name) {
         {"minecraft:cave_vines", minecraft::cave_vines},
         {"minecraft:cave_vines_plant", minecraft::cave_vines_plant},
         {"minecraft:glow_lichen", minecraft::glow_lichen},
+
+        {"minecraft:potted_crimson_fungus", minecraft::potted_crimson_fungus},
+        {"minecraft:potted_warped_fungus", minecraft::potted_warped_fungus},
+        {"minecraft:potted_crimson_roots", minecraft::potted_crimson_roots},
+        {"minecraft:potted_warped_roots", minecraft::potted_warped_roots},
+        {"minecraft:sculk_sensor", minecraft::sculk_sensor},
     };
     auto mappingIt = mapping.find(name);
     if (mappingIt == mapping.end()) {

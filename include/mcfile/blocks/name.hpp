@@ -912,6 +912,12 @@ static inline std::vector<Characteristics> CreateTable() {
         {minecraft::cave_vines, {.name = "minecraft:cave_vines", .opaque = false}},
         {minecraft::cave_vines_plant, {.name = "minecraft:cave_vines_plant", .opaque = false}},
         {minecraft::glow_lichen, {.name = "minecraft:glow_lichen", .opaque = false}},
+
+        {minecraft::potted_crimson_fungus, {.name = "minecraft:potted_crimson_fungus", .opaque = false}},
+        {minecraft::potted_warped_fungus, {.name = "minecraft:potted_warped_fungus", .opaque = false}},
+        {minecraft::potted_crimson_roots, {.name = "minecraft:potted_crimson_roots", .opaque = false}},
+        {minecraft::potted_warped_roots, {.name = "minecraft:potted_warped_roots", .opaque = false}},
+        {minecraft::sculk_sensor, {.name = "minecraft:sculk_sensor", .opaque = false}},
     };
 
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
