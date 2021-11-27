@@ -20,21 +20,21 @@ public:
         case 7: return biomes::minecraft::river;
         case 11: return biomes::minecraft::frozen_river;
         case 16: return biomes::minecraft::beach;
-        case 25: return biomes::minecraft::stone_shore; // stone_beach
+        case 25: return biomes::minecraft::stony_shore; // stone_beach
         case 26: return biomes::minecraft::snowy_beach; // cold_beach
         case 4: return biomes::minecraft::forest;
         case 18: return biomes::minecraft::wooded_hills; // forest_hills
         case 132: return biomes::minecraft::flower_forest;
         case 27: return biomes::minecraft::birch_forest;
         case 28: return biomes::minecraft::birch_forest_hills;
-        case 155: return biomes::minecraft::tall_birch_forest; // birch_forest_mutated
-        case 156: return biomes::minecraft::tall_birch_hills;  // birch_forest_hills_mutated
-        case 29: return biomes::minecraft::dark_forest;        // roofed_forest
-        case 157: return biomes::minecraft::dark_forest_hills; // roofed_forest_mutated
+        case 155: return biomes::minecraft::old_growth_birch_forest; // birch_forest_mutated
+        case 156: return biomes::minecraft::tall_birch_hills;        // birch_forest_hills_mutated
+        case 29: return biomes::minecraft::dark_forest;              // roofed_forest
+        case 157: return biomes::minecraft::dark_forest_hills;       // roofed_forest_mutated
         case 21: return biomes::minecraft::jungle;
         case 22: return biomes::minecraft::jungle_hills;
         case 149: return biomes::minecraft::modified_jungle; // jungle_mutated
-        case 23: return biomes::minecraft::jungle_edge;
+        case 23: return biomes::minecraft::sparse_jungle;
         case 151: return biomes::minecraft::modified_jungle_edge; // jungle_edge_mutated
         case 168: return biomes::minecraft::bamboo_jungle;
         case 169: return biomes::minecraft::bamboo_jungle_hills;
@@ -44,9 +44,9 @@ public:
         case 30: return biomes::minecraft::snowy_taiga;               // cold_taiga
         case 31: return biomes::minecraft::snowy_taiga_hills;         // cold_taiga_hills
         case 158: return biomes::minecraft::snowy_taiga_mountains;    // cold_taiga_mutated
-        case 32: return biomes::minecraft::giant_tree_taiga;          // mega_taiga
+        case 32: return biomes::minecraft::old_growth_pine_taiga;     // mega_taiga
         case 33: return biomes::minecraft::giant_tree_taiga_hills;    // mega_taiga_hills
-        case 160: return biomes::minecraft::giant_spruce_taiga;       // redwood_taiga_mutated
+        case 160: return biomes::minecraft::old_growth_spruce_taiga;  // redwood_taiga_mutated
         case 161: return biomes::minecraft::giant_spruce_taiga_hills; // redwood_taiga_hills_mutated
         case 14: return biomes::minecraft::mushroom_fields;           // mushroom_island
         case 15: return biomes::minecraft::mushroom_field_shore;      // mushroom_island_shore
@@ -54,25 +54,25 @@ public:
         case 134: return biomes::minecraft::swamp_hills;              // swampland_mutated
         case 35: return biomes::minecraft::savanna;
         case 36: return biomes::minecraft::savanna_plateau;
-        case 163: return biomes::minecraft::shattered_savanna;         // savanna_mutated
+        case 163: return biomes::minecraft::windswept_savanna;         // savanna_mutated
         case 164: return biomes::minecraft::shattered_savanna_plateau; // savanna_plateau_mutated
         case 1: return biomes::minecraft::plains;
         case 129: return biomes::minecraft::sunflower_plains;
         case 2: return biomes::minecraft::desert;
         case 17: return biomes::minecraft::desert_hills;
         case 130: return biomes::minecraft::desert_lakes;                     // desert_mutated
-        case 12: return biomes::minecraft::snowy_tundra;                      // ice_plains
+        case 12: return biomes::minecraft::snowy_plains;                      // ice_plains
         case 13: return biomes::minecraft::snowy_mountains;                   // ice_mountains
         case 140: return biomes::minecraft::ice_spikes;                       // ice_plains_spikes
-        case 3: return biomes::minecraft::mountains;                          // extreme_hills
-        case 34: return biomes::minecraft::wooded_mountains;                  // extreme_hills_plus_trees
-        case 131: return biomes::minecraft::gravelly_mountains;               // extreme_hills_mutated
+        case 3: return biomes::minecraft::windswept_hills;                    // extreme_hills
+        case 34: return biomes::minecraft::windswept_forest;                  // extreme_hills_plus_trees
+        case 131: return biomes::minecraft::windswept_gravelly_hills;         // extreme_hills_mutated
         case 162: return biomes::minecraft::modified_gravelly_mountains;      // extreme_hills_plus_trees_mutated
         case 20: return biomes::minecraft::mountain_edge;                     // extreme_hills_edge
         case 37: return biomes::minecraft::badlands;                          // mesa;
         case 38: return biomes::minecraft::badlands_plateau;                  // mesa_plateau;
         case 166: return biomes::minecraft::modified_badlands_plateau;        // mesa_plateau_mutated
-        case 39: return biomes::minecraft::wooded_badlands_plateau;           // mesa_plateau_stone
+        case 39: return biomes::minecraft::wooded_badlands;                   // mesa_plateau_stone
         case 167: return biomes::minecraft::modified_wooded_badlands_plateau; // mesa_plateau_stone_mutated
         case 165: return biomes::minecraft::eroded_badlands;                  // mesa_bryce
         case 8: return biomes::minecraft::nether_wastes;                      // hell
@@ -115,7 +115,7 @@ public:
             return 11;
         case beach:
             return 16;
-        case stone_shore:
+        case stony_shore:
             return 25;
         case snowy_beach:
             return 26;
@@ -129,7 +129,7 @@ public:
             return 27;
         case birch_forest_hills:
             return 28;
-        case tall_birch_forest:
+        case old_growth_birch_forest:
             return 155;
         case tall_birch_hills:
             return 156;
@@ -143,7 +143,7 @@ public:
             return 22;
         case modified_jungle:
             return 149;
-        case jungle_edge:
+        case sparse_jungle:
             return 23;
         case modified_jungle_edge:
             return 151;
@@ -163,11 +163,11 @@ public:
             return 31;
         case snowy_taiga_mountains:
             return 158;
-        case giant_tree_taiga:
+        case old_growth_pine_taiga:
             return 32;
         case giant_tree_taiga_hills:
             return 33;
-        case giant_spruce_taiga:
+        case old_growth_spruce_taiga:
             return 160;
         case giant_spruce_taiga_hills:
             return 161;
@@ -183,7 +183,7 @@ public:
             return 35;
         case savanna_plateau:
             return 36;
-        case shattered_savanna:
+        case windswept_savanna:
             return 163;
         case shattered_savanna_plateau:
             return 164;
@@ -197,17 +197,17 @@ public:
             return 17;
         case desert_lakes:
             return 130;
-        case snowy_tundra:
+        case snowy_plains:
             return 12;
         case snowy_mountains:
             return 13;
         case ice_spikes:
             return 140;
-        case mountains:
+        case windswept_hills:
             return 3;
-        case wooded_mountains:
+        case windswept_forest:
             return 34;
-        case gravelly_mountains:
+        case windswept_gravelly_hills:
             return 131;
         case modified_gravelly_mountains:
             return 162;
@@ -219,7 +219,7 @@ public:
             return 39;
         case modified_badlands_plateau:
             return 167;
-        case wooded_badlands_plateau:
+        case wooded_badlands:
             return 38;
         case modified_wooded_badlands_plateau:
             return 166;
