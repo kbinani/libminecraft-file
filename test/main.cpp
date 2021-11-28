@@ -127,3 +127,143 @@ TEST_CASE("block-id") {
         }
     }
 }
+
+namespace {
+std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromFile(fs::path p) {
+    auto s = std::make_shared<mcfile::stream::FileInputStream>(p);
+    mcfile::stream::InputStreamReader reader(s, {.fLittleEndian = false});
+    auto tag = std::make_shared<mcfile::nbt::CompoundTag>();
+    tag->read(reader);
+    return tag;
+}
+
+std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromCompressedFile(fs::path p) {
+    auto size = fs::file_size(p);
+    std::vector<uint8_t> buffer(size);
+    FILE *fp = mcfile::File::Open(p, mcfile::File::Mode::Read);
+    fread(buffer.data(), size, 1, fp);
+    mcfile::Compression::decompress(buffer);
+    auto s = std::make_shared<mcfile::stream::ByteStream>(buffer);
+    mcfile::stream::InputStreamReader reader(s, {.fLittleEndian = false});
+    auto tag = std::make_shared<mcfile::nbt::CompoundTag>();
+    tag->read(reader);
+    return tag;
+}
+
+void CheckTag(mcfile::nbt::Tag const *va, mcfile::nbt::Tag const *vb) {
+    using namespace mcfile::nbt;
+    CHECK(va->type() == vb->type());
+    switch (va->type()) {
+    case Tag::Type::Byte:
+        CHECK(va->asByte()->fValue == vb->asByte()->fValue);
+        break;
+    case Tag::Type::Double:
+        CHECK(va->asDouble()->fValue == vb->asDouble()->fValue);
+        break;
+    case Tag::Type::Float:
+        CHECK(va->asFloat()->fValue == vb->asFloat()->fValue);
+        break;
+    case Tag::Type::Int:
+        CHECK(va->asInt()->fValue == vb->asInt()->fValue);
+        break;
+    case Tag::Type::Long:
+        CHECK(va->asLong()->fValue == vb->asLong()->fValue);
+        break;
+    case Tag::Type::Short:
+        CHECK(va->asShort()->fValue == vb->asShort()->fValue);
+        break;
+    case Tag::Type::String:
+        CHECK(va->asString()->fValue == vb->asString()->fValue);
+        break;
+    case Tag::Type::ByteArray: {
+        auto const &la = va->asByteArray()->value();
+        auto const &lb = vb->asByteArray()->value();
+        CHECK(la.size() == lb.size());
+        for (int i = 0; i < la.size(); i++) {
+            CHECK(la[i] == lb[i]);
+        }
+        break;
+    }
+    case Tag::Type::IntArray: {
+        auto const &la = va->asIntArray()->value();
+        auto const &lb = vb->asIntArray()->value();
+        CHECK(la.size() == lb.size());
+        for (int i = 0; i < la.size(); i++) {
+            CHECK(la[i] == lb[i]);
+        }
+        break;
+    }
+    case Tag::Type::LongArray: {
+        auto const &la = va->asLongArray()->value();
+        auto const &lb = vb->asLongArray()->value();
+        CHECK(la.size() == lb.size());
+        for (int i = 0; i < la.size(); i++) {
+            CHECK(la[i] == lb[i]);
+        }
+        break;
+    }
+    case Tag::Type::List: {
+        auto la = va->asList();
+        auto lb = vb->asList();
+        CHECK(la->size() == lb->size());
+        for (int i = 0; i < la->size(); i++) {
+            CheckTag(la->at(i).get(), lb->at(i).get());
+        }
+        break;
+    }
+    case Tag::Type::Compound: {
+        auto ca = va->asCompound();
+        auto cb = vb->asCompound();
+        CHECK(ca->size() == cb->size());
+        for (auto it : *ca) {
+            auto a = it.second;
+            auto b = cb->fValue.at(it.first);
+            CHECK(b);
+            CheckTag(a.get(), b.get());
+        }
+        break;
+    }
+    default:
+        CHECK(false);
+        break;
+    }
+}
+
+} // namespace
+
+TEST_CASE("1.18") {
+    auto const file = fs::path(__FILE__);
+    auto dir = file.parent_path();
+    je::World world(dir / "data" / "1.18rc3" / "12345678");
+    {
+        auto const &chunk = world.chunkAt(0, 0);
+        CHECK(chunk);
+        auto bricks = chunk->blockAt(14, -52, 9);
+        CHECK(bricks);
+        CHECK(bricks->fName == "minecraft:bricks");
+        auto stoneBricks = chunk->blockAt(11, 316, 7);
+        CHECK(stoneBricks);
+        CHECK(stoneBricks->fName == "minecraft:stone_bricks");
+    }
+    {
+        auto const &chunk = world.chunkAt(10, 17);
+        CHECK(chunk->biomeAt(161, 2, 278) == biomes::minecraft::lush_caves);
+        CHECK(chunk->biomeAt(161, 9, 278) == biomes::minecraft::snowy_beach);
+    }
+    {
+        auto region = world.region(0, 0);
+        auto tempDir = File::CreateTempDir(fs::temp_directory_path());
+        auto original = *tempDir / "original_c.0.0.nbt";
+        CHECK(region->exportToNbt(0, 0, original));
+        auto const &writableChunk = world.writableChunkAt(0, 0);
+        auto written = *tempDir / "written_c.0.0.nbt";
+        auto stream = std::make_shared<mcfile::stream::FileOutputStream>(written);
+        CHECK(writableChunk->write(*stream));
+        stream.reset();
+
+        auto expected = ReadCompoundFromFile(original);
+        auto actual = ReadCompoundFromCompressedFile(written);
+        CHECK(actual);
+        CheckTag(expected.get(), actual.get());
+    }
+}
