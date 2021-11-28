@@ -6,8 +6,23 @@ class ChunkSection118 : public ChunkSection {
 public:
     static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
         using namespace std;
-        //TODO:
-        return nullptr;
+        vector<shared_ptr<Block const>> blockPalette;
+        vector<uint16_t> blockPaletteIndices;
+        vector<biomes::BiomeId> biomePalette;
+        vector<uint16_t> biomePaletteIndices;
+        vector<uint8_t> blockLight;
+        vector<uint8_t> skyLight;
+        auto extra = make_shared<nbt::CompoundTag>();
+        return shared_ptr<ChunkSection>(new ChunkSection118(
+            sectionY,
+            blockPalette,
+            blockPaletteIndices,
+            biomePalette,
+            biomePaletteIndices,
+            blockLight,
+            skyLight,
+            2858,
+            extra));
     }
 
     static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const *section, int dataVersion) {
