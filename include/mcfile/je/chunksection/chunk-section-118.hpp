@@ -6,6 +6,7 @@ class ChunkSection118 : public ChunkSection {
 public:
     static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
         using namespace std;
+        //TODO:
         return nullptr;
     }
 
@@ -14,6 +15,15 @@ public:
         if (!section) {
             return nullptr;
         }
+
+        static std::unordered_set<std::string> const sExclude = {
+            "Y",
+            "block_states",
+            "biomes",
+            "BlockLight",
+            "SkyLight",
+        };
+
         auto yTag = section->byte("Y");
         if (!yTag) {
             return nullptr;
@@ -117,6 +127,13 @@ public:
             skyLight = skyLightTag->value();
         }
 
+        auto extra = std::make_shared<nbt::CompoundTag>();
+        for (auto it : *section) {
+            if (sExclude.find(it.first) == sExclude.end()) {
+                extra->set(it.first, it.second->clone());
+            }
+        }
+
         return std::shared_ptr<ChunkSection>(new ChunkSection118(
             y,
             blockPalette,
@@ -125,7 +142,8 @@ public:
             biomePaletteIndices,
             blockLight,
             skyLight,
-            dataVersion));
+            dataVersion,
+            extra));
     }
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
@@ -381,7 +399,8 @@ private:
                     std::vector<uint16_t> const &biomePaletteIndices,
                     std::vector<uint8_t> const &blockLight,
                     std::vector<uint8_t> const &skyLight,
-                    int dataVersion)
+                    int dataVersion,
+                    std::shared_ptr<nbt::CompoundTag> extra)
         : fY(y)
         , fBlockPalette(blockPalette)
         , fBlockPaletteIndices(blockPaletteIndices)
@@ -389,7 +408,8 @@ private:
         , fBiomePaletteIndices(biomePaletteIndices)
         , fBlockLight(blockLight)
         , fSkyLight(skyLight)
-        , fDataVersion(dataVersion) {}
+        , fDataVersion(dataVersion)
+        , fExtra(extra) {}
 
     static int BlockIndex(int offsetX, int offsetY, int offsetZ) {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
@@ -407,6 +427,7 @@ private:
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
     int fDataVersion;
+    std::shared_ptr<nbt::CompoundTag> fExtra;
 };
 
 } // namespace mcfile::je::chunksection
