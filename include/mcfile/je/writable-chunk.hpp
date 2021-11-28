@@ -11,6 +11,112 @@ public:
     }
 
     std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
+        if (fDataVersion <= 2840) {
+            return toCompoundTag112();
+        } else {
+            return toCompoundTag118();
+        }
+    }
+
+    bool write(stream::OutputStream &s) const {
+        using namespace std;
+        using namespace mcfile;
+        auto compound = toCompoundTag();
+        if (!compound) {
+            return false;
+        }
+        auto stream = make_shared<stream::ByteStream>();
+        auto writer = make_shared<stream::OutputStreamWriter>(stream, stream::WriteOption{.fLittleEndian = false});
+        auto root = make_shared<nbt::CompoundTag>();
+        root->set("", compound);
+        if (!root->write(*writer)) {
+            return false;
+        }
+        std::vector<uint8_t> buffer;
+        stream->drain(buffer);
+        if (!Compression::compress(buffer)) {
+            return false;
+        }
+        if (!s.write(buffer.data(), buffer.size())) {
+            return false;
+        }
+        return true;
+    }
+
+private:
+    WritableChunk(Chunk &s, std::shared_ptr<nbt::CompoundTag> const &root)
+        : Chunk(s)
+        , fRoot(root) {
+    }
+
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag118() const {
+        using namespace std;
+        using namespace mcfile::nbt;
+
+        static unordered_set<string> const sExclude = {
+            "DataVersion",
+            "Status",
+            "xPos",
+            "yPos",
+            "zPos",
+            "LastUpdate",
+            "block_entities",
+            "structures",
+            "sections",
+        };
+        auto level = make_shared<CompoundTag>();
+        shared_ptr<CompoundTag> existing = fRoot->compoundTag("");
+        if (existing) {
+            for (auto it : *existing) {
+                if (sExclude.find(it.first) != sExclude.end()) {
+                    continue;
+                }
+                level->set(it.first, it.second->clone());
+            }
+        }
+
+        level->set("DataVersion", make_shared<IntTag>(fDataVersion));
+        level->set("Status", make_shared<StringTag>(fStatus));
+        level->set("xPos", make_shared<IntTag>(fChunkX));
+        level->set("zPos", make_shared<IntTag>(fChunkZ));
+        level->set("yPos", make_shared<IntTag>(fMinChunkSectionY));
+        level->set("LastUpdate", make_shared<LongTag>(fLastUpdate));
+
+        auto blockEntities = make_shared<ListTag>(Tag::Type::Compound);
+        for (auto const &it : fTileEntities) {
+            blockEntities->push_back(it.second->clone());
+        }
+        level->set("block_entities", blockEntities);
+
+        if (fStructures) {
+            level->set("structures", fStructures->clone());
+        }
+
+        vector<shared_ptr<ChunkSection>> sections;
+        for (auto const &section : fSections) {
+            if (section) {
+                sections.push_back(section);
+            }
+        }
+        if (!sections.empty()) {
+            sort(sections.begin(), sections.end(), [](auto const &a, auto const &b) {
+                return a->rawY() < b->rawY();
+            });
+            auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
+            for (auto const &section : sections) {
+                auto s = section->toCompoundTag();
+                if (!s) {
+                    return nullptr;
+                }
+                sectionsList->push_back(s);
+            }
+            level->set("sections", sectionsList);
+        }
+
+        return level;
+    }
+
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag112() const {
         using namespace std;
         using namespace mcfile::nbt;
         auto root = make_shared<CompoundTag>();
@@ -105,37 +211,6 @@ public:
 
         root->set("Level", level);
         return root;
-    }
-
-    bool write(stream::OutputStream &s) const {
-        using namespace std;
-        using namespace mcfile;
-        auto compound = toCompoundTag();
-        if (!compound) {
-            return false;
-        }
-        auto stream = make_shared<stream::ByteStream>();
-        auto writer = make_shared<stream::OutputStreamWriter>(stream, stream::WriteOption{.fLittleEndian = false});
-        auto root = make_shared<nbt::CompoundTag>();
-        root->set("", compound);
-        if (!root->write(*writer)) {
-            return false;
-        }
-        std::vector<uint8_t> buffer;
-        stream->drain(buffer);
-        if (!Compression::compress(buffer)) {
-            return false;
-        }
-        if (!s.write(buffer.data(), buffer.size())) {
-            return false;
-        }
-        return true;
-    }
-
-private:
-    WritableChunk(Chunk &s, std::shared_ptr<nbt::CompoundTag> const &root)
-        : Chunk(s)
-        , fRoot(root) {
     }
 
 public:
