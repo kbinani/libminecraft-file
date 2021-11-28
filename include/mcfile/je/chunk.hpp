@@ -569,7 +569,7 @@ private:
     }
 
     std::shared_ptr<ChunkSection> unsafeSectionAtBlock(int y) const {
-        int const sectionIndex = y / 16;
+        int const sectionIndex = Coordinate::ChunkFromBlock(y);
         int const idx = sectionIndex - fMinChunkSectionY;
         if (idx < 0 || fSections.size() <= idx) {
             return nullptr;
@@ -579,7 +579,7 @@ private:
     }
 
     std::shared_ptr<ChunkSection> sectionAtBlock(int y) {
-        int const sectionIndex = y / 16;
+        int const sectionIndex = Coordinate::ChunkFromBlock(y);
         int const idx = sectionIndex - fMinChunkSectionY;
         std::shared_ptr<ChunkSection> section;
         if (0 <= idx && idx < fSections.size()) {

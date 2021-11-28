@@ -46,88 +46,86 @@ public:
         int y = *yTag;
 
         auto blockStates = section->compoundTag("block_states");
-        if (!blockStates) {
-            return nullptr;
-        }
-        auto blockPaletteTag = blockStates->listTag("palette");
-        if (!blockPaletteTag) {
-            return nullptr;
-        }
         vector<shared_ptr<Block const>> blockPalette;
-        for (auto entry : *blockPaletteTag) {
-            auto tag = entry->asCompound();
-            if (!tag) {
-                return nullptr;
-            }
-            auto name = tag->string("Name");
-            if (!name) {
-                return nullptr;
-            }
-            map<string, string> properties;
-            auto propertiesTag = tag->compoundTag("Properties");
-            if (propertiesTag) {
-                for (auto p : *propertiesTag) {
-                    string n = p.first;
-                    if (n.empty()) {
-                        continue;
-                    }
-                    auto v = p.second->asString();
-                    if (!v) {
-                        continue;
-                    }
-                    properties.insert(make_pair(n, v->fValue));
-                }
-            }
-            blockPalette.push_back(make_shared<Block const>(*name, properties));
-        }
-        if (blockPalette.empty()) {
-            return nullptr;
-        }
-
         vector<uint16_t> blockPaletteIndices;
-        if (blockPalette.size() == 1) {
-            blockPaletteIndices.resize(4096, 0);
-        } else {
-            auto blockData = blockStates->longArrayTag("data");
-            if (!blockData) {
+        if (blockStates) {
+            auto blockPaletteTag = blockStates->listTag("palette");
+            if (!blockPaletteTag) {
                 return nullptr;
             }
-            BlockStatesParser116::PaletteIndicesFromBlockStates(blockData->value(), blockPaletteIndices);
+            for (auto entry : *blockPaletteTag) {
+                auto tag = entry->asCompound();
+                if (!tag) {
+                    return nullptr;
+                }
+                auto name = tag->string("Name");
+                if (!name) {
+                    return nullptr;
+                }
+                map<string, string> properties;
+                auto propertiesTag = tag->compoundTag("Properties");
+                if (propertiesTag) {
+                    for (auto p : *propertiesTag) {
+                        string n = p.first;
+                        if (n.empty()) {
+                            continue;
+                        }
+                        auto v = p.second->asString();
+                        if (!v) {
+                            continue;
+                        }
+                        properties.insert(make_pair(n, v->fValue));
+                    }
+                }
+                blockPalette.push_back(make_shared<Block const>(*name, properties));
+            }
+            if (blockPalette.empty()) {
+                return nullptr;
+            }
+
+            if (blockPalette.size() == 1) {
+                blockPaletteIndices.resize(4096, 0);
+            } else {
+                auto blockData = blockStates->longArrayTag("data");
+                if (!blockData) {
+                    return nullptr;
+                }
+                BlockStatesParser116::PaletteIndicesFromBlockStates(blockData->value(), blockPaletteIndices);
+            }
         }
 
         auto biomes = section->compoundTag("biomes");
-        if (!biomes) {
-            return nullptr;
-        }
-        auto biomePaletteTag = biomes->listTag("palette");
-        if (!biomePaletteTag) {
-            return nullptr;
-        }
         vector<mcfile::biomes::BiomeId> biomePalette;
-        for (auto entry : *biomePaletteTag) {
-            auto tag = entry->asString();
-            if (!tag) {
-                return nullptr;
-            }
-            auto b = biomes::FromName(tag->fValue);
-            if (!b) {
-                return nullptr;
-            }
-            biomePalette.push_back(*b);
-        }
-        if (biomePalette.empty()) {
-            return nullptr;
-        }
-
         vector<uint16_t> biomePaletteIndices;
-        if (biomePalette.size() == 1) {
-            biomePaletteIndices.resize(4 * 4 * 4, 0);
-        } else {
-            auto biomeData = biomes->longArrayTag("data");
-            if (!biomeData) {
+        if (biomes) {
+            auto biomePaletteTag = biomes->listTag("palette");
+            if (!biomePaletteTag) {
                 return nullptr;
             }
-            BlockStatesParser116::GenericPaletteIndicesFromBlockStates<4>(biomeData->value(), biomePaletteIndices);
+            for (auto entry : *biomePaletteTag) {
+                auto tag = entry->asString();
+                if (!tag) {
+                    return nullptr;
+                }
+                auto b = biomes::FromName(tag->fValue);
+                if (!b) {
+                    return nullptr;
+                }
+                biomePalette.push_back(*b);
+            }
+            if (biomePalette.empty()) {
+                return nullptr;
+            }
+
+            if (biomePalette.size() == 1) {
+                biomePaletteIndices.resize(4 * 4 * 4, 0);
+            } else {
+                auto biomeData = biomes->longArrayTag("data");
+                if (!biomeData) {
+                    return nullptr;
+                }
+                BlockStatesParser116::GenericPaletteIndicesFromBlockStates<4>(biomeData->value(), biomePaletteIndices);
+            }
         }
 
         vector<uint8_t> blockLight;
@@ -275,10 +273,12 @@ public:
         int y = offsetY / 4;
         int z = offsetZ / 4;
         int index = (y * 4 + z) * 4 + x;
-        if (fBiomePaletteIndices.size() <= index) {
+        int ptr = fBiomePaletteIndices[index];
+        if (ptr < 0 || fBiomePalette.size() <= ptr) {
             return nullopt;
+        } else {
+            return fBiomePalette[ptr];
         }
-        return fBiomePaletteIndices[index];
     }
 
     bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
@@ -324,49 +324,53 @@ public:
             root->set("BlockLight", make_shared<ByteArrayTag>(copy));
         }
 
-        auto biomes = make_shared<CompoundTag>();
-        auto biomePalette = make_shared<ListTag>(Tag::Type::String);
-        shared_ptr<LongArrayTag> biomePaletteData;
-        PackPalette<biomes::BiomeId, biomes::BiomeId, shared_ptr<StringTag>>(
-            fBiomePalette, fBiomePaletteIndices,
-            [this](biomes::BiomeId biome) -> shared_ptr<nbt::StringTag> {
-                auto name = biomes::Name(biome, fDataVersion);
-                return make_shared<StringTag>(name);
-            },
-            [](biomes::BiomeId biome) -> biomes::BiomeId {
-                return biome;
-            },
-            biomePalette, biomePaletteData);
-        biomes->set("palette", biomePalette);
-        if (biomePaletteData) {
-            biomes->set("data", biomePaletteData);
+        if (!fBiomePalette.empty()) {
+            auto biomes = make_shared<CompoundTag>();
+            auto biomePalette = make_shared<ListTag>(Tag::Type::String);
+            shared_ptr<LongArrayTag> biomePaletteData;
+            PackPalette<biomes::BiomeId, biomes::BiomeId, shared_ptr<StringTag>>(
+                fBiomePalette, fBiomePaletteIndices,
+                [this](biomes::BiomeId biome) -> shared_ptr<nbt::StringTag> {
+                    auto name = biomes::Name(biome, fDataVersion);
+                    return make_shared<StringTag>(name);
+                },
+                [](biomes::BiomeId biome) -> biomes::BiomeId {
+                    return biome;
+                },
+                biomePalette, biomePaletteData);
+            biomes->set("palette", biomePalette);
+            if (biomePaletteData) {
+                biomes->set("data", biomePaletteData);
+            }
+            root->set("biomes", biomes);
         }
-        root->set("biomes", biomes);
 
-        auto blockStates = make_shared<CompoundTag>();
-        auto blockPalette = make_shared<ListTag>(Tag::Type::Compound);
-        shared_ptr<LongArrayTag> blockPaletteData;
-        PackPalette<shared_ptr<Block const>, string, shared_ptr<CompoundTag>>(
-            fBlockPalette, fBlockPaletteIndices,
-            [this](shared_ptr<Block const> const &block) -> shared_ptr<nbt::CompoundTag> {
-                auto tag = make_shared<CompoundTag>();
-                tag->set("Name", make_shared<StringTag>(block->fName));
-                auto props = make_shared<CompoundTag>();
-                for (auto it : block->fProperties) {
-                    props->set(it.first, make_shared<StringTag>(it.second));
-                }
-                tag->set("Properties", props);
-                return tag;
-            },
-            [](shared_ptr<Block const> const &block) -> string {
-                return block->toString();
-            },
-            blockPalette, blockPaletteData);
-        blockStates->set("palette", blockPalette);
-        if (blockPaletteData) {
-            blockStates->set("data", blockPaletteData);
+        if (!fBlockPalette.empty()) {
+            auto blockStates = make_shared<CompoundTag>();
+            auto blockPalette = make_shared<ListTag>(Tag::Type::Compound);
+            shared_ptr<LongArrayTag> blockPaletteData;
+            PackPalette<shared_ptr<Block const>, string, shared_ptr<CompoundTag>>(
+                fBlockPalette, fBlockPaletteIndices,
+                [this](shared_ptr<Block const> const &block) -> shared_ptr<nbt::CompoundTag> {
+                    auto tag = make_shared<CompoundTag>();
+                    tag->set("Name", make_shared<StringTag>(block->fName));
+                    auto props = make_shared<CompoundTag>();
+                    for (auto it : block->fProperties) {
+                        props->set(it.first, make_shared<StringTag>(it.second));
+                    }
+                    tag->set("Properties", props);
+                    return tag;
+                },
+                [](shared_ptr<Block const> const &block) -> string {
+                    return block->toString();
+                },
+                blockPalette, blockPaletteData);
+            blockStates->set("palette", blockPalette);
+            if (blockPaletteData) {
+                blockStates->set("data", blockPaletteData);
+            }
+            root->set("block_states", blockStates);
         }
-        root->set("block_sates", blockStates);
 
         return root;
     }

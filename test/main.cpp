@@ -133,7 +133,7 @@ std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromFile(fs::path p) {
     auto s = std::make_shared<mcfile::stream::FileInputStream>(p);
     mcfile::stream::InputStreamReader reader(s, {.fLittleEndian = false});
     auto tag = std::make_shared<mcfile::nbt::CompoundTag>();
-    tag->read(reader);
+    CHECK(tag->read(reader));
     return tag;
 }
 
@@ -146,11 +146,11 @@ std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromCompressedFile(fs::pat
     auto s = std::make_shared<mcfile::stream::ByteStream>(buffer);
     mcfile::stream::InputStreamReader reader(s, {.fLittleEndian = false});
     auto tag = std::make_shared<mcfile::nbt::CompoundTag>();
-    tag->read(reader);
+    CHECK(tag->read(reader));
     return tag;
 }
 
-void CheckTag(mcfile::nbt::Tag const *va, mcfile::nbt::Tag const *vb) {
+void CheckTag(mcfile::nbt::Tag const *va, mcfile::nbt::Tag const *vb, std::unordered_set<std::string> const &ignored) {
     using namespace mcfile::nbt;
     CHECK(va->type() == vb->type());
     switch (va->type()) {
@@ -207,7 +207,7 @@ void CheckTag(mcfile::nbt::Tag const *va, mcfile::nbt::Tag const *vb) {
         auto lb = vb->asList();
         CHECK(la->size() == lb->size());
         for (int i = 0; i < la->size(); i++) {
-            CheckTag(la->at(i).get(), lb->at(i).get());
+            CheckTag(la->at(i).get(), lb->at(i).get(), ignored);
         }
         break;
     }
@@ -216,10 +216,14 @@ void CheckTag(mcfile::nbt::Tag const *va, mcfile::nbt::Tag const *vb) {
         auto cb = vb->asCompound();
         CHECK(ca->size() == cb->size());
         for (auto it : *ca) {
+            if (ignored.find(it.first) != ignored.end()) {
+                continue;
+            }
             auto a = it.second;
-            auto b = cb->fValue.at(it.first);
-            CHECK(b);
-            CheckTag(a.get(), b.get());
+            auto found = cb->find(it.first);
+            CHECK(found != cb->end());
+            auto b = found->second;
+            CheckTag(a.get(), b.get(), ignored);
         }
         break;
     }
@@ -235,7 +239,7 @@ TEST_CASE("1.18") {
     auto const file = fs::path(__FILE__);
     auto dir = file.parent_path();
     je::World world(dir / "data" / "1.18rc3" / "12345678");
-    {
+    SUBCASE("blockAt") {
         auto const &chunk = world.chunkAt(0, 0);
         CHECK(chunk);
         auto bricks = chunk->blockAt(14, -52, 9);
@@ -245,14 +249,14 @@ TEST_CASE("1.18") {
         CHECK(stoneBricks);
         CHECK(stoneBricks->fName == "minecraft:stone_bricks");
     }
-    {
+    SUBCASE("biomeAt") {
         auto const &chunk = world.chunkAt(10, 17);
         CHECK(chunk->biomeAt(161, 2, 278) == biomes::minecraft::lush_caves);
         CHECK(chunk->biomeAt(161, 9, 278) == biomes::minecraft::snowy_beach);
     }
-    {
-        auto region = world.region(0, 0);
+    SUBCASE("toCompoundTag") {
         auto tempDir = File::CreateTempDir(fs::temp_directory_path());
+        auto region = world.region(0, 0);
         auto original = *tempDir / "original_c.0.0.nbt";
         CHECK(region->exportToNbt(0, 0, original));
         auto const &writableChunk = world.writableChunkAt(0, 0);
@@ -264,6 +268,9 @@ TEST_CASE("1.18") {
         auto expected = ReadCompoundFromFile(original);
         auto actual = ReadCompoundFromCompressedFile(written);
         CHECK(actual);
-        CheckTag(expected.get(), actual.get());
+        CheckTag(expected.get(), actual.get(), {"palette", "data"});
+
+        std::error_code ec;
+        fs::remove_all(*tempDir, ec);
     }
 }
