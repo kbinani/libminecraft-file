@@ -281,6 +281,13 @@ protected:
         , fBlockLight(blockLight)
         , fSkyLight(skyLight)
         , fExtra(extra) {
+        for (int y = 0; y < 4; y++) {
+            for (int z = 0; z < 4; z++) {
+                for (int x = 0; x < 4; x++) {
+                    fBiomes[y][z][x] = biomes::unknown;
+                }
+            }
+        }
     }
 
 private:

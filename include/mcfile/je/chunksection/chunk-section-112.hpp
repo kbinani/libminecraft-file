@@ -127,6 +127,11 @@ private:
         , fPaletteIndices(paletteIndices)
         , fBlockLight(blockLight)
         , fSkyLight(skyLight) {
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                fBiomes[x][z] = biomes::unknown;
+            }
+        }
     }
 
     static std::shared_ptr<ChunkSection112> MakeRawSection(nbt::CompoundTag const *section) {
