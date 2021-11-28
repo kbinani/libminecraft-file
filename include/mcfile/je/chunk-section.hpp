@@ -13,6 +13,8 @@ public:
     virtual int rawY() const = 0;
     virtual std::vector<std::shared_ptr<Block const>> const &palette() const = 0;
     virtual std::optional<size_t> paletteIndexAt(int offsetX, int offsetY, int offsetZ) const = 0;
+    virtual std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const = 0;
+    virtual bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) = 0;
 
     // optional
 
