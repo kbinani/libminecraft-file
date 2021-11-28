@@ -9,7 +9,7 @@ public:
         return nullptr;
     }
 
-    static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const *section) {
+    static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const *section, int dataVersion) {
         using namespace std;
         if (!section) {
             return nullptr;
@@ -124,7 +124,8 @@ public:
             biomePalette,
             biomePaletteIndices,
             blockLight,
-            skyLight));
+            skyLight,
+            dataVersion));
     }
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
@@ -275,8 +276,101 @@ public:
     }
 
     std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
-        //TODO:
-        return nullptr;
+        using namespace std;
+        using namespace mcfile::nbt;
+
+        auto root = make_shared<CompoundTag>();
+
+        root->set("Y", make_shared<ByteTag>(fY));
+        if (!fSkyLight.empty()) {
+            vector<uint8_t> copy = fSkyLight;
+            root->set("SkyLight", make_shared<ByteArrayTag>(copy));
+        }
+        if (!fBlockLight.empty()) {
+            vector<uint8_t> copy = fBlockLight;
+            root->set("BlockLight", make_shared<ByteArrayTag>(copy));
+        }
+
+        auto biomes = make_shared<CompoundTag>();
+        auto biomePalette = make_shared<ListTag>(Tag::Type::String);
+        shared_ptr<LongArrayTag> biomePaletteData;
+        PackPalette<biomes::BiomeId, biomes::BiomeId, shared_ptr<StringTag>>(
+            fBiomePalette, fBiomePaletteIndices,
+            [this](biomes::BiomeId biome) -> shared_ptr<nbt::StringTag> {
+                auto name = biomes::Name(biome, fDataVersion);
+                return make_shared<StringTag>(name);
+            },
+            [](biomes::BiomeId biome) -> biomes::BiomeId {
+                return biome;
+            },
+            biomePalette, biomePaletteData);
+        biomes->set("palette", biomePalette);
+        if (biomePaletteData) {
+            biomes->set("data", biomePaletteData);
+        }
+        root->set("biomes", biomes);
+
+        auto blockStates = make_shared<CompoundTag>();
+        auto blockPalette = make_shared<ListTag>(Tag::Type::Compound);
+        shared_ptr<LongArrayTag> blockPaletteData;
+        PackPalette<shared_ptr<Block const>, string, shared_ptr<CompoundTag>>(
+            fBlockPalette, fBlockPaletteIndices,
+            [this](shared_ptr<Block const> const &block) -> shared_ptr<nbt::CompoundTag> {
+                auto tag = make_shared<CompoundTag>();
+                tag->set("Name", make_shared<StringTag>(block->fName));
+                auto props = make_shared<CompoundTag>();
+                for (auto it : block->fProperties) {
+                    props->set(it.first, make_shared<StringTag>(it.second));
+                }
+                tag->set("Properties", props);
+                return tag;
+            },
+            [](shared_ptr<Block const> const &block) -> string {
+                return block->toString();
+            },
+            blockPalette, blockPaletteData);
+        blockStates->set("palette", blockPalette);
+        if (blockPaletteData) {
+            blockStates->set("data", blockPaletteData);
+        }
+        root->set("block_sates", blockStates);
+
+        return root;
+    }
+
+    template<class ValueType, class ValueHashType, class PaletteType>
+    static void PackPalette(std::vector<ValueType> const &inPalette,
+                            std::vector<uint16_t> const &inIndices,
+                            std::function<PaletteType(ValueType v)> valueToPalette,
+                            std::function<ValueHashType(ValueType)> valueToHash,
+                            std::shared_ptr<nbt::ListTag> &outPalette,
+                            std::shared_ptr<nbt::LongArrayTag> &outPackedIndices) {
+        using namespace std;
+        using namespace mcfile::nbt;
+
+        vector<ValueHashType> paletteValues;
+        vector<uint16_t> indices;
+
+        for (uint16_t index : inIndices) {
+            ValueType value = inPalette[index];
+            ValueHashType hash = valueToHash(value);
+            auto found = find(paletteValues.begin(), paletteValues.end(), hash);
+            uint16_t idx;
+            if (found == paletteValues.end()) {
+                idx = outPalette->size();
+                paletteValues.push_back(hash);
+                outPalette->push_back(valueToPalette(value));
+            } else {
+                idx = distance(paletteValues.begin(), found);
+            }
+            indices.push_back(idx);
+        }
+        if (outPalette->size() <= 1) {
+            return;
+        }
+        vector<int64_t> packedData;
+        BlockStatesParser116::BlockStatesFromPaletteIndices(outPalette->size(), indices, packedData);
+        outPackedIndices.reset(new LongArrayTag(packedData));
     }
 
 private:
@@ -286,14 +380,16 @@ private:
                     std::vector<mcfile::biomes::BiomeId> const &biomePalette,
                     std::vector<uint16_t> const &biomePaletteIndices,
                     std::vector<uint8_t> const &blockLight,
-                    std::vector<uint8_t> const &skyLight)
+                    std::vector<uint8_t> const &skyLight,
+                    int dataVersion)
         : fY(y)
         , fBlockPalette(blockPalette)
         , fBlockPaletteIndices(blockPaletteIndices)
         , fBiomePalette(biomePalette)
         , fBiomePaletteIndices(biomePaletteIndices)
         , fBlockLight(blockLight)
-        , fSkyLight(skyLight) {}
+        , fSkyLight(skyLight)
+        , fDataVersion(dataVersion) {}
 
     static int BlockIndex(int offsetX, int offsetY, int offsetZ) {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
@@ -310,6 +406,7 @@ private:
     std::vector<uint16_t> fBiomePaletteIndices;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
+    int fDataVersion;
 };
 
 } // namespace mcfile::je::chunksection

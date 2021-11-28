@@ -77,7 +77,7 @@ public:
                     if (!section) {
                         continue;
                     }
-                    auto const &converted = chunksection::ChunkSection118::MakeChunkSection(section);
+                    auto const &converted = chunksection::ChunkSection118::MakeChunkSection(section, dataVersion);
                     if (converted) {
                         result.push_back(converted);
                     }
