@@ -646,7 +646,7 @@ private:
                             int const index = offsetX + offsetZ * 4 + offsetY * 16;
                             if (0 <= index && index < raw.size()) {
                                 auto b = raw[index];
-                                section->setBiomeAt(offsetX * 4, offsetY * 4, offsetZ * 4, b);
+                                section->setBiomeAt(offsetX * 4, iy * 4, offsetZ * 4, b);
                             }
                         }
                     }
