@@ -89,6 +89,34 @@ public:
         return fPaletteIndices[index];
     }
 
+    std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
+        using namespace std;
+        if (offsetX < 0 || 16 <= offsetX) {
+            return nullopt;
+        }
+        if (offsetY < 0 || 16 <= offsetY) {
+            return nullopt;
+        }
+        if (offsetZ < 0 || 16 <= offsetZ) {
+            return nullopt;
+        }
+        return fBiomes[offsetX][offsetZ];
+    }
+
+    bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
+        if (offsetX < 0 || 16 <= offsetX) {
+            return false;
+        }
+        if (offsetY < 0 || 16 <= offsetY) {
+            return false;
+        }
+        if (offsetZ < 0 || 16 <= offsetZ) {
+            return false;
+        }
+        fBiomes[offsetX][offsetZ] = biome;
+        return true;
+    }
+
 private:
     ChunkSection112(int y,
                     std::vector<std::shared_ptr<Block const>> const &palette, std::vector<uint16_t> const &paletteIndices,
@@ -895,7 +923,7 @@ private:
         case 72: id = blocks::minecraft::oak_pressure_plate; break;
         case 73: id = blocks::minecraft::redstone_ore; break;
         case 74: id = blocks::minecraft::redstone_ore; break; // glowing_redstone_ore
-        case 75:                                              //unlit_redstone_torch
+        case 75:                                              // unlit_redstone_torch
             if (data == 5) {
                 id = blocks::minecraft::redstone_torch;
             } else {
@@ -1619,6 +1647,7 @@ private:
     std::vector<uint16_t> fPaletteIndices;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
+    biomes::BiomeId fBiomes[16][16];
 };
 
 } // namespace mcfile::je::chunksection

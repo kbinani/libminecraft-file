@@ -110,6 +110,40 @@ public:
         return (size_t)paletteIndex;
     }
 
+    std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
+        using namespace std;
+        if (offsetX < 0 || 16 <= offsetX) {
+            return nullopt;
+        }
+        if (offsetY < 0 || 16 <= offsetY) {
+            return nullopt;
+        }
+        if (offsetZ < 0 || 16 <= offsetZ) {
+            return nullopt;
+        }
+        int x = offsetX / 4;
+        int y = offsetY / 4;
+        int z = offsetZ / 4;
+        return fBiomes[y][z][x];
+    }
+
+    bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
+        if (offsetX < 0 || 16 <= offsetX) {
+            return false;
+        }
+        if (offsetY < 0 || 16 <= offsetY) {
+            return false;
+        }
+        if (offsetZ < 0 || 16 <= offsetZ) {
+            return false;
+        }
+        int x = offsetX / 4;
+        int y = offsetY / 4;
+        int z = offsetZ / 4;
+        fBiomes[y][z][x] = biome;
+        return true;
+    }
+
     std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
         using namespace std;
         using namespace mcfile::nbt;
@@ -264,6 +298,7 @@ public:
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
     std::shared_ptr<nbt::CompoundTag> fExtra;
+    biomes::BiomeId fBiomes[4][4][4];
 };
 
 } // namespace mcfile::je::chunksection

@@ -42,11 +42,27 @@ public:
             level->set("Sections", sectionsList);
         }
 
-        std::vector<int32_t> biomes;
-        for (biomes::BiomeId biome : fBiomes) {
-            biomes.push_back(static_cast<int32_t>(biome));
+        if (fDataVersion >= 2203) { // 19w36a
+            vector<int32_t> biomes;
+            for (int y = minBlockY(); y < maxBlockY(); y += 4) {
+                for (int z = 0; z < 16; z += 4) {
+                    for (int x = 0; x < 16; x += 4) {
+                        auto b = biomeAt(x + minBlockX(), y, z + minBlockZ());
+                        biomes.push_back(b);
+                    }
+                }
+            }
+            level->set("Biomes", make_shared<IntArrayTag>(biomes));
+        } else {
+            vector<uint8_t> biomes(256, 0);
+            for (int z = 0; z < 16; z++) {
+                for (int x = 0; x < 16; x++) {
+                    auto b = biomeAt(x + minBlockX(), 0, z + minBlockZ());
+                    biomes.push_back(b);
+                }
+            }
+            level->set("Biomes", make_shared<ByteArrayTag>(biomes));
         }
-        level->set("Biomes", make_shared<IntArrayTag>(biomes));
 
         auto entities = make_shared<ListTag>(Tag::Type::Compound);
         for (auto const &entity : fEntities) {
