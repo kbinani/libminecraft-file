@@ -202,11 +202,34 @@ public:
         return (size_t)paletteIndex;
     }
 
-    // optional
-
     bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) override {
-        //TODO:
-        return false;
+        using namespace std;
+        if (!block) {
+            return false;
+        }
+        int index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (index < 0) {
+            return false;
+        }
+        if (fBlockPaletteIndices.size() != 4096) {
+            fBlockPaletteIndices.resize(4096);
+            auto air = make_shared<Block>("minecraft:air");
+            fBlockPalette.push_back(air);
+        }
+        int idx = -1;
+        string s = block->toString();
+        for (int i = 0; i < fBlockPalette.size(); i++) {
+            if (s == fBlockPalette[i]->toString()) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx < 0) {
+            idx = fBlockPalette.size();
+            fBlockPalette.push_back(block);
+        }
+        fBlockPaletteIndices[index] = idx;
+        return true;
     }
 
     std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
