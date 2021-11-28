@@ -4,17 +4,18 @@
 #include "minecraft-file.hpp"
 
 #include "BlockData.hpp"
-#include "Path.hpp"
 #include "Point3D.hpp"
 
 using namespace mcfile;
+namespace fs = std::filesystem;
 
 TEST_CASE("1.13.2") {
-    const auto dir = Path::Dirname(__FILE__);
+    auto const file = fs::path(__FILE__);
+    auto const dir = file.parent_path();
     std::map<Point3D, BlockData> expected;
-    BlockData::ReadAll(dir + std::string("/data/1.13.2/mitomitoyapparikawaiiyo/region/r.0.0-c.0.0.csv"), expected);
+    BlockData::ReadAll((dir / "data" / "1.13.2" / "mitomitoyapparikawaiiyo" / "region" / "r.0.0-c.0.0.csv").string(), expected);
 
-    je::World world(std::filesystem::path(dir) / "data" / "1.13.2" / "mitomitoyapparikawaiiyo");
+    je::World world(dir / "data" / "1.13.2" / "mitomitoyapparikawaiiyo");
 
     SUBCASE("Chunk::{blockAt,blockLightAt,skyLightAt}") {
         auto region = world.region(0, 0);
@@ -95,7 +96,8 @@ TEST_CASE("1.13.2") {
 }
 
 TEST_CASE("20w06a") {
-    std::filesystem::path dir(Path::Dirname(__FILE__));
+    auto const file = fs::path(__FILE__);
+    auto dir = file.parent_path();
     je::World world(dir / "data" / "20w06a" / "world" / "DIM-1");
 
     SUBCASE("biomeAt") {

@@ -2,12 +2,18 @@ cmake_minimum_required(VERSION 3.0)
 project(mcfile)
 
 include(CheckCCompilerFlag)
+include(ext/setup_source_groups/setup_source_groups.cmake)
+set(BUILD_SHARED_LIBS OFF)
+
+if (NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
 
 include_directories(. ../include  ext/doctest)
-add_definitions(-std=c++17)
-add_executable(mcfile-test
+set(mcfile_test_files
   main.cpp
-  Path.hpp
   Point3D.hpp
   BlockData.hpp
   # git ls-files | grep 'hpp$' | grep -v ^test/ | sed 's:\(.*\):  ../\1:g' | pbcopy
@@ -72,7 +78,7 @@ add_executable(mcfile-test
   ../include/mcfile/stream/output-stream.hpp
   ../include/mcfile/string.hpp
   ../include/minecraft-file.hpp)
-list(APPEND mcfile_test_link_libraries "z")
+add_executable(mcfile-test ${mcfile_test_files})
 
 set(CMAKE_REQUIRED_FLAGS "-lstdc++fs")
 check_c_compiler_flag("" TEST_RESULT_STDCXXFS)
@@ -80,4 +86,18 @@ if (TEST_RESULT_STDCXXFS AND "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
   list(APPEND mcfile_test_link_libraries stdc++fs)
 endif()
 
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+  set(ZLIB_COMPAT ON)
+  add_subdirectory(ext/zlib-ng EXCLUDE_FROM_ALL)
+  set(ZLIB_INCLUDE_DIR $<TARGET_PROPERTY:zlib,INCLUDE_DIRECTORIES>)
+  set(ZLIB_LIBRARY $<TARGET_LINKER_FILE:zlib>)
+
+  list(APPEND mcfile_test_link_libraries zlib)
+else()
+  list(APPEND mcfile_test_link_libraries z)
+endif()
+
 target_link_libraries(mcfile-test ${mcfile_test_link_libraries})
+
+get_filename_component(project_root_dir "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
+setup_source_groups("${mcfile_test_files}" "${project_root_dir}")
