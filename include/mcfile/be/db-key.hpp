@@ -8,15 +8,16 @@ public:
         SubChunk = 0x2f,
         Version = 0x2c,
         VersionLegacy = 0x76,
-        Data2D = 0x2d,
+        Data2DLegacy = 0x2d,
+        Data2D = 0x2b,
         BiomeState = 0x35,
-        Checksums = 0x3b,
+        ChecksumsLegacy = 0x3b,
         BlockEntity = 0x31,
         Entity = 0x32,
         PendingTicks = 0x33,
         FinalizedState = 0x36,
-        // HardCodedSpawnAreas
         StructureBounds = 0x39,
+        Tag3d = 0x3d,
     };
 
     static std::string SubChunk(int32_t chunkX, int32_t chunkY, int32_t chunkZ, Dimension dim) {
@@ -33,7 +34,7 @@ public:
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::Version);
     }
 
-    static std::string VersionLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {
+    [[deprecated]] static std::string VersionLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::VersionLegacy);
     }
 
@@ -45,8 +46,8 @@ public:
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::BiomeState);
     }
 
-    static std::string Checksums(int32_t chunkX, int32_t chunkZ, Dimension dim) {
-        return ComposeChunkKey(chunkX, chunkZ, dim, Tag::Checksums);
+    [[deprecated]] static std::string ChecksumsLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {
+        return ComposeChunkKey(chunkX, chunkZ, dim, Tag::ChecksumsLegacy);
     }
 
     static std::string Portals() { return "portals"; }
@@ -112,7 +113,16 @@ private:
         assert(out.size() == 9);
         uint8_t tag = out[8];
         out.resize(13);
-        uint32_t const v = static_cast<uint8_t>(dim);
+        uint32_t v;
+        switch (dim) {
+        case Dimension::Nether:
+            v = 2; // this was "1" for version < 1.18
+            break;
+        case Dimension::End:
+        default:
+            v = static_cast<uint8_t>(dim);
+            break;
+        }
         *(uint32_t *)(out.data() + 8) = mcfile::Int32LEFromNative(v);
         out[12] = tag;
     }
