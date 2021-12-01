@@ -51,6 +51,15 @@ public:
         return readImpl(reader);
     }
 
+    [[nodiscard]] bool readData(std::string const &data, stream::ReadOption o = {.fLittleEndian = false}) {
+        using namespace std;
+        vector<uint8_t> buffer;
+        copy(data.begin(), data.end(), back_inserter(buffer));
+        auto b = make_shared<stream::ByteStream>(buffer);
+        stream::InputStreamReader reader(b, o);
+        return read(reader);
+    }
+
     [[nodiscard]] bool write(::mcfile::stream::OutputStreamWriter &writer) const {
         return writeImpl(writer);
     }

@@ -427,7 +427,26 @@ public:
         });
     }
 
+    static void ReadDataUntilEos(std::string const &data, stream::ReadOption ro, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
+        return ReadDataUntilEosImpl(data, ro, callback);
+    }
+
+    static void ReadDataUntilEos(std::string const &data, stream::ReadOption ro, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
+        return ReadDataUntilEosImpl(data, ro, [callback](std::shared_ptr<CompoundTag> const &value) {
+            callback(value);
+            return true;
+        });
+    }
+
 private:
+    static void ReadDataUntilEosImpl(std::string const &data, stream::ReadOption ro, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
+        std::vector<uint8_t> buffer;
+        std::copy(data.begin(), data.end(), std::back_inserter(buffer));
+        auto b = std::make_shared<stream::ByteStream>(buffer);
+        stream::InputStreamReader reader(b, ro);
+        return ReadUntilEosImpl(reader, callback);
+    }
+
     static void ReadUntilEosImpl(stream::InputStreamReader &reader, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
         while (reader.valid()) {
             uint8_t type;
