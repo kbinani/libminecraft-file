@@ -85,6 +85,9 @@ private:
         if (!ParsePalette(sr, indices, palette)) {
             return nullptr;
         }
+        if (indices.size() != 4096 || palette.empty()) {
+            return nullptr;
+        }
         vector<uint16_t> waterIndices;
         vector<shared_ptr<Block const>> waterPalette;
         if (numLayers > 1) {
@@ -103,6 +106,10 @@ private:
         uint8_t bitsPerBlock;
         if (!sr.read(&bitsPerBlock)) {
             return false;
+        }
+        if (bitsPerBlock == 0) {
+            // layer exists, but no data.
+            return true;
         }
         bitsPerBlock = bitsPerBlock / 2;
 
