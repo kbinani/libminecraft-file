@@ -105,8 +105,11 @@ public:
 
     static std::shared_ptr<BiomeSection> Decode(std::string const &data, size_t offset) {
         using namespace std;
+        if (data.size() <= offset) {
+            return nullptr;
+        }
         auto ret = make_shared<BiomeSection>();
-        uint8_t format = data[offset];
+        uint8_t format = *(uint8_t *)(data.data() + offset);
         offset += 1;
         if (format == 1) {
             if (data.size() < offset + 4) {
@@ -128,8 +131,52 @@ public:
             return nullptr;
         }
         bitsPerBlock /= 2;
-        //TODO:
-        return nullptr;
+        int numBytes = bitsPerBlock * 4096 / 8;
+        if (data.size() < offset + numBytes) {
+            return nullptr;
+        }
+        vector<bool> buffer;
+        for (int i = 0; i < numBytes; i++) {
+            uint8_t value = *(uint8_t *)(data.data() + offset);
+            offset++;
+            for (int j = 0; j < 8; j++) {
+                bool flag = ((value >> j) & 0x1) == 0x1;
+                buffer.push_back(flag);
+            }
+        }
+        if (data.size() < offset + 4) {
+            return nullptr;
+        }
+        uint32_t numPaletteEntries = *(uint32_t *)(data.data() + offset);
+        offset += 4;
+        if (data.size() < offset + 4 * numPaletteEntries) {
+            return nullptr;
+        }
+        if (numPaletteEntries > 4096) {
+            return nullptr;
+        }
+        for (int i = 0; i < numPaletteEntries; i++) {
+            uint32_t raw = *(uint32_t *)(data.data() + offset);
+            offset += 4;
+            if (raw > 0xff) {
+                return nullptr;
+            }
+            biomes::BiomeId biome = Biome::FromUint8((uint8_t)raw);
+            ret->fPalette.push_back(biome);
+        }
+        for (int i = 0; i < 4096; i++) {
+            uint16_t idx = 0;
+            for (int j = 0; j < bitsPerBlock; j++) {
+                if (buffer[i * bitsPerBlock + j]) {
+                    idx = idx | (uint16_t(0x1) << j);
+                }
+            }
+            if (ret->fPalette.size() <= idx) {
+                return nullptr;
+            }
+            ret->fIndex[i] = idx;
+        }
+        return ret;
     }
 
 private:
