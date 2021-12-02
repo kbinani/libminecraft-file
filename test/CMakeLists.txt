@@ -14,6 +14,7 @@ endif()
 include_directories(. ../include  ext/doctest)
 set(mcfile_test_files
   main.cpp
+  biome-section-test.cpp
   Point3D.hpp
   BlockData.hpp
   # git ls-files | grep 'hpp$' | grep -v ^test/ | sed 's:\(.*\):  ../\1:g' | pbcopy

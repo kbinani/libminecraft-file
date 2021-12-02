@@ -104,6 +104,8 @@
 #include <mcfile/be/pending-tick.hpp>
 #include <mcfile/be/sub-chunk.hpp>
 #include <mcfile/be/biome.hpp>
+#include <mcfile/be/biome-section.hpp>
+#include <mcfile/be/biome-map.hpp>
 #include <mcfile/be/chunk.hpp>
 
 #include <mcfile/nbt/print-as-json.hpp>
