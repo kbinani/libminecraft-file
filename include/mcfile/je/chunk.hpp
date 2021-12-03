@@ -171,6 +171,8 @@ public:
         return biomeAt(x, 0, z);
     }
 
+    int chunkY() const { return fMinChunkSectionY; }
+
     int minBlockX() const { return fChunkX * 16; }
     int maxBlockX() const { return fChunkX * 16 + 15; }
 
