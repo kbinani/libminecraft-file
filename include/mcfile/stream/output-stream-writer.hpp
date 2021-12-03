@@ -79,8 +79,12 @@ public:
         return fStream->write(&t, sizeof(t));
     }
 
-    [[nodiscard]] bool write(std::vector<uint8_t> &buffer) {
+    [[nodiscard]] bool write(std::vector<uint8_t> const &buffer) {
         return fStream->write(buffer.data(), buffer.size());
+    }
+
+    [[nodiscard]] bool write(void const *data, size_t size) {
+        return fStream->write(data, size);
     }
 
     [[nodiscard]] bool write(std::string const &s) {

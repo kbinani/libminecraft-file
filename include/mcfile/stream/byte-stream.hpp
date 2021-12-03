@@ -28,7 +28,7 @@ public:
         return true;
     }
 
-    bool write(void *buf, size_t size) override {
+    bool write(void const *buf, size_t size) override {
         if (fBuffer.size() <= fLoc + size) {
             size_t add = fLoc + size - fBuffer.size();
             try {

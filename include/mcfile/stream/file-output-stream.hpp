@@ -29,7 +29,7 @@ public:
 
     FileOutputStream &operator=(FileOutputStream const &) = delete;
 
-    bool write(void *buffer, size_t size) override {
+    bool write(void const *buffer, size_t size) override {
         if (size == 0) {
             return true;
         }

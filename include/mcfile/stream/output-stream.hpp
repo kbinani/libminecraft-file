@@ -13,7 +13,7 @@ public:
 
     virtual ~OutputStream() {}
 
-    virtual bool write(void *buffer, size_t size) = 0;
+    virtual bool write(void const *buffer, size_t size) = 0;
 
     virtual bool seek(uint64_t offset) = 0;
 
