@@ -3,29 +3,48 @@
 namespace mcfile::be {
 class BiomeMap {
 public:
-    explicit BiomeMap(int minChunkY)
+    BiomeMap(int minChunkY, int maxChunkY)
         : fMinChunkY(minChunkY) {
+        for (int y = minChunkY; y <= maxChunkY; y++) {
+            fSections.push_back(std::make_shared<BiomeSection>());
+        }
     }
 
     std::optional<std::string> encode() const {
         using namespace std;
-        if (fSections.empty()) {
-            return nullopt;
-        }
         string ret;
-        for (int chunkY = fMinChunkY; chunkY < fMinChunkY + fSections.size(); chunkY++) {
-            auto const &section = fSections.at(chunkY);
+        vector<string> sections;
+
+        for (auto const &section : fSections) {
             string encoded;
             if (!section->encode(encoded)) {
                 return nullopt;
             }
-            ret += encoded;
+            sections.push_back(encoded);
+        }
+        while (sections.size() > 9) {
+            int len = sections.size();
+            if (sections[len - 1] == sections[len - 2] && sections[len - 2] == sections[len - 3]) {
+                sections.pop_back();
+            } else {
+                break;
+            }
+        }
+        if (sections.size() != fSections.size()) {
+            string trailing(16, 0xff);
+            sections.push_back(trailing);
+        }
+        for (string const &s : sections) {
+            ret += s;
         }
         return ret;
     }
 
     void set(int localX, int y, int localZ, biomes::BiomeId biome) {
         auto const &section = this->section(y);
+        if (!section) {
+            return;
+        }
         int chunkY = Coordinate::ChunkFromBlock(y);
         int localY = y - chunkY * 16;
         section->set(localX, localY, localZ, biome);
@@ -34,16 +53,15 @@ public:
 private:
     std::shared_ptr<BiomeSection> section(int y) {
         int chunkY = Coordinate::ChunkFromBlock(y);
-        for (int y = fMinChunkY; y <= chunkY; y++) {
-            if (!fSections[y]) {
-                fSections[y].reset(new BiomeSection);
-            }
+        int index = chunkY - fMinChunkY;
+        if (index < 0 || fSections.size() <= index) {
+            return nullptr;
         }
-        return fSections[chunkY];
+        return fSections[index];
     }
 
 private:
     int const fMinChunkY;
-    std::map<int8_t, std::shared_ptr<BiomeSection>> fSections;
+    std::vector<std::shared_ptr<BiomeSection>> fSections;
 };
 } // namespace mcfile::be

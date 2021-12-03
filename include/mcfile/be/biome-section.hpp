@@ -97,9 +97,9 @@ public:
             }
         }
 
-        vector<uint8_t> buffer;
-        s->drain(buffer);
-        copy(buffer.begin(), buffer.end(), back_inserter(d));
+        vector<uint8_t> tmp;
+        s->drain(tmp);
+        copy(tmp.begin(), tmp.end(), back_inserter(d));
         return true;
     }
 
