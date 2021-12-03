@@ -6,7 +6,7 @@ using namespace std;
 using namespace mcfile;
 using namespace mcfile::be;
 
-TEST_CASE("BiomeSection") {
+TEST_CASE("be/biome-section") {
     SUBCASE("format0") {
         auto section = make_shared<BiomeSection>();
         section->fill(biomes::minecraft::taiga);

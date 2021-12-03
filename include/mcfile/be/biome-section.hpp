@@ -55,7 +55,7 @@ public:
             if (!w.write((uint8_t)1)) {
                 return false;
             }
-            uint32_t b = Biome::ToUint8(fPalette[0]);
+            uint32_t b = Biome::ToUint32(fPalette[0]);
             if (!w.write(b)) {
                 return false;
             }
@@ -90,7 +90,7 @@ public:
                 return false;
             }
             for (biomes::BiomeId biome : fPalette) {
-                uint32_t b = Biome::ToUint8(biome);
+                uint32_t b = Biome::ToUint32(biome);
                 if (!w.write(b)) {
                     return false;
                 }
@@ -116,10 +116,7 @@ public:
                 return nullptr;
             }
             uint32_t raw = *(uint32_t *)(data.data() + offset);
-            if (raw > 0xff) {
-                return nullptr;
-            }
-            biomes::BiomeId biome = Biome::FromUint8((uint8_t)raw);
+            biomes::BiomeId biome = Biome::FromUint32(raw);
             ret->fill(biome);
             return ret;
         } else if (format == 0) {
@@ -158,10 +155,7 @@ public:
         for (int i = 0; i < numPaletteEntries; i++) {
             uint32_t raw = *(uint32_t *)(data.data() + offset);
             offset += 4;
-            if (raw > 0xff) {
-                return nullptr;
-            }
-            biomes::BiomeId biome = Biome::FromUint8((uint8_t)raw);
+            biomes::BiomeId biome = Biome::FromUint32(raw);
             ret->fPalette.push_back(biome);
         }
         for (int i = 0; i < 4096; i++) {

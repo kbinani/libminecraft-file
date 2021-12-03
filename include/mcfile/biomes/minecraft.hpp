@@ -8,7 +8,7 @@ enum : BiomeId {
     ocean = 0,
     plains = 1,
     desert = 2,
-    windswept_hills, // was "mountains" before 1.18
+    windswept_hills = 3, // was "mountains" before 1.18
     forest = 4,
     taiga = 5,
     swamp = 6,

@@ -250,9 +250,16 @@ TEST_CASE("1.18") {
         CHECK(stoneBricks->fName == "minecraft:stone_bricks");
     }
     SUBCASE("biomeAt") {
-        auto const &chunk = world.chunkAt(10, 17);
-        CHECK(chunk->biomeAt(161, 2, 278) == biomes::minecraft::lush_caves);
-        CHECK(chunk->biomeAt(161, 9, 278) == biomes::minecraft::snowy_beach);
+        {
+            auto const &chunk = world.chunkAt(10, 17);
+            CHECK(chunk->biomeAt(161, 2, 278) == biomes::minecraft::lush_caves);
+            CHECK(chunk->biomeAt(161, 9, 278) == biomes::minecraft::snowy_beach);
+        }
+        {
+            auto const &chunk = world.chunkAt(0, 12);
+            CHECK(chunk->biomeAt(14, -52, 206) == biomes::minecraft::frozen_river);
+            CHECK(chunk->biomeAt(15, -52, 202) == biomes::minecraft::snowy_taiga);
+        }
     }
     SUBCASE("toCompoundTag") {
         auto tempDir = File::CreateTempDir(fs::temp_directory_path());

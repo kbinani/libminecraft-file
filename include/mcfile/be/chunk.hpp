@@ -77,6 +77,7 @@ public:
         vector<biomes::BiomeId> biomeMap(256, biomes::minecraft::plains);
         auto data2D = db.get(DbKey::Data2D(chunkX, chunkZ, d));
         if (data2D) {
+            //TODO: update this for 1.18
             vector<uint8_t> buffer;
             copy(data2D->begin(), data2D->end(), back_inserter(buffer));
             auto stream = make_shared<ByteStream>(buffer);
@@ -93,7 +94,7 @@ public:
                 if (!sr.read(&b)) {
                     break;
                 }
-                auto biome = Biome::FromUint8(b);
+                auto biome = Biome::FromUint32(b);
                 biomeMap[i] = biome;
             }
         }

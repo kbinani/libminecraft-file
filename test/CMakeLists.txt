@@ -14,10 +14,22 @@ endif()
 include_directories(. ../include  ext/doctest)
 set(mcfile_test_files
   main.cpp
-  biome-section-test.cpp
+  be/biome-section.test.cpp
+  be/biome.test.cpp
   Point3D.hpp
   BlockData.hpp
   # git ls-files | grep 'hpp$' | grep -v ^test/ | sed 's:\(.*\):  ../\1:g' | pbcopy
+  ../include/mcfile/algorithm.hpp
+  ../include/mcfile/be/biome-map.hpp
+  ../include/mcfile/be/biome-section.hpp
+  ../include/mcfile/be/biome.hpp
+  ../include/mcfile/be/block.hpp
+  ../include/mcfile/be/chunk.hpp
+  ../include/mcfile/be/db-interface.hpp
+  ../include/mcfile/be/db-key.hpp
+  ../include/mcfile/be/db.hpp
+  ../include/mcfile/be/pending-tick.hpp
+  ../include/mcfile/be/sub-chunk.hpp
   ../include/mcfile/biomes/biome-id.hpp
   ../include/mcfile/biomes/from-int.hpp
   ../include/mcfile/biomes/from-name.hpp
@@ -29,6 +41,7 @@ set(mcfile_test_files
   ../include/mcfile/blocks/name.hpp
   ../include/mcfile/compression.hpp
   ../include/mcfile/coordinate.hpp
+  ../include/mcfile/dimension.hpp
   ../include/mcfile/endianness.hpp
   ../include/mcfile/file.hpp
   ../include/mcfile/je/block.hpp
