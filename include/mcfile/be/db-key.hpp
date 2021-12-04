@@ -93,7 +93,159 @@ public:
         return ComposeChunkKey(chunkX, chunkZ, dim, static_cast<uint8_t>(tag));
     }
 
+    static std::optional<DbKey> Parse(std::string const &key) {
+        switch (key.size()) {
+        case 9: {
+            if (key == "BiomeData" || key == "Overworld" || key == "mobevents") {
+                DbKey k;
+                k.fIsTagged = false;
+                k.fUnTagged = key;
+                return k;
+            } else {
+                uint8_t tag = key[8];
+                int32_t cx = *(int32_t *)key.data();
+                int32_t cz = *(int32_t *)(key.data() + 4);
+                DbKey k;
+                k.fIsTagged = true;
+                k.fTagged.fTag = tag;
+                k.fTagged.fDimension = 0;
+                k.fTagged.fChunk.fX = cx;
+                k.fTagged.fChunk.fX = cz;
+                return k;
+            }
+        }
+        case 10: {
+            uint8_t tag = key[8];
+            if (key == "scoreboard" || tag != 0x2f) {
+                DbKey k;
+                k.fIsTagged = false;
+                k.fUnTagged = key;
+                return k;
+            } else {
+                int32_t cx = *(int32_t *)key.data();
+                int32_t cz = *(int32_t *)(key.data() + 4);
+                uint8_t rawY = key[9];
+                int8_t y = *(int8_t *)&rawY;
+                DbKey k;
+                k.fIsTagged = true;
+                k.fTagged.fTag = tag;
+                k.fTagged.fDimension = 0;
+                k.fTagged.fSubChunk.fX = cx;
+                k.fTagged.fSubChunk.fY = y;
+                k.fTagged.fSubChunk.fZ = cz;
+                return k;
+            }
+        }
+        case 13: {
+            if (key == "~local_player") {
+                DbKey k;
+                k.fIsTagged = false;
+                k.fUnTagged = key;
+                return k;
+            } else {
+                uint8_t tag = key[12];
+                int32_t cx = *(int32_t *)key.data();
+                int32_t cz = *(int32_t *)(key.data() + 4);
+                int32_t dim = *(int32_t *)(key.data() + 8);
+                DbKey k;
+                k.fIsTagged = true;
+                k.fTagged.fTag = tag;
+                k.fTagged.fDimension = dim;
+                k.fTagged.fChunk.fX = cx;
+                k.fTagged.fChunk.fZ = cz;
+                return k;
+            }
+        }
+        case 14: {
+            uint8_t tag = key[12];
+            if (tag == 0x2f) {
+                int32_t cx = *(int32_t *)key.data();
+                int32_t cz = *(int32_t *)(key.data() + 4);
+                int32_t dim = *(int32_t *)(key.data() + 8);
+                uint8_t rawY = key[13];
+                int8_t y = *(int8_t *)&rawY;
+                DbKey k;
+                k.fIsTagged = true;
+                k.fTagged.fTag = tag;
+                k.fTagged.fDimension = dim;
+                k.fTagged.fSubChunk.fX = cx;
+                k.fTagged.fSubChunk.fY = y;
+                k.fTagged.fSubChunk.fZ = cz;
+                return k;
+            } else {
+                DbKey k;
+                k.fIsTagged = false;
+                k.fUnTagged = key;
+                return k;
+            }
+        }
+        default:
+            DbKey k;
+            k.fIsTagged = false;
+            k.fUnTagged = key;
+            return k;
+        }
+    }
+
+    std::string toString() const {
+        using namespace std;
+        if (!fIsTagged) {
+            return fUnTagged;
+        }
+        ostringstream s;
+        static unordered_map<uint8_t, string> const sMap = {
+            {0x2f, "SubChunk"},
+            {0x2b, "Data2D"},
+            {0x2c, "ChunkVersion"},
+            {0x2d, "Data2DLegacy"},
+            {0x31, "BlockEntity"},
+            {0x32, "Entity"},
+            {0x33, "PendingTicks"},
+            {0x35, "BiomeState"},
+            {0x36, "FinalizedState"},
+            {0x39, "StructureBounds"},
+            {0x3a, "RandomTicks"},
+            {0x3b, "ChecksumsLegacy"},
+            {0x3d, "(unknown)"},
+            {0x76, "ChunkVersionLegacy"},
+        };
+        auto found = sMap.find(fTagged.fTag);
+        if (found == sMap.end()) {
+            s << "(unknown)";
+        } else {
+            s << found->second;
+        }
+        s << "(" << (int)fTagged.fTag << "/0x" << hex << (int)fTagged.fTag << dec << ") [";
+        if (fTagged.fTag == 0x2f) {
+            s << fTagged.fSubChunk.fX << ", " << fTagged.fSubChunk.fY << ", " << fTagged.fSubChunk.fZ << "]";
+        } else {
+            s << fTagged.fChunk.fX << ", " << fTagged.fChunk.fZ << "]";
+        }
+        s << " ";
+        switch (fTagged.fDimension) {
+        case 0:
+            s << "overworld";
+            break;
+        case 1:
+            s << "end";
+            break;
+        case -1:
+            s << "nether(legacy)";
+            break;
+        case 2:
+            s << "nether";
+            break;
+        default:
+            s << "(unknown: " << fTagged.fDimension << ")";
+            break;
+        }
+        return s.str();
+    }
+
 private:
+    DbKey() {
+    }
+
     static void PlaceXZTag(std::vector<char> &out, int32_t chunkX, int32_t chunkZ, Tag tag) {
         PlaceXZTag(out, chunkX, chunkZ, static_cast<uint8_t>(tag));
     }
@@ -127,8 +279,23 @@ private:
         out[12] = tag;
     }
 
-private:
-    DbKey() = delete;
+public:
+    bool fIsTagged;
+    struct {
+        uint8_t fTag;
+        int32_t fDimension;
+        union {
+            struct {
+                int fX;
+                int fZ;
+            } fChunk;
+            struct {
+                int fX;
+                int fY;
+                int fZ;
+            } fSubChunk;
+        };
+    } fTagged;
+    std::string fUnTagged;
 };
-
 } // namespace mcfile::be
