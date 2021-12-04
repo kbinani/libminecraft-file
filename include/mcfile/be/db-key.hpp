@@ -265,14 +265,15 @@ private:
         assert(out.size() == 9);
         uint8_t tag = out[8];
         out.resize(13);
-        uint32_t v;
+        int32_t v = 0;
         switch (dim) {
         case Dimension::Nether:
-            v = 2; // this was "1" for version < 1.18
+            v = 1;
             break;
         case Dimension::End:
+            v = 2;
+            break;
         default:
-            v = static_cast<uint8_t>(dim);
             break;
         }
         *(uint32_t *)(out.data() + 8) = mcfile::Int32LEFromNative(v);
@@ -301,10 +302,9 @@ public:
             case 0:
                 return Dimension::Overworld;
             case 1:
-                return Dimension::End;
-            case -1:
-            case 2:
                 return Dimension::Nether;
+            case 2:
+                return Dimension::End;
             default:
                 return std::nullopt;
             }
