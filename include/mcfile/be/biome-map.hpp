@@ -50,6 +50,29 @@ public:
         section->set(localX, localY, localZ, biome);
     }
 
+    size_t numSections() const {
+        return fSections.size();
+    }
+
+    static std::shared_ptr<BiomeMap> Decode(int minChunkY, std::string const &v, size_t offset) {
+        auto ret = std::make_shared<BiomeMap>(minChunkY, minChunkY);
+        ret->fSections.clear();
+
+        size_t ptr = offset;
+        while (ptr < v.size()) {
+            uint8_t format = *(uint8_t *)(v.data() + ptr);
+            if (format == 0xff) {
+                break;
+            }
+            auto sec = BiomeSection::Decode(v, &ptr);
+            if (!sec) {
+                return nullptr;
+            }
+            ret->fSections.push_back(sec);
+        }
+        return ret;
+    }
+
 private:
     std::shared_ptr<BiomeSection> section(int y) {
         int chunkY = Coordinate::ChunkFromBlock(y);

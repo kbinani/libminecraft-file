@@ -103,21 +103,23 @@ public:
         return true;
     }
 
-    static std::shared_ptr<BiomeSection> Decode(std::string const &data, size_t offset) {
+    static std::shared_ptr<BiomeSection> Decode(std::string const &data, size_t *offset) {
         using namespace std;
-        if (data.size() <= offset) {
+        size_t ptr = *offset;
+        if (data.size() <= ptr) {
             return nullptr;
         }
         auto ret = make_shared<BiomeSection>();
-        uint8_t format = *(uint8_t *)(data.data() + offset);
-        offset += 1;
+        uint8_t format = *(uint8_t *)(data.data() + ptr);
+        ptr += 1;
         if (format == 1) {
-            if (data.size() < offset + 4) {
+            if (data.size() < ptr + 4) {
                 return nullptr;
             }
-            uint32_t raw = *(uint32_t *)(data.data() + offset);
+            uint32_t raw = *(uint32_t *)(data.data() + ptr);
             biomes::BiomeId biome = Biome::FromUint32(raw);
             ret->fill(biome);
+            *offset = ptr + 4;
             return ret;
         } else if (format == 0) {
             return nullptr;
@@ -129,32 +131,32 @@ public:
         }
         bitsPerBlock /= 2;
         int numBytes = bitsPerBlock * 4096 / 8;
-        if (data.size() < offset + numBytes) {
+        if (data.size() < ptr + numBytes) {
             return nullptr;
         }
         vector<bool> buffer;
         for (int i = 0; i < numBytes; i++) {
-            uint8_t value = *(uint8_t *)(data.data() + offset);
-            offset++;
+            uint8_t value = *(uint8_t *)(data.data() + ptr);
+            ptr++;
             for (int j = 0; j < 8; j++) {
                 bool flag = ((value >> j) & 0x1) == 0x1;
                 buffer.push_back(flag);
             }
         }
-        if (data.size() < offset + 4) {
+        if (data.size() < ptr + 4) {
             return nullptr;
         }
-        uint32_t numPaletteEntries = *(uint32_t *)(data.data() + offset);
-        offset += 4;
-        if (data.size() < offset + 4 * numPaletteEntries) {
+        uint32_t numPaletteEntries = *(uint32_t *)(data.data() + ptr);
+        ptr += 4;
+        if (data.size() < ptr + 4 * numPaletteEntries) {
             return nullptr;
         }
         if (numPaletteEntries > 4096) {
             return nullptr;
         }
         for (int i = 0; i < numPaletteEntries; i++) {
-            uint32_t raw = *(uint32_t *)(data.data() + offset);
-            offset += 4;
+            uint32_t raw = *(uint32_t *)(data.data() + ptr);
+            ptr += 4;
             biomes::BiomeId biome = Biome::FromUint32(raw);
             ret->fPalette.push_back(biome);
         }
@@ -170,6 +172,7 @@ public:
             }
             ret->fIndex[i] = idx;
         }
+        *offset = ptr;
         return ret;
     }
 

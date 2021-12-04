@@ -295,6 +295,20 @@ public:
                 int fZ;
             } fSubChunk;
         };
+
+        std::optional<Dimension> dimension() const {
+            switch (fDimension) {
+            case 0:
+                return Dimension::Overworld;
+            case 1:
+                return Dimension::End;
+            case -1:
+            case 2:
+                return Dimension::Nether;
+            default:
+                return std::nullopt;
+            }
+        }
     } fTagged;
     std::string fUnTagged;
 };

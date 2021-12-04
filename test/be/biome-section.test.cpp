@@ -17,8 +17,10 @@ TEST_CASE("be/biome-section") {
         CHECK(encoded == expected);
 
         string data = "abc" + encoded;
-        auto decoded = BiomeSection::Decode(data, 3);
+        size_t offset = 3;
+        auto decoded = BiomeSection::Decode(data, &offset);
         CHECK(decoded);
+        CHECK(offset == 8);
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
                 for (int x = 0; x < 16; x++) {
@@ -42,8 +44,10 @@ TEST_CASE("be/biome-section") {
         CHECK(section->encode(encoded));
 
         string data = "abcd" + encoded;
-        auto decoded = BiomeSection::Decode(data, 4);
+        size_t offset = 4;
+        auto decoded = BiomeSection::Decode(data, &offset);
         CHECK(decoded);
+        CHECK(offset == 4 + 533);
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
                 for (int x = 0; x < 16; x++) {
