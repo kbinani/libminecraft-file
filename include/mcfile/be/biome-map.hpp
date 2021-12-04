@@ -22,14 +22,6 @@ public:
             }
             sections.push_back(encoded);
         }
-        while (sections.size() > 9) {
-            int len = sections.size();
-            if (sections[len - 1] == sections[len - 2] && sections[len - 2] == sections[len - 3]) {
-                sections.pop_back();
-            } else {
-                break;
-            }
-        }
         if (sections.size() != fSections.size()) {
             string trailing(16, 0xff);
             sections.push_back(trailing);

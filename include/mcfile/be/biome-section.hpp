@@ -74,9 +74,11 @@ public:
                 }
             }
             assert(buffer.size() % 8 == 0);
-            for (int i = 0; i < buffer.size(); i += 8) {
-                uint8_t v = 0;
-                for (int j = 0; j < 8; j++) {
+            int blocksPerDword = 32 / bitsPerBlock;
+            int bitsUsedPerDword = bitsPerBlock * blocksPerDword;
+            for (int i = 0; i < buffer.size(); i += bitsUsedPerDword) {
+                uint32_t v = 0;
+                for (int j = 0; j < bitsUsedPerDword; j++) {
                     if (buffer[i + j]) {
                         v = v | (0x1 << j);
                     }
@@ -130,16 +132,20 @@ public:
             return nullptr;
         }
         bitsPerBlock /= 2;
-        int numBytes = bitsPerBlock * 4096 / 8;
+
+        int blocksPerDword = 32 / bitsPerBlock;
+        int bitsUsedPerDword = bitsPerBlock * blocksPerDword;
+        int numDwords = (4096 + (4096 % blocksPerDword)) / blocksPerDword;
+        int numBytes = 4 * numDwords;
         if (data.size() < ptr + numBytes) {
             return nullptr;
         }
         vector<bool> buffer;
-        for (int i = 0; i < numBytes; i++) {
-            uint8_t value = *(uint8_t *)(data.data() + ptr);
-            ptr++;
-            for (int j = 0; j < 8; j++) {
-                bool flag = ((value >> j) & 0x1) == 0x1;
+        for (int i = 0; i < numDwords; i++) {
+            uint32_t v = *(uint32_t *)(data.data() + ptr);
+            ptr += 4;
+            for (int j = 0; j < bitsUsedPerDword; j++) {
+                bool flag = ((v >> j) & 0x1) == 0x1;
                 buffer.push_back(flag);
             }
         }
