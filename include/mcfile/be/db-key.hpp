@@ -17,7 +17,8 @@ public:
         PendingTicks = 0x33,
         FinalizedState = 0x36,
         StructureBounds = 0x39,
-        Tag3d = 0x3d,
+        UnknownTag3e = 0x3e,
+        UnknownTag3d = 0x3d,
     };
 
     static std::string SubChunk(int32_t chunkX, int32_t chunkY, int32_t chunkZ, Dimension dim) {
@@ -110,7 +111,7 @@ public:
                 k.fTagged.fTag = tag;
                 k.fTagged.fDimension = 0;
                 k.fTagged.fChunk.fX = cx;
-                k.fTagged.fChunk.fX = cz;
+                k.fTagged.fChunk.fZ = cz;
                 return k;
             }
         }
@@ -194,10 +195,10 @@ public:
         }
         ostringstream s;
         static unordered_map<uint8_t, string> const sMap = {
-            {0x2f, "SubChunk"},
             {0x2b, "Data2D"},
             {0x2c, "ChunkVersion"},
             {0x2d, "Data2DLegacy"},
+            {0x2f, "SubChunk"},
             {0x31, "BlockEntity"},
             {0x32, "Entity"},
             {0x33, "PendingTicks"},
@@ -207,6 +208,7 @@ public:
             {0x3a, "RandomTicks"},
             {0x3b, "ChecksumsLegacy"},
             {0x3d, "(unknown)"},
+            {0x3e, "(unknown)"},
             {0x76, "ChunkVersionLegacy"},
         };
         auto found = sMap.find(fTagged.fTag);
