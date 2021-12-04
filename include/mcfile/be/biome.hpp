@@ -129,8 +129,8 @@ public:
         case sparse_jungle:
             return 23;                         // jungle_edge
         case modified_jungle_edge: return 151; // jungle_edge_mutated
-        case bamboo_jungle: return 168;
-        case bamboo_jungle_hills: return 169;
+        case bamboo_jungle: return 21;         // 168;
+        case bamboo_jungle_hills: return 22;   // 169;
         case taiga: return 5;
         case taiga_hills: return 19;
         case taiga_mountains: return 133;          // taiga_mutated
