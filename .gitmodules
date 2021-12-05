@@ -1,5 +1,5 @@
 [submodule "test/ext/doctest"]
-	path = test/ext/doctest
+	path = test/deps/doctest
 	url = https://github.com/onqtam/doctest.git
 [submodule "example/ext/zopfli"]
 	path = example/ext/zopfli
@@ -8,8 +8,8 @@
 	path = example/ext/thread-pool
 	url = https://github.com/mtrebi/thread-pool.git
 [submodule "test/ext/zlib-ng"]
-	path = test/ext/zlib-ng
+	path = deps/zlib-ng
 	url = https://github.com/zlib-ng/zlib-ng.git
-[submodule "test/ext/setup_source_groups"]
-	path = test/ext/setup_source_groups
-	url = https://gist.github.com/d042b6d630d175cc4941eaf6fd2c3a3c.git
+[submodule "deps/cmake_setup_source_groups"]
+	path = deps/cmake_setup_source_groups
+	url = https://github.com/kbinani/cmake_setup_source_groups.git

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 project(mcfile)
 
 include(CheckCCompilerFlag)
-include(test/ext/setup_source_groups/setup_source_groups.cmake)
+include(deps/cmake_setup_source_groups/setup_source_groups.cmake)
 set(BUILD_SHARED_LIBS OFF)
 
 if (NOT CMAKE_CXX_STANDARD)
@@ -101,7 +101,7 @@ endif()
 
 if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
   set(ZLIB_COMPAT ON)
-  add_subdirectory(test/ext/zlib-ng EXCLUDE_FROM_ALL)
+  add_subdirectory(deps/zlib-ng EXCLUDE_FROM_ALL)
   set(ZLIB_INCLUDE_DIR $<TARGET_PROPERTY:zlib,INCLUDE_DIRECTORIES>)
   set(ZLIB_LIBRARY $<TARGET_LINKER_FILE:zlib>)
 
@@ -113,13 +113,13 @@ endif()
 add_library(mcfile INTERFACE ${mcfile_files})
 target_include_directories(mcfile INTERFACE
   include
-  test/ext/zlib-ng
-  ${CMAKE_BINARY_DIR}/test/ext/zlib-ng)
+  deps/zlib-ng
+  ${CMAKE_BINARY_DIR}/deps/zlib-ng)
 target_link_libraries(mcfile INTERFACE ${mcfile_test_link_libraries})
 
 add_executable(mcfile-test ${mcfile_test_files})
 target_link_libraries(mcfile-test mcfile)
-target_include_directories(mcfile-test PRIVATE test/ext/doctest)
+target_include_directories(mcfile-test PRIVATE test/deps/doctest)
 
 get_filename_component(project_root_dir "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
 setup_source_groups("${mcfile_test_files}" "${project_root_dir}")
