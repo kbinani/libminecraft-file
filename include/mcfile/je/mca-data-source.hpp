@@ -13,6 +13,9 @@ public:
     }
 
     std::shared_ptr<nbt::CompoundTag> load(::mcfile::stream::InputStreamReader &reader) const {
+        if (fLength == 0) {
+            return nullptr;
+        }
         if (!reader.valid()) {
             return nullptr;
         }
