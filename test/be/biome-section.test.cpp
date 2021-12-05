@@ -7,11 +7,16 @@ using namespace mcfile;
 using namespace mcfile::be;
 
 TEST_CASE("be/biome-section") {
+    SUBCASE("encode") {
+        auto section = make_shared<BiomeSection>();
+        section->fill(biomes::minecraft::taiga);
+        CHECK(section->encode(nullptr) == false);
+    }
     SUBCASE("format0") {
         auto section = make_shared<BiomeSection>();
         section->fill(biomes::minecraft::taiga);
         string encoded;
-        CHECK(section->encode(encoded));
+        CHECK(section->encode(&encoded));
         string expected;
         expected.assign("\01\05\00\00\00", 5);
         CHECK(encoded == expected);
@@ -41,7 +46,7 @@ TEST_CASE("be/biome-section") {
         CHECK(biomes::minecraft::basalt_deltas == *section->get(1, 3, 5));
         CHECK(biomes::minecraft::badlands == *section->get(15, 15, 15));
         string encoded;
-        CHECK(section->encode(encoded));
+        CHECK(section->encode(&encoded));
 
         string data = "abcd" + encoded;
         size_t offset = 4;

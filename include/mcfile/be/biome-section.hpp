@@ -42,10 +42,13 @@ public:
         fIndex[*index] = idx;
     }
 
-    [[nodiscard]] bool encode(std::string &d) const {
+    [[nodiscard]] bool encode(std::string *d) const {
         using namespace std;
+        if (!d) {
+            return false;
+        }
 
-        d.clear();
+        d->clear();
         auto s = make_shared<stream::ByteStream>();
         stream::OutputStreamWriter w(s, {.fLittleEndian = true});
 
@@ -101,7 +104,7 @@ public:
 
         vector<uint8_t> tmp;
         s->drain(tmp);
-        copy(tmp.begin(), tmp.end(), back_inserter(d));
+        copy(tmp.begin(), tmp.end(), back_inserter(*d));
         return true;
     }
 

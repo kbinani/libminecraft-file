@@ -13,22 +13,17 @@ public:
     std::optional<std::string> encode() const {
         using namespace std;
         string ret;
-        vector<string> sections;
 
         for (auto const &section : fSections) {
             string encoded;
-            if (!section->encode(encoded)) {
+            if (!section->encode(&encoded)) {
                 return nullopt;
             }
-            sections.push_back(encoded);
+            ret += encoded;
         }
-        if (sections.size() != fSections.size()) {
-            string trailing(16, 0xff);
-            sections.push_back(trailing);
-        }
-        for (string const &s : sections) {
-            ret += s;
-        }
+
+        string trailing(16, 0xff);
+        ret += trailing;
         return ret;
     }
 
