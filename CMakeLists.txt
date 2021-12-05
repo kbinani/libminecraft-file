@@ -121,5 +121,8 @@ add_executable(mcfile-test ${mcfile_test_files})
 target_link_libraries(mcfile-test mcfile)
 target_include_directories(mcfile-test PRIVATE test/deps/doctest)
 
+add_executable(mcfile-example example/main.cpp)
+target_link_libraries(mcfile-example mcfile)
+
 get_filename_component(project_root_dir "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
 setup_source_groups("${mcfile_test_files}" "${project_root_dir}")

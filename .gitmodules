@@ -1,12 +1,6 @@
 [submodule "test/ext/doctest"]
 	path = test/deps/doctest
 	url = https://github.com/onqtam/doctest.git
-[submodule "example/ext/zopfli"]
-	path = example/ext/zopfli
-	url = https://github.com/google/zopfli.git
-[submodule "example/ext/thread-pool"]
-	path = example/ext/thread-pool
-	url = https://github.com/mtrebi/thread-pool.git
 [submodule "test/ext/zlib-ng"]
 	path = deps/zlib-ng
 	url = https://github.com/zlib-ng/zlib-ng.git
