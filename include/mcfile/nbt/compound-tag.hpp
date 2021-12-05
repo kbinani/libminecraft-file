@@ -22,6 +22,9 @@ public:
             }
 
             auto tag = TagFactory::makeTag(type);
+            if (!tag) {
+                return false;
+            }
             if (!tag->read(r)) {
                 return false;
             }
