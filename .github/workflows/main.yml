@@ -9,14 +9,14 @@ jobs:
         submodules: recursive
     - name: test
       run: |
-        mkdir -p test/build
-        cd test/build
-        cmake ..
-        make
+        mkdir -p build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --parallel --target mcfile-test --config Release --verbose
         ./mcfile-test
     - name: example
       run: |
         mkdir -p example/build
         cd example/build
-        cmake ..
-        make
+        cmake ../.. -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --parallel --target mcfile-example --config Release --verbose
