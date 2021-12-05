@@ -187,8 +187,7 @@ private:
         if (localX < 0 || 16 <= localX || localY < 0 || 16 <= localY || localZ < 0 || 16 <= localZ) {
             return std::nullopt;
         }
-        //TODO: Is this ok?: y -> z -> x
-        return (localY * 16 + localZ) * 16 + localX;
+        return (localX * 16 + localZ) * 16 + localY;
     }
 
 private:
