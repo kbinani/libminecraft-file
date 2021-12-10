@@ -273,6 +273,9 @@ public:
         int y = offsetY / 4;
         int z = offsetZ / 4;
         int index = (y * 4 + z) * 4 + x;
+        if (index < 0 || fBiomePaletteIndices.size() <= index) {
+            return nullopt;
+        }
         int ptr = fBiomePaletteIndices[index];
         if (ptr < 0 || fBiomePalette.size() <= ptr) {
             return nullopt;
