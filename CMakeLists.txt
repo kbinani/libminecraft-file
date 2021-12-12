@@ -24,6 +24,7 @@ set(mcfile_files
   include/mcfile/be/db.hpp
   include/mcfile/be/pending-tick.hpp
   include/mcfile/be/sub-chunk.hpp
+  include/mcfile/biome-palette.hpp
   include/mcfile/biomes/biome-id.hpp
   include/mcfile/biomes/from-int.hpp
   include/mcfile/biomes/from-name.hpp
@@ -38,6 +39,7 @@ set(mcfile_files
   include/mcfile/dimension.hpp
   include/mcfile/endianness.hpp
   include/mcfile/file.hpp
+  include/mcfile/je/block-palette.hpp
   include/mcfile/je/block.hpp
   include/mcfile/je/cached-chunk-loader.hpp
   include/mcfile/je/chunk-section.hpp
@@ -75,6 +77,7 @@ set(mcfile_files
   include/mcfile/nbt/tag-factory-impl.hpp
   include/mcfile/nbt/tag-factory.hpp
   include/mcfile/nbt/tag.hpp
+  include/mcfile/palette-list.hpp
   include/mcfile/pos2.hpp
   include/mcfile/pos3.hpp
   include/mcfile/stream/byte-stream.hpp

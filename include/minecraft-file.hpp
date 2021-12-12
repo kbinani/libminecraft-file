@@ -78,6 +78,9 @@
 #include <mcfile/biomes/from-name.hpp>
 #include <mcfile/biomes/name.hpp>
 #include <mcfile/dimension.hpp>
+#include <mcfile/palette-list.hpp>
+#include <mcfile/je/block-palette.hpp>
+#include <mcfile/biome-palette.hpp>
 #include <mcfile/je/chunk-section.hpp>
 #include <mcfile/je/chunksection/chunk-section-112.hpp>
 #include <mcfile/je/chunksection/chunk-section-113-base.hpp>

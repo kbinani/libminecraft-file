@@ -1,0 +1,115 @@
+#pragma once
+
+namespace mcfile {
+
+template<class Value, class Index, size_t size, class Hasher = std::hash<Value>, class Pred = std::equal_to<Value>, double factor = 2.0>
+class PaletteList {
+    static_assert(std::is_integral<Index>::value);
+    static_assert(std::is_unsigned<Index>::value);
+    static_assert(factor > 1);
+    static_assert(size * factor <= std::numeric_limits<Index>::max());
+    static_assert(size > 0);
+
+public:
+    std::optional<Value> get(size_t idx) const {
+        if (fIndex.empty() || fIndex.size() <= idx) {
+            return std::nullopt;
+        }
+        Index index = fIndex[idx];
+        if (fValue.size() <= index) {
+            return std::nullopt;
+        }
+        return fValue[index];
+    }
+
+    bool set(size_t idx, Value value) {
+        if (size <= idx) {
+            return false;
+        }
+        if (fIndex.size() != size) {
+            fIndex.clear();
+            fIndex.resize(size, 0);
+            fValue.clear();
+            fValue.push_back(value);
+            fLut.clear();
+            fLut[value] = 0;
+            return true;
+        }
+        auto found = fLut.find(value);
+        if (found != fLut.end()) {
+            Index index = found->second;
+            fIndex[idx] = index;
+            return true;
+        }
+        Index index = fValue.size();
+        fValue.push_back(value);
+        fLut[value] = index;
+        fIndex[idx] = index;
+
+        if (fValue.size() > kMaxPaletteSize) {
+            shrinkToFit();
+        }
+
+        return true;
+    }
+
+    void shrinkToFit() {
+        std::vector<Value> values;
+        std::unordered_map<Value, Index, Hasher, Pred> lut;
+        for (size_t i = 0; i < size; i++) {
+            Index index = fIndex[i];
+            Value const &v = fValue[index];
+            auto found = lut.find(v);
+            if (found == lut.end()) {
+                Index next = values.size();
+                values.push_back(v);
+                lut[v] = next;
+                fIndex[i] = next;
+            } else {
+                fIndex[i] = found->second;
+            }
+        }
+        fValue.swap(values);
+        fLut.swap(lut);
+    }
+
+    void copy(std::vector<Value> &palette, std::vector<Index> &index) const {
+        palette.clear();
+        index.clear();
+        std::copy(fValue.begin(), fValue.end(), std::back_inserter(palette));
+        std::copy(&fIndex[0], &fIndex[size], std::back_inserter(index));
+    }
+
+    bool reset(std::vector<Value> const &palette, std::vector<Index> const &index) {
+        if (index.size() != size) {
+            return false;
+        }
+        fIndex.clear();
+        fLut.clear();
+        fValue.clear();
+        for (size_t idx = 0; idx < size; idx++) {
+            Index i = index[idx];
+            if (palette.size() <= i) {
+                return false;
+            }
+            Value const &value = palette[i];
+            if (!set(idx, value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool empty() const {
+        return fIndex.size() != size;
+    }
+
+private:
+    std::vector<Value> fValue;
+    std::vector<Index> fIndex;
+    std::unordered_map<Value, Index, Hasher, Pred> fLut;
+
+    static constexpr size_t kMaxPaletteSize = size * factor;
+};
+
+} // namespace mcfile
