@@ -6,11 +6,16 @@ template<class BlockStatesParser>
 class ChunkSection113Base : public ChunkSection {
 public:
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const index = paletteIndexAt(offsetX, offsetY, offsetZ);
+        auto index = BlockIndex(offsetX, offsetY, offsetZ);
         if (!index) {
             return nullptr;
         }
-        return fPalette[*index];
+        auto ret = fBlocks.get(*index);
+        if (ret) {
+            return *ret;
+        } else {
+            return nullptr;
+        }
     }
 
     bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) override {
@@ -18,37 +23,23 @@ public:
         if (!block) {
             return false;
         }
-        int index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
+        auto index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
             return false;
         }
-        if (fPaletteIndices.size() != 4096) {
-            fPaletteIndices.resize(4096);
+        if (fBlocks.empty()) {
             auto air = std::make_shared<Block>("minecraft:air");
-            fPalette.push_back(air);
+            fBlocks.set(0, air);
         }
-        int idx = -1;
-        string s = block->toString();
-        for (int i = 0; i < fPalette.size(); i++) {
-            if (s == fPalette[i]->toString()) {
-                idx = i;
-                break;
-            }
-        }
-        if (idx < 0) {
-            idx = fPalette.size();
-            fPalette.push_back(block);
-        }
-        fPaletteIndices[index] = idx;
-        return true;
+        return fBlocks.set(*index, block);
     }
 
     uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
+        auto index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
             return 0;
         }
-        int const bitIndex = index * 4;
+        int const bitIndex = *index * 4;
         int const byteIndex = bitIndex / 8;
         if (fBlockLight.size() <= byteIndex) {
             return 0;
@@ -59,11 +50,11 @@ public:
     }
 
     uint8_t skyLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
+        auto index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
             return 0;
         }
-        int const bitIndex = index * 4;
+        int const bitIndex = *index * 4;
         int const byteIndex = bitIndex / 8;
         if (fSkyLight.size() <= byteIndex) {
             return 0;
@@ -71,14 +62,6 @@ public:
         int const bitOffset = bitIndex - 8 * byteIndex;
         uint8_t const v = fSkyLight[byteIndex];
         return (v >> bitOffset) & 0xF;
-    }
-
-    blocks::BlockId blockIdAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const &block = blockAt(offsetX, offsetY, offsetZ);
-        if (!block) {
-            return blocks::minecraft::air;
-        }
-        return block->fId;
     }
 
     int y() const override {
@@ -89,59 +72,20 @@ public:
         return fY;
     }
 
-    std::vector<std::shared_ptr<Block const>> const &palette() const override {
-        return fPalette;
-    }
-
-    std::optional<size_t> paletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return std::nullopt;
-        }
-        auto index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0 || fPaletteIndices.size() <= index) {
-            return std::nullopt;
-        }
-
-        int paletteIndex = fPaletteIndices[index];
-        if (paletteIndex < 0 || fPalette.size() <= paletteIndex) {
-            return std::nullopt;
-        }
-
-        return (size_t)paletteIndex;
-    }
-
     std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
-        using namespace std;
-        if (offsetX < 0 || 16 <= offsetX) {
-            return nullopt;
+        auto index = BiomeIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
+            return std::nullopt;
         }
-        if (offsetY < 0 || 16 <= offsetY) {
-            return nullopt;
-        }
-        if (offsetZ < 0 || 16 <= offsetZ) {
-            return nullopt;
-        }
-        int x = offsetX / 4;
-        int y = offsetY / 4;
-        int z = offsetZ / 4;
-        return fBiomes[y][z][x];
+        return fBiomes.get(*index);
     }
 
     bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
-        if (offsetX < 0 || 16 <= offsetX) {
+        auto index = BiomeIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
             return false;
         }
-        if (offsetY < 0 || 16 <= offsetY) {
-            return false;
-        }
-        if (offsetZ < 0 || 16 <= offsetZ) {
-            return false;
-        }
-        int x = offsetX / 4;
-        int y = offsetY / 4;
-        int z = offsetZ / 4;
-        fBiomes[y][z][x] = biome;
-        return true;
+        return fBiomes.set(*index, biome);
     }
 
     std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
@@ -167,18 +111,22 @@ public:
             root->set("SkyLight", make_shared<ByteArrayTag>(buf));
         }
 
-        if (!fPaletteIndices.empty()) {
+        vector<uint16_t> index;
+        vector<shared_ptr<Block const>> palette;
+        fBlocks.copy(palette, index);
+
+        if (!index.empty()) {
             vector<int64_t> blockStates;
-            BlockStatesParser::BlockStatesFromPaletteIndices(fPalette.size(), fPaletteIndices, blockStates);
+            BlockStatesParser::BlockStatesFromPaletteIndices(palette.size(), index, blockStates);
             root->set("BlockStates", make_shared<LongArrayTag>(blockStates));
         }
 
-        if (!fPalette.empty()) {
-            auto palette = make_shared<ListTag>(Tag::Type::Compound);
-            for (auto p : fPalette) {
-                palette->push_back(p->toCompoundTag());
+        if (!palette.empty()) {
+            auto paletteTag = make_shared<ListTag>(Tag::Type::Compound);
+            for (auto p : palette) {
+                paletteTag->push_back(p->toCompoundTag());
             }
-            root->set("Palette", palette);
+            root->set("Palette", paletteTag);
         }
 
         return root;
@@ -276,36 +224,37 @@ protected:
                         std::vector<uint8_t> const &skyLight,
                         std::shared_ptr<nbt::CompoundTag> const &extra)
         : fY(y)
-        , fPalette(palette)
-        , fPaletteIndices(paletteIndices)
         , fBlockLight(blockLight)
         , fSkyLight(skyLight)
         , fExtra(extra) {
-        for (int y = 0; y < 4; y++) {
-            for (int z = 0; z < 4; z++) {
-                for (int x = 0; x < 4; x++) {
-                    fBiomes[y][z][x] = biomes::unknown;
-                }
-            }
-        }
+        fBlocks.reset(palette, paletteIndices);
     }
 
 private:
-    static int BlockIndex(int offsetX, int offsetY, int offsetZ) {
+    static std::optional<size_t> BlockIndex(int offsetX, int offsetY, int offsetZ) {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return -1;
+            return std::nullopt;
         }
         return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
     }
 
+    static std::optional<size_t> BiomeIndex(int offsetX, int offsetY, int offsetZ) {
+        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
+            return std::nullopt;
+        }
+        int x = offsetX / 4;
+        int y = offsetY / 4;
+        int z = offsetZ / 4;
+        return (y * 4 + z) * 4 + x;
+    }
+
 public:
     int const fY;
-    std::vector<std::shared_ptr<Block const>> fPalette;
-    std::vector<uint16_t> fPaletteIndices;
+    BlockPalette fBlocks;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
     std::shared_ptr<nbt::CompoundTag> fExtra;
-    biomes::BiomeId fBiomes[4][4][4];
+    BiomePalette fBiomes;
 };
 
 } // namespace mcfile::je::chunksection

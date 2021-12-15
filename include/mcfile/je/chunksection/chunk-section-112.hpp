@@ -35,38 +35,32 @@ public:
     }
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
+        auto index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
             return nullptr;
         }
-        int const i = fPaletteIndices[index];
-        return fPalette[i];
+        auto ret = fBlocks.get(*index);
+        if (ret) {
+            return *ret;
+        } else {
+            return nullptr;
+        }
     }
 
     uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
+        auto index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
             return 0;
         }
-        return fBlockLight[index];
+        return fBlockLight[*index];
     }
 
     uint8_t skyLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
+        auto index = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
             return 0;
         }
-        return fSkyLight[index];
-    }
-
-    blocks::BlockId blockIdAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
-            return blocks::unknown;
-        }
-        int const i = fPaletteIndices[index];
-        auto const &block = fPalette[i];
-        return blocks::FromName(block->fName);
+        return fSkyLight[*index];
     }
 
     int y() const override {
@@ -77,43 +71,30 @@ public:
         return fY;
     }
 
-    std::vector<std::shared_ptr<Block const>> const &palette() const override {
-        return fPalette;
-    }
-
-    std::optional<size_t> paletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
-        int const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (index < 0) {
-            return std::nullopt;
-        }
-        return fPaletteIndices[index];
-    }
-
     std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
         using namespace std;
-        if (offsetX < 0 || 16 <= offsetX) {
+        auto index = BiomeIndex(offsetX, offsetZ);
+        if (!index) {
             return nullopt;
         }
-        if (offsetY < 0 || 16 <= offsetY) {
+        if (*index < 0 || fBiomes.size() <= *index) {
             return nullopt;
         }
-        if (offsetZ < 0 || 16 <= offsetZ) {
-            return nullopt;
-        }
-        return fBiomes[offsetX][offsetZ];
+        return fBiomes[*index];
     }
 
     bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
-        if (offsetX < 0 || 16 <= offsetX) {
+        auto index = BiomeIndex(offsetX, offsetZ);
+        if (!index) {
             return false;
         }
-        if (offsetY < 0 || 16 <= offsetY) {
-            return false;
+
+        if (fBiomes.size() != 256) {
+            fBiomes.clear();
+            fBiomes.resize(256, biome);
+        } else {
+            fBiomes[*index] = biome;
         }
-        if (offsetZ < 0 || 16 <= offsetZ) {
-            return false;
-        }
-        fBiomes[offsetX][offsetZ] = biome;
         return true;
     }
 
@@ -123,15 +104,9 @@ private:
                     std::vector<uint8_t> const &blockLight,
                     std::vector<uint8_t> const &skyLight)
         : fY(y)
-        , fPalette(palette)
-        , fPaletteIndices(paletteIndices)
         , fBlockLight(blockLight)
         , fSkyLight(skyLight) {
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                fBiomes[x][z] = biomes::unknown;
-            }
-        }
+        fBlocks.reset(palette, paletteIndices);
     }
 
     static std::shared_ptr<ChunkSection112> MakeRawSection(nbt::CompoundTag const *section) {
@@ -181,7 +156,7 @@ private:
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
                 for (int x = 0; x < 16; x++) {
-                    int const index = BlockIndex(x, y, z);
+                    auto index = *BlockIndex(x, y, z);
                     uint8_t const idLo = blocks[index];
                     uint8_t const idHi = Nibble4(add, index);
                     uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
@@ -439,11 +414,18 @@ private:
         return (*found)->blockAt(offsetX, offsetY, offsetZ);
     }
 
-    static inline int BlockIndex(int offsetX, int offsetY, int offsetZ) {
+    static inline std::optional<size_t> BlockIndex(int offsetX, int offsetY, int offsetZ) {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return -1;
+            return std::nullopt;
         }
         return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
+    }
+
+    static std::optional<size_t> BiomeIndex(int offsetX, int offsetZ) {
+        if (offsetX < 0 || 16 <= offsetX || offsetZ < 0 || 16 <= offsetZ) {
+            return std::nullopt;
+        }
+        return offsetZ * 16 + offsetX;
     }
 
     static inline uint8_t Nibble4(std::vector<uint8_t> const &arr, int index) {
@@ -1648,11 +1630,11 @@ private:
 
 private:
     int const fY;
-    std::vector<std::shared_ptr<Block const>> fPalette;
-    std::vector<uint16_t> fPaletteIndices;
+
+    BlockPalette fBlocks;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
-    biomes::BiomeId fBiomes[16][16];
+    std::vector<biomes::BiomeId> fBiomes;
 };
 
 } // namespace mcfile::je::chunksection

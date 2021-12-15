@@ -37,7 +37,12 @@ public:
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - section->y() * 16;
-        return section->blockIdAt(offsetX, offsetY, offsetZ);
+        auto block = section->blockAt(offsetX, offsetY, offsetZ);
+        if (block) {
+            return block->fId;
+        } else {
+            return blocks::minecraft::air;
+        }
     }
 
     blocks::BlockId blockIdAt(Pos3i pos) const {
