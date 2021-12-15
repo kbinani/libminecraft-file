@@ -2,12 +2,18 @@
 
 namespace mcfile {
 
-template<class Value, class Index, size_t size, class Hasher = std::hash<Value>, class Pred = std::equal_to<Value>, double factor = 2.0>
+template<class Value, class Index, size_t size, class Hasher = std::hash<Value>, class Pred = std::equal_to<Value>, size_t factorNum = 2, size_t factorDen = 1>
 class PaletteList {
     static_assert(std::is_integral<Index>::value);
     static_assert(std::is_unsigned<Index>::value);
-    static_assert(factor > 1);
-    static_assert(size * factor <= std::numeric_limits<Index>::max());
+    static_assert(factorDen > 0);
+    static_assert(factorNum > 0);
+    static_assert(factorNum > factorDen);
+
+    static constexpr double kFactor = (double)factorNum / (double)factorDen;
+    static constexpr size_t kMaxPaletteSize = size * kFactor;
+
+    static_assert(size * kFactor <= std::numeric_limits<Index>::max());
     static_assert(size > 0);
 
 public:
@@ -108,8 +114,6 @@ private:
     std::vector<Value> fValue;
     std::vector<Index> fIndex;
     std::unordered_map<Value, Index, Hasher, Pred> fLut;
-
-    static constexpr size_t kMaxPaletteSize = size * factor;
 };
 
 } // namespace mcfile
