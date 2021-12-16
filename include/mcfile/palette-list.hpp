@@ -67,7 +67,7 @@ public:
         palette.clear();
         index.clear();
         std::copy(fValue.begin(), fValue.end(), std::back_inserter(palette));
-        std::copy(&fIndex[0], &fIndex[size], std::back_inserter(index));
+        std::copy(fIndex.begin(), fIndex.end(), std::back_inserter(index));
     }
 
     bool reset(std::vector<Value> const &palette, std::vector<Index> const &index) {

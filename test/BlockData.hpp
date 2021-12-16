@@ -8,10 +8,8 @@
 
 class BlockData {
 public:
-    BlockData(std::string const &name, int blockLight, int skyLight)
-        : fName(name)
-        , fBlockLight(blockLight)
-        , fSkyLight(skyLight) {
+    explicit BlockData(std::string const &name)
+        : fName(name) {
     }
 
     BlockData() = delete;
@@ -28,7 +26,7 @@ public:
             for (std::string token; std::getline(ss, token, ',');) {
                 tokens.push_back(token);
             }
-            if (tokens.size() < 6) {
+            if (tokens.size() < 4) {
                 continue;
             }
             try {
@@ -36,9 +34,7 @@ public:
                 int const y = std::stoi(tokens[1]);
                 int const z = std::stoi(tokens[2]);
                 std::string const name = tokens[3];
-                int const blockLight = std::stoi(tokens[4]);
-                int const skyLight = std::stoi(tokens[5]);
-                buffer.insert(std::make_pair(MakePoint3D(x, y, z), BlockData(name, blockLight, skyLight)));
+                buffer.insert(std::make_pair(MakePoint3D(x, y, z), BlockData(name)));
             } catch (...) {
             }
         }
@@ -46,6 +42,4 @@ public:
 
 public:
     std::string fName;
-    int const fBlockLight;
-    int const fSkyLight;
 };

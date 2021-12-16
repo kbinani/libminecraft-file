@@ -262,17 +262,14 @@ public:
         using namespace std;
         using namespace mcfile::nbt;
 
-        vector<uint16_t> indices;
-
-        for (uint16_t index : inIndices) {
-            ValueType value = inPalette[index];
+        for (ValueType const &value : inPalette) {
             outPalette->push_back(valueToPalette(value));
         }
         if (outPalette->size() <= 1) {
             return;
         }
         vector<int64_t> packedData;
-        BlockStatesParser116::BlockStatesFromPaletteIndices(outPalette->size(), indices, packedData);
+        BlockStatesParser116::BlockStatesFromPaletteIndices(outPalette->size(), inIndices, packedData);
         outPackedIndices.reset(new LongArrayTag(packedData));
     }
 

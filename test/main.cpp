@@ -17,7 +17,7 @@ TEST_CASE("1.13.2") {
 
     je::World world(dir / "data" / "1.13.2" / "mitomitoyapparikawaiiyo");
 
-    SUBCASE("Chunk::{blockAt,blockLightAt,skyLightAt}") {
+    SUBCASE("Chunk::{blockAt}") {
         auto region = world.region(0, 0);
         CHECK(region != nullptr);
         auto const &chunk = region->chunkAt(0, 0);
@@ -42,12 +42,6 @@ TEST_CASE("1.13.2") {
                     } else {
                         CHECK(e.fName == "NULL");
                     }
-
-                    auto blockLight = chunk->blockLightAt(x, y, z);
-                    CHECK(blockLight == e.fBlockLight);
-
-                    auto skyLight = chunk->skyLightAt(x, y, z);
-                    CHECK(skyLight == e.fSkyLight);
                 }
             }
         }
@@ -150,89 +144,6 @@ std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromCompressedFile(fs::pat
     return tag;
 }
 
-void CheckTag(mcfile::nbt::Tag const *va, mcfile::nbt::Tag const *vb, std::unordered_set<std::string> const &ignored) {
-    using namespace mcfile::nbt;
-    CHECK(va->type() == vb->type());
-    switch (va->type()) {
-    case Tag::Type::Byte:
-        CHECK(va->asByte()->fValue == vb->asByte()->fValue);
-        break;
-    case Tag::Type::Double:
-        CHECK(va->asDouble()->fValue == vb->asDouble()->fValue);
-        break;
-    case Tag::Type::Float:
-        CHECK(va->asFloat()->fValue == vb->asFloat()->fValue);
-        break;
-    case Tag::Type::Int:
-        CHECK(va->asInt()->fValue == vb->asInt()->fValue);
-        break;
-    case Tag::Type::Long:
-        CHECK(va->asLong()->fValue == vb->asLong()->fValue);
-        break;
-    case Tag::Type::Short:
-        CHECK(va->asShort()->fValue == vb->asShort()->fValue);
-        break;
-    case Tag::Type::String:
-        CHECK(va->asString()->fValue == vb->asString()->fValue);
-        break;
-    case Tag::Type::ByteArray: {
-        auto const &la = va->asByteArray()->value();
-        auto const &lb = vb->asByteArray()->value();
-        CHECK(la.size() == lb.size());
-        for (int i = 0; i < la.size(); i++) {
-            CHECK(la[i] == lb[i]);
-        }
-        break;
-    }
-    case Tag::Type::IntArray: {
-        auto const &la = va->asIntArray()->value();
-        auto const &lb = vb->asIntArray()->value();
-        CHECK(la.size() == lb.size());
-        for (int i = 0; i < la.size(); i++) {
-            CHECK(la[i] == lb[i]);
-        }
-        break;
-    }
-    case Tag::Type::LongArray: {
-        auto const &la = va->asLongArray()->value();
-        auto const &lb = vb->asLongArray()->value();
-        CHECK(la.size() == lb.size());
-        for (int i = 0; i < la.size(); i++) {
-            CHECK(la[i] == lb[i]);
-        }
-        break;
-    }
-    case Tag::Type::List: {
-        auto la = va->asList();
-        auto lb = vb->asList();
-        CHECK(la->size() == lb->size());
-        for (int i = 0; i < la->size(); i++) {
-            CheckTag(la->at(i).get(), lb->at(i).get(), ignored);
-        }
-        break;
-    }
-    case Tag::Type::Compound: {
-        auto ca = va->asCompound();
-        auto cb = vb->asCompound();
-        CHECK(ca->size() == cb->size());
-        for (auto it : *ca) {
-            if (ignored.find(it.first) != ignored.end()) {
-                continue;
-            }
-            auto a = it.second;
-            auto found = cb->find(it.first);
-            CHECK(found != cb->end());
-            auto b = found->second;
-            CheckTag(a.get(), b.get(), ignored);
-        }
-        break;
-    }
-    default:
-        CHECK(false);
-        break;
-    }
-}
-
 } // namespace
 
 TEST_CASE("1.18") {
@@ -272,10 +183,33 @@ TEST_CASE("1.18") {
         CHECK(writableChunk->write(*stream));
         stream.reset();
 
-        auto expected = ReadCompoundFromFile(original);
-        auto actual = ReadCompoundFromCompressedFile(written);
+        auto expectedNbt = ReadCompoundFromFile(original);
+        CHECK(expectedNbt);
+        auto expected = je::Chunk::MakeChunk(0, 0, expectedNbt);
+        CHECK(expected);
+        auto actualNbt = ReadCompoundFromCompressedFile(written);
+        CHECK(actualNbt);
+        auto actual = mcfile::je::Chunk::MakeChunk(0, 0, actualNbt);
         CHECK(actual);
-        CheckTag(expected.get(), actual.get(), {"palette", "data"});
+
+        CHECK(expected->minBlockY() == actual->minBlockY());
+        CHECK(expected->maxBlockY() == actual->maxBlockY());
+
+        for (int y = expected->minBlockY(); y <= expected->maxBlockY(); y++) {
+            for (int x = expected->minBlockX(); x <= expected->maxBlockX(); x++) {
+                for (int z = expected->minBlockZ(); z <= expected->maxBlockZ(); z++) {
+                    auto e = expected->blockAt(x, y, z);
+                    auto a = actual->blockAt(x, y, z);
+                    if (e) {
+                        CHECK(e->toString() == a->toString());
+                    } else {
+                        CHECK(!a);
+                    }
+
+                    CHECK(expected->biomeAt(x, y, z) == actual->biomeAt(x, y, z));
+                }
+            }
+        }
 
         std::error_code ec;
         fs::remove_all(*tempDir, ec);
