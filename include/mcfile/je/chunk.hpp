@@ -91,46 +91,6 @@ public:
         return removeTileEntityAt(pos.fX, pos.fY, pos.fZ);
     }
 
-    int blockLightAt(int x, int y, int z) const {
-        int const chunkX = Coordinate::ChunkFromBlock(x);
-        int const chunkZ = Coordinate::ChunkFromBlock(z);
-        if (chunkX != fChunkX || chunkZ != fChunkZ) {
-            return 0;
-        }
-        auto const &section = unsafeSectionAtBlock(y);
-        if (!section) {
-            return -1;
-        }
-        int const offsetX = x - chunkX * 16;
-        int const offsetZ = z - chunkZ * 16;
-        int const offsetY = y - section->y() * 16;
-        return section->blockLightAt(offsetX, offsetY, offsetZ);
-    }
-
-    int blockLightAt(Pos3i pos) const {
-        return blockLightAt(pos.fX, pos.fY, pos.fZ);
-    }
-
-    int skyLightAt(int x, int y, int z) const {
-        int const chunkX = Coordinate::ChunkFromBlock(x);
-        int const chunkZ = Coordinate::ChunkFromBlock(z);
-        if (chunkX != fChunkX || chunkZ != fChunkZ) {
-            return 0;
-        }
-        auto const &section = unsafeSectionAtBlock(y);
-        if (!section) {
-            return -1;
-        }
-        int const offsetX = x - chunkX * 16;
-        int const offsetZ = z - chunkZ * 16;
-        int const offsetY = y - section->y() * 16;
-        return section->skyLightAt(offsetX, offsetY, offsetZ);
-    }
-
-    int skyLightAt(Pos3i pos) const {
-        return skyLightAt(pos.fX, pos.fY, pos.fZ);
-    }
-
     biomes::BiomeId biomeAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);

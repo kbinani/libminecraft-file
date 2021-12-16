@@ -10,8 +10,6 @@ public:
         vector<uint16_t> blockPaletteIndices;
         vector<biomes::BiomeId> biomePalette;
         vector<uint16_t> biomePaletteIndices;
-        vector<uint8_t> blockLight;
-        vector<uint8_t> skyLight;
         auto extra = make_shared<nbt::CompoundTag>();
         return shared_ptr<ChunkSection>(new ChunkSection118(
             sectionY,
@@ -19,8 +17,6 @@ public:
             blockPaletteIndices,
             biomePalette,
             biomePaletteIndices,
-            blockLight,
-            skyLight,
             2858,
             extra));
     }
@@ -35,8 +31,6 @@ public:
             "Y",
             "block_states",
             "biomes",
-            "BlockLight",
-            "SkyLight",
         };
 
         auto yTag = section->byte("Y");
@@ -128,18 +122,6 @@ public:
             }
         }
 
-        vector<uint8_t> blockLight;
-        auto blockLightTag = section->query("BlockLight")->asByteArray();
-        if (blockLightTag) {
-            blockLight = blockLightTag->value();
-        }
-
-        vector<uint8_t> skyLight;
-        auto skyLightTag = section->query("SkyLight")->asByteArray();
-        if (skyLightTag) {
-            skyLight = skyLightTag->value();
-        }
-
         auto extra = std::make_shared<nbt::CompoundTag>();
         for (auto it : *section) {
             if (sExclude.find(it.first) == sExclude.end()) {
@@ -153,8 +135,6 @@ public:
             blockPaletteIndices,
             biomePalette,
             biomePaletteIndices,
-            blockLight,
-            skyLight,
             dataVersion,
             extra));
     }
@@ -170,36 +150,6 @@ public:
         } else {
             return nullptr;
         }
-    }
-
-    uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return 0;
-        }
-        int const bitIndex = *index * 4;
-        int const byteIndex = bitIndex / 8;
-        if (fBlockLight.size() <= byteIndex) {
-            return 0;
-        }
-        int const bitOffset = bitIndex - 8 * byteIndex;
-        uint8_t const v = fBlockLight[byteIndex];
-        return (v >> bitOffset) & 0xF;
-    }
-
-    uint8_t skyLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return 0;
-        }
-        int const bitIndex = *index * 4;
-        int const byteIndex = bitIndex / 8;
-        if (fSkyLight.size() <= byteIndex) {
-            return 0;
-        }
-        int const bitOffset = bitIndex - 8 * byteIndex;
-        uint8_t const v = fSkyLight[byteIndex];
-        return (v >> bitOffset) & 0xF;
     }
 
     int y() const override {
@@ -340,13 +290,9 @@ private:
                     std::vector<uint16_t> const &blockPaletteIndices,
                     std::vector<mcfile::biomes::BiomeId> const &biomePalette,
                     std::vector<uint16_t> const &biomePaletteIndices,
-                    std::vector<uint8_t> const &blockLight,
-                    std::vector<uint8_t> const &skyLight,
                     int dataVersion,
                     std::shared_ptr<nbt::CompoundTag> extra)
         : fY(y)
-        , fBlockLight(blockLight)
-        , fSkyLight(skyLight)
         , fDataVersion(dataVersion)
         , fExtra(extra) {
         fBlocks.reset(blockPalette, blockPaletteIndices);
@@ -364,8 +310,6 @@ private:
     int const fY;
     BlockPalette fBlocks;
     BiomePalette fBiomes;
-    std::vector<uint8_t> fBlockLight;
-    std::vector<uint8_t> fSkyLight;
     int fDataVersion;
     std::shared_ptr<nbt::CompoundTag> fExtra;
 };

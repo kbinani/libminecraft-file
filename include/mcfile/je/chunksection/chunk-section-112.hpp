@@ -47,22 +47,6 @@ public:
         }
     }
 
-    uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return 0;
-        }
-        return fBlockLight[*index];
-    }
-
-    uint8_t skyLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return 0;
-        }
-        return fSkyLight[*index];
-    }
-
     int y() const override {
         return fY;
     }

@@ -34,36 +34,6 @@ public:
         return fBlocks.set(*index, block);
     }
 
-    uint8_t blockLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return 0;
-        }
-        int const bitIndex = *index * 4;
-        int const byteIndex = bitIndex / 8;
-        if (fBlockLight.size() <= byteIndex) {
-            return 0;
-        }
-        int const bitOffset = bitIndex - 8 * byteIndex;
-        uint8_t const v = fBlockLight[byteIndex];
-        return (v >> bitOffset) & 0xF;
-    }
-
-    uint8_t skyLightAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return 0;
-        }
-        int const bitIndex = *index * 4;
-        int const byteIndex = bitIndex / 8;
-        if (fSkyLight.size() <= byteIndex) {
-            return 0;
-        }
-        int const bitOffset = bitIndex - 8 * byteIndex;
-        uint8_t const v = fSkyLight[byteIndex];
-        return (v >> bitOffset) & 0xF;
-    }
-
     int y() const override {
         return fY > 251 ? fY - 256 : fY;
     }
@@ -99,18 +69,6 @@ public:
 
         root->set("Y", make_shared<ByteTag>(fY));
 
-        if (!fBlockLight.empty()) {
-            vector<uint8_t> buf;
-            copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(buf));
-            root->set("BlockLight", make_shared<ByteArrayTag>(buf));
-        }
-
-        if (!fSkyLight.empty()) {
-            vector<uint8_t> buf;
-            copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(buf));
-            root->set("SkyLight", make_shared<ByteArrayTag>(buf));
-        }
-
         vector<uint16_t> index;
         vector<shared_ptr<Block const>> palette;
         fBlocks.copy(palette, index);
@@ -141,8 +99,6 @@ public:
             "Y",
             "Palette",
             "BlockStates",
-            "BlockLight",
-            "SkyLight",
         };
         auto yTag = section->query("Y")->asByte();
         if (!yTag) {
@@ -189,18 +145,6 @@ public:
             BlockStatesParser::PaletteIndicesFromBlockStates(blockStatesTag->value(), paletteIndices);
         }
 
-        std::vector<uint8_t> blockLight;
-        auto blockLightTag = section->query("BlockLight")->asByteArray();
-        if (blockLightTag) {
-            blockLight = blockLightTag->value();
-        }
-
-        std::vector<uint8_t> skyLight;
-        auto skyLightTag = section->query("SkyLight")->asByteArray();
-        if (skyLightTag) {
-            skyLight = skyLightTag->value();
-        }
-
         auto extra = std::make_shared<nbt::CompoundTag>();
         for (auto it : *section) {
             if (sExclude.find(it.first) == sExclude.end()) {
@@ -211,8 +155,6 @@ public:
         return std::shared_ptr<ChunkSection>(new ChunkSection113Base((int)yTag->fValue,
                                                                      palette,
                                                                      paletteIndices,
-                                                                     blockLight,
-                                                                     skyLight,
                                                                      extra));
     }
 
@@ -220,12 +162,8 @@ protected:
     ChunkSection113Base(int y,
                         std::vector<std::shared_ptr<Block const>> const &palette,
                         std::vector<uint16_t> const &paletteIndices,
-                        std::vector<uint8_t> const &blockLight,
-                        std::vector<uint8_t> const &skyLight,
                         std::shared_ptr<nbt::CompoundTag> const &extra)
         : fY(y)
-        , fBlockLight(blockLight)
-        , fSkyLight(skyLight)
         , fExtra(extra) {
         fBlocks.reset(palette, paletteIndices);
     }
@@ -251,8 +189,6 @@ private:
 public:
     int const fY;
     BlockPalette fBlocks;
-    std::vector<uint8_t> fBlockLight;
-    std::vector<uint8_t> fSkyLight;
     std::shared_ptr<nbt::CompoundTag> fExtra;
     BiomePalette fBiomes;
 };
