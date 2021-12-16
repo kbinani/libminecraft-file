@@ -252,15 +252,11 @@ public:
 
         auto root = make_shared<CompoundTag>();
 
+        for (auto const &it : *fExtra) {
+            root->set(it.first, it.second->clone());
+        }
+
         root->set("Y", make_shared<ByteTag>(fY));
-        if (!fSkyLight.empty()) {
-            vector<uint8_t> copy = fSkyLight;
-            root->set("SkyLight", make_shared<ByteArrayTag>(copy));
-        }
-        if (!fBlockLight.empty()) {
-            vector<uint8_t> copy = fBlockLight;
-            root->set("BlockLight", make_shared<ByteArrayTag>(copy));
-        }
 
         if (!fBiomes.empty()) {
             auto biomes = make_shared<CompoundTag>();
@@ -269,14 +265,12 @@ public:
             vector<biomes::BiomeId> palette;
             vector<uint16_t> index;
             fBiomes.copy(palette, index);
-            PackPalette<biomes::BiomeId, biomes::BiomeId, shared_ptr<StringTag>>(
+            BiomePalette::ShrinkToFit(palette, index);
+            PackPalette<biomes::BiomeId, shared_ptr<StringTag>>(
                 palette, index,
                 [this](biomes::BiomeId biome) -> shared_ptr<nbt::StringTag> {
                     auto name = biomes::Name(biome, fDataVersion);
                     return make_shared<StringTag>(name);
-                },
-                [](biomes::BiomeId biome) -> biomes::BiomeId {
-                    return biome;
                 },
                 biomePalette, biomePaletteData);
             biomes->set("palette", biomePalette);
@@ -293,7 +287,8 @@ public:
             vector<shared_ptr<Block const>> palette;
             vector<uint16_t> index;
             fBlocks.copy(palette, index);
-            PackPalette<shared_ptr<Block const>, string, shared_ptr<CompoundTag>>(
+            BlockPalette::ShrinkToFit(palette, index);
+            PackPalette<shared_ptr<Block const>, shared_ptr<CompoundTag>>(
                 palette, index,
                 [this](shared_ptr<Block const> const &block) -> shared_ptr<nbt::CompoundTag> {
                     auto tag = make_shared<CompoundTag>();
@@ -304,9 +299,6 @@ public:
                     }
                     tag->set("Properties", props);
                     return tag;
-                },
-                [](shared_ptr<Block const> const &block) -> string {
-                    return block->toString();
                 },
                 blockPalette, blockPaletteData);
             blockStates->set("palette", blockPalette);
@@ -319,32 +311,20 @@ public:
         return root;
     }
 
-    template<class ValueType, class ValueHashType, class PaletteType>
+    template<class ValueType, class PaletteType>
     static void PackPalette(std::vector<ValueType> const &inPalette,
                             std::vector<uint16_t> const &inIndices,
                             std::function<PaletteType(ValueType v)> valueToPalette,
-                            std::function<ValueHashType(ValueType)> valueToHash,
                             std::shared_ptr<nbt::ListTag> &outPalette,
                             std::shared_ptr<nbt::LongArrayTag> &outPackedIndices) {
         using namespace std;
         using namespace mcfile::nbt;
 
-        vector<ValueHashType> paletteValues;
         vector<uint16_t> indices;
 
         for (uint16_t index : inIndices) {
             ValueType value = inPalette[index];
-            ValueHashType hash = valueToHash(value);
-            auto found = find(paletteValues.begin(), paletteValues.end(), hash);
-            uint16_t idx;
-            if (found == paletteValues.end()) {
-                idx = outPalette->size();
-                paletteValues.push_back(hash);
-                outPalette->push_back(valueToPalette(value));
-            } else {
-                idx = distance(paletteValues.begin(), found);
-            }
-            indices.push_back(idx);
+            outPalette->push_back(valueToPalette(value));
         }
         if (outPalette->size() <= 1) {
             return;

@@ -13,7 +13,7 @@ class PaletteList {
     static constexpr double kFactor = (double)factorNum / (double)factorDen;
     static constexpr size_t kMaxPaletteSize = size * kFactor;
 
-    static_assert(size * kFactor <= std::numeric_limits<Index>::max());
+    static_assert(kMaxPaletteSize <= std::numeric_limits<Index>::max());
     static_assert(size > 0);
 
 public:
@@ -60,23 +60,7 @@ public:
     }
 
     void shrinkToFit() {
-        std::vector<Value> values;
-        std::unordered_map<Value, Index, Hasher, Pred> lut;
-        for (size_t i = 0; i < size; i++) {
-            Index index = fIndex[i];
-            Value const &v = fValue[index];
-            auto found = lut.find(v);
-            if (found == lut.end()) {
-                Index next = values.size();
-                values.push_back(v);
-                lut[v] = next;
-                fIndex[i] = next;
-            } else {
-                fIndex[i] = found->second;
-            }
-        }
-        fValue.swap(values);
-        fLut.swap(lut);
+        ShrinkToFitImpl(fValue, fIndex, &fLut);
     }
 
     void copy(std::vector<Value> &palette, std::vector<Index> &index) const {
@@ -108,6 +92,41 @@ public:
 
     bool empty() const {
         return fIndex.size() != size;
+    }
+
+    static bool ShrinkToFit(std::vector<Value> &inoutPalette, std::vector<Index> &inoutIndex) {
+        return ShrinkToFitImpl(inoutPalette, inoutIndex);
+    }
+
+private:
+    static bool ShrinkToFitImpl(std::vector<Value> &inoutPalette, std::vector<Index> &inoutIndex, std::unordered_map<Value, Index, Hasher, Pred> *inoutLut = nullptr) {
+        std::vector<Value> palette;
+        std::unordered_map<Value, Index, Hasher, Pred> lut;
+        std::vector<Index> index;
+        index.resize(inoutIndex.size());
+        for (size_t idx = 0; idx < inoutIndex.size(); idx++) {
+            Index i = inoutIndex[idx];
+            assert(i < inoutPalette.size());
+            if (inoutPalette.size() <= i) {
+                return false;
+            }
+            Value const &v = inoutPalette[i];
+            auto found = lut.find(v);
+            if (found == lut.end()) {
+                Index next = palette.size();
+                palette.push_back(v);
+                lut[v] = next;
+                index[idx] = next;
+            } else {
+                index[idx] = found->second;
+            }
+        }
+        inoutPalette.swap(palette);
+        inoutIndex.swap(index);
+        if (inoutLut) {
+            inoutLut->swap(lut);
+        }
+        return true;
     }
 
 private:
