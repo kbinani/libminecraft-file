@@ -173,27 +173,19 @@ public:
     }
 
     std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
-        using namespace std;
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return nullopt;
+        auto index = BiomeIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
+            return std::nullopt;
         }
-        int x = offsetX / 4;
-        int y = offsetY / 4;
-        int z = offsetZ / 4;
-        int index = (y * 4 + z) * 4 + x;
-        return fBiomes.get(index);
+        return fBiomes.get(*index);
     }
 
     bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
-        using namespace std;
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
+        auto index = BiomeIndex(offsetX, offsetY, offsetZ);
+        if (!index) {
             return false;
         }
-        int x = offsetX / 4;
-        int y = offsetY / 4;
-        int z = offsetZ / 4;
-        int index = (y * 4 + z) * 4 + x;
-        return fBiomes.set(index, biome);
+        return fBiomes.set(*index, biome);
     }
 
     std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
@@ -304,6 +296,16 @@ private:
             return std::nullopt;
         }
         return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
+    }
+
+    static std::optional<size_t> BiomeIndex(int offsetX, int offsetY, int offsetZ) {
+        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
+            return std::nullopt;
+        }
+        int x = offsetX / 4;
+        int y = offsetY / 4;
+        int z = offsetZ / 4;
+        return (y * 4 + z) * 4 + x;
     }
 
 private:
