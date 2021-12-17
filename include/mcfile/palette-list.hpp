@@ -77,15 +77,15 @@ public:
         fIndex.clear();
         fLut.clear();
         fValue.clear();
-        for (size_t idx = 0; idx < size; idx++) {
-            Index i = index[idx];
-            if (palette.size() <= i) {
-                return false;
-            }
+        size_t s = palette.size();
+        if (!std::all_of(index.begin(), index.end(), [s](Index i) { return i < s; })) {
+            return false;
+        }
+        std::copy(palette.begin(), palette.end(), std::back_inserter(fValue));
+        std::copy(index.begin(), index.end(), std::back_inserter(fIndex));
+        for (Index i = 0; i < palette.size(); i++) {
             Value const &value = palette[i];
-            if (!set(idx, value)) {
-                return false;
-            }
+            fLut[value] = i;
         }
         return true;
     }
