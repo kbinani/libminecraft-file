@@ -104,7 +104,7 @@ public:
                         if (index < 0 || list->size() <= index) {
                             return EndTag::Instance();
                         }
-                        auto child = list->at(index);
+                        auto const &child = list->at(index);
                         if (pos == std::string::npos) {
                             return child.get();
                         }
