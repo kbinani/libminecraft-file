@@ -94,6 +94,14 @@ public:
         return fIndex.size() != size;
     }
 
+    void eachValue(std::function<bool(Value const &)> cb) const {
+        for (Value const &v : fValue) {
+            if (!cb(v)) {
+                return;
+            }
+        }
+    }
+
     static bool ShrinkToFit(std::vector<Value> &inoutPalette, std::vector<Index> &inoutIndex) {
         return ShrinkToFitImpl(inoutPalette, inoutIndex);
     }

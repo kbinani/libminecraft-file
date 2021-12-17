@@ -253,6 +253,15 @@ public:
         return root;
     }
 
+    void eachBlockPalette(std::function<bool(Block const &)> visitor) const override {
+        fBlocks.eachValue([visitor](std::shared_ptr<Block const> const &v) {
+            if (!v) {
+                return true;
+            }
+            return visitor(*v);
+        });
+    }
+
     template<class ValueType, class PaletteType>
     static void PackPalette(std::vector<ValueType> const &inPalette,
                             std::vector<uint16_t> const &inIndices,

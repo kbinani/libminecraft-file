@@ -11,6 +11,8 @@ public:
     virtual std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) = 0;
 
+    virtual void eachBlockPalette(std::function<bool(Block const &)> visitor) const = 0;
+
     // optional
 
     virtual bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) {

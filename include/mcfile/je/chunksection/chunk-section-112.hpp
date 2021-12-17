@@ -82,6 +82,15 @@ public:
         return true;
     }
 
+    void eachBlockPalette(std::function<bool(Block const &)> visitor) const override {
+        fBlocks.eachValue([visitor](std::shared_ptr<Block const> const &v) {
+            if (!v) {
+                return true;
+            }
+            return visitor(*v);
+        });
+    }
+
 private:
     ChunkSection112(int y,
                     std::vector<std::shared_ptr<Block const>> const &palette, std::vector<uint16_t> const &paletteIndices,

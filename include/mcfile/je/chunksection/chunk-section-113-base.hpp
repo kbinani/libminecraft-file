@@ -90,6 +90,15 @@ public:
         return root;
     }
 
+    void eachBlockPalette(std::function<bool(Block const &)> visitor) const override {
+        fBlocks.eachValue([visitor](std::shared_ptr<Block const> const &v) {
+            if (!v) {
+                return true;
+            }
+            return visitor(*v);
+        });
+    }
+
     static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const *section) {
         if (!section) {
             return nullptr;
