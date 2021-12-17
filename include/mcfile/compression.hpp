@@ -8,7 +8,7 @@ public:
 
     static bool compress(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
         z_stream zs;
-        char buff[kSegSize];
+        std::vector<uint8_t> buff(kSegSize, 0);
         std::vector<uint8_t> outData;
         unsigned long prevOut = 0;
 
@@ -16,16 +16,16 @@ public:
         if (deflateInit(&zs, level) != Z_OK) {
             return false;
         }
-        zs.next_in = (Bytef *)inout.data();
+        zs.next_in = inout.data();
         zs.avail_in = inout.size();
 
         int ret;
         do {
-            zs.next_out = reinterpret_cast<Bytef *>(buff);
-            zs.avail_out = kSegSize;
+            zs.next_out = buff.data();
+            zs.avail_out = buff.size();
 
             ret = deflate(&zs, Z_FINISH);
-            outData.insert(outData.end(), buff, buff + (zs.total_out - prevOut));
+            std::copy_n(buff.begin(), zs.total_out - prevOut, std::back_inserter(outData));
             prevOut = zs.total_out;
         } while (ret == Z_OK);
 
@@ -44,7 +44,7 @@ public:
     static bool decompress(std::vector<uint8_t> &inout) {
         int ret;
         z_stream zs;
-        char buff[kSegSize];
+        std::vector<uint8_t> buff(kSegSize, 0);
         std::vector<uint8_t> outData;
         unsigned long prevOut = 0;
 
@@ -53,15 +53,15 @@ public:
             return false;
         }
 
-        zs.next_in = (Bytef *)inout.data();
+        zs.next_in = inout.data();
         zs.avail_in = inout.size();
 
         do {
-            zs.next_out = reinterpret_cast<Bytef *>(buff);
-            zs.avail_out = kSegSize;
+            zs.next_out = buff.data();
+            zs.avail_out = buff.size();
 
             ret = inflate(&zs, 0);
-            outData.insert(outData.end(), buff, buff + (zs.total_out - prevOut));
+            std::copy_n(buff.begin(), zs.total_out - prevOut, std::back_inserter(outData));
             prevOut = zs.total_out;
         } while (ret == Z_OK);
 
@@ -96,7 +96,7 @@ public:
 #endif
 
 private:
-    static const unsigned int kSegSize = 16384;
+    static constexpr unsigned int kSegSize = 16384;
 };
 
 } // namespace mcfile

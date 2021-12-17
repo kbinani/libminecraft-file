@@ -10,921 +10,921 @@ struct Characteristics {
 };
 
 static inline std::vector<Characteristics> CreateTable() {
-    std::map<BlockId, Characteristics> mapping = {
-        {minecraft::acacia_button, {.name = "minecraft:acacia_button", .opaque = false}},
-        {minecraft::acacia_door, {.name = "minecraft:acacia_door", .opaque = false}},
-        {minecraft::acacia_fence, {.name = "minecraft:acacia_fence", .opaque = false}},
-        {minecraft::acacia_fence_gate, {.name = "minecraft:acacia_fence_gate", .opaque = false}},
-        {minecraft::acacia_leaves, {.name = "minecraft:acacia_leaves", .opaque = false}},
-        {minecraft::acacia_log, {.name = "minecraft:acacia_log", .opaque = true}},
-        {minecraft::acacia_planks, {.name = "minecraft:acacia_planks", .opaque = true}},
-        {minecraft::acacia_pressure_plate, {.name = "minecraft:acacia_pressure_plate", .opaque = false}},
-        {minecraft::acacia_sapling, {.name = "minecraft:acacia_sapling", .opaque = false}},
-        {minecraft::acacia_sign, {.name = "minecraft:acacia_sign", .opaque = false}},
-        {minecraft::acacia_slab, {.name = "minecraft:acacia_slab", .opaque = false}},
-        {minecraft::acacia_stairs, {.name = "minecraft:acacia_stairs", .opaque = false}},
-        {minecraft::acacia_trapdoor, {.name = "minecraft:acacia_trapdoor", .opaque = false}},
-        {minecraft::acacia_wall_sign, {.name = "minecraft:acacia_wall_sign", .opaque = false}},
-        {minecraft::acacia_wood, {.name = "minecraft:acacia_wood", .opaque = true}},
-        {minecraft::activator_rail, {.name = "minecraft:activator_rail", .opaque = false}},
-        {minecraft::air, {.name = "minecraft:air", .opaque = false}},
-        {minecraft::allium, {.name = "minecraft:allium", .opaque = false}},
-        {minecraft::andesite, {.name = "minecraft:andesite", .opaque = true}},
-        {minecraft::andesite_slab, {.name = "minecraft:andesite_slab", .opaque = false}},
-        {minecraft::andesite_stairs, {.name = "minecraft:andesite_stairs", .opaque = false}},
-        {minecraft::andesite_wall, {.name = "minecraft:andesite_wall", .opaque = false}},
-        {minecraft::anvil, {.name = "minecraft:anvil", .opaque = false}},
-        {minecraft::attached_melon_stem, {.name = "minecraft:attached_melon_stem", .opaque = false}},
-        {minecraft::attached_pumpkin_stem, {.name = "minecraft:attached_pumpkin_stem", .opaque = false}},
-        {minecraft::azure_bluet, {.name = "minecraft:azure_bluet", .opaque = false}},
-        {minecraft::bamboo, {.name = "minecraft:bamboo", .opaque = false}},
-        {minecraft::bamboo_sapling, {.name = "minecraft:bamboo_sapling", .opaque = false}},
-        {minecraft::barrel, {.name = "minecraft:barrel", .opaque = true}},
-        {minecraft::barrier, {.name = "minecraft:barrier", .opaque = false}},
-        {minecraft::beacon, {.name = "minecraft:beacon", .opaque = false}},
-        {minecraft::bedrock, {.name = "minecraft:bedrock", .opaque = true}},
-        {minecraft::beetroots, {.name = "minecraft:beetroots", .opaque = false}},
-        {minecraft::bell, {.name = "minecraft:bell", .opaque = false}},
-        {minecraft::birch_button, {.name = "minecraft:birch_button", .opaque = false}},
-        {minecraft::birch_door, {.name = "minecraft:birch_door", .opaque = false}},
-        {minecraft::birch_fence, {.name = "minecraft:birch_fence", .opaque = false}},
-        {minecraft::birch_fence_gate, {.name = "minecraft:birch_fence_gate", .opaque = false}},
-        {minecraft::birch_leaves, {.name = "minecraft:birch_leaves", .opaque = false}},
-        {minecraft::birch_log, {.name = "minecraft:birch_log", .opaque = true}},
-        {minecraft::birch_planks, {.name = "minecraft:birch_planks", .opaque = true}},
-        {minecraft::birch_pressure_plate, {.name = "minecraft:birch_pressure_plate", .opaque = false}},
-        {minecraft::birch_sapling, {.name = "minecraft:birch_sapling", .opaque = false}},
-        {minecraft::birch_sign, {.name = "minecraft:birch_sign", .opaque = false}},
-        {minecraft::birch_slab, {.name = "minecraft:birch_slab", .opaque = false}},
-        {minecraft::birch_stairs, {.name = "minecraft:birch_stairs", .opaque = false}},
-        {minecraft::birch_trapdoor, {.name = "minecraft:birch_trapdoor", .opaque = false}},
-        {minecraft::birch_wall_sign, {.name = "minecraft:birch_wall_sign", .opaque = false}},
-        {minecraft::birch_wood, {.name = "minecraft:birch_wood", .opaque = true}},
-        {minecraft::black_banner, {.name = "minecraft:black_banner", .opaque = false}},
-        {minecraft::black_bed, {.name = "minecraft:black_bed", .opaque = false}},
-        {minecraft::black_carpet, {.name = "minecraft:black_carpet", .opaque = false}},
-        {minecraft::black_concrete, {.name = "minecraft:black_concrete", .opaque = true}},
-        {minecraft::black_concrete_powder, {.name = "minecraft:black_concrete_powder", .opaque = true}},
-        {minecraft::black_glazed_terracotta, {.name = "minecraft:black_glazed_terracotta", .opaque = true}},
-        {minecraft::black_shulker_box, {.name = "minecraft:black_shulker_box", .opaque = false}},
-        {minecraft::black_stained_glass, {.name = "minecraft:black_stained_glass", .opaque = false}},
-        {minecraft::black_stained_glass_pane, {.name = "minecraft:black_stained_glass_pane", .opaque = false}},
-        {minecraft::black_terracotta, {.name = "minecraft:black_terracotta", .opaque = true}},
-        {minecraft::black_wall_banner, {.name = "minecraft:black_wall_banner", .opaque = false}},
-        {minecraft::black_wool, {.name = "minecraft:black_wool", .opaque = true}},
-        {minecraft::blast_furnace, {.name = "minecraft:blast_furnace", .opaque = false}},
-        {minecraft::coal_block, {.name = "minecraft:coal_block", .opaque = true}},
-        {minecraft::diamond_block, {.name = "minecraft:diamond_block", .opaque = true}},
-        {minecraft::emerald_block, {.name = "minecraft:emerald_block", .opaque = true}},
-        {minecraft::gold_block, {.name = "minecraft:gold_block", .opaque = true}},
-        {minecraft::iron_block, {.name = "minecraft:iron_block", .opaque = true}},
-        {minecraft::quartz_block, {.name = "minecraft:quartz_block", .opaque = true}},
-        {minecraft::redstone_block, {.name = "minecraft:redstone_block", .opaque = true}},
-        {minecraft::blue_banner, {.name = "minecraft:blue_banner", .opaque = false}},
-        {minecraft::blue_bed, {.name = "minecraft:blue_bed", .opaque = false}},
-        {minecraft::blue_carpet, {.name = "minecraft:blue_carpet", .opaque = false}},
-        {minecraft::blue_concrete, {.name = "minecraft:blue_concrete", .opaque = true}},
-        {minecraft::blue_concrete_powder, {.name = "minecraft:blue_concrete_powder", .opaque = true}},
-        {minecraft::blue_glazed_terracotta, {.name = "minecraft:blue_glazed_terracotta", .opaque = true}},
-        {minecraft::blue_ice, {.name = "minecraft:blue_ice", .opaque = true}},
-        {minecraft::blue_orchid, {.name = "minecraft:blue_orchid", .opaque = false}},
-        {minecraft::blue_shulker_box, {.name = "minecraft:blue_shulker_box", .opaque = false}},
-        {minecraft::blue_stained_glass, {.name = "minecraft:blue_stained_glass", .opaque = false}},
-        {minecraft::blue_stained_glass_pane, {.name = "minecraft:blue_stained_glass_pane", .opaque = false}},
-        {minecraft::blue_terracotta, {.name = "minecraft:blue_terracotta", .opaque = true}},
-        {minecraft::blue_wall_banner, {.name = "minecraft:blue_wall_banner", .opaque = false}},
-        {minecraft::blue_wool, {.name = "minecraft:blue_wool", .opaque = true}},
-        {minecraft::bone_block, {.name = "minecraft:bone_block", .opaque = true}},
-        {minecraft::bookshelf, {.name = "minecraft:bookshelf", .opaque = true}},
-        {minecraft::brain_coral, {.name = "minecraft:brain_coral", .opaque = false}},
-        {minecraft::brain_coral_block, {.name = "minecraft:brain_coral_block", .opaque = true}},
-        {minecraft::brain_coral_fan, {.name = "minecraft:brain_coral_fan", .opaque = false}},
-        {minecraft::brain_coral_wall_fan, {.name = "minecraft:brain_coral_wall_fan", .opaque = false}},
-        {minecraft::brewing_stand, {.name = "minecraft:brewing_stand", .opaque = false}},
-        {minecraft::brick_slab, {.name = "minecraft:brick_slab", .opaque = false}},
-        {minecraft::brick_stairs, {.name = "minecraft:brick_stairs", .opaque = false}},
-        {minecraft::brick_wall, {.name = "minecraft:brick_wall", .opaque = false}},
-        {minecraft::bricks, {.name = "minecraft:bricks", .opaque = true}},
-        {minecraft::brown_banner, {.name = "minecraft:brown_banner", .opaque = false}},
-        {minecraft::brown_bed, {.name = "minecraft:brown_bed", .opaque = false}},
-        {minecraft::brown_carpet, {.name = "minecraft:brown_carpet", .opaque = false}},
-        {minecraft::brown_concrete, {.name = "minecraft:brown_concrete", .opaque = false}},
-        {minecraft::brown_concrete_powder, {.name = "minecraft:brown_concrete_powder", .opaque = true}},
-        {minecraft::brown_glazed_terracotta, {.name = "minecraft:brown_glazed_terracotta", .opaque = true}},
-        {minecraft::brown_mushroom, {.name = "minecraft:brown_mushroom", .opaque = false}},
-        {minecraft::brown_mushroom_block, {.name = "minecraft:brown_mushroom_block", .opaque = true}},
-        {minecraft::brown_shulker_box, {.name = "minecraft:brown_shulker_box", .opaque = false}},
-        {minecraft::brown_stained_glass, {.name = "minecraft:brown_stained_glass", .opaque = false}},
-        {minecraft::brown_stained_glass_pane, {.name = "minecraft:brown_stained_glass_pane", .opaque = false}},
-        {minecraft::brown_terracotta, {.name = "minecraft:brown_terracotta", .opaque = true}},
-        {minecraft::brown_wall_banner, {.name = "minecraft:brown_wall_banner", .opaque = false}},
-        {minecraft::brown_wool, {.name = "minecraft:brown_wool", .opaque = true}},
-        {minecraft::bubble_column, {.name = "minecraft:bubble_column", .opaque = false}},
-        {minecraft::bubble_coral, {.name = "minecraft:bubble_coral", .opaque = false}},
-        {minecraft::bubble_coral_block, {.name = "minecraft:bubble_coral_block", .opaque = true}},
-        {minecraft::bubble_coral_fan, {.name = "minecraft:bubble_coral_fan", .opaque = false}},
-        {minecraft::bubble_coral_wall_fan, {.name = "minecraft:bubble_coral_wall_fan", .opaque = false}},
-        {minecraft::cactus, {.name = "minecraft:cactus", .opaque = false}},
-        {minecraft::cake, {.name = "minecraft:cake", .opaque = false}},
-        {minecraft::campfire, {.name = "minecraft:campfire", .opaque = false}},
-        {minecraft::carrots, {.name = "minecraft:carrots", .opaque = false}},
-        {minecraft::cartography_table, {.name = "minecraft:cartography_table", .opaque = true}},
-        {minecraft::carved_pumpkin, {.name = "minecraft:carved_pumpkin", .opaque = true}},
-        {minecraft::cave_air, {.name = "minecraft:cave_air", .opaque = false}},
-        {minecraft::chain_command_block, {.name = "minecraft:chain_command_block", .opaque = true}},
-        {minecraft::chest, {.name = "minecraft:chest", .opaque = false}},
-        {minecraft::chipped_anvil, {.name = "minecraft:chipped_anvil", .opaque = false}},
-        {minecraft::chiseled_quartz_block, {.name = "minecraft:chiseled_quartz_block", .opaque = true}},
-        {minecraft::chiseled_red_sandstone, {.name = "minecraft:chiseled_red_sandstone", .opaque = true}},
-        {minecraft::chiseled_sandstone, {.name = "minecraft:chiseled_sandstone", .opaque = true}},
-        {minecraft::chiseled_stone_bricks, {.name = "minecraft:chiseled_stone_bricks", .opaque = true}},
-        {minecraft::chorus_flower, {.name = "minecraft:chorus_flower", .opaque = false}},
-        {minecraft::chorus_plant, {.name = "minecraft:chorus_plant", .opaque = false}},
-        {minecraft::clay, {.name = "minecraft:clay", .opaque = true}},
-        {minecraft::coal_ore, {.name = "minecraft:coal_ore", .opaque = true}},
-        {minecraft::coarse_dirt, {.name = "minecraft:coarse_dirt", .opaque = true}},
-        {minecraft::cobblestone, {.name = "minecraft:cobblestone", .opaque = true}},
-        {minecraft::cobblestone_slab, {.name = "minecraft:cobblestone_slab", .opaque = false}},
-        {minecraft::cobblestone_stairs, {.name = "minecraft:cobblestone_stairs", .opaque = false}},
-        {minecraft::cobblestone_wall, {.name = "minecraft:cobblestone_wall", .opaque = false}},
-        {minecraft::cobweb, {.name = "minecraft:cobweb", .opaque = false}},
-        {minecraft::cocoa, {.name = "minecraft:cocoa", .opaque = false}},
-        {minecraft::command_block, {.name = "minecraft:command_block", .opaque = true}},
-        {minecraft::composter, {.name = "minecraft:composter", .opaque = false}},
-        {minecraft::conduit, {.name = "minecraft:conduit", .opaque = false}},
-        {minecraft::cornflower, {.name = "minecraft:cornflower", .opaque = false}},
-        {minecraft::cracked_stone_bricks, {.name = "minecraft:cracked_stone_bricks", .opaque = true}},
-        {minecraft::crafting_table, {.name = "minecraft:crafting_table", .opaque = true}},
-        {minecraft::creeper_head, {.name = "minecraft:creeper_head", .opaque = false}},
-        {minecraft::creeper_wall_head, {.name = "minecraft:creeper_wall_head", .opaque = false}},
-        {minecraft::cut_red_sandstone, {.name = "minecraft:cut_red_sandstone", .opaque = true}},
-        {minecraft::cut_red_sandstone_slab, {.name = "minecraft:cut_red_sandstone_slab", .opaque = false}},
-        {minecraft::cut_sandstone, {.name = "minecraft:cut_sandstone", .opaque = true}},
-        {minecraft::cut_sandstone_slab, {.name = "minecraft:cut_sandstone_slab", .opaque = false}},
-        {minecraft::cyan_banner, {.name = "minecraft:cyan_banner", .opaque = false}},
-        {minecraft::cyan_bed, {.name = "minecraft:cyan_bed", .opaque = false}},
-        {minecraft::cyan_carpet, {.name = "minecraft:cyan_carpet", .opaque = false}},
-        {minecraft::cyan_concrete, {.name = "minecraft:cyan_concrete", .opaque = true}},
-        {minecraft::cyan_concrete_powder, {.name = "minecraft:cyan_concrete_powder", .opaque = true}},
-        {minecraft::cyan_glazed_terracotta, {.name = "minecraft:cyan_glazed_terracotta", .opaque = true}},
-        {minecraft::cyan_shulker_box, {.name = "minecraft:cyan_shulker_box", .opaque = false}},
-        {minecraft::cyan_stained_glass, {.name = "minecraft:cyan_stained_glass", .opaque = false}},
-        {minecraft::cyan_stained_glass_pane, {.name = "minecraft:cyan_stained_glass_pane", .opaque = false}},
-        {minecraft::cyan_terracotta, {.name = "minecraft:cyan_terracotta", .opaque = true}},
-        {minecraft::cyan_wall_banner, {.name = "minecraft:cyan_wall_banner", .opaque = false}},
-        {minecraft::cyan_wool, {.name = "minecraft:cyan_wool", .opaque = true}},
-        {minecraft::damaged_anvil, {.name = "minecraft:damaged_anvil", .opaque = false}},
-        {minecraft::dandelion, {.name = "minecraft:dandelion", .opaque = false}},
-        {minecraft::dark_oak_button, {.name = "minecraft:dark_oak_button", .opaque = false}},
-        {minecraft::dark_oak_door, {.name = "minecraft:dark_oak_door", .opaque = false}},
-        {minecraft::dark_oak_fence, {.name = "minecraft:dark_oak_fence", .opaque = false}},
-        {minecraft::dark_oak_fence_gate, {.name = "minecraft:dark_oak_fence_gate", .opaque = false}},
-        {minecraft::dark_oak_leaves, {.name = "minecraft:dark_oak_leaves", .opaque = false}},
-        {minecraft::dark_oak_log, {.name = "minecraft:dark_oak_log", .opaque = true}},
-        {minecraft::dark_oak_planks, {.name = "minecraft:dark_oak_planks", .opaque = true}},
-        {minecraft::dark_oak_pressure_plate, {.name = "minecraft:dark_oak_pressure_plate", .opaque = false}},
-        {minecraft::dark_oak_sapling, {.name = "minecraft:dark_oak_sapling", .opaque = false}},
-        {minecraft::dark_oak_sign, {.name = "minecraft:dark_oak_sign", .opaque = false}},
-        {minecraft::dark_oak_slab, {.name = "minecraft:dark_oak_slab", .opaque = false}},
-        {minecraft::dark_oak_stairs, {.name = "minecraft:dark_oak_stairs", .opaque = false}},
-        {minecraft::dark_oak_trapdoor, {.name = "minecraft:dark_oak_trapdoor", .opaque = false}},
-        {minecraft::dark_oak_wall_sign, {.name = "minecraft:dark_oak_wall_sign", .opaque = false}},
-        {minecraft::dark_oak_wood, {.name = "minecraft:dark_oak_wood", .opaque = true}},
-        {minecraft::dark_prismarine, {.name = "minecraft:dark_prismarine", .opaque = true}},
-        {minecraft::dark_prismarine_slab, {.name = "minecraft:dark_prismarine_slab", .opaque = false}},
-        {minecraft::dark_prismarine_stairs, {.name = "minecraft:dark_prismarine_stairs", .opaque = false}},
-        {minecraft::daylight_detector, {.name = "minecraft:daylight_detector", .opaque = false}},
-        {minecraft::dead_brain_coral, {.name = "minecraft:dead_brain_coral", .opaque = false}},
-        {minecraft::dead_brain_coral_block, {.name = "minecraft:dead_brain_coral_block", .opaque = true}},
-        {minecraft::dead_brain_coral_fan, {.name = "minecraft:dead_brain_coral_fan", .opaque = false}},
-        {minecraft::dead_brain_coral_wall_fan, {.name = "minecraft:dead_brain_coral_wall_fan", .opaque = false}},
-        {minecraft::dead_bubble_coral, {.name = "minecraft:dead_bubble_coral", .opaque = false}},
-        {minecraft::dead_bubble_coral_block, {.name = "minecraft:dead_bubble_coral_block", .opaque = true}},
-        {minecraft::dead_bubble_coral_fan, {.name = "minecraft:dead_bubble_coral_fan", .opaque = false}},
-        {minecraft::dead_bubble_coral_wall_fan, {.name = "minecraft:dead_bubble_coral_wall_fan", .opaque = false}},
-        {minecraft::dead_bush, {.name = "minecraft:dead_bush", .opaque = false}},
-        {minecraft::dead_fire_coral, {.name = "minecraft:dead_fire_coral", .opaque = false}},
-        {minecraft::dead_fire_coral_block, {.name = "minecraft:dead_fire_coral_block", .opaque = true}},
-        {minecraft::dead_fire_coral_fan, {.name = "minecraft:dead_fire_coral_fan", .opaque = false}},
-        {minecraft::dead_fire_coral_wall_fan, {.name = "minecraft:dead_fire_coral_wall_fan", .opaque = false}},
-        {minecraft::dead_horn_coral, {.name = "minecraft:dead_horn_coral", .opaque = false}},
-        {minecraft::dead_horn_coral_block, {.name = "minecraft:dead_horn_coral_block", .opaque = true}},
-        {minecraft::dead_horn_coral_fan, {.name = "minecraft:dead_horn_coral_fan", .opaque = false}},
-        {minecraft::dead_horn_coral_wall_fan, {.name = "minecraft:dead_horn_coral_wall_fan", .opaque = false}},
-        {minecraft::dead_tube_coral, {.name = "minecraft:dead_tube_coral", .opaque = false}},
-        {minecraft::dead_tube_coral_block, {.name = "minecraft:dead_tube_coral_block", .opaque = true}},
-        {minecraft::dead_tube_coral_fan, {.name = "minecraft:dead_tube_coral_fan", .opaque = false}},
-        {minecraft::dead_tube_coral_wall_fan, {.name = "minecraft:dead_tube_coral_wall_fan", .opaque = false}},
-        {minecraft::detector_rail, {.name = "minecraft:detector_rail", .opaque = false}},
-        {minecraft::diamond_ore, {.name = "minecraft:diamond_ore", .opaque = true}},
-        {minecraft::diorite, {.name = "minecraft:diorite", .opaque = true}},
-        {minecraft::diorite_slab, {.name = "minecraft:diorite_slab", .opaque = false}},
-        {minecraft::diorite_stairs, {.name = "minecraft:diorite_stairs", .opaque = false}},
-        {minecraft::diorite_wall, {.name = "minecraft:diorite_wall", .opaque = false}},
-        {minecraft::dirt, {.name = "minecraft:dirt", .opaque = true}},
-        {minecraft::dispenser, {.name = "minecraft:dispenser", .opaque = true}},
-        {minecraft::dragon_egg, {.name = "minecraft:dragon_egg", .opaque = false}},
-        {minecraft::dragon_head, {.name = "minecraft:dragon_head", .opaque = false}},
-        {minecraft::dragon_wall_head, {.name = "minecraft:dragon_wall_head", .opaque = false}},
-        {minecraft::dried_kelp_block, {.name = "minecraft:dried_kelp_block", .opaque = true}},
-        {minecraft::dropper, {.name = "minecraft:dropper", .opaque = false}},
-        {minecraft::emerald_ore, {.name = "minecraft:emerald_ore", .opaque = true}},
-        {minecraft::enchanting_table, {.name = "minecraft:enchanting_table", .opaque = false}},
-        {minecraft::end_gateway, {.name = "minecraft:end_gateway", .opaque = false}},
-        {minecraft::end_portal, {.name = "minecraft:end_portal", .opaque = false}},
-        {minecraft::end_portal_frame, {.name = "minecraft:end_portal_frame", .opaque = false}},
-        {minecraft::end_rod, {.name = "minecraft:end_rod", .opaque = false}},
-        {minecraft::end_stone, {.name = "minecraft:end_stone", .opaque = true}},
-        {minecraft::end_stone_brick_slab, {.name = "minecraft:end_stone_brick_slab", .opaque = false}},
-        {minecraft::end_stone_brick_stairs, {.name = "minecraft:end_stone_brick_stairs", .opaque = false}},
-        {minecraft::end_stone_brick_wall, {.name = "minecraft:end_stone_brick_wall", .opaque = false}},
-        {minecraft::end_stone_bricks, {.name = "minecraft:end_stone_bricks", .opaque = true}},
-        {minecraft::ender_chest, {.name = "minecraft:ender_chest", .opaque = false}},
-        {minecraft::farmland, {.name = "minecraft:farmland", .opaque = false}},
-        {minecraft::fern, {.name = "minecraft:fern", .opaque = false}},
-        {minecraft::fire, {.name = "minecraft:fire", .opaque = false}},
-        {minecraft::fire_coral, {.name = "minecraft:fire_coral", .opaque = false}},
-        {minecraft::fire_coral_block, {.name = "minecraft:fire_coral_block", .opaque = true}},
-        {minecraft::fire_coral_fan, {.name = "minecraft:fire_coral_fan", .opaque = false}},
-        {minecraft::fire_coral_wall_fan, {.name = "minecraft:fire_coral_wall_fan", .opaque = false}},
-        {minecraft::fletching_table, {.name = "minecraft:fletching_table", .opaque = true}},
-        {minecraft::flower_pot, {.name = "minecraft:flower_pot", .opaque = false}},
-        {minecraft::frosted_ice, {.name = "minecraft:frosted_ice", .opaque = false}},
-        {minecraft::furnace, {.name = "minecraft:furnace", .opaque = false}},
-        {minecraft::glass, {.name = "minecraft:glass", .opaque = false}},
-        {minecraft::glass_pane, {.name = "minecraft:glass_pane", .opaque = false}},
-        {minecraft::glowstone, {.name = "minecraft:glowstone", .opaque = true}},
-        {minecraft::gold_ore, {.name = "minecraft:gold_ore", .opaque = true}},
-        {minecraft::granite, {.name = "minecraft:granite", .opaque = true}},
-        {minecraft::granite_slab, {.name = "minecraft:granite_slab", .opaque = false}},
-        {minecraft::granite_stairs, {.name = "minecraft:granite_stairs", .opaque = false}},
-        {minecraft::granite_wall, {.name = "minecraft:granite_wall", .opaque = false}},
-        {minecraft::grass, {.name = "minecraft:grass", .opaque = false}},
-        {minecraft::grass_block, {.name = "minecraft:grass_block", .opaque = true}},
-        {minecraft::gravel, {.name = "minecraft:gravel", .opaque = true}},
-        {minecraft::gray_banner, {.name = "minecraft:gray_banner", .opaque = false}},
-        {minecraft::gray_bed, {.name = "minecraft:gray_bed", .opaque = false}},
-        {minecraft::gray_carpet, {.name = "minecraft:gray_carpet", .opaque = false}},
-        {minecraft::gray_concrete, {.name = "minecraft:gray_concrete", .opaque = true}},
-        {minecraft::gray_concrete_powder, {.name = "minecraft:gray_concrete_powder", .opaque = true}},
-        {minecraft::gray_glazed_terracotta, {.name = "minecraft:gray_glazed_terracotta", .opaque = true}},
-        {minecraft::gray_shulker_box, {.name = "minecraft:gray_shulker_box", .opaque = false}},
-        {minecraft::gray_stained_glass, {.name = "minecraft:gray_stained_glass", .opaque = false}},
-        {minecraft::gray_stained_glass_pane, {.name = "minecraft:gray_stained_glass_pane", .opaque = false}},
-        {minecraft::gray_terracotta, {.name = "minecraft:gray_terracotta", .opaque = true}},
-        {minecraft::gray_wall_banner, {.name = "minecraft:gray_wall_banner", .opaque = false}},
-        {minecraft::gray_wool, {.name = "minecraft:gray_wool", .opaque = true}},
-        {minecraft::green_banner, {.name = "minecraft:green_banner", .opaque = false}},
-        {minecraft::green_bed, {.name = "minecraft:green_bed", .opaque = false}},
-        {minecraft::green_carpet, {.name = "minecraft:green_carpet", .opaque = false}},
-        {minecraft::green_concrete, {.name = "minecraft:green_concrete", .opaque = true}},
-        {minecraft::green_concrete_powder, {.name = "minecraft:green_concrete_powder", .opaque = true}},
-        {minecraft::green_glazed_terracotta, {.name = "minecraft:green_glazed_terracotta", .opaque = true}},
-        {minecraft::green_shulker_box, {.name = "minecraft:green_shulker_box", .opaque = false}},
-        {minecraft::green_stained_glass, {.name = "minecraft:green_stained_glass", .opaque = false}},
-        {minecraft::green_stained_glass_pane, {.name = "minecraft:green_stained_glass_pane", .opaque = false}},
-        {minecraft::green_terracotta, {.name = "minecraft:green_terracotta", .opaque = true}},
-        {minecraft::green_wall_banner, {.name = "minecraft:green_wall_banner", .opaque = false}},
-        {minecraft::green_wool, {.name = "minecraft:green_wool", .opaque = true}},
-        {minecraft::grindstone, {.name = "minecraft:grindstone", .opaque = false}},
-        {minecraft::hay_block, {.name = "minecraft:hay_block", .opaque = true}},
-        {minecraft::heavy_weighted_pressure_plate, {.name = "minecraft:heavy_weighted_pressure_plate", .opaque = false}},
-        {minecraft::hopper, {.name = "minecraft:hopper", .opaque = false}},
-        {minecraft::horn_coral, {.name = "minecraft:horn_coral", .opaque = false}},
-        {minecraft::horn_coral_block, {.name = "minecraft:horn_coral_block", .opaque = true}},
-        {minecraft::horn_coral_fan, {.name = "minecraft:horn_coral_fan", .opaque = false}},
-        {minecraft::horn_coral_wall_fan, {.name = "minecraft:horn_coral_wall_fan", .opaque = false}},
-        {minecraft::ice, {.name = "minecraft:ice", .opaque = false}},
-        {minecraft::infested_chiseled_stone_bricks, {.name = "minecraft:infested_chiseled_stone_bricks", .opaque = true}},
-        {minecraft::infested_cobblestone, {.name = "minecraft:infested_cobblestone", .opaque = true}},
-        {minecraft::infested_cracked_stone_bricks, {.name = "minecraft:infested_cracked_stone_bricks", .opaque = true}},
-        {minecraft::infested_mossy_stone_bricks, {.name = "minecraft:infested_mossy_stone_bricks", .opaque = true}},
-        {minecraft::infested_stone, {.name = "minecraft:infested_stone", .opaque = true}},
-        {minecraft::infested_stone_bricks, {.name = "minecraft:infested_stone_bricks", .opaque = true}},
-        {minecraft::iron_bars, {.name = "minecraft:iron_bars", .opaque = false}},
-        {minecraft::iron_door, {.name = "minecraft:iron_door", .opaque = false}},
-        {minecraft::iron_ore, {.name = "minecraft:iron_ore", .opaque = true}},
-        {minecraft::iron_trapdoor, {.name = "minecraft:iron_trapdoor", .opaque = false}},
-        {minecraft::jack_o_lantern, {.name = "minecraft:jack_o_lantern", .opaque = false}},
-        {minecraft::jigsaw, {.name = "minecraft:jigsaw", .opaque = true}},
-        {minecraft::jukebox, {.name = "minecraft:jukebox", .opaque = true}},
-        {minecraft::jungle_button, {.name = "minecraft:jungle_button", .opaque = false}},
-        {minecraft::jungle_door, {.name = "minecraft:jungle_door", .opaque = false}},
-        {minecraft::jungle_fence, {.name = "minecraft:jungle_fence", .opaque = false}},
-        {minecraft::jungle_fence_gate, {.name = "minecraft:jungle_fence_gate", .opaque = false}},
-        {minecraft::jungle_leaves, {.name = "minecraft:jungle_leaves", .opaque = false}},
-        {minecraft::jungle_log, {.name = "minecraft:jungle_log", .opaque = true}},
-        {minecraft::jungle_planks, {.name = "minecraft:jungle_planks", .opaque = true}},
-        {minecraft::jungle_pressure_plate, {.name = "minecraft:jungle_pressure_plate", .opaque = false}},
-        {minecraft::jungle_sapling, {.name = "minecraft:jungle_sapling", .opaque = false}},
-        {minecraft::jungle_sign, {.name = "minecraft:jungle_sign", .opaque = false}},
-        {minecraft::jungle_slab, {.name = "minecraft:jungle_slab", .opaque = false}},
-        {minecraft::jungle_stairs, {.name = "minecraft:jungle_stairs", .opaque = false}},
-        {minecraft::jungle_trapdoor, {.name = "minecraft:jungle_trapdoor", .opaque = false}},
-        {minecraft::jungle_wall_sign, {.name = "minecraft:jungle_wall_sign", .opaque = false}},
-        {minecraft::jungle_wood, {.name = "minecraft:jungle_wood", .opaque = true}},
-        {minecraft::kelp, {.name = "minecraft:kelp", .opaque = false}},
-        {minecraft::kelp_plant, {.name = "minecraft:kelp_plant", .opaque = false}},
-        {minecraft::ladder, {.name = "minecraft:ladder", .opaque = false}},
-        {minecraft::lantern, {.name = "minecraft:lantern", .opaque = false}},
-        {minecraft::lapis_block, {.name = "minecraft:lapis_block", .opaque = true}},
-        {minecraft::lapis_ore, {.name = "minecraft:lapis_ore", .opaque = true}},
-        {minecraft::large_fern, {.name = "minecraft:large_fern", .opaque = false}},
-        {minecraft::lava, {.name = "minecraft:lava", .opaque = false}},
-        {minecraft::lectern, {.name = "minecraft:lectern", .opaque = false}},
-        {minecraft::lever, {.name = "minecraft:lever", .opaque = false}},
-        {minecraft::light_blue_banner, {.name = "minecraft:light_blue_banner", .opaque = false}},
-        {minecraft::light_blue_bed, {.name = "minecraft:light_blue_bed", .opaque = false}},
-        {minecraft::light_blue_carpet, {.name = "minecraft:light_blue_carpet", .opaque = false}},
-        {minecraft::light_blue_concrete, {.name = "minecraft:light_blue_concrete", .opaque = true}},
-        {minecraft::light_blue_concrete_powder, {.name = "minecraft:light_blue_concrete_powder", .opaque = true}},
-        {minecraft::light_blue_glazed_terracotta, {.name = "minecraft:light_blue_glazed_terracotta", .opaque = true}},
-        {minecraft::light_blue_shulker_box, {.name = "minecraft:light_blue_shulker_box", .opaque = false}},
-        {minecraft::light_blue_stained_glass, {.name = "minecraft:light_blue_stained_glass", .opaque = false}},
-        {minecraft::light_blue_stained_glass_pane, {.name = "minecraft:light_blue_stained_glass_pane", .opaque = false}},
-        {minecraft::light_blue_terracotta, {.name = "minecraft:light_blue_terracotta", .opaque = true}},
-        {minecraft::light_blue_wall_banner, {.name = "minecraft:light_blue_wall_banner", .opaque = false}},
-        {minecraft::light_blue_wool, {.name = "minecraft:light_blue_wool", .opaque = true}},
-        {minecraft::light_gray_banner, {.name = "minecraft:light_gray_banner", .opaque = false}},
-        {minecraft::light_gray_bed, {.name = "minecraft:light_gray_bed", .opaque = false}},
-        {minecraft::light_gray_carpet, {.name = "minecraft:light_gray_carpet", .opaque = false}},
-        {minecraft::light_gray_concrete, {.name = "minecraft:light_gray_concrete", .opaque = true}},
-        {minecraft::light_gray_concrete_powder, {.name = "minecraft:light_gray_concrete_powder", .opaque = true}},
-        {minecraft::light_gray_glazed_terracotta, {.name = "minecraft:light_gray_glazed_terracotta", .opaque = true}},
-        {minecraft::light_gray_shulker_box, {.name = "minecraft:light_gray_shulker_box", .opaque = false}},
-        {minecraft::light_gray_stained_glass, {.name = "minecraft:light_gray_stained_glass", .opaque = false}},
-        {minecraft::light_gray_stained_glass_pane, {.name = "minecraft:light_gray_stained_glass_pane", .opaque = false}},
-        {minecraft::light_gray_terracotta, {.name = "minecraft:light_gray_terracotta", .opaque = true}},
-        {minecraft::light_gray_wall_banner, {.name = "minecraft:light_gray_wall_banner", .opaque = false}},
-        {minecraft::light_gray_wool, {.name = "minecraft:light_gray_wool", .opaque = true}},
-        {minecraft::light_weighted_pressure_plate, {.name = "minecraft:light_weighted_pressure_plate", .opaque = false}},
-        {minecraft::lilac, {.name = "minecraft:lilac", .opaque = false}},
-        {minecraft::lily_of_the_valley, {.name = "minecraft:lily_of_the_valley", .opaque = false}},
-        {minecraft::lily_pad, {.name = "minecraft:lily_pad", .opaque = false}},
-        {minecraft::lime_banner, {.name = "minecraft:lime_banner", .opaque = false}},
-        {minecraft::lime_bed, {.name = "minecraft:lime_bed", .opaque = false}},
-        {minecraft::lime_carpet, {.name = "minecraft:lime_carpet", .opaque = false}},
-        {minecraft::lime_concrete, {.name = "minecraft:lime_concrete", .opaque = true}},
-        {minecraft::lime_concrete_powder, {.name = "minecraft:lime_concrete_powder", .opaque = true}},
-        {minecraft::lime_glazed_terracotta, {.name = "minecraft:lime_glazed_terracotta", .opaque = true}},
-        {minecraft::lime_shulker_box, {.name = "minecraft:lime_shulker_box", .opaque = false}},
-        {minecraft::lime_stained_glass, {.name = "minecraft:lime_stained_glass", .opaque = false}},
-        {minecraft::lime_stained_glass_pane, {.name = "minecraft:lime_stained_glass_pane", .opaque = false}},
-        {minecraft::lime_terracotta, {.name = "minecraft:lime_terracotta", .opaque = true}},
-        {minecraft::lime_wall_banner, {.name = "minecraft:lime_wall_banner", .opaque = false}},
-        {minecraft::lime_wool, {.name = "minecraft:lime_wool", .opaque = true}},
-        {minecraft::loom, {.name = "minecraft:loom", .opaque = true}},
-        {minecraft::magenta_banner, {.name = "minecraft:magenta_banner", .opaque = false}},
-        {minecraft::magenta_bed, {.name = "minecraft:magenta_bed", .opaque = false}},
-        {minecraft::magenta_carpet, {.name = "minecraft:magenta_carpet", .opaque = false}},
-        {minecraft::magenta_concrete, {.name = "minecraft:magenta_concrete", .opaque = true}},
-        {minecraft::magenta_concrete_powder, {.name = "minecraft:magenta_concrete_powder", .opaque = true}},
-        {minecraft::magenta_glazed_terracotta, {.name = "minecraft:magenta_glazed_terracotta", .opaque = true}},
-        {minecraft::magenta_shulker_box, {.name = "minecraft:magenta_shulker_box", .opaque = false}},
-        {minecraft::magenta_stained_glass, {.name = "minecraft:magenta_stained_glass", .opaque = false}},
-        {minecraft::magenta_stained_glass_pane, {.name = "minecraft:magenta_stained_glass_pane", .opaque = false}},
-        {minecraft::magenta_terracotta, {.name = "minecraft:magenta_terracotta", .opaque = true}},
-        {minecraft::magenta_wall_banner, {.name = "minecraft:magenta_wall_banner", .opaque = false}},
-        {minecraft::magenta_wool, {.name = "minecraft:magenta_wool", .opaque = true}},
-        {minecraft::magma_block, {.name = "minecraft:magma_block", .opaque = true}},
-        {minecraft::melon, {.name = "minecraft:melon", .opaque = true}},
-        {minecraft::melon_stem, {.name = "minecraft:melon_stem", .opaque = false}},
-        {minecraft::mossy_cobblestone, {.name = "minecraft:mossy_cobblestone", .opaque = true}},
-        {minecraft::mossy_cobblestone_slab, {.name = "minecraft:mossy_cobblestone_slab", .opaque = false}},
-        {minecraft::mossy_cobblestone_stairs, {.name = "minecraft:mossy_cobblestone_stairs", .opaque = false}},
-        {minecraft::mossy_cobblestone_wall, {.name = "minecraft:mossy_cobblestone_wall", .opaque = false}},
-        {minecraft::mossy_stone_brick_slab, {.name = "minecraft:mossy_stone_brick_slab", .opaque = false}},
-        {minecraft::mossy_stone_brick_stairs, {.name = "minecraft:mossy_stone_brick_stairs", .opaque = false}},
-        {minecraft::mossy_stone_brick_wall, {.name = "minecraft:mossy_stone_brick_wall", .opaque = false}},
-        {minecraft::mossy_stone_bricks, {.name = "minecraft:mossy_stone_bricks", .opaque = true}},
-        {minecraft::moving_piston, {.name = "minecraft:moving_piston", .opaque = false}},
-        {minecraft::mushroom_stem, {.name = "minecraft:mushroom_stem", .opaque = true}},
-        {minecraft::mycelium, {.name = "minecraft:mycelium", .opaque = true}},
-        {minecraft::nether_brick_fence, {.name = "minecraft:nether_brick_fence", .opaque = false}},
-        {minecraft::nether_brick_slab, {.name = "minecraft:nether_brick_slab", .opaque = false}},
-        {minecraft::nether_brick_stairs, {.name = "minecraft:nether_brick_stairs", .opaque = false}},
-        {minecraft::nether_brick_wall, {.name = "minecraft:nether_brick_wall", .opaque = false}},
-        {minecraft::nether_bricks, {.name = "minecraft:nether_bricks", .opaque = true}},
-        {minecraft::nether_portal, {.name = "minecraft:nether_portal", .opaque = false}},
-        {minecraft::nether_quartz_ore, {.name = "minecraft:nether_quartz_ore", .opaque = true}},
-        {minecraft::nether_wart, {.name = "minecraft:nether_wart", .opaque = false}},
-        {minecraft::nether_wart_block, {.name = "minecraft:nether_wart_block", .opaque = true}},
-        {minecraft::netherrack, {.name = "minecraft:netherrack", .opaque = true}},
-        {minecraft::note_block, {.name = "minecraft:note_block", .opaque = true}},
-        {minecraft::oak_button, {.name = "minecraft:oak_button", .opaque = false}},
-        {minecraft::oak_door, {.name = "minecraft:oak_door", .opaque = false}},
-        {minecraft::oak_fence, {.name = "minecraft:oak_fence", .opaque = false}},
-        {minecraft::oak_fence_gate, {.name = "minecraft:oak_fence_gate", .opaque = false}},
-        {minecraft::oak_leaves, {.name = "minecraft:oak_leaves", .opaque = false}},
-        {minecraft::oak_log, {.name = "minecraft:oak_log", .opaque = true}},
-        {minecraft::oak_planks, {.name = "minecraft:oak_planks", .opaque = true}},
-        {minecraft::oak_pressure_plate, {.name = "minecraft:oak_pressure_plate", .opaque = false}},
-        {minecraft::oak_sapling, {.name = "minecraft:oak_sapling", .opaque = false}},
-        {minecraft::oak_sign, {.name = "minecraft:oak_sign", .opaque = false}},
-        {minecraft::oak_slab, {.name = "minecraft:oak_slab", .opaque = false}},
-        {minecraft::oak_stairs, {.name = "minecraft:oak_stairs", .opaque = false}},
-        {minecraft::oak_trapdoor, {.name = "minecraft:oak_trapdoor", .opaque = false}},
-        {minecraft::oak_wall_sign, {.name = "minecraft:oak_wall_sign", .opaque = false}},
-        {minecraft::oak_wood, {.name = "minecraft:oak_wood", .opaque = true}},
-        {minecraft::observer, {.name = "minecraft:observer", .opaque = true}},
-        {minecraft::obsidian, {.name = "minecraft:obsidian", .opaque = true}},
-        {minecraft::orange_banner, {.name = "minecraft:orange_banner", .opaque = false}},
-        {minecraft::orange_bed, {.name = "minecraft:orange_bed", .opaque = false}},
-        {minecraft::orange_carpet, {.name = "minecraft:orange_carpet", .opaque = false}},
-        {minecraft::orange_concrete, {.name = "minecraft:orange_concrete", .opaque = true}},
-        {minecraft::orange_concrete_powder, {.name = "minecraft:orange_concrete_powder", .opaque = true}},
-        {minecraft::orange_glazed_terracotta, {.name = "minecraft:orange_glazed_terracotta", .opaque = true}},
-        {minecraft::orange_shulker_box, {.name = "minecraft:orange_shulker_box", .opaque = false}},
-        {minecraft::orange_stained_glass, {.name = "minecraft:orange_stained_glass", .opaque = false}},
-        {minecraft::orange_stained_glass_pane, {.name = "minecraft:orange_stained_glass_pane", .opaque = false}},
-        {minecraft::orange_terracotta, {.name = "minecraft:orange_terracotta", .opaque = true}},
-        {minecraft::orange_tulip, {.name = "minecraft:orange_tulip", .opaque = false}},
-        {minecraft::orange_wall_banner, {.name = "minecraft:orange_wall_banner", .opaque = false}},
-        {minecraft::orange_wool, {.name = "minecraft:orange_wool", .opaque = true}},
-        {minecraft::oxeye_daisy, {.name = "minecraft:oxeye_daisy", .opaque = false}},
-        {minecraft::packed_ice, {.name = "minecraft:packed_ice", .opaque = true}},
-        {minecraft::peony, {.name = "minecraft:peony", .opaque = false}},
-        {minecraft::petrified_oak_slab, {.name = "minecraft:petrified_oak_slab", .opaque = false}},
-        {minecraft::pink_banner, {.name = "minecraft:pink_banner", .opaque = false}},
-        {minecraft::pink_bed, {.name = "minecraft:pink_bed", .opaque = false}},
-        {minecraft::pink_carpet, {.name = "minecraft:pink_carpet", .opaque = false}},
-        {minecraft::pink_concrete, {.name = "minecraft:pink_concrete", .opaque = true}},
-        {minecraft::pink_concrete_powder, {.name = "minecraft:pink_concrete_powder", .opaque = true}},
-        {minecraft::pink_glazed_terracotta, {.name = "minecraft:pink_glazed_terracotta", .opaque = true}},
-        {minecraft::pink_shulker_box, {.name = "minecraft:pink_shulker_box", .opaque = false}},
-        {minecraft::pink_stained_glass, {.name = "minecraft:pink_stained_glass", .opaque = false}},
-        {minecraft::pink_stained_glass_pane, {.name = "minecraft:pink_stained_glass_pane", .opaque = false}},
-        {minecraft::pink_terracotta, {.name = "minecraft:pink_terracotta", .opaque = true}},
-        {minecraft::pink_tulip, {.name = "minecraft:pink_tulip", .opaque = false}},
-        {minecraft::pink_wall_banner, {.name = "minecraft:pink_wall_banner", .opaque = false}},
-        {minecraft::pink_wool, {.name = "minecraft:pink_wool", .opaque = true}},
-        {minecraft::piston, {.name = "minecraft:piston", .opaque = false}},
-        {minecraft::piston_head, {.name = "minecraft:piston_head", .opaque = false}},
-        {minecraft::player_head, {.name = "minecraft:player_head", .opaque = false}},
-        {minecraft::player_wall_head, {.name = "minecraft:player_wall_head", .opaque = false}},
-        {minecraft::podzol, {.name = "minecraft:podzol", .opaque = true}},
-        {minecraft::polished_andesite, {.name = "minecraft:polished_andesite", .opaque = true}},
-        {minecraft::polished_andesite_slab, {.name = "minecraft:polished_andesite_slab", .opaque = false}},
-        {minecraft::polished_andesite_stairs, {.name = "minecraft:polished_andesite_stairs", .opaque = false}},
-        {minecraft::polished_diorite, {.name = "minecraft:polished_diorite", .opaque = true}},
-        {minecraft::polished_diorite_slab, {.name = "minecraft:polished_diorite_slab", .opaque = false}},
-        {minecraft::polished_diorite_stairs, {.name = "minecraft:polished_diorite_stairs", .opaque = false}},
-        {minecraft::polished_granite, {.name = "minecraft:polished_granite", .opaque = true}},
-        {minecraft::polished_granite_slab, {.name = "minecraft:polished_granite_slab", .opaque = false}},
-        {minecraft::polished_granite_stairs, {.name = "minecraft:polished_granite_stairs", .opaque = false}},
-        {minecraft::poppy, {.name = "minecraft:poppy", .opaque = false}},
-        {minecraft::potatoes, {.name = "minecraft:potatoes", .opaque = false}},
-        {minecraft::potted_acacia_sapling, {.name = "minecraft:potted_acacia_sapling", .opaque = false}},
-        {minecraft::potted_allium, {.name = "minecraft:potted_allium", .opaque = false}},
-        {minecraft::potted_azure_bluet, {.name = "minecraft:potted_azure_bluet", .opaque = false}},
-        {minecraft::potted_bamboo, {.name = "minecraft:potted_bamboo", .opaque = false}},
-        {minecraft::potted_birch_sapling, {.name = "minecraft:potted_birch_sapling", .opaque = false}},
-        {minecraft::potted_blue_orchid, {.name = "minecraft:potted_blue_orchid", .opaque = false}},
-        {minecraft::potted_brown_mushroom, {.name = "minecraft:potted_brown_mushroom", .opaque = false}},
-        {minecraft::potted_cactus, {.name = "minecraft:potted_cactus", .opaque = false}},
-        {minecraft::potted_cornflower, {.name = "minecraft:potted_cornflower", .opaque = false}},
-        {minecraft::potted_dandelion, {.name = "minecraft:potted_dandelion", .opaque = false}},
-        {minecraft::potted_dark_oak_sapling, {.name = "minecraft:potted_dark_oak_sapling", .opaque = false}},
-        {minecraft::potted_dead_bush, {.name = "minecraft:potted_dead_bush", .opaque = false}},
-        {minecraft::potted_fern, {.name = "minecraft:potted_fern", .opaque = false}},
-        {minecraft::potted_jungle_sapling, {.name = "minecraft:potted_jungle_sapling", .opaque = false}},
-        {minecraft::potted_lily_of_the_valley, {.name = "minecraft:potted_lily_of_the_valley", .opaque = false}},
-        {minecraft::potted_oak_sapling, {.name = "minecraft:potted_oak_sapling", .opaque = false}},
-        {minecraft::potted_orange_tulip, {.name = "minecraft:potted_orange_tulip", .opaque = false}},
-        {minecraft::potted_oxeye_daisy, {.name = "minecraft:potted_oxeye_daisy", .opaque = false}},
-        {minecraft::potted_pink_tulip, {.name = "minecraft:potted_pink_tulip", .opaque = false}},
-        {minecraft::potted_poppy, {.name = "minecraft:potted_poppy", .opaque = false}},
-        {minecraft::potted_red_mushroom, {.name = "minecraft:potted_red_mushroom", .opaque = false}},
-        {minecraft::potted_red_tulip, {.name = "minecraft:potted_red_tulip", .opaque = false}},
-        {minecraft::potted_spruce_sapling, {.name = "minecraft:potted_spruce_sapling", .opaque = false}},
-        {minecraft::potted_white_tulip, {.name = "minecraft:potted_white_tulip", .opaque = false}},
-        {minecraft::potted_wither_rose, {.name = "minecraft:potted_wither_rose", .opaque = false}},
-        {minecraft::powered_rail, {.name = "minecraft:powered_rail", .opaque = false}},
-        {minecraft::prismarine, {.name = "minecraft:prismarine", .opaque = true}},
-        {minecraft::prismarine_brick_slab, {.name = "minecraft:prismarine_brick_slab", .opaque = false}},
-        {minecraft::prismarine_brick_stairs, {.name = "minecraft:prismarine_brick_stairs", .opaque = false}},
-        {minecraft::prismarine_bricks, {.name = "minecraft:prismarine_bricks", .opaque = true}},
-        {minecraft::prismarine_slab, {.name = "minecraft:prismarine_slab", .opaque = false}},
-        {minecraft::prismarine_stairs, {.name = "minecraft:prismarine_stairs", .opaque = false}},
-        {minecraft::prismarine_wall, {.name = "minecraft:prismarine_wall", .opaque = false}},
-        {minecraft::pumpkin, {.name = "minecraft:pumpkin", .opaque = true}},
-        {minecraft::pumpkin_stem, {.name = "minecraft:pumpkin_stem", .opaque = false}},
-        {minecraft::purple_banner, {.name = "minecraft:purple_banner", .opaque = false}},
-        {minecraft::purple_bed, {.name = "minecraft:purple_bed", .opaque = false}},
-        {minecraft::purple_carpet, {.name = "minecraft:purple_carpet", .opaque = false}},
-        {minecraft::purple_concrete, {.name = "minecraft:purple_concrete", .opaque = true}},
-        {minecraft::purple_concrete_powder, {.name = "minecraft:purple_concrete_powder", .opaque = true}},
-        {minecraft::purple_glazed_terracotta, {.name = "minecraft:purple_glazed_terracotta", .opaque = true}},
-        {minecraft::purple_shulker_box, {.name = "minecraft:purple_shulker_box", .opaque = false}},
-        {minecraft::purple_stained_glass, {.name = "minecraft:purple_stained_glass", .opaque = false}},
-        {minecraft::purple_stained_glass_pane, {.name = "minecraft:purple_stained_glass_pane", .opaque = false}},
-        {minecraft::purple_terracotta, {.name = "minecraft:purple_terracotta", .opaque = true}},
-        {minecraft::purple_wall_banner, {.name = "minecraft:purple_wall_banner", .opaque = false}},
-        {minecraft::purple_wool, {.name = "minecraft:purple_wool", .opaque = true}},
-        {minecraft::purpur_block, {.name = "minecraft:purpur_block", .opaque = true}},
-        {minecraft::purpur_pillar, {.name = "minecraft:purpur_pillar", .opaque = true}},
-        {minecraft::purpur_slab, {.name = "minecraft:purpur_slab", .opaque = false}},
-        {minecraft::purpur_stairs, {.name = "minecraft:purpur_stairs", .opaque = false}},
-        {minecraft::quartz_pillar, {.name = "minecraft:quartz_pillar", .opaque = true}},
-        {minecraft::quartz_slab, {.name = "minecraft:quartz_slab", .opaque = false}},
-        {minecraft::quartz_stairs, {.name = "minecraft:quartz_stairs", .opaque = false}},
-        {minecraft::rail, {.name = "minecraft:rail", .opaque = false}},
-        {minecraft::red_banner, {.name = "minecraft:red_banner", .opaque = false}},
-        {minecraft::red_bed, {.name = "minecraft:red_bed", .opaque = false}},
-        {minecraft::red_carpet, {.name = "minecraft:red_carpet", .opaque = false}},
-        {minecraft::red_concrete, {.name = "minecraft:red_concrete", .opaque = true}},
-        {minecraft::red_concrete_powder, {.name = "minecraft:red_concrete_powder", .opaque = true}},
-        {minecraft::red_glazed_terracotta, {.name = "minecraft:red_glazed_terracotta", .opaque = true}},
-        {minecraft::red_mushroom, {.name = "minecraft:red_mushroom", .opaque = false}},
-        {minecraft::red_mushroom_block, {.name = "minecraft:red_mushroom_block", .opaque = true}},
-        {minecraft::red_nether_brick_slab, {.name = "minecraft:red_nether_brick_slab", .opaque = false}},
-        {minecraft::red_nether_brick_stairs, {.name = "minecraft:red_nether_brick_stairs", .opaque = false}},
-        {minecraft::red_nether_brick_wall, {.name = "minecraft:red_nether_brick_wall", .opaque = false}},
-        {minecraft::red_nether_bricks, {.name = "minecraft:red_nether_bricks", .opaque = true}},
-        {minecraft::red_sand, {.name = "minecraft:red_sand", .opaque = true}},
-        {minecraft::red_sandstone, {.name = "minecraft:red_sandstone", .opaque = true}},
-        {minecraft::red_sandstone_slab, {.name = "minecraft:red_sandstone_slab", .opaque = false}},
-        {minecraft::red_sandstone_stairs, {.name = "minecraft:red_sandstone_stairs", .opaque = false}},
-        {minecraft::red_sandstone_wall, {.name = "minecraft:red_sandstone_wall", .opaque = false}},
-        {minecraft::red_shulker_box, {.name = "minecraft:red_shulker_box", .opaque = false}},
-        {minecraft::red_stained_glass, {.name = "minecraft:red_stained_glass", .opaque = false}},
-        {minecraft::red_stained_glass_pane, {.name = "minecraft:red_stained_glass_pane", .opaque = false}},
-        {minecraft::red_terracotta, {.name = "minecraft:red_terracotta", .opaque = true}},
-        {minecraft::red_tulip, {.name = "minecraft:red_tulip", .opaque = false}},
-        {minecraft::red_wall_banner, {.name = "minecraft:red_wall_banner", .opaque = false}},
-        {minecraft::red_wool, {.name = "minecraft:red_wool", .opaque = true}},
-        {minecraft::comparator, {.name = "minecraft:comparator", .opaque = false}},
-        {minecraft::redstone_wire, {.name = "minecraft:redstone_wire", .opaque = false}},
-        {minecraft::redstone_lamp, {.name = "minecraft:redstone_lamp", .opaque = false}},
-        {minecraft::redstone_ore, {.name = "minecraft:redstone_ore", .opaque = true}},
-        {minecraft::repeater, {.name = "minecraft:repeater", .opaque = false}},
-        {minecraft::redstone_torch, {.name = "minecraft:redstone_torch", .opaque = false}},
-        {minecraft::redstone_wall_torch, {.name = "minecraft:redstone_wall_torch", .opaque = false}},
-        {minecraft::repeating_command_block, {.name = "minecraft:repeating_command_block", .opaque = true}},
-        {minecraft::rose_bush, {.name = "minecraft:rose_bush", .opaque = false}},
-        {minecraft::sand, {.name = "minecraft:sand", .opaque = true}},
-        {minecraft::sandstone, {.name = "minecraft:sandstone", .opaque = true}},
-        {minecraft::sandstone_slab, {.name = "minecraft:sandstone_slab", .opaque = false}},
-        {minecraft::sandstone_stairs, {.name = "minecraft:sandstone_stairs", .opaque = false}},
-        {minecraft::sandstone_wall, {.name = "minecraft:sandstone_wall", .opaque = false}},
-        {minecraft::scaffolding, {.name = "minecraft:scaffolding", .opaque = false}},
-        {minecraft::sea_lantern, {.name = "minecraft:sea_lantern", .opaque = false}},
-        {minecraft::sea_pickle, {.name = "minecraft:sea_pickle", .opaque = false}},
-        {minecraft::seagrass, {.name = "minecraft:seagrass", .opaque = false}},
-        {minecraft::shulker_box, {.name = "minecraft:shulker_box", .opaque = false}},
-        {minecraft::skeleton_skull, {.name = "minecraft:skeleton_skull", .opaque = false}},
-        {minecraft::skeleton_wall_skull, {.name = "minecraft:skeleton_wall_skull", .opaque = false}},
-        {minecraft::slime_block, {.name = "minecraft:slime_block", .opaque = false}},
-        {minecraft::smithing_table, {.name = "minecraft:smithing_table", .opaque = true}},
-        {minecraft::smoker, {.name = "minecraft:smoker", .opaque = false}},
-        {minecraft::smooth_quartz, {.name = "minecraft:smooth_quartz", .opaque = true}},
-        {minecraft::smooth_quartz_slab, {.name = "minecraft:smooth_quartz_slab", .opaque = false}},
-        {minecraft::smooth_quartz_stairs, {.name = "minecraft:smooth_quartz_stairs", .opaque = false}},
-        {minecraft::smooth_red_sandstone, {.name = "minecraft:smooth_red_sandstone", .opaque = true}},
-        {minecraft::smooth_red_sandstone_slab, {.name = "minecraft:smooth_red_sandstone_slab", .opaque = false}},
-        {minecraft::smooth_red_sandstone_stairs, {.name = "minecraft:smooth_red_sandstone_stairs", .opaque = false}},
-        {minecraft::smooth_sandstone, {.name = "minecraft:smooth_sandstone", .opaque = true}},
-        {minecraft::smooth_sandstone_slab, {.name = "minecraft:smooth_sandstone_slab", .opaque = false}},
-        {minecraft::smooth_sandstone_stairs, {.name = "minecraft:smooth_sandstone_stairs", .opaque = false}},
-        {minecraft::smooth_stone, {.name = "minecraft:smooth_stone", .opaque = true}},
-        {minecraft::smooth_stone_slab, {.name = "minecraft:smooth_stone_slab", .opaque = false}},
-        {minecraft::snow, {.name = "minecraft:snow", .opaque = false}},
-        {minecraft::snow_block, {.name = "minecraft:snow_block", .opaque = true}},
-        {minecraft::soul_sand, {.name = "minecraft:soul_sand", .opaque = false}},
-        {minecraft::spawner, {.name = "minecraft:spawner", .opaque = false}},
-        {minecraft::sponge, {.name = "minecraft:sponge", .opaque = true}},
-        {minecraft::spruce_button, {.name = "minecraft:spruce_button", .opaque = false}},
-        {minecraft::spruce_door, {.name = "minecraft:spruce_door", .opaque = false}},
-        {minecraft::spruce_fence, {.name = "minecraft:spruce_fence", .opaque = false}},
-        {minecraft::spruce_fence_gate, {.name = "minecraft:spruce_fence_gate", .opaque = false}},
-        {minecraft::spruce_leaves, {.name = "minecraft:spruce_leaves", .opaque = false}},
-        {minecraft::spruce_log, {.name = "minecraft:spruce_log", .opaque = true}},
-        {minecraft::spruce_planks, {.name = "minecraft:spruce_planks", .opaque = true}},
-        {minecraft::spruce_pressure_plate, {.name = "minecraft:spruce_pressure_plate", .opaque = false}},
-        {minecraft::spruce_sapling, {.name = "minecraft:spruce_sapling", .opaque = false}},
-        {minecraft::spruce_sign, {.name = "minecraft:spruce_sign", .opaque = false}},
-        {minecraft::spruce_slab, {.name = "minecraft:spruce_slab", .opaque = false}},
-        {minecraft::spruce_stairs, {.name = "minecraft:spruce_stairs", .opaque = false}},
-        {minecraft::spruce_trapdoor, {.name = "minecraft:spruce_trapdoor", .opaque = false}},
-        {minecraft::spruce_wall_sign, {.name = "minecraft:spruce_wall_sign", .opaque = false}},
-        {minecraft::spruce_wood, {.name = "minecraft:spruce_wood", .opaque = true}},
-        {minecraft::sticky_piston, {.name = "minecraft:sticky_piston", .opaque = false}},
-        {minecraft::stone, {.name = "minecraft:stone", .opaque = true}},
-        {minecraft::stone_brick_slab, {.name = "minecraft:stone_brick_slab", .opaque = false}},
-        {minecraft::stone_brick_stairs, {.name = "minecraft:stone_brick_stairs", .opaque = false}},
-        {minecraft::stone_brick_wall, {.name = "minecraft:stone_brick_wall", .opaque = false}},
-        {minecraft::stone_bricks, {.name = "minecraft:stone_bricks", .opaque = true}},
-        {minecraft::stone_button, {.name = "minecraft:stone_button", .opaque = false}},
-        {minecraft::stone_pressure_plate, {.name = "minecraft:stone_pressure_plate", .opaque = false}},
-        {minecraft::stone_slab, {.name = "minecraft:stone_slab", .opaque = false}},
-        {minecraft::stone_stairs, {.name = "minecraft:stone_stairs", .opaque = false}},
-        {minecraft::stonecutter, {.name = "minecraft:stonecutter", .opaque = false}},
-        {minecraft::stripped_acacia_log, {.name = "minecraft:stripped_acacia_log", .opaque = true}},
-        {minecraft::stripped_acacia_wood, {.name = "minecraft:stripped_acacia_wood", .opaque = true}},
-        {minecraft::stripped_birch_log, {.name = "minecraft:stripped_birch_log", .opaque = true}},
-        {minecraft::stripped_birch_wood, {.name = "minecraft:stripped_birch_wood", .opaque = true}},
-        {minecraft::stripped_dark_oak_log, {.name = "minecraft:stripped_dark_oak_log", .opaque = true}},
-        {minecraft::stripped_dark_oak_wood, {.name = "minecraft:stripped_dark_oak_wood", .opaque = true}},
-        {minecraft::stripped_jungle_log, {.name = "minecraft:stripped_jungle_log", .opaque = true}},
-        {minecraft::stripped_jungle_wood, {.name = "minecraft:stripped_jungle_wood", .opaque = true}},
-        {minecraft::stripped_oak_log, {.name = "minecraft:stripped_oak_log", .opaque = true}},
-        {minecraft::stripped_oak_wood, {.name = "minecraft:stripped_oak_wood", .opaque = true}},
-        {minecraft::stripped_spruce_log, {.name = "minecraft:stripped_spruce_log", .opaque = true}},
-        {minecraft::stripped_spruce_wood, {.name = "minecraft:stripped_spruce_wood", .opaque = true}},
-        {minecraft::structure_block, {.name = "minecraft:structure_block", .opaque = true}},
-        {minecraft::structure_void, {.name = "minecraft:structure_void", .opaque = false}},
-        {minecraft::sugar_cane, {.name = "minecraft:sugar_cane", .opaque = false}},
-        {minecraft::sunflower, {.name = "minecraft:sunflower", .opaque = false}},
-        {minecraft::sweet_berry_bush, {.name = "minecraft:sweet_berry_bush", .opaque = false}},
-        {minecraft::tall_grass, {.name = "minecraft:tall_grass", .opaque = false}},
-        {minecraft::tall_seagrass, {.name = "minecraft:tall_seagrass", .opaque = false}},
-        {minecraft::terracotta, {.name = "minecraft:terracotta", .opaque = true}},
-        {minecraft::tnt, {.name = "minecraft:tnt", .opaque = false}},
-        {minecraft::torch, {.name = "minecraft:torch", .opaque = false}},
-        {minecraft::trapped_chest, {.name = "minecraft:trapped_chest", .opaque = false}},
-        {minecraft::tripwire, {.name = "minecraft:tripwire", .opaque = false}},
-        {minecraft::tripwire_hook, {.name = "minecraft:tripwire_hook", .opaque = false}},
-        {minecraft::tube_coral, {.name = "minecraft:tube_coral", .opaque = false}},
-        {minecraft::tube_coral_block, {.name = "minecraft:tube_coral_block", .opaque = true}},
-        {minecraft::tube_coral_fan, {.name = "minecraft:tube_coral_fan", .opaque = false}},
-        {minecraft::tube_coral_wall_fan, {.name = "minecraft:tube_coral_wall_fan", .opaque = false}},
-        {minecraft::turtle_egg, {.name = "minecraft:turtle_egg", .opaque = false}},
-        {minecraft::vine, {.name = "minecraft:vine", .opaque = false}},
-        {minecraft::void_air, {.name = "minecraft:void_air", .opaque = false}},
-        {minecraft::wall_torch, {.name = "minecraft:wall_torch", .opaque = false}},
-        {minecraft::water, {.name = "minecraft:water", .opaque = false}},
-        {minecraft::wet_sponge, {.name = "minecraft:wet_sponge", .opaque = true}},
-        {minecraft::wheat, {.name = "minecraft:wheat", .opaque = false}},
-        {minecraft::white_banner, {.name = "minecraft:white_banner", .opaque = false}},
-        {minecraft::white_bed, {.name = "minecraft:white_bed", .opaque = false}},
-        {minecraft::white_carpet, {.name = "minecraft:white_carpet", .opaque = false}},
-        {minecraft::white_concrete, {.name = "minecraft:white_concrete", .opaque = true}},
-        {minecraft::white_concrete_powder, {.name = "minecraft:white_concrete_powder", .opaque = true}},
-        {minecraft::white_glazed_terracotta, {.name = "minecraft:white_glazed_terracotta", .opaque = true}},
-        {minecraft::white_shulker_box, {.name = "minecraft:white_shulker_box", .opaque = false}},
-        {minecraft::white_stained_glass, {.name = "minecraft:white_stained_glass", .opaque = false}},
-        {minecraft::white_stained_glass_pane, {.name = "minecraft:white_stained_glass_pane", .opaque = false}},
-        {minecraft::white_terracotta, {.name = "minecraft:white_terracotta", .opaque = true}},
-        {minecraft::white_tulip, {.name = "minecraft:white_tulip", .opaque = false}},
-        {minecraft::white_wall_banner, {.name = "minecraft:white_wall_banner", .opaque = false}},
-        {minecraft::white_wool, {.name = "minecraft:white_wool", .opaque = true}},
-        {minecraft::wither_rose, {.name = "minecraft:wither_rose", .opaque = false}},
-        {minecraft::wither_skeleton_skull, {.name = "minecraft:wither_skeleton_skull", .opaque = false}},
-        {minecraft::wither_skeleton_wall_skull, {.name = "minecraft:wither_skeleton_wall_skull", .opaque = false}},
-        {minecraft::yellow_banner, {.name = "minecraft:yellow_banner", .opaque = false}},
-        {minecraft::yellow_bed, {.name = "minecraft:yellow_bed", .opaque = false}},
-        {minecraft::yellow_carpet, {.name = "minecraft:yellow_carpet", .opaque = false}},
-        {minecraft::yellow_concrete, {.name = "minecraft:yellow_concrete", .opaque = true}},
-        {minecraft::yellow_concrete_powder, {.name = "minecraft:yellow_concrete_powder", .opaque = true}},
-        {minecraft::yellow_glazed_terracotta, {.name = "minecraft:yellow_glazed_terracotta", .opaque = true}},
-        {minecraft::yellow_shulker_box, {.name = "minecraft:yellow_shulker_box", .opaque = false}},
-        {minecraft::yellow_stained_glass, {.name = "minecraft:yellow_stained_glass", .opaque = false}},
-        {minecraft::yellow_stained_glass_pane, {.name = "minecraft:yellow_stained_glass_pane", .opaque = false}},
-        {minecraft::yellow_terracotta, {.name = "minecraft:yellow_terracotta", .opaque = true}},
-        {minecraft::yellow_wall_banner, {.name = "minecraft:yellow_wall_banner", .opaque = false}},
-        {minecraft::yellow_wool, {.name = "minecraft:yellow_wool", .opaque = true}},
-        {minecraft::zombie_head, {.name = "minecraft:zombie_head", .opaque = false}},
-        {minecraft::zombie_wall_head, {.name = "minecraft:zombie_wall_head", .opaque = false}},
+    using namespace blocks::minecraft;
+    std::map<BlockId, Characteristics> m;
+    m[acacia_button] = {.name = "minecraft:acacia_button", .opaque = false};
+    m[acacia_door] = {.name = "minecraft:acacia_door", .opaque = false};
+    m[acacia_fence] = {.name = "minecraft:acacia_fence", .opaque = false};
+    m[acacia_fence_gate] = {.name = "minecraft:acacia_fence_gate", .opaque = false};
+    m[acacia_leaves] = {.name = "minecraft:acacia_leaves", .opaque = false};
+    m[acacia_log] = {.name = "minecraft:acacia_log", .opaque = true};
+    m[acacia_planks] = {.name = "minecraft:acacia_planks", .opaque = true};
+    m[acacia_pressure_plate] = {.name = "minecraft:acacia_pressure_plate", .opaque = false};
+    m[acacia_sapling] = {.name = "minecraft:acacia_sapling", .opaque = false};
+    m[acacia_sign] = {.name = "minecraft:acacia_sign", .opaque = false};
+    m[acacia_slab] = {.name = "minecraft:acacia_slab", .opaque = false};
+    m[acacia_stairs] = {.name = "minecraft:acacia_stairs", .opaque = false};
+    m[acacia_trapdoor] = {.name = "minecraft:acacia_trapdoor", .opaque = false};
+    m[acacia_wall_sign] = {.name = "minecraft:acacia_wall_sign", .opaque = false};
+    m[acacia_wood] = {.name = "minecraft:acacia_wood", .opaque = true};
+    m[activator_rail] = {.name = "minecraft:activator_rail", .opaque = false};
+    m[air] = {.name = "minecraft:air", .opaque = false};
+    m[allium] = {.name = "minecraft:allium", .opaque = false};
+    m[andesite] = {.name = "minecraft:andesite", .opaque = true};
+    m[andesite_slab] = {.name = "minecraft:andesite_slab", .opaque = false};
+    m[andesite_stairs] = {.name = "minecraft:andesite_stairs", .opaque = false};
+    m[andesite_wall] = {.name = "minecraft:andesite_wall", .opaque = false};
+    m[anvil] = {.name = "minecraft:anvil", .opaque = false};
+    m[attached_melon_stem] = {.name = "minecraft:attached_melon_stem", .opaque = false};
+    m[attached_pumpkin_stem] = {.name = "minecraft:attached_pumpkin_stem", .opaque = false};
+    m[azure_bluet] = {.name = "minecraft:azure_bluet", .opaque = false};
+    m[bamboo] = {.name = "minecraft:bamboo", .opaque = false};
+    m[bamboo_sapling] = {.name = "minecraft:bamboo_sapling", .opaque = false};
+    m[barrel] = {.name = "minecraft:barrel", .opaque = true};
+    m[barrier] = {.name = "minecraft:barrier", .opaque = false};
+    m[beacon] = {.name = "minecraft:beacon", .opaque = false};
+    m[bedrock] = {.name = "minecraft:bedrock", .opaque = true};
+    m[beetroots] = {.name = "minecraft:beetroots", .opaque = false};
+    m[bell] = {.name = "minecraft:bell", .opaque = false};
+    m[birch_button] = {.name = "minecraft:birch_button", .opaque = false};
+    m[birch_door] = {.name = "minecraft:birch_door", .opaque = false};
+    m[birch_fence] = {.name = "minecraft:birch_fence", .opaque = false};
+    m[birch_fence_gate] = {.name = "minecraft:birch_fence_gate", .opaque = false};
+    m[birch_leaves] = {.name = "minecraft:birch_leaves", .opaque = false};
+    m[birch_log] = {.name = "minecraft:birch_log", .opaque = true};
+    m[birch_planks] = {.name = "minecraft:birch_planks", .opaque = true};
+    m[birch_pressure_plate] = {.name = "minecraft:birch_pressure_plate", .opaque = false};
+    m[birch_sapling] = {.name = "minecraft:birch_sapling", .opaque = false};
+    m[birch_sign] = {.name = "minecraft:birch_sign", .opaque = false};
+    m[birch_slab] = {.name = "minecraft:birch_slab", .opaque = false};
+    m[birch_stairs] = {.name = "minecraft:birch_stairs", .opaque = false};
+    m[birch_trapdoor] = {.name = "minecraft:birch_trapdoor", .opaque = false};
+    m[birch_wall_sign] = {.name = "minecraft:birch_wall_sign", .opaque = false};
+    m[birch_wood] = {.name = "minecraft:birch_wood", .opaque = true};
+    m[black_banner] = {.name = "minecraft:black_banner", .opaque = false};
+    m[black_bed] = {.name = "minecraft:black_bed", .opaque = false};
+    m[black_carpet] = {.name = "minecraft:black_carpet", .opaque = false};
+    m[black_concrete] = {.name = "minecraft:black_concrete", .opaque = true};
+    m[black_concrete_powder] = {.name = "minecraft:black_concrete_powder", .opaque = true};
+    m[black_glazed_terracotta] = {.name = "minecraft:black_glazed_terracotta", .opaque = true};
+    m[black_shulker_box] = {.name = "minecraft:black_shulker_box", .opaque = false};
+    m[black_stained_glass] = {.name = "minecraft:black_stained_glass", .opaque = false};
+    m[black_stained_glass_pane] = {.name = "minecraft:black_stained_glass_pane", .opaque = false};
+    m[black_terracotta] = {.name = "minecraft:black_terracotta", .opaque = true};
+    m[black_wall_banner] = {.name = "minecraft:black_wall_banner", .opaque = false};
+    m[black_wool] = {.name = "minecraft:black_wool", .opaque = true};
+    m[blast_furnace] = {.name = "minecraft:blast_furnace", .opaque = false};
+    m[coal_block] = {.name = "minecraft:coal_block", .opaque = true};
+    m[diamond_block] = {.name = "minecraft:diamond_block", .opaque = true};
+    m[emerald_block] = {.name = "minecraft:emerald_block", .opaque = true};
+    m[gold_block] = {.name = "minecraft:gold_block", .opaque = true};
+    m[iron_block] = {.name = "minecraft:iron_block", .opaque = true};
+    m[quartz_block] = {.name = "minecraft:quartz_block", .opaque = true};
+    m[redstone_block] = {.name = "minecraft:redstone_block", .opaque = true};
+    m[blue_banner] = {.name = "minecraft:blue_banner", .opaque = false};
+    m[blue_bed] = {.name = "minecraft:blue_bed", .opaque = false};
+    m[blue_carpet] = {.name = "minecraft:blue_carpet", .opaque = false};
+    m[blue_concrete] = {.name = "minecraft:blue_concrete", .opaque = true};
+    m[blue_concrete_powder] = {.name = "minecraft:blue_concrete_powder", .opaque = true};
+    m[blue_glazed_terracotta] = {.name = "minecraft:blue_glazed_terracotta", .opaque = true};
+    m[blue_ice] = {.name = "minecraft:blue_ice", .opaque = true};
+    m[blue_orchid] = {.name = "minecraft:blue_orchid", .opaque = false};
+    m[blue_shulker_box] = {.name = "minecraft:blue_shulker_box", .opaque = false};
+    m[blue_stained_glass] = {.name = "minecraft:blue_stained_glass", .opaque = false};
+    m[blue_stained_glass_pane] = {.name = "minecraft:blue_stained_glass_pane", .opaque = false};
+    m[blue_terracotta] = {.name = "minecraft:blue_terracotta", .opaque = true};
+    m[blue_wall_banner] = {.name = "minecraft:blue_wall_banner", .opaque = false};
+    m[blue_wool] = {.name = "minecraft:blue_wool", .opaque = true};
+    m[bone_block] = {.name = "minecraft:bone_block", .opaque = true};
+    m[bookshelf] = {.name = "minecraft:bookshelf", .opaque = true};
+    m[brain_coral] = {.name = "minecraft:brain_coral", .opaque = false};
+    m[brain_coral_block] = {.name = "minecraft:brain_coral_block", .opaque = true};
+    m[brain_coral_fan] = {.name = "minecraft:brain_coral_fan", .opaque = false};
+    m[brain_coral_wall_fan] = {.name = "minecraft:brain_coral_wall_fan", .opaque = false};
+    m[brewing_stand] = {.name = "minecraft:brewing_stand", .opaque = false};
+    m[brick_slab] = {.name = "minecraft:brick_slab", .opaque = false};
+    m[brick_stairs] = {.name = "minecraft:brick_stairs", .opaque = false};
+    m[brick_wall] = {.name = "minecraft:brick_wall", .opaque = false};
+    m[bricks] = {.name = "minecraft:bricks", .opaque = true};
+    m[brown_banner] = {.name = "minecraft:brown_banner", .opaque = false};
+    m[brown_bed] = {.name = "minecraft:brown_bed", .opaque = false};
+    m[brown_carpet] = {.name = "minecraft:brown_carpet", .opaque = false};
+    m[brown_concrete] = {.name = "minecraft:brown_concrete", .opaque = false};
+    m[brown_concrete_powder] = {.name = "minecraft:brown_concrete_powder", .opaque = true};
+    m[brown_glazed_terracotta] = {.name = "minecraft:brown_glazed_terracotta", .opaque = true};
+    m[brown_mushroom] = {.name = "minecraft:brown_mushroom", .opaque = false};
+    m[brown_mushroom_block] = {.name = "minecraft:brown_mushroom_block", .opaque = true};
+    m[brown_shulker_box] = {.name = "minecraft:brown_shulker_box", .opaque = false};
+    m[brown_stained_glass] = {.name = "minecraft:brown_stained_glass", .opaque = false};
+    m[brown_stained_glass_pane] = {.name = "minecraft:brown_stained_glass_pane", .opaque = false};
+    m[brown_terracotta] = {.name = "minecraft:brown_terracotta", .opaque = true};
+    m[brown_wall_banner] = {.name = "minecraft:brown_wall_banner", .opaque = false};
+    m[brown_wool] = {.name = "minecraft:brown_wool", .opaque = true};
+    m[bubble_column] = {.name = "minecraft:bubble_column", .opaque = false};
+    m[bubble_coral] = {.name = "minecraft:bubble_coral", .opaque = false};
+    m[bubble_coral_block] = {.name = "minecraft:bubble_coral_block", .opaque = true};
+    m[bubble_coral_fan] = {.name = "minecraft:bubble_coral_fan", .opaque = false};
+    m[bubble_coral_wall_fan] = {.name = "minecraft:bubble_coral_wall_fan", .opaque = false};
+    m[cactus] = {.name = "minecraft:cactus", .opaque = false};
+    m[cake] = {.name = "minecraft:cake", .opaque = false};
+    m[campfire] = {.name = "minecraft:campfire", .opaque = false};
+    m[carrots] = {.name = "minecraft:carrots", .opaque = false};
+    m[cartography_table] = {.name = "minecraft:cartography_table", .opaque = true};
+    m[carved_pumpkin] = {.name = "minecraft:carved_pumpkin", .opaque = true};
+    m[cave_air] = {.name = "minecraft:cave_air", .opaque = false};
+    m[chain_command_block] = {.name = "minecraft:chain_command_block", .opaque = true};
+    m[chest] = {.name = "minecraft:chest", .opaque = false};
+    m[chipped_anvil] = {.name = "minecraft:chipped_anvil", .opaque = false};
+    m[chiseled_quartz_block] = {.name = "minecraft:chiseled_quartz_block", .opaque = true};
+    m[chiseled_red_sandstone] = {.name = "minecraft:chiseled_red_sandstone", .opaque = true};
+    m[chiseled_sandstone] = {.name = "minecraft:chiseled_sandstone", .opaque = true};
+    m[chiseled_stone_bricks] = {.name = "minecraft:chiseled_stone_bricks", .opaque = true};
+    m[chorus_flower] = {.name = "minecraft:chorus_flower", .opaque = false};
+    m[chorus_plant] = {.name = "minecraft:chorus_plant", .opaque = false};
+    m[clay] = {.name = "minecraft:clay", .opaque = true};
+    m[coal_ore] = {.name = "minecraft:coal_ore", .opaque = true};
+    m[coarse_dirt] = {.name = "minecraft:coarse_dirt", .opaque = true};
+    m[cobblestone] = {.name = "minecraft:cobblestone", .opaque = true};
+    m[cobblestone_slab] = {.name = "minecraft:cobblestone_slab", .opaque = false};
+    m[cobblestone_stairs] = {.name = "minecraft:cobblestone_stairs", .opaque = false};
+    m[cobblestone_wall] = {.name = "minecraft:cobblestone_wall", .opaque = false};
+    m[cobweb] = {.name = "minecraft:cobweb", .opaque = false};
+    m[cocoa] = {.name = "minecraft:cocoa", .opaque = false};
+    m[command_block] = {.name = "minecraft:command_block", .opaque = true};
+    m[composter] = {.name = "minecraft:composter", .opaque = false};
+    m[conduit] = {.name = "minecraft:conduit", .opaque = false};
+    m[cornflower] = {.name = "minecraft:cornflower", .opaque = false};
+    m[cracked_stone_bricks] = {.name = "minecraft:cracked_stone_bricks", .opaque = true};
+    m[crafting_table] = {.name = "minecraft:crafting_table", .opaque = true};
+    m[creeper_head] = {.name = "minecraft:creeper_head", .opaque = false};
+    m[creeper_wall_head] = {.name = "minecraft:creeper_wall_head", .opaque = false};
+    m[cut_red_sandstone] = {.name = "minecraft:cut_red_sandstone", .opaque = true};
+    m[cut_red_sandstone_slab] = {.name = "minecraft:cut_red_sandstone_slab", .opaque = false};
+    m[cut_sandstone] = {.name = "minecraft:cut_sandstone", .opaque = true};
+    m[cut_sandstone_slab] = {.name = "minecraft:cut_sandstone_slab", .opaque = false};
+    m[cyan_banner] = {.name = "minecraft:cyan_banner", .opaque = false};
+    m[cyan_bed] = {.name = "minecraft:cyan_bed", .opaque = false};
+    m[cyan_carpet] = {.name = "minecraft:cyan_carpet", .opaque = false};
+    m[cyan_concrete] = {.name = "minecraft:cyan_concrete", .opaque = true};
+    m[cyan_concrete_powder] = {.name = "minecraft:cyan_concrete_powder", .opaque = true};
+    m[cyan_glazed_terracotta] = {.name = "minecraft:cyan_glazed_terracotta", .opaque = true};
+    m[cyan_shulker_box] = {.name = "minecraft:cyan_shulker_box", .opaque = false};
+    m[cyan_stained_glass] = {.name = "minecraft:cyan_stained_glass", .opaque = false};
+    m[cyan_stained_glass_pane] = {.name = "minecraft:cyan_stained_glass_pane", .opaque = false};
+    m[cyan_terracotta] = {.name = "minecraft:cyan_terracotta", .opaque = true};
+    m[cyan_wall_banner] = {.name = "minecraft:cyan_wall_banner", .opaque = false};
+    m[cyan_wool] = {.name = "minecraft:cyan_wool", .opaque = true};
+    m[damaged_anvil] = {.name = "minecraft:damaged_anvil", .opaque = false};
+    m[dandelion] = {.name = "minecraft:dandelion", .opaque = false};
+    m[dark_oak_button] = {.name = "minecraft:dark_oak_button", .opaque = false};
+    m[dark_oak_door] = {.name = "minecraft:dark_oak_door", .opaque = false};
+    m[dark_oak_fence] = {.name = "minecraft:dark_oak_fence", .opaque = false};
+    m[dark_oak_fence_gate] = {.name = "minecraft:dark_oak_fence_gate", .opaque = false};
+    m[dark_oak_leaves] = {.name = "minecraft:dark_oak_leaves", .opaque = false};
+    m[dark_oak_log] = {.name = "minecraft:dark_oak_log", .opaque = true};
+    m[dark_oak_planks] = {.name = "minecraft:dark_oak_planks", .opaque = true};
+    m[dark_oak_pressure_plate] = {.name = "minecraft:dark_oak_pressure_plate", .opaque = false};
+    m[dark_oak_sapling] = {.name = "minecraft:dark_oak_sapling", .opaque = false};
+    m[dark_oak_sign] = {.name = "minecraft:dark_oak_sign", .opaque = false};
+    m[dark_oak_slab] = {.name = "minecraft:dark_oak_slab", .opaque = false};
+    m[dark_oak_stairs] = {.name = "minecraft:dark_oak_stairs", .opaque = false};
+    m[dark_oak_trapdoor] = {.name = "minecraft:dark_oak_trapdoor", .opaque = false};
+    m[dark_oak_wall_sign] = {.name = "minecraft:dark_oak_wall_sign", .opaque = false};
+    m[dark_oak_wood] = {.name = "minecraft:dark_oak_wood", .opaque = true};
+    m[dark_prismarine] = {.name = "minecraft:dark_prismarine", .opaque = true};
+    m[dark_prismarine_slab] = {.name = "minecraft:dark_prismarine_slab", .opaque = false};
+    m[dark_prismarine_stairs] = {.name = "minecraft:dark_prismarine_stairs", .opaque = false};
+    m[daylight_detector] = {.name = "minecraft:daylight_detector", .opaque = false};
+    m[dead_brain_coral] = {.name = "minecraft:dead_brain_coral", .opaque = false};
+    m[dead_brain_coral_block] = {.name = "minecraft:dead_brain_coral_block", .opaque = true};
+    m[dead_brain_coral_fan] = {.name = "minecraft:dead_brain_coral_fan", .opaque = false};
+    m[dead_brain_coral_wall_fan] = {.name = "minecraft:dead_brain_coral_wall_fan", .opaque = false};
+    m[dead_bubble_coral] = {.name = "minecraft:dead_bubble_coral", .opaque = false};
+    m[dead_bubble_coral_block] = {.name = "minecraft:dead_bubble_coral_block", .opaque = true};
+    m[dead_bubble_coral_fan] = {.name = "minecraft:dead_bubble_coral_fan", .opaque = false};
+    m[dead_bubble_coral_wall_fan] = {.name = "minecraft:dead_bubble_coral_wall_fan", .opaque = false};
+    m[dead_bush] = {.name = "minecraft:dead_bush", .opaque = false};
+    m[dead_fire_coral] = {.name = "minecraft:dead_fire_coral", .opaque = false};
+    m[dead_fire_coral_block] = {.name = "minecraft:dead_fire_coral_block", .opaque = true};
+    m[dead_fire_coral_fan] = {.name = "minecraft:dead_fire_coral_fan", .opaque = false};
+    m[dead_fire_coral_wall_fan] = {.name = "minecraft:dead_fire_coral_wall_fan", .opaque = false};
+    m[dead_horn_coral] = {.name = "minecraft:dead_horn_coral", .opaque = false};
+    m[dead_horn_coral_block] = {.name = "minecraft:dead_horn_coral_block", .opaque = true};
+    m[dead_horn_coral_fan] = {.name = "minecraft:dead_horn_coral_fan", .opaque = false};
+    m[dead_horn_coral_wall_fan] = {.name = "minecraft:dead_horn_coral_wall_fan", .opaque = false};
+    m[dead_tube_coral] = {.name = "minecraft:dead_tube_coral", .opaque = false};
+    m[dead_tube_coral_block] = {.name = "minecraft:dead_tube_coral_block", .opaque = true};
+    m[dead_tube_coral_fan] = {.name = "minecraft:dead_tube_coral_fan", .opaque = false};
+    m[dead_tube_coral_wall_fan] = {.name = "minecraft:dead_tube_coral_wall_fan", .opaque = false};
+    m[detector_rail] = {.name = "minecraft:detector_rail", .opaque = false};
+    m[diamond_ore] = {.name = "minecraft:diamond_ore", .opaque = true};
+    m[diorite] = {.name = "minecraft:diorite", .opaque = true};
+    m[diorite_slab] = {.name = "minecraft:diorite_slab", .opaque = false};
+    m[diorite_stairs] = {.name = "minecraft:diorite_stairs", .opaque = false};
+    m[diorite_wall] = {.name = "minecraft:diorite_wall", .opaque = false};
+    m[dirt] = {.name = "minecraft:dirt", .opaque = true};
+    m[dispenser] = {.name = "minecraft:dispenser", .opaque = true};
+    m[dragon_egg] = {.name = "minecraft:dragon_egg", .opaque = false};
+    m[dragon_head] = {.name = "minecraft:dragon_head", .opaque = false};
+    m[dragon_wall_head] = {.name = "minecraft:dragon_wall_head", .opaque = false};
+    m[dried_kelp_block] = {.name = "minecraft:dried_kelp_block", .opaque = true};
+    m[dropper] = {.name = "minecraft:dropper", .opaque = false};
+    m[emerald_ore] = {.name = "minecraft:emerald_ore", .opaque = true};
+    m[enchanting_table] = {.name = "minecraft:enchanting_table", .opaque = false};
+    m[end_gateway] = {.name = "minecraft:end_gateway", .opaque = false};
+    m[end_portal] = {.name = "minecraft:end_portal", .opaque = false};
+    m[end_portal_frame] = {.name = "minecraft:end_portal_frame", .opaque = false};
+    m[end_rod] = {.name = "minecraft:end_rod", .opaque = false};
+    m[end_stone] = {.name = "minecraft:end_stone", .opaque = true};
+    m[end_stone_brick_slab] = {.name = "minecraft:end_stone_brick_slab", .opaque = false};
+    m[end_stone_brick_stairs] = {.name = "minecraft:end_stone_brick_stairs", .opaque = false};
+    m[end_stone_brick_wall] = {.name = "minecraft:end_stone_brick_wall", .opaque = false};
+    m[end_stone_bricks] = {.name = "minecraft:end_stone_bricks", .opaque = true};
+    m[ender_chest] = {.name = "minecraft:ender_chest", .opaque = false};
+    m[farmland] = {.name = "minecraft:farmland", .opaque = false};
+    m[fern] = {.name = "minecraft:fern", .opaque = false};
+    m[fire] = {.name = "minecraft:fire", .opaque = false};
+    m[fire_coral] = {.name = "minecraft:fire_coral", .opaque = false};
+    m[fire_coral_block] = {.name = "minecraft:fire_coral_block", .opaque = true};
+    m[fire_coral_fan] = {.name = "minecraft:fire_coral_fan", .opaque = false};
+    m[fire_coral_wall_fan] = {.name = "minecraft:fire_coral_wall_fan", .opaque = false};
+    m[fletching_table] = {.name = "minecraft:fletching_table", .opaque = true};
+    m[flower_pot] = {.name = "minecraft:flower_pot", .opaque = false};
+    m[frosted_ice] = {.name = "minecraft:frosted_ice", .opaque = false};
+    m[furnace] = {.name = "minecraft:furnace", .opaque = false};
+    m[glass] = {.name = "minecraft:glass", .opaque = false};
+    m[glass_pane] = {.name = "minecraft:glass_pane", .opaque = false};
+    m[glowstone] = {.name = "minecraft:glowstone", .opaque = true};
+    m[gold_ore] = {.name = "minecraft:gold_ore", .opaque = true};
+    m[granite] = {.name = "minecraft:granite", .opaque = true};
+    m[granite_slab] = {.name = "minecraft:granite_slab", .opaque = false};
+    m[granite_stairs] = {.name = "minecraft:granite_stairs", .opaque = false};
+    m[granite_wall] = {.name = "minecraft:granite_wall", .opaque = false};
+    m[grass] = {.name = "minecraft:grass", .opaque = false};
+    m[grass_block] = {.name = "minecraft:grass_block", .opaque = true};
+    m[gravel] = {.name = "minecraft:gravel", .opaque = true};
+    m[gray_banner] = {.name = "minecraft:gray_banner", .opaque = false};
+    m[gray_bed] = {.name = "minecraft:gray_bed", .opaque = false};
+    m[gray_carpet] = {.name = "minecraft:gray_carpet", .opaque = false};
+    m[gray_concrete] = {.name = "minecraft:gray_concrete", .opaque = true};
+    m[gray_concrete_powder] = {.name = "minecraft:gray_concrete_powder", .opaque = true};
+    m[gray_glazed_terracotta] = {.name = "minecraft:gray_glazed_terracotta", .opaque = true};
+    m[gray_shulker_box] = {.name = "minecraft:gray_shulker_box", .opaque = false};
+    m[gray_stained_glass] = {.name = "minecraft:gray_stained_glass", .opaque = false};
+    m[gray_stained_glass_pane] = {.name = "minecraft:gray_stained_glass_pane", .opaque = false};
+    m[gray_terracotta] = {.name = "minecraft:gray_terracotta", .opaque = true};
+    m[gray_wall_banner] = {.name = "minecraft:gray_wall_banner", .opaque = false};
+    m[gray_wool] = {.name = "minecraft:gray_wool", .opaque = true};
+    m[green_banner] = {.name = "minecraft:green_banner", .opaque = false};
+    m[green_bed] = {.name = "minecraft:green_bed", .opaque = false};
+    m[green_carpet] = {.name = "minecraft:green_carpet", .opaque = false};
+    m[green_concrete] = {.name = "minecraft:green_concrete", .opaque = true};
+    m[green_concrete_powder] = {.name = "minecraft:green_concrete_powder", .opaque = true};
+    m[green_glazed_terracotta] = {.name = "minecraft:green_glazed_terracotta", .opaque = true};
+    m[green_shulker_box] = {.name = "minecraft:green_shulker_box", .opaque = false};
+    m[green_stained_glass] = {.name = "minecraft:green_stained_glass", .opaque = false};
+    m[green_stained_glass_pane] = {.name = "minecraft:green_stained_glass_pane", .opaque = false};
+    m[green_terracotta] = {.name = "minecraft:green_terracotta", .opaque = true};
+    m[green_wall_banner] = {.name = "minecraft:green_wall_banner", .opaque = false};
+    m[green_wool] = {.name = "minecraft:green_wool", .opaque = true};
+    m[grindstone] = {.name = "minecraft:grindstone", .opaque = false};
+    m[hay_block] = {.name = "minecraft:hay_block", .opaque = true};
+    m[heavy_weighted_pressure_plate] = {.name = "minecraft:heavy_weighted_pressure_plate", .opaque = false};
+    m[hopper] = {.name = "minecraft:hopper", .opaque = false};
+    m[horn_coral] = {.name = "minecraft:horn_coral", .opaque = false};
+    m[horn_coral_block] = {.name = "minecraft:horn_coral_block", .opaque = true};
+    m[horn_coral_fan] = {.name = "minecraft:horn_coral_fan", .opaque = false};
+    m[horn_coral_wall_fan] = {.name = "minecraft:horn_coral_wall_fan", .opaque = false};
+    m[ice] = {.name = "minecraft:ice", .opaque = false};
+    m[infested_chiseled_stone_bricks] = {.name = "minecraft:infested_chiseled_stone_bricks", .opaque = true};
+    m[infested_cobblestone] = {.name = "minecraft:infested_cobblestone", .opaque = true};
+    m[infested_cracked_stone_bricks] = {.name = "minecraft:infested_cracked_stone_bricks", .opaque = true};
+    m[infested_mossy_stone_bricks] = {.name = "minecraft:infested_mossy_stone_bricks", .opaque = true};
+    m[infested_stone] = {.name = "minecraft:infested_stone", .opaque = true};
+    m[infested_stone_bricks] = {.name = "minecraft:infested_stone_bricks", .opaque = true};
+    m[iron_bars] = {.name = "minecraft:iron_bars", .opaque = false};
+    m[iron_door] = {.name = "minecraft:iron_door", .opaque = false};
+    m[iron_ore] = {.name = "minecraft:iron_ore", .opaque = true};
+    m[iron_trapdoor] = {.name = "minecraft:iron_trapdoor", .opaque = false};
+    m[jack_o_lantern] = {.name = "minecraft:jack_o_lantern", .opaque = false};
+    m[jigsaw] = {.name = "minecraft:jigsaw", .opaque = true};
+    m[jukebox] = {.name = "minecraft:jukebox", .opaque = true};
+    m[jungle_button] = {.name = "minecraft:jungle_button", .opaque = false};
+    m[jungle_door] = {.name = "minecraft:jungle_door", .opaque = false};
+    m[jungle_fence] = {.name = "minecraft:jungle_fence", .opaque = false};
+    m[jungle_fence_gate] = {.name = "minecraft:jungle_fence_gate", .opaque = false};
+    m[jungle_leaves] = {.name = "minecraft:jungle_leaves", .opaque = false};
+    m[jungle_log] = {.name = "minecraft:jungle_log", .opaque = true};
+    m[jungle_planks] = {.name = "minecraft:jungle_planks", .opaque = true};
+    m[jungle_pressure_plate] = {.name = "minecraft:jungle_pressure_plate", .opaque = false};
+    m[jungle_sapling] = {.name = "minecraft:jungle_sapling", .opaque = false};
+    m[jungle_sign] = {.name = "minecraft:jungle_sign", .opaque = false};
+    m[jungle_slab] = {.name = "minecraft:jungle_slab", .opaque = false};
+    m[jungle_stairs] = {.name = "minecraft:jungle_stairs", .opaque = false};
+    m[jungle_trapdoor] = {.name = "minecraft:jungle_trapdoor", .opaque = false};
+    m[jungle_wall_sign] = {.name = "minecraft:jungle_wall_sign", .opaque = false};
+    m[jungle_wood] = {.name = "minecraft:jungle_wood", .opaque = true};
+    m[kelp] = {.name = "minecraft:kelp", .opaque = false};
+    m[kelp_plant] = {.name = "minecraft:kelp_plant", .opaque = false};
+    m[ladder] = {.name = "minecraft:ladder", .opaque = false};
+    m[lantern] = {.name = "minecraft:lantern", .opaque = false};
+    m[lapis_block] = {.name = "minecraft:lapis_block", .opaque = true};
+    m[lapis_ore] = {.name = "minecraft:lapis_ore", .opaque = true};
+    m[large_fern] = {.name = "minecraft:large_fern", .opaque = false};
+    m[lava] = {.name = "minecraft:lava", .opaque = false};
+    m[lectern] = {.name = "minecraft:lectern", .opaque = false};
+    m[lever] = {.name = "minecraft:lever", .opaque = false};
+    m[light_blue_banner] = {.name = "minecraft:light_blue_banner", .opaque = false};
+    m[light_blue_bed] = {.name = "minecraft:light_blue_bed", .opaque = false};
+    m[light_blue_carpet] = {.name = "minecraft:light_blue_carpet", .opaque = false};
+    m[light_blue_concrete] = {.name = "minecraft:light_blue_concrete", .opaque = true};
+    m[light_blue_concrete_powder] = {.name = "minecraft:light_blue_concrete_powder", .opaque = true};
+    m[light_blue_glazed_terracotta] = {.name = "minecraft:light_blue_glazed_terracotta", .opaque = true};
+    m[light_blue_shulker_box] = {.name = "minecraft:light_blue_shulker_box", .opaque = false};
+    m[light_blue_stained_glass] = {.name = "minecraft:light_blue_stained_glass", .opaque = false};
+    m[light_blue_stained_glass_pane] = {.name = "minecraft:light_blue_stained_glass_pane", .opaque = false};
+    m[light_blue_terracotta] = {.name = "minecraft:light_blue_terracotta", .opaque = true};
+    m[light_blue_wall_banner] = {.name = "minecraft:light_blue_wall_banner", .opaque = false};
+    m[light_blue_wool] = {.name = "minecraft:light_blue_wool", .opaque = true};
+    m[light_gray_banner] = {.name = "minecraft:light_gray_banner", .opaque = false};
+    m[light_gray_bed] = {.name = "minecraft:light_gray_bed", .opaque = false};
+    m[light_gray_carpet] = {.name = "minecraft:light_gray_carpet", .opaque = false};
+    m[light_gray_concrete] = {.name = "minecraft:light_gray_concrete", .opaque = true};
+    m[light_gray_concrete_powder] = {.name = "minecraft:light_gray_concrete_powder", .opaque = true};
+    m[light_gray_glazed_terracotta] = {.name = "minecraft:light_gray_glazed_terracotta", .opaque = true};
+    m[light_gray_shulker_box] = {.name = "minecraft:light_gray_shulker_box", .opaque = false};
+    m[light_gray_stained_glass] = {.name = "minecraft:light_gray_stained_glass", .opaque = false};
+    m[light_gray_stained_glass_pane] = {.name = "minecraft:light_gray_stained_glass_pane", .opaque = false};
+    m[light_gray_terracotta] = {.name = "minecraft:light_gray_terracotta", .opaque = true};
+    m[light_gray_wall_banner] = {.name = "minecraft:light_gray_wall_banner", .opaque = false};
+    m[light_gray_wool] = {.name = "minecraft:light_gray_wool", .opaque = true};
+    m[light_weighted_pressure_plate] = {.name = "minecraft:light_weighted_pressure_plate", .opaque = false};
+    m[lilac] = {.name = "minecraft:lilac", .opaque = false};
+    m[lily_of_the_valley] = {.name = "minecraft:lily_of_the_valley", .opaque = false};
+    m[lily_pad] = {.name = "minecraft:lily_pad", .opaque = false};
+    m[lime_banner] = {.name = "minecraft:lime_banner", .opaque = false};
+    m[lime_bed] = {.name = "minecraft:lime_bed", .opaque = false};
+    m[lime_carpet] = {.name = "minecraft:lime_carpet", .opaque = false};
+    m[lime_concrete] = {.name = "minecraft:lime_concrete", .opaque = true};
+    m[lime_concrete_powder] = {.name = "minecraft:lime_concrete_powder", .opaque = true};
+    m[lime_glazed_terracotta] = {.name = "minecraft:lime_glazed_terracotta", .opaque = true};
+    m[lime_shulker_box] = {.name = "minecraft:lime_shulker_box", .opaque = false};
+    m[lime_stained_glass] = {.name = "minecraft:lime_stained_glass", .opaque = false};
+    m[lime_stained_glass_pane] = {.name = "minecraft:lime_stained_glass_pane", .opaque = false};
+    m[lime_terracotta] = {.name = "minecraft:lime_terracotta", .opaque = true};
+    m[lime_wall_banner] = {.name = "minecraft:lime_wall_banner", .opaque = false};
+    m[lime_wool] = {.name = "minecraft:lime_wool", .opaque = true};
+    m[loom] = {.name = "minecraft:loom", .opaque = true};
+    m[magenta_banner] = {.name = "minecraft:magenta_banner", .opaque = false};
+    m[magenta_bed] = {.name = "minecraft:magenta_bed", .opaque = false};
+    m[magenta_carpet] = {.name = "minecraft:magenta_carpet", .opaque = false};
+    m[magenta_concrete] = {.name = "minecraft:magenta_concrete", .opaque = true};
+    m[magenta_concrete_powder] = {.name = "minecraft:magenta_concrete_powder", .opaque = true};
+    m[magenta_glazed_terracotta] = {.name = "minecraft:magenta_glazed_terracotta", .opaque = true};
+    m[magenta_shulker_box] = {.name = "minecraft:magenta_shulker_box", .opaque = false};
+    m[magenta_stained_glass] = {.name = "minecraft:magenta_stained_glass", .opaque = false};
+    m[magenta_stained_glass_pane] = {.name = "minecraft:magenta_stained_glass_pane", .opaque = false};
+    m[magenta_terracotta] = {.name = "minecraft:magenta_terracotta", .opaque = true};
+    m[magenta_wall_banner] = {.name = "minecraft:magenta_wall_banner", .opaque = false};
+    m[magenta_wool] = {.name = "minecraft:magenta_wool", .opaque = true};
+    m[magma_block] = {.name = "minecraft:magma_block", .opaque = true};
+    m[melon] = {.name = "minecraft:melon", .opaque = true};
+    m[melon_stem] = {.name = "minecraft:melon_stem", .opaque = false};
+    m[mossy_cobblestone] = {.name = "minecraft:mossy_cobblestone", .opaque = true};
+    m[mossy_cobblestone_slab] = {.name = "minecraft:mossy_cobblestone_slab", .opaque = false};
+    m[mossy_cobblestone_stairs] = {.name = "minecraft:mossy_cobblestone_stairs", .opaque = false};
+    m[mossy_cobblestone_wall] = {.name = "minecraft:mossy_cobblestone_wall", .opaque = false};
+    m[mossy_stone_brick_slab] = {.name = "minecraft:mossy_stone_brick_slab", .opaque = false};
+    m[mossy_stone_brick_stairs] = {.name = "minecraft:mossy_stone_brick_stairs", .opaque = false};
+    m[mossy_stone_brick_wall] = {.name = "minecraft:mossy_stone_brick_wall", .opaque = false};
+    m[mossy_stone_bricks] = {.name = "minecraft:mossy_stone_bricks", .opaque = true};
+    m[moving_piston] = {.name = "minecraft:moving_piston", .opaque = false};
+    m[mushroom_stem] = {.name = "minecraft:mushroom_stem", .opaque = true};
+    m[mycelium] = {.name = "minecraft:mycelium", .opaque = true};
+    m[nether_brick_fence] = {.name = "minecraft:nether_brick_fence", .opaque = false};
+    m[nether_brick_slab] = {.name = "minecraft:nether_brick_slab", .opaque = false};
+    m[nether_brick_stairs] = {.name = "minecraft:nether_brick_stairs", .opaque = false};
+    m[nether_brick_wall] = {.name = "minecraft:nether_brick_wall", .opaque = false};
+    m[nether_bricks] = {.name = "minecraft:nether_bricks", .opaque = true};
+    m[nether_portal] = {.name = "minecraft:nether_portal", .opaque = false};
+    m[nether_quartz_ore] = {.name = "minecraft:nether_quartz_ore", .opaque = true};
+    m[nether_wart] = {.name = "minecraft:nether_wart", .opaque = false};
+    m[nether_wart_block] = {.name = "minecraft:nether_wart_block", .opaque = true};
+    m[netherrack] = {.name = "minecraft:netherrack", .opaque = true};
+    m[note_block] = {.name = "minecraft:note_block", .opaque = true};
+    m[oak_button] = {.name = "minecraft:oak_button", .opaque = false};
+    m[oak_door] = {.name = "minecraft:oak_door", .opaque = false};
+    m[oak_fence] = {.name = "minecraft:oak_fence", .opaque = false};
+    m[oak_fence_gate] = {.name = "minecraft:oak_fence_gate", .opaque = false};
+    m[oak_leaves] = {.name = "minecraft:oak_leaves", .opaque = false};
+    m[oak_log] = {.name = "minecraft:oak_log", .opaque = true};
+    m[oak_planks] = {.name = "minecraft:oak_planks", .opaque = true};
+    m[oak_pressure_plate] = {.name = "minecraft:oak_pressure_plate", .opaque = false};
+    m[oak_sapling] = {.name = "minecraft:oak_sapling", .opaque = false};
+    m[oak_sign] = {.name = "minecraft:oak_sign", .opaque = false};
+    m[oak_slab] = {.name = "minecraft:oak_slab", .opaque = false};
+    m[oak_stairs] = {.name = "minecraft:oak_stairs", .opaque = false};
+    m[oak_trapdoor] = {.name = "minecraft:oak_trapdoor", .opaque = false};
+    m[oak_wall_sign] = {.name = "minecraft:oak_wall_sign", .opaque = false};
+    m[oak_wood] = {.name = "minecraft:oak_wood", .opaque = true};
+    m[observer] = {.name = "minecraft:observer", .opaque = true};
+    m[obsidian] = {.name = "minecraft:obsidian", .opaque = true};
+    m[orange_banner] = {.name = "minecraft:orange_banner", .opaque = false};
+    m[orange_bed] = {.name = "minecraft:orange_bed", .opaque = false};
+    m[orange_carpet] = {.name = "minecraft:orange_carpet", .opaque = false};
+    m[orange_concrete] = {.name = "minecraft:orange_concrete", .opaque = true};
+    m[orange_concrete_powder] = {.name = "minecraft:orange_concrete_powder", .opaque = true};
+    m[orange_glazed_terracotta] = {.name = "minecraft:orange_glazed_terracotta", .opaque = true};
+    m[orange_shulker_box] = {.name = "minecraft:orange_shulker_box", .opaque = false};
+    m[orange_stained_glass] = {.name = "minecraft:orange_stained_glass", .opaque = false};
+    m[orange_stained_glass_pane] = {.name = "minecraft:orange_stained_glass_pane", .opaque = false};
+    m[orange_terracotta] = {.name = "minecraft:orange_terracotta", .opaque = true};
+    m[orange_tulip] = {.name = "minecraft:orange_tulip", .opaque = false};
+    m[orange_wall_banner] = {.name = "minecraft:orange_wall_banner", .opaque = false};
+    m[orange_wool] = {.name = "minecraft:orange_wool", .opaque = true};
+    m[oxeye_daisy] = {.name = "minecraft:oxeye_daisy", .opaque = false};
+    m[packed_ice] = {.name = "minecraft:packed_ice", .opaque = true};
+    m[peony] = {.name = "minecraft:peony", .opaque = false};
+    m[petrified_oak_slab] = {.name = "minecraft:petrified_oak_slab", .opaque = false};
+    m[pink_banner] = {.name = "minecraft:pink_banner", .opaque = false};
+    m[pink_bed] = {.name = "minecraft:pink_bed", .opaque = false};
+    m[pink_carpet] = {.name = "minecraft:pink_carpet", .opaque = false};
+    m[pink_concrete] = {.name = "minecraft:pink_concrete", .opaque = true};
+    m[pink_concrete_powder] = {.name = "minecraft:pink_concrete_powder", .opaque = true};
+    m[pink_glazed_terracotta] = {.name = "minecraft:pink_glazed_terracotta", .opaque = true};
+    m[pink_shulker_box] = {.name = "minecraft:pink_shulker_box", .opaque = false};
+    m[pink_stained_glass] = {.name = "minecraft:pink_stained_glass", .opaque = false};
+    m[pink_stained_glass_pane] = {.name = "minecraft:pink_stained_glass_pane", .opaque = false};
+    m[pink_terracotta] = {.name = "minecraft:pink_terracotta", .opaque = true};
+    m[pink_tulip] = {.name = "minecraft:pink_tulip", .opaque = false};
+    m[pink_wall_banner] = {.name = "minecraft:pink_wall_banner", .opaque = false};
+    m[pink_wool] = {.name = "minecraft:pink_wool", .opaque = true};
+    m[piston] = {.name = "minecraft:piston", .opaque = false};
+    m[piston_head] = {.name = "minecraft:piston_head", .opaque = false};
+    m[player_head] = {.name = "minecraft:player_head", .opaque = false};
+    m[player_wall_head] = {.name = "minecraft:player_wall_head", .opaque = false};
+    m[podzol] = {.name = "minecraft:podzol", .opaque = true};
+    m[polished_andesite] = {.name = "minecraft:polished_andesite", .opaque = true};
+    m[polished_andesite_slab] = {.name = "minecraft:polished_andesite_slab", .opaque = false};
+    m[polished_andesite_stairs] = {.name = "minecraft:polished_andesite_stairs", .opaque = false};
+    m[polished_diorite] = {.name = "minecraft:polished_diorite", .opaque = true};
+    m[polished_diorite_slab] = {.name = "minecraft:polished_diorite_slab", .opaque = false};
+    m[polished_diorite_stairs] = {.name = "minecraft:polished_diorite_stairs", .opaque = false};
+    m[polished_granite] = {.name = "minecraft:polished_granite", .opaque = true};
+    m[polished_granite_slab] = {.name = "minecraft:polished_granite_slab", .opaque = false};
+    m[polished_granite_stairs] = {.name = "minecraft:polished_granite_stairs", .opaque = false};
+    m[poppy] = {.name = "minecraft:poppy", .opaque = false};
+    m[potatoes] = {.name = "minecraft:potatoes", .opaque = false};
+    m[potted_acacia_sapling] = {.name = "minecraft:potted_acacia_sapling", .opaque = false};
+    m[potted_allium] = {.name = "minecraft:potted_allium", .opaque = false};
+    m[potted_azure_bluet] = {.name = "minecraft:potted_azure_bluet", .opaque = false};
+    m[potted_bamboo] = {.name = "minecraft:potted_bamboo", .opaque = false};
+    m[potted_birch_sapling] = {.name = "minecraft:potted_birch_sapling", .opaque = false};
+    m[potted_blue_orchid] = {.name = "minecraft:potted_blue_orchid", .opaque = false};
+    m[potted_brown_mushroom] = {.name = "minecraft:potted_brown_mushroom", .opaque = false};
+    m[potted_cactus] = {.name = "minecraft:potted_cactus", .opaque = false};
+    m[potted_cornflower] = {.name = "minecraft:potted_cornflower", .opaque = false};
+    m[potted_dandelion] = {.name = "minecraft:potted_dandelion", .opaque = false};
+    m[potted_dark_oak_sapling] = {.name = "minecraft:potted_dark_oak_sapling", .opaque = false};
+    m[potted_dead_bush] = {.name = "minecraft:potted_dead_bush", .opaque = false};
+    m[potted_fern] = {.name = "minecraft:potted_fern", .opaque = false};
+    m[potted_jungle_sapling] = {.name = "minecraft:potted_jungle_sapling", .opaque = false};
+    m[potted_lily_of_the_valley] = {.name = "minecraft:potted_lily_of_the_valley", .opaque = false};
+    m[potted_oak_sapling] = {.name = "minecraft:potted_oak_sapling", .opaque = false};
+    m[potted_orange_tulip] = {.name = "minecraft:potted_orange_tulip", .opaque = false};
+    m[potted_oxeye_daisy] = {.name = "minecraft:potted_oxeye_daisy", .opaque = false};
+    m[potted_pink_tulip] = {.name = "minecraft:potted_pink_tulip", .opaque = false};
+    m[potted_poppy] = {.name = "minecraft:potted_poppy", .opaque = false};
+    m[potted_red_mushroom] = {.name = "minecraft:potted_red_mushroom", .opaque = false};
+    m[potted_red_tulip] = {.name = "minecraft:potted_red_tulip", .opaque = false};
+    m[potted_spruce_sapling] = {.name = "minecraft:potted_spruce_sapling", .opaque = false};
+    m[potted_white_tulip] = {.name = "minecraft:potted_white_tulip", .opaque = false};
+    m[potted_wither_rose] = {.name = "minecraft:potted_wither_rose", .opaque = false};
+    m[powered_rail] = {.name = "minecraft:powered_rail", .opaque = false};
+    m[prismarine] = {.name = "minecraft:prismarine", .opaque = true};
+    m[prismarine_brick_slab] = {.name = "minecraft:prismarine_brick_slab", .opaque = false};
+    m[prismarine_brick_stairs] = {.name = "minecraft:prismarine_brick_stairs", .opaque = false};
+    m[prismarine_bricks] = {.name = "minecraft:prismarine_bricks", .opaque = true};
+    m[prismarine_slab] = {.name = "minecraft:prismarine_slab", .opaque = false};
+    m[prismarine_stairs] = {.name = "minecraft:prismarine_stairs", .opaque = false};
+    m[prismarine_wall] = {.name = "minecraft:prismarine_wall", .opaque = false};
+    m[pumpkin] = {.name = "minecraft:pumpkin", .opaque = true};
+    m[pumpkin_stem] = {.name = "minecraft:pumpkin_stem", .opaque = false};
+    m[purple_banner] = {.name = "minecraft:purple_banner", .opaque = false};
+    m[purple_bed] = {.name = "minecraft:purple_bed", .opaque = false};
+    m[purple_carpet] = {.name = "minecraft:purple_carpet", .opaque = false};
+    m[purple_concrete] = {.name = "minecraft:purple_concrete", .opaque = true};
+    m[purple_concrete_powder] = {.name = "minecraft:purple_concrete_powder", .opaque = true};
+    m[purple_glazed_terracotta] = {.name = "minecraft:purple_glazed_terracotta", .opaque = true};
+    m[purple_shulker_box] = {.name = "minecraft:purple_shulker_box", .opaque = false};
+    m[purple_stained_glass] = {.name = "minecraft:purple_stained_glass", .opaque = false};
+    m[purple_stained_glass_pane] = {.name = "minecraft:purple_stained_glass_pane", .opaque = false};
+    m[purple_terracotta] = {.name = "minecraft:purple_terracotta", .opaque = true};
+    m[purple_wall_banner] = {.name = "minecraft:purple_wall_banner", .opaque = false};
+    m[purple_wool] = {.name = "minecraft:purple_wool", .opaque = true};
+    m[purpur_block] = {.name = "minecraft:purpur_block", .opaque = true};
+    m[purpur_pillar] = {.name = "minecraft:purpur_pillar", .opaque = true};
+    m[purpur_slab] = {.name = "minecraft:purpur_slab", .opaque = false};
+    m[purpur_stairs] = {.name = "minecraft:purpur_stairs", .opaque = false};
+    m[quartz_pillar] = {.name = "minecraft:quartz_pillar", .opaque = true};
+    m[quartz_slab] = {.name = "minecraft:quartz_slab", .opaque = false};
+    m[quartz_stairs] = {.name = "minecraft:quartz_stairs", .opaque = false};
+    m[rail] = {.name = "minecraft:rail", .opaque = false};
+    m[red_banner] = {.name = "minecraft:red_banner", .opaque = false};
+    m[red_bed] = {.name = "minecraft:red_bed", .opaque = false};
+    m[red_carpet] = {.name = "minecraft:red_carpet", .opaque = false};
+    m[red_concrete] = {.name = "minecraft:red_concrete", .opaque = true};
+    m[red_concrete_powder] = {.name = "minecraft:red_concrete_powder", .opaque = true};
+    m[red_glazed_terracotta] = {.name = "minecraft:red_glazed_terracotta", .opaque = true};
+    m[red_mushroom] = {.name = "minecraft:red_mushroom", .opaque = false};
+    m[red_mushroom_block] = {.name = "minecraft:red_mushroom_block", .opaque = true};
+    m[red_nether_brick_slab] = {.name = "minecraft:red_nether_brick_slab", .opaque = false};
+    m[red_nether_brick_stairs] = {.name = "minecraft:red_nether_brick_stairs", .opaque = false};
+    m[red_nether_brick_wall] = {.name = "minecraft:red_nether_brick_wall", .opaque = false};
+    m[red_nether_bricks] = {.name = "minecraft:red_nether_bricks", .opaque = true};
+    m[red_sand] = {.name = "minecraft:red_sand", .opaque = true};
+    m[red_sandstone] = {.name = "minecraft:red_sandstone", .opaque = true};
+    m[red_sandstone_slab] = {.name = "minecraft:red_sandstone_slab", .opaque = false};
+    m[red_sandstone_stairs] = {.name = "minecraft:red_sandstone_stairs", .opaque = false};
+    m[red_sandstone_wall] = {.name = "minecraft:red_sandstone_wall", .opaque = false};
+    m[red_shulker_box] = {.name = "minecraft:red_shulker_box", .opaque = false};
+    m[red_stained_glass] = {.name = "minecraft:red_stained_glass", .opaque = false};
+    m[red_stained_glass_pane] = {.name = "minecraft:red_stained_glass_pane", .opaque = false};
+    m[red_terracotta] = {.name = "minecraft:red_terracotta", .opaque = true};
+    m[red_tulip] = {.name = "minecraft:red_tulip", .opaque = false};
+    m[red_wall_banner] = {.name = "minecraft:red_wall_banner", .opaque = false};
+    m[red_wool] = {.name = "minecraft:red_wool", .opaque = true};
+    m[comparator] = {.name = "minecraft:comparator", .opaque = false};
+    m[redstone_wire] = {.name = "minecraft:redstone_wire", .opaque = false};
+    m[redstone_lamp] = {.name = "minecraft:redstone_lamp", .opaque = false};
+    m[redstone_ore] = {.name = "minecraft:redstone_ore", .opaque = true};
+    m[repeater] = {.name = "minecraft:repeater", .opaque = false};
+    m[redstone_torch] = {.name = "minecraft:redstone_torch", .opaque = false};
+    m[redstone_wall_torch] = {.name = "minecraft:redstone_wall_torch", .opaque = false};
+    m[repeating_command_block] = {.name = "minecraft:repeating_command_block", .opaque = true};
+    m[rose_bush] = {.name = "minecraft:rose_bush", .opaque = false};
+    m[sand] = {.name = "minecraft:sand", .opaque = true};
+    m[sandstone] = {.name = "minecraft:sandstone", .opaque = true};
+    m[sandstone_slab] = {.name = "minecraft:sandstone_slab", .opaque = false};
+    m[sandstone_stairs] = {.name = "minecraft:sandstone_stairs", .opaque = false};
+    m[sandstone_wall] = {.name = "minecraft:sandstone_wall", .opaque = false};
+    m[scaffolding] = {.name = "minecraft:scaffolding", .opaque = false};
+    m[sea_lantern] = {.name = "minecraft:sea_lantern", .opaque = false};
+    m[sea_pickle] = {.name = "minecraft:sea_pickle", .opaque = false};
+    m[seagrass] = {.name = "minecraft:seagrass", .opaque = false};
+    m[shulker_box] = {.name = "minecraft:shulker_box", .opaque = false};
+    m[skeleton_skull] = {.name = "minecraft:skeleton_skull", .opaque = false};
+    m[skeleton_wall_skull] = {.name = "minecraft:skeleton_wall_skull", .opaque = false};
+    m[slime_block] = {.name = "minecraft:slime_block", .opaque = false};
+    m[smithing_table] = {.name = "minecraft:smithing_table", .opaque = true};
+    m[smoker] = {.name = "minecraft:smoker", .opaque = false};
+    m[smooth_quartz] = {.name = "minecraft:smooth_quartz", .opaque = true};
+    m[smooth_quartz_slab] = {.name = "minecraft:smooth_quartz_slab", .opaque = false};
+    m[smooth_quartz_stairs] = {.name = "minecraft:smooth_quartz_stairs", .opaque = false};
+    m[smooth_red_sandstone] = {.name = "minecraft:smooth_red_sandstone", .opaque = true};
+    m[smooth_red_sandstone_slab] = {.name = "minecraft:smooth_red_sandstone_slab", .opaque = false};
+    m[smooth_red_sandstone_stairs] = {.name = "minecraft:smooth_red_sandstone_stairs", .opaque = false};
+    m[smooth_sandstone] = {.name = "minecraft:smooth_sandstone", .opaque = true};
+    m[smooth_sandstone_slab] = {.name = "minecraft:smooth_sandstone_slab", .opaque = false};
+    m[smooth_sandstone_stairs] = {.name = "minecraft:smooth_sandstone_stairs", .opaque = false};
+    m[smooth_stone] = {.name = "minecraft:smooth_stone", .opaque = true};
+    m[smooth_stone_slab] = {.name = "minecraft:smooth_stone_slab", .opaque = false};
+    m[snow] = {.name = "minecraft:snow", .opaque = false};
+    m[snow_block] = {.name = "minecraft:snow_block", .opaque = true};
+    m[soul_sand] = {.name = "minecraft:soul_sand", .opaque = false};
+    m[spawner] = {.name = "minecraft:spawner", .opaque = false};
+    m[sponge] = {.name = "minecraft:sponge", .opaque = true};
+    m[spruce_button] = {.name = "minecraft:spruce_button", .opaque = false};
+    m[spruce_door] = {.name = "minecraft:spruce_door", .opaque = false};
+    m[spruce_fence] = {.name = "minecraft:spruce_fence", .opaque = false};
+    m[spruce_fence_gate] = {.name = "minecraft:spruce_fence_gate", .opaque = false};
+    m[spruce_leaves] = {.name = "minecraft:spruce_leaves", .opaque = false};
+    m[spruce_log] = {.name = "minecraft:spruce_log", .opaque = true};
+    m[spruce_planks] = {.name = "minecraft:spruce_planks", .opaque = true};
+    m[spruce_pressure_plate] = {.name = "minecraft:spruce_pressure_plate", .opaque = false};
+    m[spruce_sapling] = {.name = "minecraft:spruce_sapling", .opaque = false};
+    m[spruce_sign] = {.name = "minecraft:spruce_sign", .opaque = false};
+    m[spruce_slab] = {.name = "minecraft:spruce_slab", .opaque = false};
+    m[spruce_stairs] = {.name = "minecraft:spruce_stairs", .opaque = false};
+    m[spruce_trapdoor] = {.name = "minecraft:spruce_trapdoor", .opaque = false};
+    m[spruce_wall_sign] = {.name = "minecraft:spruce_wall_sign", .opaque = false};
+    m[spruce_wood] = {.name = "minecraft:spruce_wood", .opaque = true};
+    m[sticky_piston] = {.name = "minecraft:sticky_piston", .opaque = false};
+    m[stone] = {.name = "minecraft:stone", .opaque = true};
+    m[stone_brick_slab] = {.name = "minecraft:stone_brick_slab", .opaque = false};
+    m[stone_brick_stairs] = {.name = "minecraft:stone_brick_stairs", .opaque = false};
+    m[stone_brick_wall] = {.name = "minecraft:stone_brick_wall", .opaque = false};
+    m[stone_bricks] = {.name = "minecraft:stone_bricks", .opaque = true};
+    m[stone_button] = {.name = "minecraft:stone_button", .opaque = false};
+    m[stone_pressure_plate] = {.name = "minecraft:stone_pressure_plate", .opaque = false};
+    m[stone_slab] = {.name = "minecraft:stone_slab", .opaque = false};
+    m[stone_stairs] = {.name = "minecraft:stone_stairs", .opaque = false};
+    m[stonecutter] = {.name = "minecraft:stonecutter", .opaque = false};
+    m[stripped_acacia_log] = {.name = "minecraft:stripped_acacia_log", .opaque = true};
+    m[stripped_acacia_wood] = {.name = "minecraft:stripped_acacia_wood", .opaque = true};
+    m[stripped_birch_log] = {.name = "minecraft:stripped_birch_log", .opaque = true};
+    m[stripped_birch_wood] = {.name = "minecraft:stripped_birch_wood", .opaque = true};
+    m[stripped_dark_oak_log] = {.name = "minecraft:stripped_dark_oak_log", .opaque = true};
+    m[stripped_dark_oak_wood] = {.name = "minecraft:stripped_dark_oak_wood", .opaque = true};
+    m[stripped_jungle_log] = {.name = "minecraft:stripped_jungle_log", .opaque = true};
+    m[stripped_jungle_wood] = {.name = "minecraft:stripped_jungle_wood", .opaque = true};
+    m[stripped_oak_log] = {.name = "minecraft:stripped_oak_log", .opaque = true};
+    m[stripped_oak_wood] = {.name = "minecraft:stripped_oak_wood", .opaque = true};
+    m[stripped_spruce_log] = {.name = "minecraft:stripped_spruce_log", .opaque = true};
+    m[stripped_spruce_wood] = {.name = "minecraft:stripped_spruce_wood", .opaque = true};
+    m[structure_block] = {.name = "minecraft:structure_block", .opaque = true};
+    m[structure_void] = {.name = "minecraft:structure_void", .opaque = false};
+    m[sugar_cane] = {.name = "minecraft:sugar_cane", .opaque = false};
+    m[sunflower] = {.name = "minecraft:sunflower", .opaque = false};
+    m[sweet_berry_bush] = {.name = "minecraft:sweet_berry_bush", .opaque = false};
+    m[tall_grass] = {.name = "minecraft:tall_grass", .opaque = false};
+    m[tall_seagrass] = {.name = "minecraft:tall_seagrass", .opaque = false};
+    m[terracotta] = {.name = "minecraft:terracotta", .opaque = true};
+    m[tnt] = {.name = "minecraft:tnt", .opaque = false};
+    m[torch] = {.name = "minecraft:torch", .opaque = false};
+    m[trapped_chest] = {.name = "minecraft:trapped_chest", .opaque = false};
+    m[tripwire] = {.name = "minecraft:tripwire", .opaque = false};
+    m[tripwire_hook] = {.name = "minecraft:tripwire_hook", .opaque = false};
+    m[tube_coral] = {.name = "minecraft:tube_coral", .opaque = false};
+    m[tube_coral_block] = {.name = "minecraft:tube_coral_block", .opaque = true};
+    m[tube_coral_fan] = {.name = "minecraft:tube_coral_fan", .opaque = false};
+    m[tube_coral_wall_fan] = {.name = "minecraft:tube_coral_wall_fan", .opaque = false};
+    m[turtle_egg] = {.name = "minecraft:turtle_egg", .opaque = false};
+    m[vine] = {.name = "minecraft:vine", .opaque = false};
+    m[void_air] = {.name = "minecraft:void_air", .opaque = false};
+    m[wall_torch] = {.name = "minecraft:wall_torch", .opaque = false};
+    m[water] = {.name = "minecraft:water", .opaque = false};
+    m[wet_sponge] = {.name = "minecraft:wet_sponge", .opaque = true};
+    m[wheat] = {.name = "minecraft:wheat", .opaque = false};
+    m[white_banner] = {.name = "minecraft:white_banner", .opaque = false};
+    m[white_bed] = {.name = "minecraft:white_bed", .opaque = false};
+    m[white_carpet] = {.name = "minecraft:white_carpet", .opaque = false};
+    m[white_concrete] = {.name = "minecraft:white_concrete", .opaque = true};
+    m[white_concrete_powder] = {.name = "minecraft:white_concrete_powder", .opaque = true};
+    m[white_glazed_terracotta] = {.name = "minecraft:white_glazed_terracotta", .opaque = true};
+    m[white_shulker_box] = {.name = "minecraft:white_shulker_box", .opaque = false};
+    m[white_stained_glass] = {.name = "minecraft:white_stained_glass", .opaque = false};
+    m[white_stained_glass_pane] = {.name = "minecraft:white_stained_glass_pane", .opaque = false};
+    m[white_terracotta] = {.name = "minecraft:white_terracotta", .opaque = true};
+    m[white_tulip] = {.name = "minecraft:white_tulip", .opaque = false};
+    m[white_wall_banner] = {.name = "minecraft:white_wall_banner", .opaque = false};
+    m[white_wool] = {.name = "minecraft:white_wool", .opaque = true};
+    m[wither_rose] = {.name = "minecraft:wither_rose", .opaque = false};
+    m[wither_skeleton_skull] = {.name = "minecraft:wither_skeleton_skull", .opaque = false};
+    m[wither_skeleton_wall_skull] = {.name = "minecraft:wither_skeleton_wall_skull", .opaque = false};
+    m[yellow_banner] = {.name = "minecraft:yellow_banner", .opaque = false};
+    m[yellow_bed] = {.name = "minecraft:yellow_bed", .opaque = false};
+    m[yellow_carpet] = {.name = "minecraft:yellow_carpet", .opaque = false};
+    m[yellow_concrete] = {.name = "minecraft:yellow_concrete", .opaque = true};
+    m[yellow_concrete_powder] = {.name = "minecraft:yellow_concrete_powder", .opaque = true};
+    m[yellow_glazed_terracotta] = {.name = "minecraft:yellow_glazed_terracotta", .opaque = true};
+    m[yellow_shulker_box] = {.name = "minecraft:yellow_shulker_box", .opaque = false};
+    m[yellow_stained_glass] = {.name = "minecraft:yellow_stained_glass", .opaque = false};
+    m[yellow_stained_glass_pane] = {.name = "minecraft:yellow_stained_glass_pane", .opaque = false};
+    m[yellow_terracotta] = {.name = "minecraft:yellow_terracotta", .opaque = true};
+    m[yellow_wall_banner] = {.name = "minecraft:yellow_wall_banner", .opaque = false};
+    m[yellow_wool] = {.name = "minecraft:yellow_wool", .opaque = true};
+    m[zombie_head] = {.name = "minecraft:zombie_head", .opaque = false};
+    m[zombie_wall_head] = {.name = "minecraft:zombie_wall_head", .opaque = false};
 
-        // 1.15
-        {minecraft::bee_nest, {.name = "minecraft:bee_nest", .opaque = true}},
-        {minecraft::beehive, {.name = "minecraft:beehive", .opaque = true}},
-        {minecraft::honey_block, {.name = "minecraft:honey_block", .opaque = false}},
-        {minecraft::honeycomb_block, {.name = "minecraft:honeycomb_block", .opaque = true}},
+    // 1.15
+    m[bee_nest] = {.name = "minecraft:bee_nest", .opaque = true};
+    m[beehive] = {.name = "minecraft:beehive", .opaque = true};
+    m[honey_block] = {.name = "minecraft:honey_block", .opaque = false};
+    m[honeycomb_block] = {.name = "minecraft:honeycomb_block", .opaque = true};
 
-        // 1.16
-        {minecraft::crimson_nylium, {.name = "minecraft:crimson_nylium", .opaque = true}},
-        {minecraft::warped_nylium, {.name = "minecraft:warped_nylium", .opaque = true}},
-        {minecraft::crimson_planks, {.name = "minecraft:crimson_planks", .opaque = true}},
-        {minecraft::warped_planks, {.name = "minecraft:warped_planks", .opaque = true}},
-        {minecraft::nether_gold_ore, {.name = "minecraft:nether_gold_ore", .opaque = true}},
-        {minecraft::crimson_stem, {.name = "minecraft:crimson_stem", .opaque = true}},
-        {minecraft::warped_stem, {.name = "minecraft:warped_stem", .opaque = true}},
-        {minecraft::stripped_crimson_stem, {.name = "minecraft:stripped_crimson_stem", .opaque = true}},
-        {minecraft::stripped_warped_stem, {.name = "minecraft:stripped_warped_stem", .opaque = true}},
-        {minecraft::crimson_hyphae, {.name = "minecraft:crimson_hyphae", .opaque = true}},
-        {minecraft::warped_hyphae, {.name = "minecraft:warped_hyphae", .opaque = true}},
-        {minecraft::crimson_slab, {.name = "minecraft:crimson_slab", .opaque = false}},
-        {minecraft::warped_slab, {.name = "minecraft:warped_slab", .opaque = false}},
-        {minecraft::cracked_nether_bricks, {.name = "minecraft:cracked_nether_bricks", .opaque = true}},
-        {minecraft::chiseled_nether_bricks, {.name = "minecraft:chiseled_nether_bricks", .opaque = true}},
-        {minecraft::crimson_stairs, {.name = "minecraft:crimson_stairs", .opaque = false}},
-        {minecraft::warped_stairs, {.name = "minecraft:warped_stairs", .opaque = false}},
-        {minecraft::netherite_block, {.name = "minecraft:netherite_block", .opaque = true}},
-        {minecraft::soul_soil, {.name = "minecraft:soul_soil", .opaque = true}},
-        {minecraft::basalt, {.name = "minecraft:basalt", .opaque = true}},
-        {minecraft::polished_basalt, {.name = "minecraft:polished_basalt", .opaque = true}},
-        {minecraft::ancient_debris, {.name = "minecraft:ancient_debris", .opaque = true}},
-        {minecraft::crying_obsidian, {.name = "minecraft:crying_obsidian", .opaque = true}},
-        {minecraft::blackstone, {.name = "minecraft:blackstone", .opaque = true}},
-        {minecraft::blackstone_slab, {.name = "minecraft:blackstone_slab", .opaque = false}},
-        {minecraft::blackstone_stairs, {.name = "minecraft:blackstone_stairs", .opaque = false}},
-        {minecraft::gilded_blackstone, {.name = "minecraft:gilded_blackstone", .opaque = true}},
-        {minecraft::polished_blackstone, {.name = "minecraft:polished_blackstone", .opaque = true}},
-        {minecraft::polished_blackstone_slab, {.name = "minecraft:polished_blackstone_slab", .opaque = false}},
-        {minecraft::polished_blackstone_stairs, {.name = "minecraft:polished_blackstone_stairs", .opaque = false}},
-        {minecraft::chiseled_polished_blackstone, {.name = "minecraft:chiseled_polished_blackstone", .opaque = true}},
-        {minecraft::polished_blackstone_bricks, {.name = "minecraft:polished_blackstone_bricks", .opaque = true}},
-        {minecraft::polished_blackstone_brick_slab, {.name = "minecraft:polished_blackstone_brick_slab", .opaque = false}},
-        {minecraft::polished_blackstone_brick_stairs, {.name = "minecraft:polished_blackstone_brick_stairs", .opaque = false}},
-        {minecraft::cracked_polished_blackstone_bricks, {.name = "minecraft:cracked_polished_blackstone_bricks", .opaque = true}},
-        {minecraft::crimson_fungus, {.name = "minecraft:crimson_fungus", .opaque = false}},
-        {minecraft::warped_fungus, {.name = "minecraft:warped_fungus", .opaque = false}},
-        {minecraft::crimson_roots, {.name = "minecraft:crimson_roots", .opaque = false}},
-        {minecraft::warped_roots, {.name = "minecraft:warped_roots", .opaque = false}},
-        {minecraft::nether_sprouts, {.name = "minecraft:nether_sprouts", .opaque = false}},
-        {minecraft::weeping_vines, {.name = "minecraft:weeping_vines", .opaque = false}},
-        {minecraft::twisting_vines, {.name = "minecraft:twisting_vines", .opaque = false}},
-        {minecraft::crimson_fence, {.name = "minecraft:crimson_fence", .opaque = false}},
-        {minecraft::warped_fence, {.name = "minecraft:warped_fence", .opaque = false}},
-        {minecraft::soul_torch, {.name = "minecraft:soul_torch", .opaque = false}},
-        {minecraft::chain, {.name = "minecraft:chain", .opaque = false}},
-        {minecraft::blackstone_wall, {.name = "minecraft:blackstone_wall", .opaque = false}},
-        {minecraft::polished_blackstone_wall, {.name = "minecraft:polished_blackstone_wall", .opaque = false}},
-        {minecraft::polished_blackstone_brick_wall, {.name = "minecraft:polished_blackstone_brick_wall", .opaque = false}},
-        {minecraft::soul_lantern, {.name = "minecraft:soul_lantern", .opaque = false}},
-        {minecraft::soul_campfire, {.name = "minecraft:soul_campfire", .opaque = false}},
-        {minecraft::shroomlight, {.name = "minecraft:shroomlight", .opaque = true}},
-        {minecraft::lodestone, {.name = "minecraft:lodestone", .opaque = true}},
-        {minecraft::respawn_anchor, {.name = "minecraft:respawn_anchor", .opaque = true}},
-        {minecraft::crimson_pressure_plate, {.name = "minecraft:crimson_pressure_plate", .opaque = false}},
-        {minecraft::warped_pressure_plate, {.name = "minecraft:warped_pressure_plate", .opaque = false}},
-        {minecraft::crimson_trapdoor, {.name = "minecraft:crimson_trapdoor", .opaque = false}},
-        {minecraft::warped_trapdoor, {.name = "minecraft:warped_trapdoor", .opaque = false}},
-        {minecraft::crimson_fence_gate, {.name = "minecraft:crimson_fence_gate", .opaque = false}},
-        {minecraft::warped_fence_gate, {.name = "minecraft:warped_fence_gate", .opaque = false}},
-        {minecraft::crimson_button, {.name = "minecraft:crimson_button", .opaque = false}},
-        {minecraft::warped_button, {.name = "minecraft:warped_button", .opaque = false}},
-        {minecraft::crimson_door, {.name = "minecraft:crimson_door", .opaque = false}},
-        {minecraft::warped_door, {.name = "minecraft:warped_door", .opaque = false}},
-        {minecraft::target, {.name = "minecraft:target", .opaque = true}},
-        {minecraft::twisting_vines_plant, {.name = "minecraft:twisting_vines_plant", .opaque = false}},
-        {minecraft::warped_wart_block, {.name = "minecraft:warped_wart_block", .opaque = true}},
-        {minecraft::quartz_bricks, {.name = "minecraft:quartz_bricks", .opaque = true}},
-        {minecraft::stripped_crimson_hyphae, {.name = "minecraft:stripped_crimson_hyphae", .opaque = true}},
-        {minecraft::stripped_warped_hyphae, {.name = "minecraft:stripped_warped_hyphae", .opaque = true}},
-        {minecraft::crimson_sign, {.name = "minecraft:crimson_sign", .opaque = false}},
-        {minecraft::warped_sign, {.name = "minecraft:warped_sign", .opaque = false}},
-        {minecraft::polished_blackstone_pressure_plate, {.name = "minecraft:polished_blackstone_pressure_plate", .opaque = false}},
-        {minecraft::polished_blackstone_button, {.name = "minecraft:polished_blackstone_button", .opaque = false}},
+    // 1.16
+    m[crimson_nylium] = {.name = "minecraft:crimson_nylium", .opaque = true};
+    m[warped_nylium] = {.name = "minecraft:warped_nylium", .opaque = true};
+    m[crimson_planks] = {.name = "minecraft:crimson_planks", .opaque = true};
+    m[warped_planks] = {.name = "minecraft:warped_planks", .opaque = true};
+    m[nether_gold_ore] = {.name = "minecraft:nether_gold_ore", .opaque = true};
+    m[crimson_stem] = {.name = "minecraft:crimson_stem", .opaque = true};
+    m[warped_stem] = {.name = "minecraft:warped_stem", .opaque = true};
+    m[stripped_crimson_stem] = {.name = "minecraft:stripped_crimson_stem", .opaque = true};
+    m[stripped_warped_stem] = {.name = "minecraft:stripped_warped_stem", .opaque = true};
+    m[crimson_hyphae] = {.name = "minecraft:crimson_hyphae", .opaque = true};
+    m[warped_hyphae] = {.name = "minecraft:warped_hyphae", .opaque = true};
+    m[crimson_slab] = {.name = "minecraft:crimson_slab", .opaque = false};
+    m[warped_slab] = {.name = "minecraft:warped_slab", .opaque = false};
+    m[cracked_nether_bricks] = {.name = "minecraft:cracked_nether_bricks", .opaque = true};
+    m[chiseled_nether_bricks] = {.name = "minecraft:chiseled_nether_bricks", .opaque = true};
+    m[crimson_stairs] = {.name = "minecraft:crimson_stairs", .opaque = false};
+    m[warped_stairs] = {.name = "minecraft:warped_stairs", .opaque = false};
+    m[netherite_block] = {.name = "minecraft:netherite_block", .opaque = true};
+    m[soul_soil] = {.name = "minecraft:soul_soil", .opaque = true};
+    m[basalt] = {.name = "minecraft:basalt", .opaque = true};
+    m[polished_basalt] = {.name = "minecraft:polished_basalt", .opaque = true};
+    m[ancient_debris] = {.name = "minecraft:ancient_debris", .opaque = true};
+    m[crying_obsidian] = {.name = "minecraft:crying_obsidian", .opaque = true};
+    m[blackstone] = {.name = "minecraft:blackstone", .opaque = true};
+    m[blackstone_slab] = {.name = "minecraft:blackstone_slab", .opaque = false};
+    m[blackstone_stairs] = {.name = "minecraft:blackstone_stairs", .opaque = false};
+    m[gilded_blackstone] = {.name = "minecraft:gilded_blackstone", .opaque = true};
+    m[polished_blackstone] = {.name = "minecraft:polished_blackstone", .opaque = true};
+    m[polished_blackstone_slab] = {.name = "minecraft:polished_blackstone_slab", .opaque = false};
+    m[polished_blackstone_stairs] = {.name = "minecraft:polished_blackstone_stairs", .opaque = false};
+    m[chiseled_polished_blackstone] = {.name = "minecraft:chiseled_polished_blackstone", .opaque = true};
+    m[polished_blackstone_bricks] = {.name = "minecraft:polished_blackstone_bricks", .opaque = true};
+    m[polished_blackstone_brick_slab] = {.name = "minecraft:polished_blackstone_brick_slab", .opaque = false};
+    m[polished_blackstone_brick_stairs] = {.name = "minecraft:polished_blackstone_brick_stairs", .opaque = false};
+    m[cracked_polished_blackstone_bricks] = {.name = "minecraft:cracked_polished_blackstone_bricks", .opaque = true};
+    m[crimson_fungus] = {.name = "minecraft:crimson_fungus", .opaque = false};
+    m[warped_fungus] = {.name = "minecraft:warped_fungus", .opaque = false};
+    m[crimson_roots] = {.name = "minecraft:crimson_roots", .opaque = false};
+    m[warped_roots] = {.name = "minecraft:warped_roots", .opaque = false};
+    m[nether_sprouts] = {.name = "minecraft:nether_sprouts", .opaque = false};
+    m[weeping_vines] = {.name = "minecraft:weeping_vines", .opaque = false};
+    m[twisting_vines] = {.name = "minecraft:twisting_vines", .opaque = false};
+    m[crimson_fence] = {.name = "minecraft:crimson_fence", .opaque = false};
+    m[warped_fence] = {.name = "minecraft:warped_fence", .opaque = false};
+    m[soul_torch] = {.name = "minecraft:soul_torch", .opaque = false};
+    m[chain] = {.name = "minecraft:chain", .opaque = false};
+    m[blackstone_wall] = {.name = "minecraft:blackstone_wall", .opaque = false};
+    m[polished_blackstone_wall] = {.name = "minecraft:polished_blackstone_wall", .opaque = false};
+    m[polished_blackstone_brick_wall] = {.name = "minecraft:polished_blackstone_brick_wall", .opaque = false};
+    m[soul_lantern] = {.name = "minecraft:soul_lantern", .opaque = false};
+    m[soul_campfire] = {.name = "minecraft:soul_campfire", .opaque = false};
+    m[shroomlight] = {.name = "minecraft:shroomlight", .opaque = true};
+    m[lodestone] = {.name = "minecraft:lodestone", .opaque = true};
+    m[respawn_anchor] = {.name = "minecraft:respawn_anchor", .opaque = true};
+    m[crimson_pressure_plate] = {.name = "minecraft:crimson_pressure_plate", .opaque = false};
+    m[warped_pressure_plate] = {.name = "minecraft:warped_pressure_plate", .opaque = false};
+    m[crimson_trapdoor] = {.name = "minecraft:crimson_trapdoor", .opaque = false};
+    m[warped_trapdoor] = {.name = "minecraft:warped_trapdoor", .opaque = false};
+    m[crimson_fence_gate] = {.name = "minecraft:crimson_fence_gate", .opaque = false};
+    m[warped_fence_gate] = {.name = "minecraft:warped_fence_gate", .opaque = false};
+    m[crimson_button] = {.name = "minecraft:crimson_button", .opaque = false};
+    m[warped_button] = {.name = "minecraft:warped_button", .opaque = false};
+    m[crimson_door] = {.name = "minecraft:crimson_door", .opaque = false};
+    m[warped_door] = {.name = "minecraft:warped_door", .opaque = false};
+    m[target] = {.name = "minecraft:target", .opaque = true};
+    m[twisting_vines_plant] = {.name = "minecraft:twisting_vines_plant", .opaque = false};
+    m[warped_wart_block] = {.name = "minecraft:warped_wart_block", .opaque = true};
+    m[quartz_bricks] = {.name = "minecraft:quartz_bricks", .opaque = true};
+    m[stripped_crimson_hyphae] = {.name = "minecraft:stripped_crimson_hyphae", .opaque = true};
+    m[stripped_warped_hyphae] = {.name = "minecraft:stripped_warped_hyphae", .opaque = true};
+    m[crimson_sign] = {.name = "minecraft:crimson_sign", .opaque = false};
+    m[warped_sign] = {.name = "minecraft:warped_sign", .opaque = false};
+    m[polished_blackstone_pressure_plate] = {.name = "minecraft:polished_blackstone_pressure_plate", .opaque = false};
+    m[polished_blackstone_button] = {.name = "minecraft:polished_blackstone_button", .opaque = false};
 
-        // bugfix for 1.16
-        {minecraft::warped_wall_sign, {.name = "minecraft:warped_wall_sign", .opaque = false}},
-        {minecraft::crimson_wall_sign, {.name = "minecraft:crimson_wall_sign", .opaque = false}},
-        {minecraft::soul_fire, {.name = "minecraft:soul_fire", .opaque = false}},
-        {minecraft::soul_wall_torch, {.name = "minecraft:soul_wall_torch", .opaque = false}},
-        {minecraft::weeping_vines_plant, {.name = "minecraft:weeping_vines_plant", .opaque = false}},
+    // bugfix for 1.16
+    m[warped_wall_sign] = {.name = "minecraft:warped_wall_sign", .opaque = false};
+    m[crimson_wall_sign] = {.name = "minecraft:crimson_wall_sign", .opaque = false};
+    m[soul_fire] = {.name = "minecraft:soul_fire", .opaque = false};
+    m[soul_wall_torch] = {.name = "minecraft:soul_wall_torch", .opaque = false};
+    m[weeping_vines_plant] = {.name = "minecraft:weeping_vines_plant", .opaque = false};
 
-        // 1.17
-        {minecraft::deepslate, {.name = "minecraft:deepslate", .opaque = true}},
-        {minecraft::cobbled_deepslate, {.name = "minecraft:cobbled_deepslate", .opaque = true}},
-        {minecraft::polished_deepslate, {.name = "minecraft:polished_deepslate", .opaque = true}},
-        {minecraft::calcite, {.name = "minecraft:calcite", .opaque = true}},
-        {minecraft::tuff, {.name = "minecraft:tuff", .opaque = true}},
-        {minecraft::dripstone_block, {.name = "minecraft:dripstone_block", .opaque = true}},
-        {minecraft::deepslate_coal_ore, {.name = "minecraft:deepslate_coal_ore", .opaque = true}},
-        {minecraft::deepslate_iron_ore, {.name = "minecraft:deepslate_iron_ore", .opaque = true}},
-        {minecraft::copper_ore, {.name = "minecraft:copper_ore", .opaque = true}},
-        {minecraft::deepslate_copper_ore, {.name = "minecraft:deepslate_copper_ore", .opaque = true}},
-        {minecraft::deepslate_gold_ore, {.name = "minecraft:deepslate_gold_ore", .opaque = true}},
-        {minecraft::deepslate_redstone_ore, {.name = "minecraft:deepslate_redstone_ore", .opaque = true}},
-        {minecraft::deepslate_emerald_ore, {.name = "minecraft:deepslate_emerald_ore", .opaque = true}},
-        {minecraft::deepslate_lapis_ore, {.name = "minecraft:deepslate_lapis_ore", .opaque = true}},
-        {minecraft::deepslate_diamond_ore, {.name = "minecraft:deepslate_diamond_ore", .opaque = true}},
-        {minecraft::raw_iron_block, {.name = "minecraft:raw_iron_block", .opaque = true}},
-        {minecraft::raw_copper_block, {.name = "minecraft:raw_copper_block", .opaque = true}},
-        {minecraft::raw_gold_block, {.name = "minecraft:raw_gold_block", .opaque = true}},
-        {minecraft::amethyst_block, {.name = "minecraft:amethyst_block", .opaque = true}},
-        {minecraft::budding_amethyst, {.name = "minecraft:budding_amethyst", .opaque = true}},
-        {minecraft::copper_block, {.name = "minecraft:copper_block", .opaque = true}},
-        {minecraft::exposed_copper, {.name = "minecraft:exposed_copper", .opaque = true}},
-        {minecraft::weathered_copper, {.name = "minecraft:weathered_copper", .opaque = true}},
-        {minecraft::oxidized_copper, {.name = "minecraft:oxidized_copper", .opaque = true}},
-        {minecraft::cut_copper, {.name = "minecraft:cut_copper", .opaque = true}},
-        {minecraft::exposed_cut_copper, {.name = "minecraft:exposed_cut_copper", .opaque = true}},
-        {minecraft::weathered_cut_copper, {.name = "minecraft:weathered_cut_copper", .opaque = true}},
-        {minecraft::oxidized_cut_copper, {.name = "minecraft:oxidized_cut_copper", .opaque = true}},
-        {minecraft::waxed_copper_block, {.name = "minecraft:waxed_copper_block", .opaque = true}},
-        {minecraft::waxed_exposed_copper, {.name = "minecraft:waxed_exposed_copper", .opaque = true}},
-        {minecraft::waxed_weathered_copper, {.name = "minecraft:waxed_weathered_copper", .opaque = true}},
-        {minecraft::waxed_oxidized_copper, {.name = "minecraft:waxed_oxidized_copper", .opaque = true}},
-        {minecraft::waxed_cut_copper, {.name = "minecraft:waxed_cut_copper", .opaque = true}},
-        {minecraft::waxed_exposed_cut_copper, {.name = "minecraft:waxed_exposed_cut_copper", .opaque = true}},
-        {minecraft::waxed_weathered_cut_copper, {.name = "minecraft:waxed_weathered_cut_copper", .opaque = true}},
-        {minecraft::waxed_oxidized_cut_copper, {.name = "minecraft:waxed_oxidized_cut_copper", .opaque = true}},
-        {minecraft::azalea_leaves, {.name = "minecraft:azalea_leaves", .opaque = false}},
-        {minecraft::tinted_glass, {.name = "minecraft:tinted_glass", .opaque = false}},
-        {minecraft::azalea, {.name = "minecraft:azalea", .opaque = false}},
-        {minecraft::flowering_azalea, {.name = "minecraft:flowering_azalea", .opaque = false}},
-        {minecraft::spore_blossom, {.name = "minecraft:spore_blossom", .opaque = false}},
-        {minecraft::moss_carpet, {.name = "minecraft:moss_carpet", .opaque = false}},
-        {minecraft::moss_block, {.name = "minecraft:moss_block", .opaque = true}},
-        {minecraft::hanging_roots, {.name = "minecraft:hanging_roots", .opaque = false}},
-        {minecraft::infested_deepslate, {.name = "minecraft:infested_deepslate", .opaque = true}},
-        {minecraft::deepslate_bricks, {.name = "minecraft:deepslate_bricks", .opaque = true}},
-        {minecraft::cracked_deepslate_bricks, {.name = "minecraft:cracked_deepslate_bricks", .opaque = true}},
-        {minecraft::deepslate_tiles, {.name = "minecraft:deepslate_tiles", .opaque = true}},
-        {minecraft::cracked_deepslate_tiles, {.name = "minecraft:cracked_deepslate_tiles", .opaque = true}},
-        {minecraft::chiseled_deepslate, {.name = "minecraft:chiseled_deepslate", .opaque = true}},
-        {minecraft::smooth_basalt, {.name = "minecraft:smooth_basalt", .opaque = true}},
-        {minecraft::potted_azalea_bush, {.name = "minecraft:potted_azalea_bush", .opaque = false}},
-        {minecraft::potted_flowering_azalea_bush, {.name = "minecraft:potted_flowering_azalea_bush", .opaque = false}},
-        {minecraft::powder_snow, {.name = "minecraft:powder_snow", .opaque = true}},
-        {minecraft::water_cauldron, {.name = "minecraft:water_cauldron", .opaque = false}},
-        {minecraft::lava_cauldron, {.name = "minecraft:lava_cauldron", .opaque = false}},
-        {minecraft::powder_snow_cauldron, {.name = "minecraft:powder_snow_cauldron", .opaque = false}},
-        {minecraft::dirt_path, {.name = "minecraft:dirt_path", .opaque = false}},
-        {minecraft::waxed_copper_block, {.name = "minecraft:waxed_copper_block", .opaque = true}},
-        {minecraft::rooted_dirt, {.name = "minecraft:rooted_dirt", .opaque = true}},
-        {minecraft::flowering_azalea_leaves, {.name = "minecraft:flowering_azalea_leaves", .opaque = false}},
-        {minecraft::big_dripleaf, {.name = "minecraft:big_dripleaf", .opaque = false}},
-        {minecraft::big_dripleaf_stem, {.name = "minecraft:big_dripleaf_stem", .opaque = false}},
-        {minecraft::small_dripleaf, {.name = "minecraft:small_dripleaf", .opaque = false}},
-        {minecraft::candle, {.name = "minecraft:candle", .opaque = false}},
-        {minecraft::white_candle, {.name = "minecraft:white_candle", .opaque = false}},
-        {minecraft::orange_candle, {.name = "minecraft:orange_candle", .opaque = false}},
-        {minecraft::magenta_candle, {.name = "minecraft:magenta_candle", .opaque = false}},
-        {minecraft::light_blue_candle, {.name = "minecraft:light_blue_candle", .opaque = false}},
-        {minecraft::yellow_candle, {.name = "minecraft:yellow_candle", .opaque = false}},
-        {minecraft::lime_candle, {.name = "minecraft:lime_candle", .opaque = false}},
-        {minecraft::pink_candle, {.name = "minecraft:pink_candle", .opaque = false}},
-        {minecraft::gray_candle, {.name = "minecraft:gray_candle", .opaque = false}},
-        {minecraft::light_gray_candle, {.name = "minecraft:light_gray_candle", .opaque = false}},
-        {minecraft::cyan_candle, {.name = "minecraft:cyan_candle", .opaque = false}},
-        {minecraft::purple_candle, {.name = "minecraft:purple_candle", .opaque = false}},
-        {minecraft::blue_candle, {.name = "minecraft:blue_candle", .opaque = false}},
-        {minecraft::brown_candle, {.name = "minecraft:brown_candle", .opaque = false}},
-        {minecraft::green_candle, {.name = "minecraft:green_candle", .opaque = false}},
-        {minecraft::red_candle, {.name = "minecraft:red_candle", .opaque = false}},
-        {minecraft::black_candle, {.name = "minecraft:black_candle", .opaque = false}},
-        {minecraft::candle_cake, {.name = "minecraft:candle_cake", .opaque = false}},
-        {minecraft::white_candle_cake, {.name = "minecraft:white_candle_cake", .opaque = false}},
-        {minecraft::orange_candle_cake, {.name = "minecraft:orange_candle_cake", .opaque = false}},
-        {minecraft::magenta_candle_cake, {.name = "minecraft:magenta_candle_cake", .opaque = false}},
-        {minecraft::light_blue_candle_cake, {.name = "minecraft:light_blue_candle_cake", .opaque = false}},
-        {minecraft::yellow_candle_cake, {.name = "minecraft:yellow_candle_cake", .opaque = false}},
-        {minecraft::lime_candle_cake, {.name = "minecraft:lime_candle_cake", .opaque = false}},
-        {minecraft::pink_candle_cake, {.name = "minecraft:pink_candle_cake", .opaque = false}},
-        {minecraft::gray_candle_cake, {.name = "minecraft:gray_candle_cake", .opaque = false}},
-        {minecraft::light_gray_candle_cake, {.name = "minecraft:light_gray_candle_cake", .opaque = false}},
-        {minecraft::cyan_candle_cake, {.name = "minecraft:cyan_candle_cake", .opaque = false}},
-        {minecraft::purple_candle_cake, {.name = "minecraft:purple_candle_cake", .opaque = false}},
-        {minecraft::blue_candle_cake, {.name = "minecraft:blue_candle_cake", .opaque = false}},
-        {minecraft::brown_candle_cake, {.name = "minecraft:brown_candle_cake", .opaque = false}},
-        {minecraft::green_candle_cake, {.name = "minecraft:green_candle_cake", .opaque = false}},
-        {minecraft::red_candle_cake, {.name = "minecraft:red_candle_cake", .opaque = false}},
-        {minecraft::black_candle_cake, {.name = "minecraft:black_candle_cake", .opaque = false}},
-        {minecraft::cut_copper_stairs, {.name = "minecraft:cut_copper_stairs", .opaque = false}},
-        {minecraft::exposed_cut_copper_stairs, {.name = "minecraft:exposed_cut_copper_stairs", .opaque = false}},
-        {minecraft::weathered_cut_copper_stairs, {.name = "minecraft:weathered_cut_copper_stairs", .opaque = false}},
-        {minecraft::oxidized_cut_copper_stairs, {.name = "minecraft:oxidized_cut_copper_stairs", .opaque = false}},
-        {minecraft::waxed_cut_copper_stairs, {.name = "minecraft:waxed_cut_copper_stairs", .opaque = false}},
-        {minecraft::waxed_exposed_cut_copper_stairs, {.name = "minecraft:waxed_exposed_cut_copper_stairs", .opaque = false}},
-        {minecraft::waxed_weathered_cut_copper_stairs, {.name = "minecraft:waxed_weathered_cut_copper_stairs", .opaque = false}},
-        {minecraft::waxed_oxidized_cut_copper_stairs, {.name = "minecraft:waxed_oxidized_cut_copper_stairs", .opaque = false}},
-        {minecraft::cobbled_deepslate_stairs, {.name = "minecraft:cobbled_deepslate_stairs", .opaque = false}},
-        {minecraft::polished_deepslate_stairs, {.name = "minecraft:polished_deepslate_stairs", .opaque = false}},
-        {minecraft::deepslate_brick_stairs, {.name = "minecraft:deepslate_brick_stairs", .opaque = false}},
-        {minecraft::deepslate_tile_stairs, {.name = "minecraft:deepslate_tile_stairs", .opaque = false}},
-        {minecraft::cut_copper_slab, {.name = "minecraft:cut_copper_slab", .opaque = false}},
-        {minecraft::exposed_cut_copper_slab, {.name = "minecraft:exposed_cut_copper_slab", .opaque = false}},
-        {minecraft::weathered_cut_copper_slab, {.name = "minecraft:weathered_cut_copper_slab", .opaque = false}},
-        {minecraft::oxidized_cut_copper_slab, {.name = "minecraft:oxidized_cut_copper_slab", .opaque = false}},
-        {minecraft::waxed_cut_copper_slab, {.name = "minecraft:waxed_cut_copper_slab", .opaque = false}},
-        {minecraft::waxed_exposed_cut_copper_slab, {.name = "minecraft:waxed_exposed_cut_copper_slab", .opaque = false}},
-        {minecraft::waxed_weathered_cut_copper_slab, {.name = "minecraft:waxed_weathered_cut_copper_slab", .opaque = false}},
-        {minecraft::waxed_oxidized_cut_copper_slab, {.name = "minecraft:waxed_oxidized_cut_copper_slab", .opaque = false}},
-        {minecraft::cobbled_deepslate_slab, {.name = "minecraft:cobbled_deepslate_slab", .opaque = false}},
-        {minecraft::polished_deepslate_slab, {.name = "minecraft:polished_deepslate_slab", .opaque = false}},
-        {minecraft::deepslate_brick_slab, {.name = "minecraft:deepslate_brick_slab", .opaque = false}},
-        {minecraft::deepslate_tile_slab, {.name = "minecraft:deepslate_tile_slab", .opaque = false}},
-        {minecraft::cobbled_deepslate_wall, {.name = "minecraft:cobbled_deepslate_wall", .opaque = false}},
-        {minecraft::polished_deepslate_wall, {.name = "minecraft:polished_deepslate_wall", .opaque = false}},
-        {minecraft::deepslate_brick_wall, {.name = "minecraft:deepslate_brick_wall", .opaque = false}},
-        {minecraft::deepslate_tile_wall, {.name = "minecraft:deepslate_tile_wall", .opaque = false}},
-        {minecraft::lightning_rod, {.name = "minecraft:lightning_rod", .opaque = false}},
-        {minecraft::small_amethyst_bud, {.name = "minecraft:small_amethyst_bud", .opaque = false}},
-        {minecraft::medium_amethyst_bud, {.name = "minecraft:medium_amethyst_bud", .opaque = false}},
-        {minecraft::large_amethyst_bud, {.name = "minecraft:large_amethyst_bud", .opaque = false}},
-        {minecraft::amethyst_cluster, {.name = "minecraft:amethyst_cluster", .opaque = false}},
-        {minecraft::pointed_dripstone, {.name = "minecraft:pointed_dripstone", .opaque = false}},
-        {minecraft::light, {.name = "minecraft:light", .opaque = false}},
-        {minecraft::cave_vines, {.name = "minecraft:cave_vines", .opaque = false}},
-        {minecraft::cave_vines_plant, {.name = "minecraft:cave_vines_plant", .opaque = false}},
-        {minecraft::glow_lichen, {.name = "minecraft:glow_lichen", .opaque = false}},
+    // 1.17
+    m[deepslate] = {.name = "minecraft:deepslate", .opaque = true};
+    m[cobbled_deepslate] = {.name = "minecraft:cobbled_deepslate", .opaque = true};
+    m[polished_deepslate] = {.name = "minecraft:polished_deepslate", .opaque = true};
+    m[calcite] = {.name = "minecraft:calcite", .opaque = true};
+    m[tuff] = {.name = "minecraft:tuff", .opaque = true};
+    m[dripstone_block] = {.name = "minecraft:dripstone_block", .opaque = true};
+    m[deepslate_coal_ore] = {.name = "minecraft:deepslate_coal_ore", .opaque = true};
+    m[deepslate_iron_ore] = {.name = "minecraft:deepslate_iron_ore", .opaque = true};
+    m[copper_ore] = {.name = "minecraft:copper_ore", .opaque = true};
+    m[deepslate_copper_ore] = {.name = "minecraft:deepslate_copper_ore", .opaque = true};
+    m[deepslate_gold_ore] = {.name = "minecraft:deepslate_gold_ore", .opaque = true};
+    m[deepslate_redstone_ore] = {.name = "minecraft:deepslate_redstone_ore", .opaque = true};
+    m[deepslate_emerald_ore] = {.name = "minecraft:deepslate_emerald_ore", .opaque = true};
+    m[deepslate_lapis_ore] = {.name = "minecraft:deepslate_lapis_ore", .opaque = true};
+    m[deepslate_diamond_ore] = {.name = "minecraft:deepslate_diamond_ore", .opaque = true};
+    m[raw_iron_block] = {.name = "minecraft:raw_iron_block", .opaque = true};
+    m[raw_copper_block] = {.name = "minecraft:raw_copper_block", .opaque = true};
+    m[raw_gold_block] = {.name = "minecraft:raw_gold_block", .opaque = true};
+    m[amethyst_block] = {.name = "minecraft:amethyst_block", .opaque = true};
+    m[budding_amethyst] = {.name = "minecraft:budding_amethyst", .opaque = true};
+    m[copper_block] = {.name = "minecraft:copper_block", .opaque = true};
+    m[exposed_copper] = {.name = "minecraft:exposed_copper", .opaque = true};
+    m[weathered_copper] = {.name = "minecraft:weathered_copper", .opaque = true};
+    m[oxidized_copper] = {.name = "minecraft:oxidized_copper", .opaque = true};
+    m[cut_copper] = {.name = "minecraft:cut_copper", .opaque = true};
+    m[exposed_cut_copper] = {.name = "minecraft:exposed_cut_copper", .opaque = true};
+    m[weathered_cut_copper] = {.name = "minecraft:weathered_cut_copper", .opaque = true};
+    m[oxidized_cut_copper] = {.name = "minecraft:oxidized_cut_copper", .opaque = true};
+    m[waxed_copper_block] = {.name = "minecraft:waxed_copper_block", .opaque = true};
+    m[waxed_exposed_copper] = {.name = "minecraft:waxed_exposed_copper", .opaque = true};
+    m[waxed_weathered_copper] = {.name = "minecraft:waxed_weathered_copper", .opaque = true};
+    m[waxed_oxidized_copper] = {.name = "minecraft:waxed_oxidized_copper", .opaque = true};
+    m[waxed_cut_copper] = {.name = "minecraft:waxed_cut_copper", .opaque = true};
+    m[waxed_exposed_cut_copper] = {.name = "minecraft:waxed_exposed_cut_copper", .opaque = true};
+    m[waxed_weathered_cut_copper] = {.name = "minecraft:waxed_weathered_cut_copper", .opaque = true};
+    m[waxed_oxidized_cut_copper] = {.name = "minecraft:waxed_oxidized_cut_copper", .opaque = true};
+    m[azalea_leaves] = {.name = "minecraft:azalea_leaves", .opaque = false};
+    m[tinted_glass] = {.name = "minecraft:tinted_glass", .opaque = false};
+    m[azalea] = {.name = "minecraft:azalea", .opaque = false};
+    m[flowering_azalea] = {.name = "minecraft:flowering_azalea", .opaque = false};
+    m[spore_blossom] = {.name = "minecraft:spore_blossom", .opaque = false};
+    m[moss_carpet] = {.name = "minecraft:moss_carpet", .opaque = false};
+    m[moss_block] = {.name = "minecraft:moss_block", .opaque = true};
+    m[hanging_roots] = {.name = "minecraft:hanging_roots", .opaque = false};
+    m[infested_deepslate] = {.name = "minecraft:infested_deepslate", .opaque = true};
+    m[deepslate_bricks] = {.name = "minecraft:deepslate_bricks", .opaque = true};
+    m[cracked_deepslate_bricks] = {.name = "minecraft:cracked_deepslate_bricks", .opaque = true};
+    m[deepslate_tiles] = {.name = "minecraft:deepslate_tiles", .opaque = true};
+    m[cracked_deepslate_tiles] = {.name = "minecraft:cracked_deepslate_tiles", .opaque = true};
+    m[chiseled_deepslate] = {.name = "minecraft:chiseled_deepslate", .opaque = true};
+    m[smooth_basalt] = {.name = "minecraft:smooth_basalt", .opaque = true};
+    m[potted_azalea_bush] = {.name = "minecraft:potted_azalea_bush", .opaque = false};
+    m[potted_flowering_azalea_bush] = {.name = "minecraft:potted_flowering_azalea_bush", .opaque = false};
+    m[powder_snow] = {.name = "minecraft:powder_snow", .opaque = true};
+    m[water_cauldron] = {.name = "minecraft:water_cauldron", .opaque = false};
+    m[lava_cauldron] = {.name = "minecraft:lava_cauldron", .opaque = false};
+    m[powder_snow_cauldron] = {.name = "minecraft:powder_snow_cauldron", .opaque = false};
+    m[dirt_path] = {.name = "minecraft:dirt_path", .opaque = false};
+    m[waxed_copper_block] = {.name = "minecraft:waxed_copper_block", .opaque = true};
+    m[rooted_dirt] = {.name = "minecraft:rooted_dirt", .opaque = true};
+    m[flowering_azalea_leaves] = {.name = "minecraft:flowering_azalea_leaves", .opaque = false};
+    m[big_dripleaf] = {.name = "minecraft:big_dripleaf", .opaque = false};
+    m[big_dripleaf_stem] = {.name = "minecraft:big_dripleaf_stem", .opaque = false};
+    m[small_dripleaf] = {.name = "minecraft:small_dripleaf", .opaque = false};
+    m[candle] = {.name = "minecraft:candle", .opaque = false};
+    m[white_candle] = {.name = "minecraft:white_candle", .opaque = false};
+    m[orange_candle] = {.name = "minecraft:orange_candle", .opaque = false};
+    m[magenta_candle] = {.name = "minecraft:magenta_candle", .opaque = false};
+    m[light_blue_candle] = {.name = "minecraft:light_blue_candle", .opaque = false};
+    m[yellow_candle] = {.name = "minecraft:yellow_candle", .opaque = false};
+    m[lime_candle] = {.name = "minecraft:lime_candle", .opaque = false};
+    m[pink_candle] = {.name = "minecraft:pink_candle", .opaque = false};
+    m[gray_candle] = {.name = "minecraft:gray_candle", .opaque = false};
+    m[light_gray_candle] = {.name = "minecraft:light_gray_candle", .opaque = false};
+    m[cyan_candle] = {.name = "minecraft:cyan_candle", .opaque = false};
+    m[purple_candle] = {.name = "minecraft:purple_candle", .opaque = false};
+    m[blue_candle] = {.name = "minecraft:blue_candle", .opaque = false};
+    m[brown_candle] = {.name = "minecraft:brown_candle", .opaque = false};
+    m[green_candle] = {.name = "minecraft:green_candle", .opaque = false};
+    m[red_candle] = {.name = "minecraft:red_candle", .opaque = false};
+    m[black_candle] = {.name = "minecraft:black_candle", .opaque = false};
+    m[candle_cake] = {.name = "minecraft:candle_cake", .opaque = false};
+    m[white_candle_cake] = {.name = "minecraft:white_candle_cake", .opaque = false};
+    m[orange_candle_cake] = {.name = "minecraft:orange_candle_cake", .opaque = false};
+    m[magenta_candle_cake] = {.name = "minecraft:magenta_candle_cake", .opaque = false};
+    m[light_blue_candle_cake] = {.name = "minecraft:light_blue_candle_cake", .opaque = false};
+    m[yellow_candle_cake] = {.name = "minecraft:yellow_candle_cake", .opaque = false};
+    m[lime_candle_cake] = {.name = "minecraft:lime_candle_cake", .opaque = false};
+    m[pink_candle_cake] = {.name = "minecraft:pink_candle_cake", .opaque = false};
+    m[gray_candle_cake] = {.name = "minecraft:gray_candle_cake", .opaque = false};
+    m[light_gray_candle_cake] = {.name = "minecraft:light_gray_candle_cake", .opaque = false};
+    m[cyan_candle_cake] = {.name = "minecraft:cyan_candle_cake", .opaque = false};
+    m[purple_candle_cake] = {.name = "minecraft:purple_candle_cake", .opaque = false};
+    m[blue_candle_cake] = {.name = "minecraft:blue_candle_cake", .opaque = false};
+    m[brown_candle_cake] = {.name = "minecraft:brown_candle_cake", .opaque = false};
+    m[green_candle_cake] = {.name = "minecraft:green_candle_cake", .opaque = false};
+    m[red_candle_cake] = {.name = "minecraft:red_candle_cake", .opaque = false};
+    m[black_candle_cake] = {.name = "minecraft:black_candle_cake", .opaque = false};
+    m[cut_copper_stairs] = {.name = "minecraft:cut_copper_stairs", .opaque = false};
+    m[exposed_cut_copper_stairs] = {.name = "minecraft:exposed_cut_copper_stairs", .opaque = false};
+    m[weathered_cut_copper_stairs] = {.name = "minecraft:weathered_cut_copper_stairs", .opaque = false};
+    m[oxidized_cut_copper_stairs] = {.name = "minecraft:oxidized_cut_copper_stairs", .opaque = false};
+    m[waxed_cut_copper_stairs] = {.name = "minecraft:waxed_cut_copper_stairs", .opaque = false};
+    m[waxed_exposed_cut_copper_stairs] = {.name = "minecraft:waxed_exposed_cut_copper_stairs", .opaque = false};
+    m[waxed_weathered_cut_copper_stairs] = {.name = "minecraft:waxed_weathered_cut_copper_stairs", .opaque = false};
+    m[waxed_oxidized_cut_copper_stairs] = {.name = "minecraft:waxed_oxidized_cut_copper_stairs", .opaque = false};
+    m[cobbled_deepslate_stairs] = {.name = "minecraft:cobbled_deepslate_stairs", .opaque = false};
+    m[polished_deepslate_stairs] = {.name = "minecraft:polished_deepslate_stairs", .opaque = false};
+    m[deepslate_brick_stairs] = {.name = "minecraft:deepslate_brick_stairs", .opaque = false};
+    m[deepslate_tile_stairs] = {.name = "minecraft:deepslate_tile_stairs", .opaque = false};
+    m[cut_copper_slab] = {.name = "minecraft:cut_copper_slab", .opaque = false};
+    m[exposed_cut_copper_slab] = {.name = "minecraft:exposed_cut_copper_slab", .opaque = false};
+    m[weathered_cut_copper_slab] = {.name = "minecraft:weathered_cut_copper_slab", .opaque = false};
+    m[oxidized_cut_copper_slab] = {.name = "minecraft:oxidized_cut_copper_slab", .opaque = false};
+    m[waxed_cut_copper_slab] = {.name = "minecraft:waxed_cut_copper_slab", .opaque = false};
+    m[waxed_exposed_cut_copper_slab] = {.name = "minecraft:waxed_exposed_cut_copper_slab", .opaque = false};
+    m[waxed_weathered_cut_copper_slab] = {.name = "minecraft:waxed_weathered_cut_copper_slab", .opaque = false};
+    m[waxed_oxidized_cut_copper_slab] = {.name = "minecraft:waxed_oxidized_cut_copper_slab", .opaque = false};
+    m[cobbled_deepslate_slab] = {.name = "minecraft:cobbled_deepslate_slab", .opaque = false};
+    m[polished_deepslate_slab] = {.name = "minecraft:polished_deepslate_slab", .opaque = false};
+    m[deepslate_brick_slab] = {.name = "minecraft:deepslate_brick_slab", .opaque = false};
+    m[deepslate_tile_slab] = {.name = "minecraft:deepslate_tile_slab", .opaque = false};
+    m[cobbled_deepslate_wall] = {.name = "minecraft:cobbled_deepslate_wall", .opaque = false};
+    m[polished_deepslate_wall] = {.name = "minecraft:polished_deepslate_wall", .opaque = false};
+    m[deepslate_brick_wall] = {.name = "minecraft:deepslate_brick_wall", .opaque = false};
+    m[deepslate_tile_wall] = {.name = "minecraft:deepslate_tile_wall", .opaque = false};
+    m[lightning_rod] = {.name = "minecraft:lightning_rod", .opaque = false};
+    m[small_amethyst_bud] = {.name = "minecraft:small_amethyst_bud", .opaque = false};
+    m[medium_amethyst_bud] = {.name = "minecraft:medium_amethyst_bud", .opaque = false};
+    m[large_amethyst_bud] = {.name = "minecraft:large_amethyst_bud", .opaque = false};
+    m[amethyst_cluster] = {.name = "minecraft:amethyst_cluster", .opaque = false};
+    m[pointed_dripstone] = {.name = "minecraft:pointed_dripstone", .opaque = false};
+    m[light] = {.name = "minecraft:light", .opaque = false};
+    m[cave_vines] = {.name = "minecraft:cave_vines", .opaque = false};
+    m[cave_vines_plant] = {.name = "minecraft:cave_vines_plant", .opaque = false};
+    m[glow_lichen] = {.name = "minecraft:glow_lichen", .opaque = false};
 
-        {minecraft::potted_crimson_fungus, {.name = "minecraft:potted_crimson_fungus", .opaque = false}},
-        {minecraft::potted_warped_fungus, {.name = "minecraft:potted_warped_fungus", .opaque = false}},
-        {minecraft::potted_crimson_roots, {.name = "minecraft:potted_crimson_roots", .opaque = false}},
-        {minecraft::potted_warped_roots, {.name = "minecraft:potted_warped_roots", .opaque = false}},
-        {minecraft::sculk_sensor, {.name = "minecraft:sculk_sensor", .opaque = false}},
-    };
+    m[potted_crimson_fungus] = {.name = "minecraft:potted_crimson_fungus", .opaque = false};
+    m[potted_warped_fungus] = {.name = "minecraft:potted_warped_fungus", .opaque = false};
+    m[potted_crimson_roots] = {.name = "minecraft:potted_crimson_roots", .opaque = false};
+    m[potted_warped_roots] = {.name = "minecraft:potted_warped_roots", .opaque = false};
+    m[sculk_sensor] = {.name = "minecraft:sculk_sensor", .opaque = false};
 
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);
-        auto found = mapping.find(id);
-        if (found == mapping.end()) {
+        auto found = m.find(id);
+        if (found == m.end()) {
             continue;
         }
         list[i - 1] = found->second;

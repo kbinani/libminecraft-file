@@ -3,920 +3,927 @@
 namespace mcfile {
 namespace blocks {
 
+static inline std::unordered_map<std::string, BlockId> *CreateTable() {
+    using namespace blocks::minecraft;
+    auto ret = new std::unordered_map<std::string, BlockId>();
+    (*ret)["minecraft:acacia_button"] = acacia_button;
+    (*ret)["minecraft:acacia_door"] = acacia_door;
+    (*ret)["minecraft:acacia_fence"] = acacia_fence;
+    (*ret)["minecraft:acacia_fence_gate"] = acacia_fence_gate;
+    (*ret)["minecraft:acacia_leaves"] = acacia_leaves;
+    (*ret)["minecraft:acacia_log"] = acacia_log;
+    (*ret)["minecraft:acacia_planks"] = acacia_planks;
+    (*ret)["minecraft:acacia_pressure_plate"] = acacia_pressure_plate;
+    (*ret)["minecraft:acacia_sapling"] = acacia_sapling;
+    (*ret)["minecraft:acacia_sign"] = acacia_sign;
+    (*ret)["minecraft:acacia_slab"] = acacia_slab;
+    (*ret)["minecraft:acacia_stairs"] = acacia_stairs;
+    (*ret)["minecraft:acacia_trapdoor"] = acacia_trapdoor;
+    (*ret)["minecraft:acacia_wall_sign"] = acacia_wall_sign;
+    (*ret)["minecraft:acacia_wood"] = acacia_wood;
+    (*ret)["minecraft:activator_rail"] = activator_rail;
+    (*ret)["minecraft:air"] = air;
+    (*ret)["minecraft:allium"] = allium;
+    (*ret)["minecraft:andesite"] = andesite;
+    (*ret)["minecraft:andesite_slab"] = andesite_slab;
+    (*ret)["minecraft:andesite_stairs"] = andesite_stairs;
+    (*ret)["minecraft:andesite_wall"] = andesite_wall;
+    (*ret)["minecraft:anvil"] = anvil;
+    (*ret)["minecraft:attached_melon_stem"] = attached_melon_stem;
+    (*ret)["minecraft:attached_pumpkin_stem"] = attached_pumpkin_stem;
+    (*ret)["minecraft:azure_bluet"] = azure_bluet;
+    (*ret)["minecraft:bamboo"] = bamboo;
+    (*ret)["minecraft:bamboo_sapling"] = bamboo_sapling;
+    (*ret)["minecraft:barrel"] = barrel;
+    (*ret)["minecraft:barrier"] = barrier;
+    (*ret)["minecraft:beacon"] = beacon;
+    (*ret)["minecraft:bedrock"] = bedrock;
+    (*ret)["minecraft:beetroots"] = beetroots;
+    (*ret)["minecraft:bell"] = bell;
+    (*ret)["minecraft:birch_button"] = birch_button;
+    (*ret)["minecraft:birch_door"] = birch_door;
+    (*ret)["minecraft:birch_fence"] = birch_fence;
+    (*ret)["minecraft:birch_fence_gate"] = birch_fence_gate;
+    (*ret)["minecraft:birch_leaves"] = birch_leaves;
+    (*ret)["minecraft:birch_log"] = birch_log;
+    (*ret)["minecraft:birch_planks"] = birch_planks;
+    (*ret)["minecraft:birch_pressure_plate"] = birch_pressure_plate;
+    (*ret)["minecraft:birch_sapling"] = birch_sapling;
+    (*ret)["minecraft:birch_sign"] = birch_sign;
+    (*ret)["minecraft:birch_slab"] = birch_slab;
+    (*ret)["minecraft:birch_stairs"] = birch_stairs;
+    (*ret)["minecraft:birch_trapdoor"] = birch_trapdoor;
+    (*ret)["minecraft:birch_wall_sign"] = birch_wall_sign;
+    (*ret)["minecraft:birch_wood"] = birch_wood;
+    (*ret)["minecraft:black_banner"] = black_banner;
+    (*ret)["minecraft:black_bed"] = black_bed;
+    (*ret)["minecraft:black_carpet"] = black_carpet;
+    (*ret)["minecraft:black_concrete"] = black_concrete;
+    (*ret)["minecraft:black_concrete_powder"] = black_concrete_powder;
+    (*ret)["minecraft:black_glazed_terracotta"] = black_glazed_terracotta;
+    (*ret)["minecraft:black_shulker_box"] = black_shulker_box;
+    (*ret)["minecraft:black_stained_glass"] = black_stained_glass;
+    (*ret)["minecraft:black_stained_glass_pane"] = black_stained_glass_pane;
+    (*ret)["minecraft:black_terracotta"] = black_terracotta;
+    (*ret)["minecraft:black_wall_banner"] = black_wall_banner;
+    (*ret)["minecraft:black_wool"] = black_wool;
+    (*ret)["minecraft:blast_furnace"] = blast_furnace;
+    (*ret)["minecraft:coal_block"] = coal_block;
+    (*ret)["minecraft:diamond_block"] = diamond_block;
+    (*ret)["minecraft:emerald_block"] = emerald_block;
+    (*ret)["minecraft:gold_block"] = gold_block;
+    (*ret)["minecraft:iron_block"] = iron_block;
+    (*ret)["minecraft:quartz_block"] = quartz_block;
+    (*ret)["minecraft:redstone_block"] = redstone_block;
+    (*ret)["minecraft:blue_banner"] = blue_banner;
+    (*ret)["minecraft:blue_bed"] = blue_bed;
+    (*ret)["minecraft:blue_carpet"] = blue_carpet;
+    (*ret)["minecraft:blue_concrete"] = blue_concrete;
+    (*ret)["minecraft:blue_concrete_powder"] = blue_concrete_powder;
+    (*ret)["minecraft:blue_glazed_terracotta"] = blue_glazed_terracotta;
+    (*ret)["minecraft:blue_ice"] = blue_ice;
+    (*ret)["minecraft:blue_orchid"] = blue_orchid;
+    (*ret)["minecraft:blue_shulker_box"] = blue_shulker_box;
+    (*ret)["minecraft:blue_stained_glass"] = blue_stained_glass;
+    (*ret)["minecraft:blue_stained_glass_pane"] = blue_stained_glass_pane;
+    (*ret)["minecraft:blue_terracotta"] = blue_terracotta;
+    (*ret)["minecraft:blue_wall_banner"] = blue_wall_banner;
+    (*ret)["minecraft:blue_wool"] = blue_wool;
+    (*ret)["minecraft:bone_block"] = bone_block;
+    (*ret)["minecraft:bookshelf"] = bookshelf;
+    (*ret)["minecraft:brain_coral"] = brain_coral;
+    (*ret)["minecraft:brain_coral_block"] = brain_coral_block;
+    (*ret)["minecraft:brain_coral_fan"] = brain_coral_fan;
+    (*ret)["minecraft:brain_coral_wall_fan"] = brain_coral_wall_fan;
+    (*ret)["minecraft:brewing_stand"] = brewing_stand;
+    (*ret)["minecraft:brick_slab"] = brick_slab;
+    (*ret)["minecraft:brick_stairs"] = brick_stairs;
+    (*ret)["minecraft:brick_wall"] = brick_wall;
+    (*ret)["minecraft:bricks"] = bricks;
+    (*ret)["minecraft:brown_banner"] = brown_banner;
+    (*ret)["minecraft:brown_bed"] = brown_bed;
+    (*ret)["minecraft:brown_carpet"] = brown_carpet;
+    (*ret)["minecraft:brown_concrete"] = brown_concrete;
+    (*ret)["minecraft:brown_concrete_powder"] = brown_concrete_powder;
+    (*ret)["minecraft:brown_glazed_terracotta"] = brown_glazed_terracotta;
+    (*ret)["minecraft:brown_mushroom"] = brown_mushroom;
+    (*ret)["minecraft:brown_mushroom_block"] = brown_mushroom_block;
+    (*ret)["minecraft:brown_shulker_box"] = brown_shulker_box;
+    (*ret)["minecraft:brown_stained_glass"] = brown_stained_glass;
+    (*ret)["minecraft:brown_stained_glass_pane"] = brown_stained_glass_pane;
+    (*ret)["minecraft:brown_terracotta"] = brown_terracotta;
+    (*ret)["minecraft:brown_wall_banner"] = brown_wall_banner;
+    (*ret)["minecraft:brown_wool"] = brown_wool;
+    (*ret)["minecraft:bubble_column"] = bubble_column;
+    (*ret)["minecraft:bubble_coral"] = bubble_coral;
+    (*ret)["minecraft:bubble_coral_block"] = bubble_coral_block;
+    (*ret)["minecraft:bubble_coral_fan"] = bubble_coral_fan;
+    (*ret)["minecraft:bubble_coral_wall_fan"] = bubble_coral_wall_fan;
+    (*ret)["minecraft:cactus"] = cactus;
+    (*ret)["minecraft:cake"] = cake;
+    (*ret)["minecraft:campfire"] = campfire;
+    (*ret)["minecraft:carrots"] = carrots;
+    (*ret)["minecraft:cartography_table"] = cartography_table;
+    (*ret)["minecraft:carved_pumpkin"] = carved_pumpkin;
+    (*ret)["minecraft:cauldron"] = water_cauldron;
+    (*ret)["minecraft:cave_air"] = cave_air;
+    (*ret)["minecraft:chain_command_block"] = chain_command_block;
+    (*ret)["minecraft:chest"] = chest;
+    (*ret)["minecraft:chipped_anvil"] = chipped_anvil;
+    (*ret)["minecraft:chiseled_quartz_block"] = chiseled_quartz_block;
+    (*ret)["minecraft:chiseled_red_sandstone"] = chiseled_red_sandstone;
+    (*ret)["minecraft:chiseled_sandstone"] = chiseled_sandstone;
+    (*ret)["minecraft:chiseled_stone_bricks"] = chiseled_stone_bricks;
+    (*ret)["minecraft:chorus_flower"] = chorus_flower;
+    (*ret)["minecraft:chorus_plant"] = chorus_plant;
+    (*ret)["minecraft:clay"] = clay;
+    (*ret)["minecraft:coal_ore"] = coal_ore;
+    (*ret)["minecraft:coarse_dirt"] = coarse_dirt;
+    (*ret)["minecraft:cobblestone"] = cobblestone;
+    (*ret)["minecraft:cobblestone_slab"] = cobblestone_slab;
+    (*ret)["minecraft:cobblestone_stairs"] = cobblestone_stairs;
+    (*ret)["minecraft:cobblestone_wall"] = cobblestone_wall;
+    (*ret)["minecraft:cobweb"] = cobweb;
+    (*ret)["minecraft:cocoa"] = cocoa;
+    (*ret)["minecraft:command_block"] = command_block;
+    (*ret)["minecraft:composter"] = composter;
+    (*ret)["minecraft:conduit"] = conduit;
+    (*ret)["minecraft:cornflower"] = cornflower;
+    (*ret)["minecraft:cracked_stone_bricks"] = cracked_stone_bricks;
+    (*ret)["minecraft:crafting_table"] = crafting_table;
+    (*ret)["minecraft:creeper_head"] = creeper_head;
+    (*ret)["minecraft:creeper_wall_head"] = creeper_wall_head;
+    (*ret)["minecraft:cut_red_sandstone"] = cut_red_sandstone;
+    (*ret)["minecraft:cut_red_sandstone_slab"] = cut_red_sandstone_slab;
+    (*ret)["minecraft:cut_sandstone"] = cut_sandstone;
+    (*ret)["minecraft:cut_sandstone_slab"] = cut_sandstone_slab;
+    (*ret)["minecraft:cyan_banner"] = cyan_banner;
+    (*ret)["minecraft:cyan_bed"] = cyan_bed;
+    (*ret)["minecraft:cyan_carpet"] = cyan_carpet;
+    (*ret)["minecraft:cyan_concrete"] = cyan_concrete;
+    (*ret)["minecraft:cyan_concrete_powder"] = cyan_concrete_powder;
+    (*ret)["minecraft:cyan_glazed_terracotta"] = cyan_glazed_terracotta;
+    (*ret)["minecraft:cyan_shulker_box"] = cyan_shulker_box;
+    (*ret)["minecraft:cyan_stained_glass"] = cyan_stained_glass;
+    (*ret)["minecraft:cyan_stained_glass_pane"] = cyan_stained_glass_pane;
+    (*ret)["minecraft:cyan_terracotta"] = cyan_terracotta;
+    (*ret)["minecraft:cyan_wall_banner"] = cyan_wall_banner;
+    (*ret)["minecraft:cyan_wool"] = cyan_wool;
+    (*ret)["minecraft:damaged_anvil"] = damaged_anvil;
+    (*ret)["minecraft:dandelion"] = dandelion;
+    (*ret)["minecraft:dark_oak_button"] = dark_oak_button;
+    (*ret)["minecraft:dark_oak_door"] = dark_oak_door;
+    (*ret)["minecraft:dark_oak_fence"] = dark_oak_fence;
+    (*ret)["minecraft:dark_oak_fence_gate"] = dark_oak_fence_gate;
+    (*ret)["minecraft:dark_oak_leaves"] = dark_oak_leaves;
+    (*ret)["minecraft:dark_oak_log"] = dark_oak_log;
+    (*ret)["minecraft:dark_oak_planks"] = dark_oak_planks;
+    (*ret)["minecraft:dark_oak_pressure_plate"] = dark_oak_pressure_plate;
+    (*ret)["minecraft:dark_oak_sapling"] = dark_oak_sapling;
+    (*ret)["minecraft:dark_oak_sign"] = dark_oak_sign;
+    (*ret)["minecraft:dark_oak_slab"] = dark_oak_slab;
+    (*ret)["minecraft:dark_oak_stairs"] = dark_oak_stairs;
+    (*ret)["minecraft:dark_oak_trapdoor"] = dark_oak_trapdoor;
+    (*ret)["minecraft:dark_oak_wall_sign"] = dark_oak_wall_sign;
+    (*ret)["minecraft:dark_oak_wood"] = dark_oak_wood;
+    (*ret)["minecraft:dark_prismarine"] = dark_prismarine;
+    (*ret)["minecraft:dark_prismarine_slab"] = dark_prismarine_slab;
+    (*ret)["minecraft:dark_prismarine_stairs"] = dark_prismarine_stairs;
+    (*ret)["minecraft:daylight_detector"] = daylight_detector;
+    (*ret)["minecraft:dead_brain_coral"] = dead_brain_coral;
+    (*ret)["minecraft:dead_brain_coral_block"] = dead_brain_coral_block;
+    (*ret)["minecraft:dead_brain_coral_fan"] = dead_brain_coral_fan;
+    (*ret)["minecraft:dead_brain_coral_wall_fan"] = dead_brain_coral_wall_fan;
+    (*ret)["minecraft:dead_bubble_coral"] = dead_bubble_coral;
+    (*ret)["minecraft:dead_bubble_coral_block"] = dead_bubble_coral_block;
+    (*ret)["minecraft:dead_bubble_coral_fan"] = dead_bubble_coral_fan;
+    (*ret)["minecraft:dead_bubble_coral_wall_fan"] = dead_bubble_coral_wall_fan;
+    (*ret)["minecraft:dead_bush"] = dead_bush;
+    (*ret)["minecraft:dead_fire_coral"] = dead_fire_coral;
+    (*ret)["minecraft:dead_fire_coral_block"] = dead_fire_coral_block;
+    (*ret)["minecraft:dead_fire_coral_fan"] = dead_fire_coral_fan;
+    (*ret)["minecraft:dead_fire_coral_wall_fan"] = dead_fire_coral_wall_fan;
+    (*ret)["minecraft:dead_horn_coral"] = dead_horn_coral;
+    (*ret)["minecraft:dead_horn_coral_block"] = dead_horn_coral_block;
+    (*ret)["minecraft:dead_horn_coral_fan"] = dead_horn_coral_fan;
+    (*ret)["minecraft:dead_horn_coral_wall_fan"] = dead_horn_coral_wall_fan;
+    (*ret)["minecraft:dead_tube_coral"] = dead_tube_coral;
+    (*ret)["minecraft:dead_tube_coral_block"] = dead_tube_coral_block;
+    (*ret)["minecraft:dead_tube_coral_fan"] = dead_tube_coral_fan;
+    (*ret)["minecraft:dead_tube_coral_wall_fan"] = dead_tube_coral_wall_fan;
+    (*ret)["minecraft:detector_rail"] = detector_rail;
+    (*ret)["minecraft:diamond_ore"] = diamond_ore;
+    (*ret)["minecraft:diorite"] = diorite;
+    (*ret)["minecraft:diorite_slab"] = diorite_slab;
+    (*ret)["minecraft:diorite_stairs"] = diorite_stairs;
+    (*ret)["minecraft:diorite_wall"] = diorite_wall;
+    (*ret)["minecraft:dirt"] = dirt;
+    (*ret)["minecraft:dispenser"] = dispenser;
+    (*ret)["minecraft:dragon_egg"] = dragon_egg;
+    (*ret)["minecraft:dragon_head"] = dragon_head;
+    (*ret)["minecraft:dragon_wall_head"] = dragon_wall_head;
+    (*ret)["minecraft:dried_kelp_block"] = dried_kelp_block;
+    (*ret)["minecraft:dropper"] = dropper;
+    (*ret)["minecraft:emerald_ore"] = emerald_ore;
+    (*ret)["minecraft:enchanting_table"] = enchanting_table;
+    (*ret)["minecraft:end_gateway"] = end_gateway;
+    (*ret)["minecraft:end_portal"] = end_portal;
+    (*ret)["minecraft:end_portal_frame"] = end_portal_frame;
+    (*ret)["minecraft:end_rod"] = end_rod;
+    (*ret)["minecraft:end_stone"] = end_stone;
+    (*ret)["minecraft:end_stone_brick_slab"] = end_stone_brick_slab;
+    (*ret)["minecraft:end_stone_brick_stairs"] = end_stone_brick_stairs;
+    (*ret)["minecraft:end_stone_brick_wall"] = end_stone_brick_wall;
+    (*ret)["minecraft:end_stone_bricks"] = end_stone_bricks;
+    (*ret)["minecraft:ender_chest"] = ender_chest;
+    (*ret)["minecraft:farmland"] = farmland;
+    (*ret)["minecraft:fern"] = fern;
+    (*ret)["minecraft:fire"] = fire;
+    (*ret)["minecraft:fire_coral"] = fire_coral;
+    (*ret)["minecraft:fire_coral_block"] = fire_coral_block;
+    (*ret)["minecraft:fire_coral_fan"] = fire_coral_fan;
+    (*ret)["minecraft:fire_coral_wall_fan"] = fire_coral_wall_fan;
+    (*ret)["minecraft:fletching_table"] = fletching_table;
+    (*ret)["minecraft:flower_pot"] = flower_pot;
+    (*ret)["minecraft:frosted_ice"] = frosted_ice;
+    (*ret)["minecraft:furnace"] = furnace;
+    (*ret)["minecraft:glass"] = glass;
+    (*ret)["minecraft:glass_pane"] = glass_pane;
+    (*ret)["minecraft:glowstone"] = glowstone;
+    (*ret)["minecraft:gold_ore"] = gold_ore;
+    (*ret)["minecraft:granite"] = granite;
+    (*ret)["minecraft:granite_slab"] = granite_slab;
+    (*ret)["minecraft:granite_stairs"] = granite_stairs;
+    (*ret)["minecraft:granite_wall"] = granite_wall;
+    (*ret)["minecraft:grass"] = grass;
+    (*ret)["minecraft:grass_block"] = grass_block;
+    (*ret)["minecraft:grass_path"] = dirt_path;
+    (*ret)["minecraft:gravel"] = gravel;
+    (*ret)["minecraft:gray_banner"] = gray_banner;
+    (*ret)["minecraft:gray_bed"] = gray_bed;
+    (*ret)["minecraft:gray_carpet"] = gray_carpet;
+    (*ret)["minecraft:gray_concrete"] = gray_concrete;
+    (*ret)["minecraft:gray_concrete_powder"] = gray_concrete_powder;
+    (*ret)["minecraft:gray_glazed_terracotta"] = gray_glazed_terracotta;
+    (*ret)["minecraft:gray_shulker_box"] = gray_shulker_box;
+    (*ret)["minecraft:gray_stained_glass"] = gray_stained_glass;
+    (*ret)["minecraft:gray_stained_glass_pane"] = gray_stained_glass_pane;
+    (*ret)["minecraft:gray_terracotta"] = gray_terracotta;
+    (*ret)["minecraft:gray_wall_banner"] = gray_wall_banner;
+    (*ret)["minecraft:gray_wool"] = gray_wool;
+    (*ret)["minecraft:green_banner"] = green_banner;
+    (*ret)["minecraft:green_bed"] = green_bed;
+    (*ret)["minecraft:green_carpet"] = green_carpet;
+    (*ret)["minecraft:green_concrete"] = green_concrete;
+    (*ret)["minecraft:green_concrete_powder"] = green_concrete_powder;
+    (*ret)["minecraft:green_glazed_terracotta"] = green_glazed_terracotta;
+    (*ret)["minecraft:green_shulker_box"] = green_shulker_box;
+    (*ret)["minecraft:green_stained_glass"] = green_stained_glass;
+    (*ret)["minecraft:green_stained_glass_pane"] = green_stained_glass_pane;
+    (*ret)["minecraft:green_terracotta"] = green_terracotta;
+    (*ret)["minecraft:green_wall_banner"] = green_wall_banner;
+    (*ret)["minecraft:green_wool"] = green_wool;
+    (*ret)["minecraft:grindstone"] = grindstone;
+    (*ret)["minecraft:hay_block"] = hay_block;
+    (*ret)["minecraft:heavy_weighted_pressure_plate"] = heavy_weighted_pressure_plate;
+    (*ret)["minecraft:hopper"] = hopper;
+    (*ret)["minecraft:horn_coral"] = horn_coral;
+    (*ret)["minecraft:horn_coral_block"] = horn_coral_block;
+    (*ret)["minecraft:horn_coral_fan"] = horn_coral_fan;
+    (*ret)["minecraft:horn_coral_wall_fan"] = horn_coral_wall_fan;
+    (*ret)["minecraft:ice"] = ice;
+    (*ret)["minecraft:infested_chiseled_stone_bricks"] = infested_chiseled_stone_bricks;
+    (*ret)["minecraft:infested_cobblestone"] = infested_cobblestone;
+    (*ret)["minecraft:infested_cracked_stone_bricks"] = infested_cracked_stone_bricks;
+    (*ret)["minecraft:infested_mossy_stone_bricks"] = infested_mossy_stone_bricks;
+    (*ret)["minecraft:infested_stone"] = infested_stone;
+    (*ret)["minecraft:infested_stone_bricks"] = infested_stone_bricks;
+    (*ret)["minecraft:iron_bars"] = iron_bars;
+    (*ret)["minecraft:iron_door"] = iron_door;
+    (*ret)["minecraft:iron_ore"] = iron_ore;
+    (*ret)["minecraft:iron_trapdoor"] = iron_trapdoor;
+    (*ret)["minecraft:jack_o_lantern"] = jack_o_lantern;
+    (*ret)["minecraft:jigsaw"] = jigsaw;
+    (*ret)["minecraft:jukebox"] = jukebox;
+    (*ret)["minecraft:jungle_button"] = jungle_button;
+    (*ret)["minecraft:jungle_door"] = jungle_door;
+    (*ret)["minecraft:jungle_fence"] = jungle_fence;
+    (*ret)["minecraft:jungle_fence_gate"] = jungle_fence_gate;
+    (*ret)["minecraft:jungle_leaves"] = jungle_leaves;
+    (*ret)["minecraft:jungle_log"] = jungle_log;
+    (*ret)["minecraft:jungle_planks"] = jungle_planks;
+    (*ret)["minecraft:jungle_pressure_plate"] = jungle_pressure_plate;
+    (*ret)["minecraft:jungle_sapling"] = jungle_sapling;
+    (*ret)["minecraft:jungle_sign"] = jungle_sign;
+    (*ret)["minecraft:jungle_slab"] = jungle_slab;
+    (*ret)["minecraft:jungle_stairs"] = jungle_stairs;
+    (*ret)["minecraft:jungle_trapdoor"] = jungle_trapdoor;
+    (*ret)["minecraft:jungle_wall_sign"] = jungle_wall_sign;
+    (*ret)["minecraft:jungle_wood"] = jungle_wood;
+    (*ret)["minecraft:kelp"] = kelp;
+    (*ret)["minecraft:kelp_plant"] = kelp_plant;
+    (*ret)["minecraft:ladder"] = ladder;
+    (*ret)["minecraft:lantern"] = lantern;
+    (*ret)["minecraft:lapis_block"] = lapis_block;
+    (*ret)["minecraft:lapis_ore"] = lapis_ore;
+    (*ret)["minecraft:large_fern"] = large_fern;
+    (*ret)["minecraft:lava"] = lava;
+    (*ret)["minecraft:lectern"] = lectern;
+    (*ret)["minecraft:lever"] = lever;
+    (*ret)["minecraft:light_blue_banner"] = light_blue_banner;
+    (*ret)["minecraft:light_blue_bed"] = light_blue_bed;
+    (*ret)["minecraft:light_blue_carpet"] = light_blue_carpet;
+    (*ret)["minecraft:light_blue_concrete"] = light_blue_concrete;
+    (*ret)["minecraft:light_blue_concrete_powder"] = light_blue_concrete_powder;
+    (*ret)["minecraft:light_blue_glazed_terracotta"] = light_blue_glazed_terracotta;
+    (*ret)["minecraft:light_blue_shulker_box"] = light_blue_shulker_box;
+    (*ret)["minecraft:light_blue_stained_glass"] = light_blue_stained_glass;
+    (*ret)["minecraft:light_blue_stained_glass_pane"] = light_blue_stained_glass_pane;
+    (*ret)["minecraft:light_blue_terracotta"] = light_blue_terracotta;
+    (*ret)["minecraft:light_blue_wall_banner"] = light_blue_wall_banner;
+    (*ret)["minecraft:light_blue_wool"] = light_blue_wool;
+    (*ret)["minecraft:light_gray_banner"] = light_gray_banner;
+    (*ret)["minecraft:light_gray_bed"] = light_gray_bed;
+    (*ret)["minecraft:light_gray_carpet"] = light_gray_carpet;
+    (*ret)["minecraft:light_gray_concrete"] = light_gray_concrete;
+    (*ret)["minecraft:light_gray_concrete_powder"] = light_gray_concrete_powder;
+    (*ret)["minecraft:light_gray_glazed_terracotta"] = light_gray_glazed_terracotta;
+    (*ret)["minecraft:light_gray_shulker_box"] = light_gray_shulker_box;
+    (*ret)["minecraft:light_gray_stained_glass"] = light_gray_stained_glass;
+    (*ret)["minecraft:light_gray_stained_glass_pane"] = light_gray_stained_glass_pane;
+    (*ret)["minecraft:light_gray_terracotta"] = light_gray_terracotta;
+    (*ret)["minecraft:light_gray_wall_banner"] = light_gray_wall_banner;
+    (*ret)["minecraft:light_gray_wool"] = light_gray_wool;
+    (*ret)["minecraft:light_weighted_pressure_plate"] = light_weighted_pressure_plate;
+    (*ret)["minecraft:lilac"] = lilac;
+    (*ret)["minecraft:lily_of_the_valley"] = lily_of_the_valley;
+    (*ret)["minecraft:lily_pad"] = lily_pad;
+    (*ret)["minecraft:lime_banner"] = lime_banner;
+    (*ret)["minecraft:lime_bed"] = lime_bed;
+    (*ret)["minecraft:lime_carpet"] = lime_carpet;
+    (*ret)["minecraft:lime_concrete"] = lime_concrete;
+    (*ret)["minecraft:lime_concrete_powder"] = lime_concrete_powder;
+    (*ret)["minecraft:lime_glazed_terracotta"] = lime_glazed_terracotta;
+    (*ret)["minecraft:lime_shulker_box"] = lime_shulker_box;
+    (*ret)["minecraft:lime_stained_glass"] = lime_stained_glass;
+    (*ret)["minecraft:lime_stained_glass_pane"] = lime_stained_glass_pane;
+    (*ret)["minecraft:lime_terracotta"] = lime_terracotta;
+    (*ret)["minecraft:lime_wall_banner"] = lime_wall_banner;
+    (*ret)["minecraft:lime_wool"] = lime_wool;
+    (*ret)["minecraft:loom"] = loom;
+    (*ret)["minecraft:magenta_banner"] = magenta_banner;
+    (*ret)["minecraft:magenta_bed"] = magenta_bed;
+    (*ret)["minecraft:magenta_carpet"] = magenta_carpet;
+    (*ret)["minecraft:magenta_concrete"] = magenta_concrete;
+    (*ret)["minecraft:magenta_concrete_powder"] = magenta_concrete_powder;
+    (*ret)["minecraft:magenta_glazed_terracotta"] = magenta_glazed_terracotta;
+    (*ret)["minecraft:magenta_shulker_box"] = magenta_shulker_box;
+    (*ret)["minecraft:magenta_stained_glass"] = magenta_stained_glass;
+    (*ret)["minecraft:magenta_stained_glass_pane"] = magenta_stained_glass_pane;
+    (*ret)["minecraft:magenta_terracotta"] = magenta_terracotta;
+    (*ret)["minecraft:magenta_wall_banner"] = magenta_wall_banner;
+    (*ret)["minecraft:magenta_wool"] = magenta_wool;
+    (*ret)["minecraft:magma_block"] = magma_block;
+    (*ret)["minecraft:melon"] = melon;
+    (*ret)["minecraft:melon_stem"] = melon_stem;
+    (*ret)["minecraft:mossy_cobblestone"] = mossy_cobblestone;
+    (*ret)["minecraft:mossy_cobblestone_slab"] = mossy_cobblestone_slab;
+    (*ret)["minecraft:mossy_cobblestone_stairs"] = mossy_cobblestone_stairs;
+    (*ret)["minecraft:mossy_cobblestone_wall"] = mossy_cobblestone_wall;
+    (*ret)["minecraft:mossy_stone_brick_slab"] = mossy_stone_brick_slab;
+    (*ret)["minecraft:mossy_stone_brick_stairs"] = mossy_stone_brick_stairs;
+    (*ret)["minecraft:mossy_stone_brick_wall"] = mossy_stone_brick_wall;
+    (*ret)["minecraft:mossy_stone_bricks"] = mossy_stone_bricks;
+    (*ret)["minecraft:moving_piston"] = moving_piston;
+    (*ret)["minecraft:mushroom_stem"] = mushroom_stem;
+    (*ret)["minecraft:mycelium"] = mycelium;
+    (*ret)["minecraft:nether_brick_fence"] = nether_brick_fence;
+    (*ret)["minecraft:nether_brick_slab"] = nether_brick_slab;
+    (*ret)["minecraft:nether_brick_stairs"] = nether_brick_stairs;
+    (*ret)["minecraft:nether_brick_wall"] = nether_brick_wall;
+    (*ret)["minecraft:nether_bricks"] = nether_bricks;
+    (*ret)["minecraft:nether_portal"] = nether_portal;
+    (*ret)["minecraft:nether_quartz_ore"] = nether_quartz_ore;
+    (*ret)["minecraft:nether_wart"] = nether_wart;
+    (*ret)["minecraft:nether_wart_block"] = nether_wart_block;
+    (*ret)["minecraft:netherrack"] = netherrack;
+    (*ret)["minecraft:note_block"] = note_block;
+    (*ret)["minecraft:oak_button"] = oak_button;
+    (*ret)["minecraft:oak_door"] = oak_door;
+    (*ret)["minecraft:oak_fence"] = oak_fence;
+    (*ret)["minecraft:oak_fence_gate"] = oak_fence_gate;
+    (*ret)["minecraft:oak_leaves"] = oak_leaves;
+    (*ret)["minecraft:oak_log"] = oak_log;
+    (*ret)["minecraft:oak_planks"] = oak_planks;
+    (*ret)["minecraft:oak_pressure_plate"] = oak_pressure_plate;
+    (*ret)["minecraft:oak_sapling"] = oak_sapling;
+    (*ret)["minecraft:oak_sign"] = oak_sign;
+    (*ret)["minecraft:oak_slab"] = oak_slab;
+    (*ret)["minecraft:oak_stairs"] = oak_stairs;
+    (*ret)["minecraft:oak_trapdoor"] = oak_trapdoor;
+    (*ret)["minecraft:oak_wall_sign"] = oak_wall_sign;
+    (*ret)["minecraft:oak_wood"] = oak_wood;
+    (*ret)["minecraft:observer"] = observer;
+    (*ret)["minecraft:obsidian"] = obsidian;
+    (*ret)["minecraft:orange_banner"] = orange_banner;
+    (*ret)["minecraft:orange_bed"] = orange_bed;
+    (*ret)["minecraft:orange_carpet"] = orange_carpet;
+    (*ret)["minecraft:orange_concrete"] = orange_concrete;
+    (*ret)["minecraft:orange_concrete_powder"] = orange_concrete_powder;
+    (*ret)["minecraft:orange_glazed_terracotta"] = orange_glazed_terracotta;
+    (*ret)["minecraft:orange_shulker_box"] = orange_shulker_box;
+    (*ret)["minecraft:orange_stained_glass"] = orange_stained_glass;
+    (*ret)["minecraft:orange_stained_glass_pane"] = orange_stained_glass_pane;
+    (*ret)["minecraft:orange_terracotta"] = orange_terracotta;
+    (*ret)["minecraft:orange_tulip"] = orange_tulip;
+    (*ret)["minecraft:orange_wall_banner"] = orange_wall_banner;
+    (*ret)["minecraft:orange_wool"] = orange_wool;
+    (*ret)["minecraft:oxeye_daisy"] = oxeye_daisy;
+    (*ret)["minecraft:packed_ice"] = packed_ice;
+    (*ret)["minecraft:peony"] = peony;
+    (*ret)["minecraft:petrified_oak_slab"] = petrified_oak_slab;
+    (*ret)["minecraft:pink_banner"] = pink_banner;
+    (*ret)["minecraft:pink_bed"] = pink_bed;
+    (*ret)["minecraft:pink_carpet"] = pink_carpet;
+    (*ret)["minecraft:pink_concrete"] = pink_concrete;
+    (*ret)["minecraft:pink_concrete_powder"] = pink_concrete_powder;
+    (*ret)["minecraft:pink_glazed_terracotta"] = pink_glazed_terracotta;
+    (*ret)["minecraft:pink_shulker_box"] = pink_shulker_box;
+    (*ret)["minecraft:pink_stained_glass"] = pink_stained_glass;
+    (*ret)["minecraft:pink_stained_glass_pane"] = pink_stained_glass_pane;
+    (*ret)["minecraft:pink_terracotta"] = pink_terracotta;
+    (*ret)["minecraft:pink_tulip"] = pink_tulip;
+    (*ret)["minecraft:pink_wall_banner"] = pink_wall_banner;
+    (*ret)["minecraft:pink_wool"] = pink_wool;
+    (*ret)["minecraft:piston"] = piston;
+    (*ret)["minecraft:piston_head"] = piston_head;
+    (*ret)["minecraft:player_head"] = player_head;
+    (*ret)["minecraft:player_wall_head"] = player_wall_head;
+    (*ret)["minecraft:podzol"] = podzol;
+    (*ret)["minecraft:polished_andesite"] = polished_andesite;
+    (*ret)["minecraft:polished_andesite_slab"] = polished_andesite_slab;
+    (*ret)["minecraft:polished_andesite_stairs"] = polished_andesite_stairs;
+    (*ret)["minecraft:polished_diorite"] = polished_diorite;
+    (*ret)["minecraft:polished_diorite_slab"] = polished_diorite_slab;
+    (*ret)["minecraft:polished_diorite_stairs"] = polished_diorite_stairs;
+    (*ret)["minecraft:polished_granite"] = polished_granite;
+    (*ret)["minecraft:polished_granite_slab"] = polished_granite_slab;
+    (*ret)["minecraft:polished_granite_stairs"] = polished_granite_stairs;
+    (*ret)["minecraft:poppy"] = poppy;
+    (*ret)["minecraft:potatoes"] = potatoes;
+    (*ret)["minecraft:potted_acacia_sapling"] = potted_acacia_sapling;
+    (*ret)["minecraft:potted_allium"] = potted_allium;
+    (*ret)["minecraft:potted_azure_bluet"] = potted_azure_bluet;
+    (*ret)["minecraft:potted_bamboo"] = potted_bamboo;
+    (*ret)["minecraft:potted_birch_sapling"] = potted_birch_sapling;
+    (*ret)["minecraft:potted_blue_orchid"] = potted_blue_orchid;
+    (*ret)["minecraft:potted_brown_mushroom"] = potted_brown_mushroom;
+    (*ret)["minecraft:potted_cactus"] = potted_cactus;
+    (*ret)["minecraft:potted_cornflower"] = potted_cornflower;
+    (*ret)["minecraft:potted_dandelion"] = potted_dandelion;
+    (*ret)["minecraft:potted_dark_oak_sapling"] = potted_dark_oak_sapling;
+    (*ret)["minecraft:potted_dead_bush"] = potted_dead_bush;
+    (*ret)["minecraft:potted_fern"] = potted_fern;
+    (*ret)["minecraft:potted_jungle_sapling"] = potted_jungle_sapling;
+    (*ret)["minecraft:potted_lily_of_the_valley"] = potted_lily_of_the_valley;
+    (*ret)["minecraft:potted_oak_sapling"] = potted_oak_sapling;
+    (*ret)["minecraft:potted_orange_tulip"] = potted_orange_tulip;
+    (*ret)["minecraft:potted_oxeye_daisy"] = potted_oxeye_daisy;
+    (*ret)["minecraft:potted_pink_tulip"] = potted_pink_tulip;
+    (*ret)["minecraft:potted_poppy"] = potted_poppy;
+    (*ret)["minecraft:potted_red_mushroom"] = potted_red_mushroom;
+    (*ret)["minecraft:potted_red_tulip"] = potted_red_tulip;
+    (*ret)["minecraft:potted_spruce_sapling"] = potted_spruce_sapling;
+    (*ret)["minecraft:potted_white_tulip"] = potted_white_tulip;
+    (*ret)["minecraft:potted_wither_rose"] = potted_wither_rose;
+    (*ret)["minecraft:powered_rail"] = powered_rail;
+    (*ret)["minecraft:prismarine"] = prismarine;
+    (*ret)["minecraft:prismarine_brick_slab"] = prismarine_brick_slab;
+    (*ret)["minecraft:prismarine_brick_stairs"] = prismarine_brick_stairs;
+    (*ret)["minecraft:prismarine_bricks"] = prismarine_bricks;
+    (*ret)["minecraft:prismarine_slab"] = prismarine_slab;
+    (*ret)["minecraft:prismarine_stairs"] = prismarine_stairs;
+    (*ret)["minecraft:prismarine_wall"] = prismarine_wall;
+    (*ret)["minecraft:pumpkin"] = pumpkin;
+    (*ret)["minecraft:pumpkin_stem"] = pumpkin_stem;
+    (*ret)["minecraft:purple_banner"] = purple_banner;
+    (*ret)["minecraft:purple_bed"] = purple_bed;
+    (*ret)["minecraft:purple_carpet"] = purple_carpet;
+    (*ret)["minecraft:purple_concrete"] = purple_concrete;
+    (*ret)["minecraft:purple_concrete_powder"] = purple_concrete_powder;
+    (*ret)["minecraft:purple_glazed_terracotta"] = purple_glazed_terracotta;
+    (*ret)["minecraft:purple_shulker_box"] = purple_shulker_box;
+    (*ret)["minecraft:purple_stained_glass"] = purple_stained_glass;
+    (*ret)["minecraft:purple_stained_glass_pane"] = purple_stained_glass_pane;
+    (*ret)["minecraft:purple_terracotta"] = purple_terracotta;
+    (*ret)["minecraft:purple_wall_banner"] = purple_wall_banner;
+    (*ret)["minecraft:purple_wool"] = purple_wool;
+    (*ret)["minecraft:purpur_block"] = purpur_block;
+    (*ret)["minecraft:purpur_pillar"] = purpur_pillar;
+    (*ret)["minecraft:purpur_slab"] = purpur_slab;
+    (*ret)["minecraft:purpur_stairs"] = purpur_stairs;
+    (*ret)["minecraft:quartz_pillar"] = quartz_pillar;
+    (*ret)["minecraft:quartz_slab"] = quartz_slab;
+    (*ret)["minecraft:quartz_stairs"] = quartz_stairs;
+    (*ret)["minecraft:rail"] = rail;
+    (*ret)["minecraft:red_banner"] = red_banner;
+    (*ret)["minecraft:red_bed"] = red_bed;
+    (*ret)["minecraft:red_carpet"] = red_carpet;
+    (*ret)["minecraft:red_concrete"] = red_concrete;
+    (*ret)["minecraft:red_concrete_powder"] = red_concrete_powder;
+    (*ret)["minecraft:red_glazed_terracotta"] = red_glazed_terracotta;
+    (*ret)["minecraft:red_mushroom"] = red_mushroom;
+    (*ret)["minecraft:red_mushroom_block"] = red_mushroom_block;
+    (*ret)["minecraft:red_nether_brick_slab"] = red_nether_brick_slab;
+    (*ret)["minecraft:red_nether_brick_stairs"] = red_nether_brick_stairs;
+    (*ret)["minecraft:red_nether_brick_wall"] = red_nether_brick_wall;
+    (*ret)["minecraft:red_nether_bricks"] = red_nether_bricks;
+    (*ret)["minecraft:red_sand"] = red_sand;
+    (*ret)["minecraft:red_sandstone"] = red_sandstone;
+    (*ret)["minecraft:red_sandstone_slab"] = red_sandstone_slab;
+    (*ret)["minecraft:red_sandstone_stairs"] = red_sandstone_stairs;
+    (*ret)["minecraft:red_sandstone_wall"] = red_sandstone_wall;
+    (*ret)["minecraft:red_shulker_box"] = red_shulker_box;
+    (*ret)["minecraft:red_stained_glass"] = red_stained_glass;
+    (*ret)["minecraft:red_stained_glass_pane"] = red_stained_glass_pane;
+    (*ret)["minecraft:red_terracotta"] = red_terracotta;
+    (*ret)["minecraft:red_tulip"] = red_tulip;
+    (*ret)["minecraft:red_wall_banner"] = red_wall_banner;
+    (*ret)["minecraft:red_wool"] = red_wool;
+    (*ret)["minecraft:comparator"] = comparator;
+    (*ret)["minecraft:redstone_wire"] = redstone_wire;
+    (*ret)["minecraft:redstone_lamp"] = redstone_lamp;
+    (*ret)["minecraft:redstone_ore"] = redstone_ore;
+    (*ret)["minecraft:repeater"] = repeater;
+    (*ret)["minecraft:redstone_torch"] = redstone_torch;
+    (*ret)["minecraft:redstone_wall_torch"] = redstone_wall_torch;
+    (*ret)["minecraft:repeating_command_block"] = repeating_command_block;
+    (*ret)["minecraft:rose_bush"] = rose_bush;
+    (*ret)["minecraft:sand"] = sand;
+    (*ret)["minecraft:sandstone"] = sandstone;
+    (*ret)["minecraft:sandstone_slab"] = sandstone_slab;
+    (*ret)["minecraft:sandstone_stairs"] = sandstone_stairs;
+    (*ret)["minecraft:sandstone_wall"] = sandstone_wall;
+    (*ret)["minecraft:scaffolding"] = scaffolding;
+    (*ret)["minecraft:sea_lantern"] = sea_lantern;
+    (*ret)["minecraft:sea_pickle"] = sea_pickle;
+    (*ret)["minecraft:seagrass"] = seagrass;
+    (*ret)["minecraft:shulker_box"] = shulker_box;
+    (*ret)["minecraft:skeleton_skull"] = skeleton_skull;
+    (*ret)["minecraft:skeleton_wall_skull"] = skeleton_wall_skull;
+    (*ret)["minecraft:slime_block"] = slime_block;
+    (*ret)["minecraft:smithing_table"] = smithing_table;
+    (*ret)["minecraft:smoker"] = smoker;
+    (*ret)["minecraft:smooth_quartz"] = smooth_quartz;
+    (*ret)["minecraft:smooth_quartz_slab"] = smooth_quartz_slab;
+    (*ret)["minecraft:smooth_quartz_stairs"] = smooth_quartz_stairs;
+    (*ret)["minecraft:smooth_red_sandstone"] = smooth_red_sandstone;
+    (*ret)["minecraft:smooth_red_sandstone_slab"] = smooth_red_sandstone_slab;
+    (*ret)["minecraft:smooth_red_sandstone_stairs"] = smooth_red_sandstone_stairs;
+    (*ret)["minecraft:smooth_sandstone"] = smooth_sandstone;
+    (*ret)["minecraft:smooth_sandstone_slab"] = smooth_sandstone_slab;
+    (*ret)["minecraft:smooth_sandstone_stairs"] = smooth_sandstone_stairs;
+    (*ret)["minecraft:smooth_stone"] = smooth_stone;
+    (*ret)["minecraft:smooth_stone_slab"] = smooth_stone_slab;
+    (*ret)["minecraft:snow"] = snow;
+    (*ret)["minecraft:snow_block"] = snow_block;
+    (*ret)["minecraft:soul_sand"] = soul_sand;
+    (*ret)["minecraft:spawner"] = spawner;
+    (*ret)["minecraft:sponge"] = sponge;
+    (*ret)["minecraft:spruce_button"] = spruce_button;
+    (*ret)["minecraft:spruce_door"] = spruce_door;
+    (*ret)["minecraft:spruce_fence"] = spruce_fence;
+    (*ret)["minecraft:spruce_fence_gate"] = spruce_fence_gate;
+    (*ret)["minecraft:spruce_leaves"] = spruce_leaves;
+    (*ret)["minecraft:spruce_log"] = spruce_log;
+    (*ret)["minecraft:spruce_planks"] = spruce_planks;
+    (*ret)["minecraft:spruce_pressure_plate"] = spruce_pressure_plate;
+    (*ret)["minecraft:spruce_sapling"] = spruce_sapling;
+    (*ret)["minecraft:spruce_sign"] = spruce_sign;
+    (*ret)["minecraft:spruce_slab"] = spruce_slab;
+    (*ret)["minecraft:spruce_stairs"] = spruce_stairs;
+    (*ret)["minecraft:spruce_trapdoor"] = spruce_trapdoor;
+    (*ret)["minecraft:spruce_wall_sign"] = spruce_wall_sign;
+    (*ret)["minecraft:spruce_wood"] = spruce_wood;
+    (*ret)["minecraft:sticky_piston"] = sticky_piston;
+    (*ret)["minecraft:stone"] = stone;
+    (*ret)["minecraft:stone_brick_slab"] = stone_brick_slab;
+    (*ret)["minecraft:stone_brick_stairs"] = stone_brick_stairs;
+    (*ret)["minecraft:stone_brick_wall"] = stone_brick_wall;
+    (*ret)["minecraft:stone_bricks"] = stone_bricks;
+    (*ret)["minecraft:stone_button"] = stone_button;
+    (*ret)["minecraft:stone_pressure_plate"] = stone_pressure_plate;
+    (*ret)["minecraft:stone_slab"] = stone_slab;
+    (*ret)["minecraft:stone_stairs"] = stone_stairs;
+    (*ret)["minecraft:stonecutter"] = stonecutter;
+    (*ret)["minecraft:stripped_acacia_log"] = stripped_acacia_log;
+    (*ret)["minecraft:stripped_acacia_wood"] = stripped_acacia_wood;
+    (*ret)["minecraft:stripped_birch_log"] = stripped_birch_log;
+    (*ret)["minecraft:stripped_birch_wood"] = stripped_birch_wood;
+    (*ret)["minecraft:stripped_dark_oak_log"] = stripped_dark_oak_log;
+    (*ret)["minecraft:stripped_dark_oak_wood"] = stripped_dark_oak_wood;
+    (*ret)["minecraft:stripped_jungle_log"] = stripped_jungle_log;
+    (*ret)["minecraft:stripped_jungle_wood"] = stripped_jungle_wood;
+    (*ret)["minecraft:stripped_oak_log"] = stripped_oak_log;
+    (*ret)["minecraft:stripped_oak_wood"] = stripped_oak_wood;
+    (*ret)["minecraft:stripped_spruce_log"] = stripped_spruce_log;
+    (*ret)["minecraft:stripped_spruce_wood"] = stripped_spruce_wood;
+    (*ret)["minecraft:structure_block"] = structure_block;
+    (*ret)["minecraft:structure_void"] = structure_void;
+    (*ret)["minecraft:sugar_cane"] = sugar_cane;
+    (*ret)["minecraft:sunflower"] = sunflower;
+    (*ret)["minecraft:sweet_berry_bush"] = sweet_berry_bush;
+    (*ret)["minecraft:tall_grass"] = tall_grass;
+    (*ret)["minecraft:tall_seagrass"] = tall_seagrass;
+    (*ret)["minecraft:terracotta"] = terracotta;
+    (*ret)["minecraft:tnt"] = tnt;
+    (*ret)["minecraft:torch"] = torch;
+    (*ret)["minecraft:trapped_chest"] = trapped_chest;
+    (*ret)["minecraft:tripwire"] = tripwire;
+    (*ret)["minecraft:tripwire_hook"] = tripwire_hook;
+    (*ret)["minecraft:tube_coral"] = tube_coral;
+    (*ret)["minecraft:tube_coral_block"] = tube_coral_block;
+    (*ret)["minecraft:tube_coral_fan"] = tube_coral_fan;
+    (*ret)["minecraft:tube_coral_wall_fan"] = tube_coral_wall_fan;
+    (*ret)["minecraft:turtle_egg"] = turtle_egg;
+    (*ret)["minecraft:vine"] = vine;
+    (*ret)["minecraft:void_air"] = void_air;
+    (*ret)["minecraft:wall_torch"] = wall_torch;
+    (*ret)["minecraft:water"] = water;
+    (*ret)["minecraft:wet_sponge"] = wet_sponge;
+    (*ret)["minecraft:wheat"] = wheat;
+    (*ret)["minecraft:white_banner"] = white_banner;
+    (*ret)["minecraft:white_bed"] = white_bed;
+    (*ret)["minecraft:white_carpet"] = white_carpet;
+    (*ret)["minecraft:white_concrete"] = white_concrete;
+    (*ret)["minecraft:white_concrete_powder"] = white_concrete_powder;
+    (*ret)["minecraft:white_glazed_terracotta"] = white_glazed_terracotta;
+    (*ret)["minecraft:white_shulker_box"] = white_shulker_box;
+    (*ret)["minecraft:white_stained_glass"] = white_stained_glass;
+    (*ret)["minecraft:white_stained_glass_pane"] = white_stained_glass_pane;
+    (*ret)["minecraft:white_terracotta"] = white_terracotta;
+    (*ret)["minecraft:white_tulip"] = white_tulip;
+    (*ret)["minecraft:white_wall_banner"] = white_wall_banner;
+    (*ret)["minecraft:white_wool"] = white_wool;
+    (*ret)["minecraft:wither_rose"] = wither_rose;
+    (*ret)["minecraft:wither_skeleton_skull"] = wither_skeleton_skull;
+    (*ret)["minecraft:wither_skeleton_wall_skull"] = wither_skeleton_wall_skull;
+    (*ret)["minecraft:yellow_banner"] = yellow_banner;
+    (*ret)["minecraft:yellow_bed"] = yellow_bed;
+    (*ret)["minecraft:yellow_carpet"] = yellow_carpet;
+    (*ret)["minecraft:yellow_concrete"] = yellow_concrete;
+    (*ret)["minecraft:yellow_concrete_powder"] = yellow_concrete_powder;
+    (*ret)["minecraft:yellow_glazed_terracotta"] = yellow_glazed_terracotta;
+    (*ret)["minecraft:yellow_shulker_box"] = yellow_shulker_box;
+    (*ret)["minecraft:yellow_stained_glass"] = yellow_stained_glass;
+    (*ret)["minecraft:yellow_stained_glass_pane"] = yellow_stained_glass_pane;
+    (*ret)["minecraft:yellow_terracotta"] = yellow_terracotta;
+    (*ret)["minecraft:yellow_wall_banner"] = yellow_wall_banner;
+    (*ret)["minecraft:yellow_wool"] = yellow_wool;
+    (*ret)["minecraft:zombie_head"] = zombie_head;
+    (*ret)["minecraft:zombie_wall_head"] = zombie_wall_head;
+
+    // 1.15
+    (*ret)["minecraft:bee_nest"] = bee_nest;
+    (*ret)["minecraft:beehive"] = beehive;
+    (*ret)["minecraft:honey_block"] = honey_block;
+    (*ret)["minecraft:honeycomb_block"] = honeycomb_block;
+
+    // 1.16
+    (*ret)["minecraft:crimson_nylium"] = crimson_nylium;
+    (*ret)["minecraft:warped_nylium"] = warped_nylium;
+    (*ret)["minecraft:crimson_planks"] = crimson_planks;
+    (*ret)["minecraft:warped_planks"] = warped_planks;
+    (*ret)["minecraft:nether_gold_ore"] = nether_gold_ore;
+    (*ret)["minecraft:crimson_stem"] = crimson_stem;
+    (*ret)["minecraft:warped_stem"] = warped_stem;
+    (*ret)["minecraft:stripped_crimson_stem"] = stripped_crimson_stem;
+    (*ret)["minecraft:stripped_warped_stem"] = stripped_warped_stem;
+    (*ret)["minecraft:crimson_hyphae"] = crimson_hyphae;
+    (*ret)["minecraft:warped_hyphae"] = warped_hyphae;
+    (*ret)["minecraft:crimson_slab"] = crimson_slab;
+    (*ret)["minecraft:warped_slab"] = warped_slab;
+    (*ret)["minecraft:cracked_nether_bricks"] = cracked_nether_bricks;
+    (*ret)["minecraft:chiseled_nether_bricks"] = chiseled_nether_bricks;
+    (*ret)["minecraft:crimson_stairs"] = crimson_stairs;
+    (*ret)["minecraft:warped_stairs"] = warped_stairs;
+    (*ret)["minecraft:netherite_block"] = netherite_block;
+    (*ret)["minecraft:soul_soil"] = soul_soil;
+    (*ret)["minecraft:basalt"] = basalt;
+    (*ret)["minecraft:polished_basalt"] = polished_basalt;
+    (*ret)["minecraft:ancient_debris"] = ancient_debris;
+    (*ret)["minecraft:crying_obsidian"] = crying_obsidian;
+    (*ret)["minecraft:blackstone"] = blackstone;
+    (*ret)["minecraft:blackstone_slab"] = blackstone_slab;
+    (*ret)["minecraft:blackstone_stairs"] = blackstone_stairs;
+    (*ret)["minecraft:gilded_blackstone"] = gilded_blackstone;
+    (*ret)["minecraft:polished_blackstone"] = polished_blackstone;
+    (*ret)["minecraft:polished_blackstone_slab"] = polished_blackstone_slab;
+    (*ret)["minecraft:polished_blackstone_stairs"] = polished_blackstone_stairs;
+    (*ret)["minecraft:chiseled_polished_blackstone"] = chiseled_polished_blackstone;
+    (*ret)["minecraft:polished_blackstone_bricks"] = polished_blackstone_bricks;
+    (*ret)["minecraft:polished_blackstone_brick_slab"] = polished_blackstone_brick_slab;
+    (*ret)["minecraft:polished_blackstone_brick_stairs"] = polished_blackstone_brick_stairs;
+    (*ret)["minecraft:cracked_polished_blackstone_bricks"] = cracked_polished_blackstone_bricks;
+    (*ret)["minecraft:crimson_fungus"] = crimson_fungus;
+    (*ret)["minecraft:warped_fungus"] = warped_fungus;
+    (*ret)["minecraft:crimson_roots"] = crimson_roots;
+    (*ret)["minecraft:warped_roots"] = warped_roots;
+    (*ret)["minecraft:nether_sprouts"] = nether_sprouts;
+    (*ret)["minecraft:weeping_vines"] = weeping_vines;
+    (*ret)["minecraft:twisting_vines"] = twisting_vines;
+    (*ret)["minecraft:crimson_fence"] = crimson_fence;
+    (*ret)["minecraft:warped_fence"] = warped_fence;
+    (*ret)["minecraft:soul_torch"] = soul_torch;
+    (*ret)["minecraft:chain"] = chain;
+    (*ret)["minecraft:blackstone_wall"] = blackstone_wall;
+    (*ret)["minecraft:polished_blackstone_wall"] = polished_blackstone_wall;
+    (*ret)["minecraft:polished_blackstone_brick_wall"] = polished_blackstone_brick_wall;
+    (*ret)["minecraft:soul_lantern"] = soul_lantern;
+    (*ret)["minecraft:soul_campfire"] = soul_campfire;
+    (*ret)["minecraft:shroomlight"] = shroomlight;
+    (*ret)["minecraft:lodestone"] = lodestone;
+    (*ret)["minecraft:respawn_anchor"] = respawn_anchor;
+    (*ret)["minecraft:crimson_pressure_plate"] = crimson_pressure_plate;
+    (*ret)["minecraft:warped_pressure_plate"] = warped_pressure_plate;
+    (*ret)["minecraft:crimson_trapdoor"] = crimson_trapdoor;
+    (*ret)["minecraft:warped_trapdoor"] = warped_trapdoor;
+    (*ret)["minecraft:crimson_fence_gate"] = crimson_fence_gate;
+    (*ret)["minecraft:warped_fence_gate"] = warped_fence_gate;
+    (*ret)["minecraft:crimson_button"] = crimson_button;
+    (*ret)["minecraft:warped_button"] = warped_button;
+    (*ret)["minecraft:crimson_door"] = crimson_door;
+    (*ret)["minecraft:warped_door"] = warped_door;
+    (*ret)["minecraft:target"] = target;
+    (*ret)["minecraft:twisting_vines_plant"] = twisting_vines_plant;
+    (*ret)["minecraft:warped_wart_block"] = warped_wart_block;
+    (*ret)["minecraft:quartz_bricks"] = quartz_bricks;
+    (*ret)["minecraft:stripped_crimson_hyphae"] = stripped_crimson_hyphae;
+    (*ret)["minecraft:stripped_warped_hyphae"] = stripped_warped_hyphae;
+    (*ret)["minecraft:crimson_sign"] = crimson_sign;
+    (*ret)["minecraft:warped_sign"] = warped_sign;
+    (*ret)["minecraft:polished_blackstone_pressure_plate"] = polished_blackstone_pressure_plate;
+    (*ret)["minecraft:polished_blackstone_button"] = polished_blackstone_button;
+
+    // bugfix for 1.16
+    (*ret)["minecraft:warped_wall_sign"] = warped_wall_sign;
+    (*ret)["minecraft:crimson_wall_sign"] = crimson_wall_sign;
+    (*ret)["minecraft:soul_fire"] = soul_fire;
+    (*ret)["minecraft:soul_wall_torch"] = soul_wall_torch;
+    (*ret)["minecraft:weeping_vines_plant"] = weeping_vines_plant;
+
+    // 1.17
+    (*ret)["minecraft:deepslate"] = deepslate;
+    (*ret)["minecraft:cobbled_deepslate"] = cobbled_deepslate;
+    (*ret)["minecraft:polished_deepslate"] = polished_deepslate;
+    (*ret)["minecraft:calcite"] = calcite;
+    (*ret)["minecraft:tuff"] = tuff;
+    (*ret)["minecraft:dripstone_block"] = dripstone_block;
+    (*ret)["minecraft:deepslate_coal_ore"] = deepslate_coal_ore;
+    (*ret)["minecraft:deepslate_iron_ore"] = deepslate_iron_ore;
+    (*ret)["minecraft:copper_ore"] = copper_ore;
+    (*ret)["minecraft:deepslate_copper_ore"] = deepslate_copper_ore;
+    (*ret)["minecraft:deepslate_gold_ore"] = deepslate_gold_ore;
+    (*ret)["minecraft:deepslate_redstone_ore"] = deepslate_redstone_ore;
+    (*ret)["minecraft:deepslate_emerald_ore"] = deepslate_emerald_ore;
+    (*ret)["minecraft:deepslate_lapis_ore"] = deepslate_lapis_ore;
+    (*ret)["minecraft:deepslate_diamond_ore"] = deepslate_diamond_ore;
+    (*ret)["minecraft:raw_iron_block"] = raw_iron_block;
+    (*ret)["minecraft:raw_copper_block"] = raw_copper_block;
+    (*ret)["minecraft:raw_gold_block"] = raw_gold_block;
+    (*ret)["minecraft:amethyst_block"] = amethyst_block;
+    (*ret)["minecraft:budding_amethyst"] = budding_amethyst;
+    (*ret)["minecraft:copper_block"] = copper_block;
+    (*ret)["minecraft:exposed_copper"] = exposed_copper;
+    (*ret)["minecraft:weathered_copper"] = weathered_copper;
+    (*ret)["minecraft:oxidized_copper"] = oxidized_copper;
+    (*ret)["minecraft:cut_copper"] = cut_copper;
+    (*ret)["minecraft:exposed_cut_copper"] = exposed_cut_copper;
+    (*ret)["minecraft:weathered_cut_copper"] = weathered_cut_copper;
+    (*ret)["minecraft:oxidized_cut_copper"] = oxidized_cut_copper;
+    (*ret)["minecraft:waxed_copper_block"] = waxed_copper_block;
+    (*ret)["minecraft:waxed_exposed_copper"] = waxed_exposed_copper;
+    (*ret)["minecraft:waxed_weathered_copper"] = waxed_weathered_copper;
+    (*ret)["minecraft:waxed_oxidized_copper"] = waxed_oxidized_copper;
+    (*ret)["minecraft:waxed_cut_copper"] = waxed_cut_copper;
+    (*ret)["minecraft:waxed_exposed_cut_copper"] = waxed_exposed_cut_copper;
+    (*ret)["minecraft:waxed_weathered_cut_copper"] = waxed_weathered_cut_copper;
+    (*ret)["minecraft:waxed_oxidized_cut_copper"] = waxed_oxidized_cut_copper;
+    (*ret)["minecraft:azalea_leaves"] = azalea_leaves;
+    (*ret)["minecraft:tinted_glass"] = tinted_glass;
+    (*ret)["minecraft:azalea"] = azalea;
+    (*ret)["minecraft:flowering_azalea"] = flowering_azalea;
+    (*ret)["minecraft:spore_blossom"] = spore_blossom;
+    (*ret)["minecraft:moss_carpet"] = moss_carpet;
+    (*ret)["minecraft:moss_block"] = moss_block;
+    (*ret)["minecraft:hanging_roots"] = hanging_roots;
+    (*ret)["minecraft:infested_deepslate"] = infested_deepslate;
+    (*ret)["minecraft:deepslate_bricks"] = deepslate_bricks;
+    (*ret)["minecraft:cracked_deepslate_bricks"] = cracked_deepslate_bricks;
+    (*ret)["minecraft:deepslate_tiles"] = deepslate_tiles;
+    (*ret)["minecraft:cracked_deepslate_tiles"] = cracked_deepslate_tiles;
+    (*ret)["minecraft:chiseled_deepslate"] = chiseled_deepslate;
+    (*ret)["minecraft:smooth_basalt"] = smooth_basalt;
+    (*ret)["minecraft:potted_azalea_bush"] = potted_azalea_bush;
+    (*ret)["minecraft:potted_flowering_azalea_bush"] = potted_flowering_azalea_bush;
+    (*ret)["minecraft:powder_snow"] = powder_snow;
+    (*ret)["minecraft:water_cauldron"] = water_cauldron;
+    (*ret)["minecraft:lava_cauldron"] = lava_cauldron;
+    (*ret)["minecraft:powder_snow_cauldron"] = powder_snow_cauldron;
+    (*ret)["minecraft:dirt_path"] = dirt_path;
+    (*ret)["minecraft:waxed_copper_block"] = waxed_copper_block;
+    (*ret)["minecraft:rooted_dirt"] = rooted_dirt;
+    (*ret)["minecraft:flowering_azalea_leaves"] = flowering_azalea_leaves;
+    (*ret)["minecraft:big_dripleaf"] = big_dripleaf;
+    (*ret)["minecraft:big_dripleaf_stem"] = big_dripleaf_stem;
+    (*ret)["minecraft:small_dripleaf"] = small_dripleaf;
+    (*ret)["minecraft:candle"] = candle;
+    (*ret)["minecraft:white_candle"] = white_candle;
+    (*ret)["minecraft:orange_candle"] = orange_candle;
+    (*ret)["minecraft:magenta_candle"] = magenta_candle;
+    (*ret)["minecraft:light_blue_candle"] = light_blue_candle;
+    (*ret)["minecraft:yellow_candle"] = yellow_candle;
+    (*ret)["minecraft:lime_candle"] = lime_candle;
+    (*ret)["minecraft:pink_candle"] = pink_candle;
+    (*ret)["minecraft:gray_candle"] = gray_candle;
+    (*ret)["minecraft:light_gray_candle"] = light_gray_candle;
+    (*ret)["minecraft:cyan_candle"] = cyan_candle;
+    (*ret)["minecraft:purple_candle"] = purple_candle;
+    (*ret)["minecraft:blue_candle"] = blue_candle;
+    (*ret)["minecraft:brown_candle"] = brown_candle;
+    (*ret)["minecraft:green_candle"] = green_candle;
+    (*ret)["minecraft:red_candle"] = red_candle;
+    (*ret)["minecraft:black_candle"] = black_candle;
+    (*ret)["minecraft:candle_cake"] = candle_cake;
+    (*ret)["minecraft:white_candle_cake"] = white_candle_cake;
+    (*ret)["minecraft:orange_candle_cake"] = orange_candle_cake;
+    (*ret)["minecraft:magenta_candle_cake"] = magenta_candle_cake;
+    (*ret)["minecraft:light_blue_candle_cake"] = light_blue_candle_cake;
+    (*ret)["minecraft:yellow_candle_cake"] = yellow_candle_cake;
+    (*ret)["minecraft:lime_candle_cake"] = lime_candle_cake;
+    (*ret)["minecraft:pink_candle_cake"] = pink_candle_cake;
+    (*ret)["minecraft:gray_candle_cake"] = gray_candle_cake;
+    (*ret)["minecraft:light_gray_candle_cake"] = light_gray_candle_cake;
+    (*ret)["minecraft:cyan_candle_cake"] = cyan_candle_cake;
+    (*ret)["minecraft:purple_candle_cake"] = purple_candle_cake;
+    (*ret)["minecraft:blue_candle_cake"] = blue_candle_cake;
+    (*ret)["minecraft:brown_candle_cake"] = brown_candle_cake;
+    (*ret)["minecraft:green_candle_cake"] = green_candle_cake;
+    (*ret)["minecraft:red_candle_cake"] = red_candle_cake;
+    (*ret)["minecraft:black_candle_cake"] = black_candle_cake;
+    (*ret)["minecraft:cut_copper_stairs"] = cut_copper_stairs;
+    (*ret)["minecraft:exposed_cut_copper_stairs"] = exposed_cut_copper_stairs;
+    (*ret)["minecraft:weathered_cut_copper_stairs"] = weathered_cut_copper_stairs;
+    (*ret)["minecraft:oxidized_cut_copper_stairs"] = oxidized_cut_copper_stairs;
+    (*ret)["minecraft:waxed_cut_copper_stairs"] = waxed_cut_copper_stairs;
+    (*ret)["minecraft:waxed_exposed_cut_copper_stairs"] = waxed_exposed_cut_copper_stairs;
+    (*ret)["minecraft:waxed_weathered_cut_copper_stairs"] = waxed_weathered_cut_copper_stairs;
+    (*ret)["minecraft:waxed_oxidized_cut_copper_stairs"] = waxed_oxidized_cut_copper_stairs;
+    (*ret)["minecraft:cobbled_deepslate_stairs"] = cobbled_deepslate_stairs;
+    (*ret)["minecraft:polished_deepslate_stairs"] = polished_deepslate_stairs;
+    (*ret)["minecraft:deepslate_brick_stairs"] = deepslate_brick_stairs;
+    (*ret)["minecraft:deepslate_tile_stairs"] = deepslate_tile_stairs;
+    (*ret)["minecraft:cut_copper_slab"] = cut_copper_slab;
+    (*ret)["minecraft:exposed_cut_copper_slab"] = exposed_cut_copper_slab;
+    (*ret)["minecraft:weathered_cut_copper_slab"] = weathered_cut_copper_slab;
+    (*ret)["minecraft:oxidized_cut_copper_slab"] = oxidized_cut_copper_slab;
+    (*ret)["minecraft:waxed_cut_copper_slab"] = waxed_cut_copper_slab;
+    (*ret)["minecraft:waxed_exposed_cut_copper_slab"] = waxed_exposed_cut_copper_slab;
+    (*ret)["minecraft:waxed_weathered_cut_copper_slab"] = waxed_weathered_cut_copper_slab;
+    (*ret)["minecraft:waxed_oxidized_cut_copper_slab"] = waxed_oxidized_cut_copper_slab;
+    (*ret)["minecraft:cobbled_deepslate_slab"] = cobbled_deepslate_slab;
+    (*ret)["minecraft:polished_deepslate_slab"] = polished_deepslate_slab;
+    (*ret)["minecraft:deepslate_brick_slab"] = deepslate_brick_slab;
+    (*ret)["minecraft:deepslate_tile_slab"] = deepslate_tile_slab;
+    (*ret)["minecraft:cobbled_deepslate_wall"] = cobbled_deepslate_wall;
+    (*ret)["minecraft:polished_deepslate_wall"] = polished_deepslate_wall;
+    (*ret)["minecraft:deepslate_brick_wall"] = deepslate_brick_wall;
+    (*ret)["minecraft:deepslate_tile_wall"] = deepslate_tile_wall;
+    (*ret)["minecraft:lightning_rod"] = lightning_rod;
+    (*ret)["minecraft:small_amethyst_bud"] = small_amethyst_bud;
+    (*ret)["minecraft:medium_amethyst_bud"] = medium_amethyst_bud;
+    (*ret)["minecraft:large_amethyst_bud"] = large_amethyst_bud;
+    (*ret)["minecraft:amethyst_cluster"] = amethyst_cluster;
+    (*ret)["minecraft:pointed_dripstone"] = pointed_dripstone;
+    (*ret)["minecraft:light"] = light;
+    (*ret)["minecraft:cave_vines"] = cave_vines;
+    (*ret)["minecraft:cave_vines_plant"] = cave_vines_plant;
+    (*ret)["minecraft:glow_lichen"] = glow_lichen;
+
+    (*ret)["minecraft:potted_crimson_fungus"] = potted_crimson_fungus;
+    (*ret)["minecraft:potted_warped_fungus"] = potted_warped_fungus;
+    (*ret)["minecraft:potted_crimson_roots"] = potted_crimson_roots;
+    (*ret)["minecraft:potted_warped_roots"] = potted_warped_roots;
+    (*ret)["minecraft:sculk_sensor"] = sculk_sensor;
+
+    return ret;
+}
+
 static inline BlockId FromName(std::string const &name) {
-    static std::map<std::string, BlockId> const mapping = {
-        {"minecraft:acacia_button", minecraft::acacia_button},
-        {"minecraft:acacia_door", minecraft::acacia_door},
-        {"minecraft:acacia_fence", minecraft::acacia_fence},
-        {"minecraft:acacia_fence_gate", minecraft::acacia_fence_gate},
-        {"minecraft:acacia_leaves", minecraft::acacia_leaves},
-        {"minecraft:acacia_log", minecraft::acacia_log},
-        {"minecraft:acacia_planks", minecraft::acacia_planks},
-        {"minecraft:acacia_pressure_plate", minecraft::acacia_pressure_plate},
-        {"minecraft:acacia_sapling", minecraft::acacia_sapling},
-        {"minecraft:acacia_sign", minecraft::acacia_sign},
-        {"minecraft:acacia_slab", minecraft::acacia_slab},
-        {"minecraft:acacia_stairs", minecraft::acacia_stairs},
-        {"minecraft:acacia_trapdoor", minecraft::acacia_trapdoor},
-        {"minecraft:acacia_wall_sign", minecraft::acacia_wall_sign},
-        {"minecraft:acacia_wood", minecraft::acacia_wood},
-        {"minecraft:activator_rail", minecraft::activator_rail},
-        {"minecraft:air", minecraft::air},
-        {"minecraft:allium", minecraft::allium},
-        {"minecraft:andesite", minecraft::andesite},
-        {"minecraft:andesite_slab", minecraft::andesite_slab},
-        {"minecraft:andesite_stairs", minecraft::andesite_stairs},
-        {"minecraft:andesite_wall", minecraft::andesite_wall},
-        {"minecraft:anvil", minecraft::anvil},
-        {"minecraft:attached_melon_stem", minecraft::attached_melon_stem},
-        {"minecraft:attached_pumpkin_stem", minecraft::attached_pumpkin_stem},
-        {"minecraft:azure_bluet", minecraft::azure_bluet},
-        {"minecraft:bamboo", minecraft::bamboo},
-        {"minecraft:bamboo_sapling", minecraft::bamboo_sapling},
-        {"minecraft:barrel", minecraft::barrel},
-        {"minecraft:barrier", minecraft::barrier},
-        {"minecraft:beacon", minecraft::beacon},
-        {"minecraft:bedrock", minecraft::bedrock},
-        {"minecraft:beetroots", minecraft::beetroots},
-        {"minecraft:bell", minecraft::bell},
-        {"minecraft:birch_button", minecraft::birch_button},
-        {"minecraft:birch_door", minecraft::birch_door},
-        {"minecraft:birch_fence", minecraft::birch_fence},
-        {"minecraft:birch_fence_gate", minecraft::birch_fence_gate},
-        {"minecraft:birch_leaves", minecraft::birch_leaves},
-        {"minecraft:birch_log", minecraft::birch_log},
-        {"minecraft:birch_planks", minecraft::birch_planks},
-        {"minecraft:birch_pressure_plate", minecraft::birch_pressure_plate},
-        {"minecraft:birch_sapling", minecraft::birch_sapling},
-        {"minecraft:birch_sign", minecraft::birch_sign},
-        {"minecraft:birch_slab", minecraft::birch_slab},
-        {"minecraft:birch_stairs", minecraft::birch_stairs},
-        {"minecraft:birch_trapdoor", minecraft::birch_trapdoor},
-        {"minecraft:birch_wall_sign", minecraft::birch_wall_sign},
-        {"minecraft:birch_wood", minecraft::birch_wood},
-        {"minecraft:black_banner", minecraft::black_banner},
-        {"minecraft:black_bed", minecraft::black_bed},
-        {"minecraft:black_carpet", minecraft::black_carpet},
-        {"minecraft:black_concrete", minecraft::black_concrete},
-        {"minecraft:black_concrete_powder", minecraft::black_concrete_powder},
-        {"minecraft:black_glazed_terracotta", minecraft::black_glazed_terracotta},
-        {"minecraft:black_shulker_box", minecraft::black_shulker_box},
-        {"minecraft:black_stained_glass", minecraft::black_stained_glass},
-        {"minecraft:black_stained_glass_pane", minecraft::black_stained_glass_pane},
-        {"minecraft:black_terracotta", minecraft::black_terracotta},
-        {"minecraft:black_wall_banner", minecraft::black_wall_banner},
-        {"minecraft:black_wool", minecraft::black_wool},
-        {"minecraft:blast_furnace", minecraft::blast_furnace},
-        {"minecraft:coal_block", minecraft::coal_block},
-        {"minecraft:diamond_block", minecraft::diamond_block},
-        {"minecraft:emerald_block", minecraft::emerald_block},
-        {"minecraft:gold_block", minecraft::gold_block},
-        {"minecraft:iron_block", minecraft::iron_block},
-        {"minecraft:quartz_block", minecraft::quartz_block},
-        {"minecraft:redstone_block", minecraft::redstone_block},
-        {"minecraft:blue_banner", minecraft::blue_banner},
-        {"minecraft:blue_bed", minecraft::blue_bed},
-        {"minecraft:blue_carpet", minecraft::blue_carpet},
-        {"minecraft:blue_concrete", minecraft::blue_concrete},
-        {"minecraft:blue_concrete_powder", minecraft::blue_concrete_powder},
-        {"minecraft:blue_glazed_terracotta", minecraft::blue_glazed_terracotta},
-        {"minecraft:blue_ice", minecraft::blue_ice},
-        {"minecraft:blue_orchid", minecraft::blue_orchid},
-        {"minecraft:blue_shulker_box", minecraft::blue_shulker_box},
-        {"minecraft:blue_stained_glass", minecraft::blue_stained_glass},
-        {"minecraft:blue_stained_glass_pane", minecraft::blue_stained_glass_pane},
-        {"minecraft:blue_terracotta", minecraft::blue_terracotta},
-        {"minecraft:blue_wall_banner", minecraft::blue_wall_banner},
-        {"minecraft:blue_wool", minecraft::blue_wool},
-        {"minecraft:bone_block", minecraft::bone_block},
-        {"minecraft:bookshelf", minecraft::bookshelf},
-        {"minecraft:brain_coral", minecraft::brain_coral},
-        {"minecraft:brain_coral_block", minecraft::brain_coral_block},
-        {"minecraft:brain_coral_fan", minecraft::brain_coral_fan},
-        {"minecraft:brain_coral_wall_fan", minecraft::brain_coral_wall_fan},
-        {"minecraft:brewing_stand", minecraft::brewing_stand},
-        {"minecraft:brick_slab", minecraft::brick_slab},
-        {"minecraft:brick_stairs", minecraft::brick_stairs},
-        {"minecraft:brick_wall", minecraft::brick_wall},
-        {"minecraft:bricks", minecraft::bricks},
-        {"minecraft:brown_banner", minecraft::brown_banner},
-        {"minecraft:brown_bed", minecraft::brown_bed},
-        {"minecraft:brown_carpet", minecraft::brown_carpet},
-        {"minecraft:brown_concrete", minecraft::brown_concrete},
-        {"minecraft:brown_concrete_powder", minecraft::brown_concrete_powder},
-        {"minecraft:brown_glazed_terracotta", minecraft::brown_glazed_terracotta},
-        {"minecraft:brown_mushroom", minecraft::brown_mushroom},
-        {"minecraft:brown_mushroom_block", minecraft::brown_mushroom_block},
-        {"minecraft:brown_shulker_box", minecraft::brown_shulker_box},
-        {"minecraft:brown_stained_glass", minecraft::brown_stained_glass},
-        {"minecraft:brown_stained_glass_pane", minecraft::brown_stained_glass_pane},
-        {"minecraft:brown_terracotta", minecraft::brown_terracotta},
-        {"minecraft:brown_wall_banner", minecraft::brown_wall_banner},
-        {"minecraft:brown_wool", minecraft::brown_wool},
-        {"minecraft:bubble_column", minecraft::bubble_column},
-        {"minecraft:bubble_coral", minecraft::bubble_coral},
-        {"minecraft:bubble_coral_block", minecraft::bubble_coral_block},
-        {"minecraft:bubble_coral_fan", minecraft::bubble_coral_fan},
-        {"minecraft:bubble_coral_wall_fan", minecraft::bubble_coral_wall_fan},
-        {"minecraft:cactus", minecraft::cactus},
-        {"minecraft:cake", minecraft::cake},
-        {"minecraft:campfire", minecraft::campfire},
-        {"minecraft:carrots", minecraft::carrots},
-        {"minecraft:cartography_table", minecraft::cartography_table},
-        {"minecraft:carved_pumpkin", minecraft::carved_pumpkin},
-        {"minecraft:cauldron", minecraft::water_cauldron},
-        {"minecraft:cave_air", minecraft::cave_air},
-        {"minecraft:chain_command_block", minecraft::chain_command_block},
-        {"minecraft:chest", minecraft::chest},
-        {"minecraft:chipped_anvil", minecraft::chipped_anvil},
-        {"minecraft:chiseled_quartz_block", minecraft::chiseled_quartz_block},
-        {"minecraft:chiseled_red_sandstone", minecraft::chiseled_red_sandstone},
-        {"minecraft:chiseled_sandstone", minecraft::chiseled_sandstone},
-        {"minecraft:chiseled_stone_bricks", minecraft::chiseled_stone_bricks},
-        {"minecraft:chorus_flower", minecraft::chorus_flower},
-        {"minecraft:chorus_plant", minecraft::chorus_plant},
-        {"minecraft:clay", minecraft::clay},
-        {"minecraft:coal_ore", minecraft::coal_ore},
-        {"minecraft:coarse_dirt", minecraft::coarse_dirt},
-        {"minecraft:cobblestone", minecraft::cobblestone},
-        {"minecraft:cobblestone_slab", minecraft::cobblestone_slab},
-        {"minecraft:cobblestone_stairs", minecraft::cobblestone_stairs},
-        {"minecraft:cobblestone_wall", minecraft::cobblestone_wall},
-        {"minecraft:cobweb", minecraft::cobweb},
-        {"minecraft:cocoa", minecraft::cocoa},
-        {"minecraft:command_block", minecraft::command_block},
-        {"minecraft:composter", minecraft::composter},
-        {"minecraft:conduit", minecraft::conduit},
-        {"minecraft:cornflower", minecraft::cornflower},
-        {"minecraft:cracked_stone_bricks", minecraft::cracked_stone_bricks},
-        {"minecraft:crafting_table", minecraft::crafting_table},
-        {"minecraft:creeper_head", minecraft::creeper_head},
-        {"minecraft:creeper_wall_head", minecraft::creeper_wall_head},
-        {"minecraft:cut_red_sandstone", minecraft::cut_red_sandstone},
-        {"minecraft:cut_red_sandstone_slab", minecraft::cut_red_sandstone_slab},
-        {"minecraft:cut_sandstone", minecraft::cut_sandstone},
-        {"minecraft:cut_sandstone_slab", minecraft::cut_sandstone_slab},
-        {"minecraft:cyan_banner", minecraft::cyan_banner},
-        {"minecraft:cyan_bed", minecraft::cyan_bed},
-        {"minecraft:cyan_carpet", minecraft::cyan_carpet},
-        {"minecraft:cyan_concrete", minecraft::cyan_concrete},
-        {"minecraft:cyan_concrete_powder", minecraft::cyan_concrete_powder},
-        {"minecraft:cyan_glazed_terracotta", minecraft::cyan_glazed_terracotta},
-        {"minecraft:cyan_shulker_box", minecraft::cyan_shulker_box},
-        {"minecraft:cyan_stained_glass", minecraft::cyan_stained_glass},
-        {"minecraft:cyan_stained_glass_pane", minecraft::cyan_stained_glass_pane},
-        {"minecraft:cyan_terracotta", minecraft::cyan_terracotta},
-        {"minecraft:cyan_wall_banner", minecraft::cyan_wall_banner},
-        {"minecraft:cyan_wool", minecraft::cyan_wool},
-        {"minecraft:damaged_anvil", minecraft::damaged_anvil},
-        {"minecraft:dandelion", minecraft::dandelion},
-        {"minecraft:dark_oak_button", minecraft::dark_oak_button},
-        {"minecraft:dark_oak_door", minecraft::dark_oak_door},
-        {"minecraft:dark_oak_fence", minecraft::dark_oak_fence},
-        {"minecraft:dark_oak_fence_gate", minecraft::dark_oak_fence_gate},
-        {"minecraft:dark_oak_leaves", minecraft::dark_oak_leaves},
-        {"minecraft:dark_oak_log", minecraft::dark_oak_log},
-        {"minecraft:dark_oak_planks", minecraft::dark_oak_planks},
-        {"minecraft:dark_oak_pressure_plate", minecraft::dark_oak_pressure_plate},
-        {"minecraft:dark_oak_sapling", minecraft::dark_oak_sapling},
-        {"minecraft:dark_oak_sign", minecraft::dark_oak_sign},
-        {"minecraft:dark_oak_slab", minecraft::dark_oak_slab},
-        {"minecraft:dark_oak_stairs", minecraft::dark_oak_stairs},
-        {"minecraft:dark_oak_trapdoor", minecraft::dark_oak_trapdoor},
-        {"minecraft:dark_oak_wall_sign", minecraft::dark_oak_wall_sign},
-        {"minecraft:dark_oak_wood", minecraft::dark_oak_wood},
-        {"minecraft:dark_prismarine", minecraft::dark_prismarine},
-        {"minecraft:dark_prismarine_slab", minecraft::dark_prismarine_slab},
-        {"minecraft:dark_prismarine_stairs", minecraft::dark_prismarine_stairs},
-        {"minecraft:daylight_detector", minecraft::daylight_detector},
-        {"minecraft:dead_brain_coral", minecraft::dead_brain_coral},
-        {"minecraft:dead_brain_coral_block", minecraft::dead_brain_coral_block},
-        {"minecraft:dead_brain_coral_fan", minecraft::dead_brain_coral_fan},
-        {"minecraft:dead_brain_coral_wall_fan", minecraft::dead_brain_coral_wall_fan},
-        {"minecraft:dead_bubble_coral", minecraft::dead_bubble_coral},
-        {"minecraft:dead_bubble_coral_block", minecraft::dead_bubble_coral_block},
-        {"minecraft:dead_bubble_coral_fan", minecraft::dead_bubble_coral_fan},
-        {"minecraft:dead_bubble_coral_wall_fan", minecraft::dead_bubble_coral_wall_fan},
-        {"minecraft:dead_bush", minecraft::dead_bush},
-        {"minecraft:dead_fire_coral", minecraft::dead_fire_coral},
-        {"minecraft:dead_fire_coral_block", minecraft::dead_fire_coral_block},
-        {"minecraft:dead_fire_coral_fan", minecraft::dead_fire_coral_fan},
-        {"minecraft:dead_fire_coral_wall_fan", minecraft::dead_fire_coral_wall_fan},
-        {"minecraft:dead_horn_coral", minecraft::dead_horn_coral},
-        {"minecraft:dead_horn_coral_block", minecraft::dead_horn_coral_block},
-        {"minecraft:dead_horn_coral_fan", minecraft::dead_horn_coral_fan},
-        {"minecraft:dead_horn_coral_wall_fan", minecraft::dead_horn_coral_wall_fan},
-        {"minecraft:dead_tube_coral", minecraft::dead_tube_coral},
-        {"minecraft:dead_tube_coral_block", minecraft::dead_tube_coral_block},
-        {"minecraft:dead_tube_coral_fan", minecraft::dead_tube_coral_fan},
-        {"minecraft:dead_tube_coral_wall_fan", minecraft::dead_tube_coral_wall_fan},
-        {"minecraft:detector_rail", minecraft::detector_rail},
-        {"minecraft:diamond_ore", minecraft::diamond_ore},
-        {"minecraft:diorite", minecraft::diorite},
-        {"minecraft:diorite_slab", minecraft::diorite_slab},
-        {"minecraft:diorite_stairs", minecraft::diorite_stairs},
-        {"minecraft:diorite_wall", minecraft::diorite_wall},
-        {"minecraft:dirt", minecraft::dirt},
-        {"minecraft:dispenser", minecraft::dispenser},
-        {"minecraft:dragon_egg", minecraft::dragon_egg},
-        {"minecraft:dragon_head", minecraft::dragon_head},
-        {"minecraft:dragon_wall_head", minecraft::dragon_wall_head},
-        {"minecraft:dried_kelp_block", minecraft::dried_kelp_block},
-        {"minecraft:dropper", minecraft::dropper},
-        {"minecraft:emerald_ore", minecraft::emerald_ore},
-        {"minecraft:enchanting_table", minecraft::enchanting_table},
-        {"minecraft:end_gateway", minecraft::end_gateway},
-        {"minecraft:end_portal", minecraft::end_portal},
-        {"minecraft:end_portal_frame", minecraft::end_portal_frame},
-        {"minecraft:end_rod", minecraft::end_rod},
-        {"minecraft:end_stone", minecraft::end_stone},
-        {"minecraft:end_stone_brick_slab", minecraft::end_stone_brick_slab},
-        {"minecraft:end_stone_brick_stairs", minecraft::end_stone_brick_stairs},
-        {"minecraft:end_stone_brick_wall", minecraft::end_stone_brick_wall},
-        {"minecraft:end_stone_bricks", minecraft::end_stone_bricks},
-        {"minecraft:ender_chest", minecraft::ender_chest},
-        {"minecraft:farmland", minecraft::farmland},
-        {"minecraft:fern", minecraft::fern},
-        {"minecraft:fire", minecraft::fire},
-        {"minecraft:fire_coral", minecraft::fire_coral},
-        {"minecraft:fire_coral_block", minecraft::fire_coral_block},
-        {"minecraft:fire_coral_fan", minecraft::fire_coral_fan},
-        {"minecraft:fire_coral_wall_fan", minecraft::fire_coral_wall_fan},
-        {"minecraft:fletching_table", minecraft::fletching_table},
-        {"minecraft:flower_pot", minecraft::flower_pot},
-        {"minecraft:frosted_ice", minecraft::frosted_ice},
-        {"minecraft:furnace", minecraft::furnace},
-        {"minecraft:glass", minecraft::glass},
-        {"minecraft:glass_pane", minecraft::glass_pane},
-        {"minecraft:glowstone", minecraft::glowstone},
-        {"minecraft:gold_ore", minecraft::gold_ore},
-        {"minecraft:granite", minecraft::granite},
-        {"minecraft:granite_slab", minecraft::granite_slab},
-        {"minecraft:granite_stairs", minecraft::granite_stairs},
-        {"minecraft:granite_wall", minecraft::granite_wall},
-        {"minecraft:grass", minecraft::grass},
-        {"minecraft:grass_block", minecraft::grass_block},
-        {"minecraft:grass_path", minecraft::dirt_path},
-        {"minecraft:gravel", minecraft::gravel},
-        {"minecraft:gray_banner", minecraft::gray_banner},
-        {"minecraft:gray_bed", minecraft::gray_bed},
-        {"minecraft:gray_carpet", minecraft::gray_carpet},
-        {"minecraft:gray_concrete", minecraft::gray_concrete},
-        {"minecraft:gray_concrete_powder", minecraft::gray_concrete_powder},
-        {"minecraft:gray_glazed_terracotta", minecraft::gray_glazed_terracotta},
-        {"minecraft:gray_shulker_box", minecraft::gray_shulker_box},
-        {"minecraft:gray_stained_glass", minecraft::gray_stained_glass},
-        {"minecraft:gray_stained_glass_pane", minecraft::gray_stained_glass_pane},
-        {"minecraft:gray_terracotta", minecraft::gray_terracotta},
-        {"minecraft:gray_wall_banner", minecraft::gray_wall_banner},
-        {"minecraft:gray_wool", minecraft::gray_wool},
-        {"minecraft:green_banner", minecraft::green_banner},
-        {"minecraft:green_bed", minecraft::green_bed},
-        {"minecraft:green_carpet", minecraft::green_carpet},
-        {"minecraft:green_concrete", minecraft::green_concrete},
-        {"minecraft:green_concrete_powder", minecraft::green_concrete_powder},
-        {"minecraft:green_glazed_terracotta", minecraft::green_glazed_terracotta},
-        {"minecraft:green_shulker_box", minecraft::green_shulker_box},
-        {"minecraft:green_stained_glass", minecraft::green_stained_glass},
-        {"minecraft:green_stained_glass_pane", minecraft::green_stained_glass_pane},
-        {"minecraft:green_terracotta", minecraft::green_terracotta},
-        {"minecraft:green_wall_banner", minecraft::green_wall_banner},
-        {"minecraft:green_wool", minecraft::green_wool},
-        {"minecraft:grindstone", minecraft::grindstone},
-        {"minecraft:hay_block", minecraft::hay_block},
-        {"minecraft:heavy_weighted_pressure_plate", minecraft::heavy_weighted_pressure_plate},
-        {"minecraft:hopper", minecraft::hopper},
-        {"minecraft:horn_coral", minecraft::horn_coral},
-        {"minecraft:horn_coral_block", minecraft::horn_coral_block},
-        {"minecraft:horn_coral_fan", minecraft::horn_coral_fan},
-        {"minecraft:horn_coral_wall_fan", minecraft::horn_coral_wall_fan},
-        {"minecraft:ice", minecraft::ice},
-        {"minecraft:infested_chiseled_stone_bricks", minecraft::infested_chiseled_stone_bricks},
-        {"minecraft:infested_cobblestone", minecraft::infested_cobblestone},
-        {"minecraft:infested_cracked_stone_bricks", minecraft::infested_cracked_stone_bricks},
-        {"minecraft:infested_mossy_stone_bricks", minecraft::infested_mossy_stone_bricks},
-        {"minecraft:infested_stone", minecraft::infested_stone},
-        {"minecraft:infested_stone_bricks", minecraft::infested_stone_bricks},
-        {"minecraft:iron_bars", minecraft::iron_bars},
-        {"minecraft:iron_door", minecraft::iron_door},
-        {"minecraft:iron_ore", minecraft::iron_ore},
-        {"minecraft:iron_trapdoor", minecraft::iron_trapdoor},
-        {"minecraft:jack_o_lantern", minecraft::jack_o_lantern},
-        {"minecraft:jigsaw", minecraft::jigsaw},
-        {"minecraft:jukebox", minecraft::jukebox},
-        {"minecraft:jungle_button", minecraft::jungle_button},
-        {"minecraft:jungle_door", minecraft::jungle_door},
-        {"minecraft:jungle_fence", minecraft::jungle_fence},
-        {"minecraft:jungle_fence_gate", minecraft::jungle_fence_gate},
-        {"minecraft:jungle_leaves", minecraft::jungle_leaves},
-        {"minecraft:jungle_log", minecraft::jungle_log},
-        {"minecraft:jungle_planks", minecraft::jungle_planks},
-        {"minecraft:jungle_pressure_plate", minecraft::jungle_pressure_plate},
-        {"minecraft:jungle_sapling", minecraft::jungle_sapling},
-        {"minecraft:jungle_sign", minecraft::jungle_sign},
-        {"minecraft:jungle_slab", minecraft::jungle_slab},
-        {"minecraft:jungle_stairs", minecraft::jungle_stairs},
-        {"minecraft:jungle_trapdoor", minecraft::jungle_trapdoor},
-        {"minecraft:jungle_wall_sign", minecraft::jungle_wall_sign},
-        {"minecraft:jungle_wood", minecraft::jungle_wood},
-        {"minecraft:kelp", minecraft::kelp},
-        {"minecraft:kelp_plant", minecraft::kelp_plant},
-        {"minecraft:ladder", minecraft::ladder},
-        {"minecraft:lantern", minecraft::lantern},
-        {"minecraft:lapis_block", minecraft::lapis_block},
-        {"minecraft:lapis_ore", minecraft::lapis_ore},
-        {"minecraft:large_fern", minecraft::large_fern},
-        {"minecraft:lava", minecraft::lava},
-        {"minecraft:lectern", minecraft::lectern},
-        {"minecraft:lever", minecraft::lever},
-        {"minecraft:light_blue_banner", minecraft::light_blue_banner},
-        {"minecraft:light_blue_bed", minecraft::light_blue_bed},
-        {"minecraft:light_blue_carpet", minecraft::light_blue_carpet},
-        {"minecraft:light_blue_concrete", minecraft::light_blue_concrete},
-        {"minecraft:light_blue_concrete_powder", minecraft::light_blue_concrete_powder},
-        {"minecraft:light_blue_glazed_terracotta", minecraft::light_blue_glazed_terracotta},
-        {"minecraft:light_blue_shulker_box", minecraft::light_blue_shulker_box},
-        {"minecraft:light_blue_stained_glass", minecraft::light_blue_stained_glass},
-        {"minecraft:light_blue_stained_glass_pane", minecraft::light_blue_stained_glass_pane},
-        {"minecraft:light_blue_terracotta", minecraft::light_blue_terracotta},
-        {"minecraft:light_blue_wall_banner", minecraft::light_blue_wall_banner},
-        {"minecraft:light_blue_wool", minecraft::light_blue_wool},
-        {"minecraft:light_gray_banner", minecraft::light_gray_banner},
-        {"minecraft:light_gray_bed", minecraft::light_gray_bed},
-        {"minecraft:light_gray_carpet", minecraft::light_gray_carpet},
-        {"minecraft:light_gray_concrete", minecraft::light_gray_concrete},
-        {"minecraft:light_gray_concrete_powder", minecraft::light_gray_concrete_powder},
-        {"minecraft:light_gray_glazed_terracotta", minecraft::light_gray_glazed_terracotta},
-        {"minecraft:light_gray_shulker_box", minecraft::light_gray_shulker_box},
-        {"minecraft:light_gray_stained_glass", minecraft::light_gray_stained_glass},
-        {"minecraft:light_gray_stained_glass_pane", minecraft::light_gray_stained_glass_pane},
-        {"minecraft:light_gray_terracotta", minecraft::light_gray_terracotta},
-        {"minecraft:light_gray_wall_banner", minecraft::light_gray_wall_banner},
-        {"minecraft:light_gray_wool", minecraft::light_gray_wool},
-        {"minecraft:light_weighted_pressure_plate", minecraft::light_weighted_pressure_plate},
-        {"minecraft:lilac", minecraft::lilac},
-        {"minecraft:lily_of_the_valley", minecraft::lily_of_the_valley},
-        {"minecraft:lily_pad", minecraft::lily_pad},
-        {"minecraft:lime_banner", minecraft::lime_banner},
-        {"minecraft:lime_bed", minecraft::lime_bed},
-        {"minecraft:lime_carpet", minecraft::lime_carpet},
-        {"minecraft:lime_concrete", minecraft::lime_concrete},
-        {"minecraft:lime_concrete_powder", minecraft::lime_concrete_powder},
-        {"minecraft:lime_glazed_terracotta", minecraft::lime_glazed_terracotta},
-        {"minecraft:lime_shulker_box", minecraft::lime_shulker_box},
-        {"minecraft:lime_stained_glass", minecraft::lime_stained_glass},
-        {"minecraft:lime_stained_glass_pane", minecraft::lime_stained_glass_pane},
-        {"minecraft:lime_terracotta", minecraft::lime_terracotta},
-        {"minecraft:lime_wall_banner", minecraft::lime_wall_banner},
-        {"minecraft:lime_wool", minecraft::lime_wool},
-        {"minecraft:loom", minecraft::loom},
-        {"minecraft:magenta_banner", minecraft::magenta_banner},
-        {"minecraft:magenta_bed", minecraft::magenta_bed},
-        {"minecraft:magenta_carpet", minecraft::magenta_carpet},
-        {"minecraft:magenta_concrete", minecraft::magenta_concrete},
-        {"minecraft:magenta_concrete_powder", minecraft::magenta_concrete_powder},
-        {"minecraft:magenta_glazed_terracotta", minecraft::magenta_glazed_terracotta},
-        {"minecraft:magenta_shulker_box", minecraft::magenta_shulker_box},
-        {"minecraft:magenta_stained_glass", minecraft::magenta_stained_glass},
-        {"minecraft:magenta_stained_glass_pane", minecraft::magenta_stained_glass_pane},
-        {"minecraft:magenta_terracotta", minecraft::magenta_terracotta},
-        {"minecraft:magenta_wall_banner", minecraft::magenta_wall_banner},
-        {"minecraft:magenta_wool", minecraft::magenta_wool},
-        {"minecraft:magma_block", minecraft::magma_block},
-        {"minecraft:melon", minecraft::melon},
-        {"minecraft:melon_stem", minecraft::melon_stem},
-        {"minecraft:mossy_cobblestone", minecraft::mossy_cobblestone},
-        {"minecraft:mossy_cobblestone_slab", minecraft::mossy_cobblestone_slab},
-        {"minecraft:mossy_cobblestone_stairs", minecraft::mossy_cobblestone_stairs},
-        {"minecraft:mossy_cobblestone_wall", minecraft::mossy_cobblestone_wall},
-        {"minecraft:mossy_stone_brick_slab", minecraft::mossy_stone_brick_slab},
-        {"minecraft:mossy_stone_brick_stairs", minecraft::mossy_stone_brick_stairs},
-        {"minecraft:mossy_stone_brick_wall", minecraft::mossy_stone_brick_wall},
-        {"minecraft:mossy_stone_bricks", minecraft::mossy_stone_bricks},
-        {"minecraft:moving_piston", minecraft::moving_piston},
-        {"minecraft:mushroom_stem", minecraft::mushroom_stem},
-        {"minecraft:mycelium", minecraft::mycelium},
-        {"minecraft:nether_brick_fence", minecraft::nether_brick_fence},
-        {"minecraft:nether_brick_slab", minecraft::nether_brick_slab},
-        {"minecraft:nether_brick_stairs", minecraft::nether_brick_stairs},
-        {"minecraft:nether_brick_wall", minecraft::nether_brick_wall},
-        {"minecraft:nether_bricks", minecraft::nether_bricks},
-        {"minecraft:nether_portal", minecraft::nether_portal},
-        {"minecraft:nether_quartz_ore", minecraft::nether_quartz_ore},
-        {"minecraft:nether_wart", minecraft::nether_wart},
-        {"minecraft:nether_wart_block", minecraft::nether_wart_block},
-        {"minecraft:netherrack", minecraft::netherrack},
-        {"minecraft:note_block", minecraft::note_block},
-        {"minecraft:oak_button", minecraft::oak_button},
-        {"minecraft:oak_door", minecraft::oak_door},
-        {"minecraft:oak_fence", minecraft::oak_fence},
-        {"minecraft:oak_fence_gate", minecraft::oak_fence_gate},
-        {"minecraft:oak_leaves", minecraft::oak_leaves},
-        {"minecraft:oak_log", minecraft::oak_log},
-        {"minecraft:oak_planks", minecraft::oak_planks},
-        {"minecraft:oak_pressure_plate", minecraft::oak_pressure_plate},
-        {"minecraft:oak_sapling", minecraft::oak_sapling},
-        {"minecraft:oak_sign", minecraft::oak_sign},
-        {"minecraft:oak_slab", minecraft::oak_slab},
-        {"minecraft:oak_stairs", minecraft::oak_stairs},
-        {"minecraft:oak_trapdoor", minecraft::oak_trapdoor},
-        {"minecraft:oak_wall_sign", minecraft::oak_wall_sign},
-        {"minecraft:oak_wood", minecraft::oak_wood},
-        {"minecraft:observer", minecraft::observer},
-        {"minecraft:obsidian", minecraft::obsidian},
-        {"minecraft:orange_banner", minecraft::orange_banner},
-        {"minecraft:orange_bed", minecraft::orange_bed},
-        {"minecraft:orange_carpet", minecraft::orange_carpet},
-        {"minecraft:orange_concrete", minecraft::orange_concrete},
-        {"minecraft:orange_concrete_powder", minecraft::orange_concrete_powder},
-        {"minecraft:orange_glazed_terracotta", minecraft::orange_glazed_terracotta},
-        {"minecraft:orange_shulker_box", minecraft::orange_shulker_box},
-        {"minecraft:orange_stained_glass", minecraft::orange_stained_glass},
-        {"minecraft:orange_stained_glass_pane", minecraft::orange_stained_glass_pane},
-        {"minecraft:orange_terracotta", minecraft::orange_terracotta},
-        {"minecraft:orange_tulip", minecraft::orange_tulip},
-        {"minecraft:orange_wall_banner", minecraft::orange_wall_banner},
-        {"minecraft:orange_wool", minecraft::orange_wool},
-        {"minecraft:oxeye_daisy", minecraft::oxeye_daisy},
-        {"minecraft:packed_ice", minecraft::packed_ice},
-        {"minecraft:peony", minecraft::peony},
-        {"minecraft:petrified_oak_slab", minecraft::petrified_oak_slab},
-        {"minecraft:pink_banner", minecraft::pink_banner},
-        {"minecraft:pink_bed", minecraft::pink_bed},
-        {"minecraft:pink_carpet", minecraft::pink_carpet},
-        {"minecraft:pink_concrete", minecraft::pink_concrete},
-        {"minecraft:pink_concrete_powder", minecraft::pink_concrete_powder},
-        {"minecraft:pink_glazed_terracotta", minecraft::pink_glazed_terracotta},
-        {"minecraft:pink_shulker_box", minecraft::pink_shulker_box},
-        {"minecraft:pink_stained_glass", minecraft::pink_stained_glass},
-        {"minecraft:pink_stained_glass_pane", minecraft::pink_stained_glass_pane},
-        {"minecraft:pink_terracotta", minecraft::pink_terracotta},
-        {"minecraft:pink_tulip", minecraft::pink_tulip},
-        {"minecraft:pink_wall_banner", minecraft::pink_wall_banner},
-        {"minecraft:pink_wool", minecraft::pink_wool},
-        {"minecraft:piston", minecraft::piston},
-        {"minecraft:piston_head", minecraft::piston_head},
-        {"minecraft:player_head", minecraft::player_head},
-        {"minecraft:player_wall_head", minecraft::player_wall_head},
-        {"minecraft:podzol", minecraft::podzol},
-        {"minecraft:polished_andesite", minecraft::polished_andesite},
-        {"minecraft:polished_andesite_slab", minecraft::polished_andesite_slab},
-        {"minecraft:polished_andesite_stairs", minecraft::polished_andesite_stairs},
-        {"minecraft:polished_diorite", minecraft::polished_diorite},
-        {"minecraft:polished_diorite_slab", minecraft::polished_diorite_slab},
-        {"minecraft:polished_diorite_stairs", minecraft::polished_diorite_stairs},
-        {"minecraft:polished_granite", minecraft::polished_granite},
-        {"minecraft:polished_granite_slab", minecraft::polished_granite_slab},
-        {"minecraft:polished_granite_stairs", minecraft::polished_granite_stairs},
-        {"minecraft:poppy", minecraft::poppy},
-        {"minecraft:potatoes", minecraft::potatoes},
-        {"minecraft:potted_acacia_sapling", minecraft::potted_acacia_sapling},
-        {"minecraft:potted_allium", minecraft::potted_allium},
-        {"minecraft:potted_azure_bluet", minecraft::potted_azure_bluet},
-        {"minecraft:potted_bamboo", minecraft::potted_bamboo},
-        {"minecraft:potted_birch_sapling", minecraft::potted_birch_sapling},
-        {"minecraft:potted_blue_orchid", minecraft::potted_blue_orchid},
-        {"minecraft:potted_brown_mushroom", minecraft::potted_brown_mushroom},
-        {"minecraft:potted_cactus", minecraft::potted_cactus},
-        {"minecraft:potted_cornflower", minecraft::potted_cornflower},
-        {"minecraft:potted_dandelion", minecraft::potted_dandelion},
-        {"minecraft:potted_dark_oak_sapling", minecraft::potted_dark_oak_sapling},
-        {"minecraft:potted_dead_bush", minecraft::potted_dead_bush},
-        {"minecraft:potted_fern", minecraft::potted_fern},
-        {"minecraft:potted_jungle_sapling", minecraft::potted_jungle_sapling},
-        {"minecraft:potted_lily_of_the_valley", minecraft::potted_lily_of_the_valley},
-        {"minecraft:potted_oak_sapling", minecraft::potted_oak_sapling},
-        {"minecraft:potted_orange_tulip", minecraft::potted_orange_tulip},
-        {"minecraft:potted_oxeye_daisy", minecraft::potted_oxeye_daisy},
-        {"minecraft:potted_pink_tulip", minecraft::potted_pink_tulip},
-        {"minecraft:potted_poppy", minecraft::potted_poppy},
-        {"minecraft:potted_red_mushroom", minecraft::potted_red_mushroom},
-        {"minecraft:potted_red_tulip", minecraft::potted_red_tulip},
-        {"minecraft:potted_spruce_sapling", minecraft::potted_spruce_sapling},
-        {"minecraft:potted_white_tulip", minecraft::potted_white_tulip},
-        {"minecraft:potted_wither_rose", minecraft::potted_wither_rose},
-        {"minecraft:powered_rail", minecraft::powered_rail},
-        {"minecraft:prismarine", minecraft::prismarine},
-        {"minecraft:prismarine_brick_slab", minecraft::prismarine_brick_slab},
-        {"minecraft:prismarine_brick_stairs", minecraft::prismarine_brick_stairs},
-        {"minecraft:prismarine_bricks", minecraft::prismarine_bricks},
-        {"minecraft:prismarine_slab", minecraft::prismarine_slab},
-        {"minecraft:prismarine_stairs", minecraft::prismarine_stairs},
-        {"minecraft:prismarine_wall", minecraft::prismarine_wall},
-        {"minecraft:pumpkin", minecraft::pumpkin},
-        {"minecraft:pumpkin_stem", minecraft::pumpkin_stem},
-        {"minecraft:purple_banner", minecraft::purple_banner},
-        {"minecraft:purple_bed", minecraft::purple_bed},
-        {"minecraft:purple_carpet", minecraft::purple_carpet},
-        {"minecraft:purple_concrete", minecraft::purple_concrete},
-        {"minecraft:purple_concrete_powder", minecraft::purple_concrete_powder},
-        {"minecraft:purple_glazed_terracotta", minecraft::purple_glazed_terracotta},
-        {"minecraft:purple_shulker_box", minecraft::purple_shulker_box},
-        {"minecraft:purple_stained_glass", minecraft::purple_stained_glass},
-        {"minecraft:purple_stained_glass_pane", minecraft::purple_stained_glass_pane},
-        {"minecraft:purple_terracotta", minecraft::purple_terracotta},
-        {"minecraft:purple_wall_banner", minecraft::purple_wall_banner},
-        {"minecraft:purple_wool", minecraft::purple_wool},
-        {"minecraft:purpur_block", minecraft::purpur_block},
-        {"minecraft:purpur_pillar", minecraft::purpur_pillar},
-        {"minecraft:purpur_slab", minecraft::purpur_slab},
-        {"minecraft:purpur_stairs", minecraft::purpur_stairs},
-        {"minecraft:quartz_pillar", minecraft::quartz_pillar},
-        {"minecraft:quartz_slab", minecraft::quartz_slab},
-        {"minecraft:quartz_stairs", minecraft::quartz_stairs},
-        {"minecraft:rail", minecraft::rail},
-        {"minecraft:red_banner", minecraft::red_banner},
-        {"minecraft:red_bed", minecraft::red_bed},
-        {"minecraft:red_carpet", minecraft::red_carpet},
-        {"minecraft:red_concrete", minecraft::red_concrete},
-        {"minecraft:red_concrete_powder", minecraft::red_concrete_powder},
-        {"minecraft:red_glazed_terracotta", minecraft::red_glazed_terracotta},
-        {"minecraft:red_mushroom", minecraft::red_mushroom},
-        {"minecraft:red_mushroom_block", minecraft::red_mushroom_block},
-        {"minecraft:red_nether_brick_slab", minecraft::red_nether_brick_slab},
-        {"minecraft:red_nether_brick_stairs", minecraft::red_nether_brick_stairs},
-        {"minecraft:red_nether_brick_wall", minecraft::red_nether_brick_wall},
-        {"minecraft:red_nether_bricks", minecraft::red_nether_bricks},
-        {"minecraft:red_sand", minecraft::red_sand},
-        {"minecraft:red_sandstone", minecraft::red_sandstone},
-        {"minecraft:red_sandstone_slab", minecraft::red_sandstone_slab},
-        {"minecraft:red_sandstone_stairs", minecraft::red_sandstone_stairs},
-        {"minecraft:red_sandstone_wall", minecraft::red_sandstone_wall},
-        {"minecraft:red_shulker_box", minecraft::red_shulker_box},
-        {"minecraft:red_stained_glass", minecraft::red_stained_glass},
-        {"minecraft:red_stained_glass_pane", minecraft::red_stained_glass_pane},
-        {"minecraft:red_terracotta", minecraft::red_terracotta},
-        {"minecraft:red_tulip", minecraft::red_tulip},
-        {"minecraft:red_wall_banner", minecraft::red_wall_banner},
-        {"minecraft:red_wool", minecraft::red_wool},
-        {"minecraft:comparator", minecraft::comparator},
-        {"minecraft:redstone_wire", minecraft::redstone_wire},
-        {"minecraft:redstone_lamp", minecraft::redstone_lamp},
-        {"minecraft:redstone_ore", minecraft::redstone_ore},
-        {"minecraft:repeater", minecraft::repeater},
-        {"minecraft:redstone_torch", minecraft::redstone_torch},
-        {"minecraft:redstone_wall_torch", minecraft::redstone_wall_torch},
-        {"minecraft:repeating_command_block", minecraft::repeating_command_block},
-        {"minecraft:rose_bush", minecraft::rose_bush},
-        {"minecraft:sand", minecraft::sand},
-        {"minecraft:sandstone", minecraft::sandstone},
-        {"minecraft:sandstone_slab", minecraft::sandstone_slab},
-        {"minecraft:sandstone_stairs", minecraft::sandstone_stairs},
-        {"minecraft:sandstone_wall", minecraft::sandstone_wall},
-        {"minecraft:scaffolding", minecraft::scaffolding},
-        {"minecraft:sea_lantern", minecraft::sea_lantern},
-        {"minecraft:sea_pickle", minecraft::sea_pickle},
-        {"minecraft:seagrass", minecraft::seagrass},
-        {"minecraft:shulker_box", minecraft::shulker_box},
-        {"minecraft:skeleton_skull", minecraft::skeleton_skull},
-        {"minecraft:skeleton_wall_skull", minecraft::skeleton_wall_skull},
-        {"minecraft:slime_block", minecraft::slime_block},
-        {"minecraft:smithing_table", minecraft::smithing_table},
-        {"minecraft:smoker", minecraft::smoker},
-        {"minecraft:smooth_quartz", minecraft::smooth_quartz},
-        {"minecraft:smooth_quartz_slab", minecraft::smooth_quartz_slab},
-        {"minecraft:smooth_quartz_stairs", minecraft::smooth_quartz_stairs},
-        {"minecraft:smooth_red_sandstone", minecraft::smooth_red_sandstone},
-        {"minecraft:smooth_red_sandstone_slab", minecraft::smooth_red_sandstone_slab},
-        {"minecraft:smooth_red_sandstone_stairs", minecraft::smooth_red_sandstone_stairs},
-        {"minecraft:smooth_sandstone", minecraft::smooth_sandstone},
-        {"minecraft:smooth_sandstone_slab", minecraft::smooth_sandstone_slab},
-        {"minecraft:smooth_sandstone_stairs", minecraft::smooth_sandstone_stairs},
-        {"minecraft:smooth_stone", minecraft::smooth_stone},
-        {"minecraft:smooth_stone_slab", minecraft::smooth_stone_slab},
-        {"minecraft:snow", minecraft::snow},
-        {"minecraft:snow_block", minecraft::snow_block},
-        {"minecraft:soul_sand", minecraft::soul_sand},
-        {"minecraft:spawner", minecraft::spawner},
-        {"minecraft:sponge", minecraft::sponge},
-        {"minecraft:spruce_button", minecraft::spruce_button},
-        {"minecraft:spruce_door", minecraft::spruce_door},
-        {"minecraft:spruce_fence", minecraft::spruce_fence},
-        {"minecraft:spruce_fence_gate", minecraft::spruce_fence_gate},
-        {"minecraft:spruce_leaves", minecraft::spruce_leaves},
-        {"minecraft:spruce_log", minecraft::spruce_log},
-        {"minecraft:spruce_planks", minecraft::spruce_planks},
-        {"minecraft:spruce_pressure_plate", minecraft::spruce_pressure_plate},
-        {"minecraft:spruce_sapling", minecraft::spruce_sapling},
-        {"minecraft:spruce_sign", minecraft::spruce_sign},
-        {"minecraft:spruce_slab", minecraft::spruce_slab},
-        {"minecraft:spruce_stairs", minecraft::spruce_stairs},
-        {"minecraft:spruce_trapdoor", minecraft::spruce_trapdoor},
-        {"minecraft:spruce_wall_sign", minecraft::spruce_wall_sign},
-        {"minecraft:spruce_wood", minecraft::spruce_wood},
-        {"minecraft:sticky_piston", minecraft::sticky_piston},
-        {"minecraft:stone", minecraft::stone},
-        {"minecraft:stone_brick_slab", minecraft::stone_brick_slab},
-        {"minecraft:stone_brick_stairs", minecraft::stone_brick_stairs},
-        {"minecraft:stone_brick_wall", minecraft::stone_brick_wall},
-        {"minecraft:stone_bricks", minecraft::stone_bricks},
-        {"minecraft:stone_button", minecraft::stone_button},
-        {"minecraft:stone_pressure_plate", minecraft::stone_pressure_plate},
-        {"minecraft:stone_slab", minecraft::stone_slab},
-        {"minecraft:stone_stairs", minecraft::stone_stairs},
-        {"minecraft:stonecutter", minecraft::stonecutter},
-        {"minecraft:stripped_acacia_log", minecraft::stripped_acacia_log},
-        {"minecraft:stripped_acacia_wood", minecraft::stripped_acacia_wood},
-        {"minecraft:stripped_birch_log", minecraft::stripped_birch_log},
-        {"minecraft:stripped_birch_wood", minecraft::stripped_birch_wood},
-        {"minecraft:stripped_dark_oak_log", minecraft::stripped_dark_oak_log},
-        {"minecraft:stripped_dark_oak_wood", minecraft::stripped_dark_oak_wood},
-        {"minecraft:stripped_jungle_log", minecraft::stripped_jungle_log},
-        {"minecraft:stripped_jungle_wood", minecraft::stripped_jungle_wood},
-        {"minecraft:stripped_oak_log", minecraft::stripped_oak_log},
-        {"minecraft:stripped_oak_wood", minecraft::stripped_oak_wood},
-        {"minecraft:stripped_spruce_log", minecraft::stripped_spruce_log},
-        {"minecraft:stripped_spruce_wood", minecraft::stripped_spruce_wood},
-        {"minecraft:structure_block", minecraft::structure_block},
-        {"minecraft:structure_void", minecraft::structure_void},
-        {"minecraft:sugar_cane", minecraft::sugar_cane},
-        {"minecraft:sunflower", minecraft::sunflower},
-        {"minecraft:sweet_berry_bush", minecraft::sweet_berry_bush},
-        {"minecraft:tall_grass", minecraft::tall_grass},
-        {"minecraft:tall_seagrass", minecraft::tall_seagrass},
-        {"minecraft:terracotta", minecraft::terracotta},
-        {"minecraft:tnt", minecraft::tnt},
-        {"minecraft:torch", minecraft::torch},
-        {"minecraft:trapped_chest", minecraft::trapped_chest},
-        {"minecraft:tripwire", minecraft::tripwire},
-        {"minecraft:tripwire_hook", minecraft::tripwire_hook},
-        {"minecraft:tube_coral", minecraft::tube_coral},
-        {"minecraft:tube_coral_block", minecraft::tube_coral_block},
-        {"minecraft:tube_coral_fan", minecraft::tube_coral_fan},
-        {"minecraft:tube_coral_wall_fan", minecraft::tube_coral_wall_fan},
-        {"minecraft:turtle_egg", minecraft::turtle_egg},
-        {"minecraft:vine", minecraft::vine},
-        {"minecraft:void_air", minecraft::void_air},
-        {"minecraft:wall_torch", minecraft::wall_torch},
-        {"minecraft:water", minecraft::water},
-        {"minecraft:wet_sponge", minecraft::wet_sponge},
-        {"minecraft:wheat", minecraft::wheat},
-        {"minecraft:white_banner", minecraft::white_banner},
-        {"minecraft:white_bed", minecraft::white_bed},
-        {"minecraft:white_carpet", minecraft::white_carpet},
-        {"minecraft:white_concrete", minecraft::white_concrete},
-        {"minecraft:white_concrete_powder", minecraft::white_concrete_powder},
-        {"minecraft:white_glazed_terracotta", minecraft::white_glazed_terracotta},
-        {"minecraft:white_shulker_box", minecraft::white_shulker_box},
-        {"minecraft:white_stained_glass", minecraft::white_stained_glass},
-        {"minecraft:white_stained_glass_pane", minecraft::white_stained_glass_pane},
-        {"minecraft:white_terracotta", minecraft::white_terracotta},
-        {"minecraft:white_tulip", minecraft::white_tulip},
-        {"minecraft:white_wall_banner", minecraft::white_wall_banner},
-        {"minecraft:white_wool", minecraft::white_wool},
-        {"minecraft:wither_rose", minecraft::wither_rose},
-        {"minecraft:wither_skeleton_skull", minecraft::wither_skeleton_skull},
-        {"minecraft:wither_skeleton_wall_skull", minecraft::wither_skeleton_wall_skull},
-        {"minecraft:yellow_banner", minecraft::yellow_banner},
-        {"minecraft:yellow_bed", minecraft::yellow_bed},
-        {"minecraft:yellow_carpet", minecraft::yellow_carpet},
-        {"minecraft:yellow_concrete", minecraft::yellow_concrete},
-        {"minecraft:yellow_concrete_powder", minecraft::yellow_concrete_powder},
-        {"minecraft:yellow_glazed_terracotta", minecraft::yellow_glazed_terracotta},
-        {"minecraft:yellow_shulker_box", minecraft::yellow_shulker_box},
-        {"minecraft:yellow_stained_glass", minecraft::yellow_stained_glass},
-        {"minecraft:yellow_stained_glass_pane", minecraft::yellow_stained_glass_pane},
-        {"minecraft:yellow_terracotta", minecraft::yellow_terracotta},
-        {"minecraft:yellow_wall_banner", minecraft::yellow_wall_banner},
-        {"minecraft:yellow_wool", minecraft::yellow_wool},
-        {"minecraft:zombie_head", minecraft::zombie_head},
-        {"minecraft:zombie_wall_head", minecraft::zombie_wall_head},
-
-        // 1.15
-        {"minecraft:bee_nest", minecraft::bee_nest},
-        {"minecraft:beehive", minecraft::beehive},
-        {"minecraft:honey_block", minecraft::honey_block},
-        {"minecraft:honeycomb_block", minecraft::honeycomb_block},
-
-        // 1.16
-        {"minecraft:crimson_nylium", minecraft::crimson_nylium},
-        {"minecraft:warped_nylium", minecraft::warped_nylium},
-        {"minecraft:crimson_planks", minecraft::crimson_planks},
-        {"minecraft:warped_planks", minecraft::warped_planks},
-        {"minecraft:nether_gold_ore", minecraft::nether_gold_ore},
-        {"minecraft:crimson_stem", minecraft::crimson_stem},
-        {"minecraft:warped_stem", minecraft::warped_stem},
-        {"minecraft:stripped_crimson_stem", minecraft::stripped_crimson_stem},
-        {"minecraft:stripped_warped_stem", minecraft::stripped_warped_stem},
-        {"minecraft:crimson_hyphae", minecraft::crimson_hyphae},
-        {"minecraft:warped_hyphae", minecraft::warped_hyphae},
-        {"minecraft:crimson_slab", minecraft::crimson_slab},
-        {"minecraft:warped_slab", minecraft::warped_slab},
-        {"minecraft:cracked_nether_bricks", minecraft::cracked_nether_bricks},
-        {"minecraft:chiseled_nether_bricks", minecraft::chiseled_nether_bricks},
-        {"minecraft:crimson_stairs", minecraft::crimson_stairs},
-        {"minecraft:warped_stairs", minecraft::warped_stairs},
-        {"minecraft:netherite_block", minecraft::netherite_block},
-        {"minecraft:soul_soil", minecraft::soul_soil},
-        {"minecraft:basalt", minecraft::basalt},
-        {"minecraft:polished_basalt", minecraft::polished_basalt},
-        {"minecraft:ancient_debris", minecraft::ancient_debris},
-        {"minecraft:crying_obsidian", minecraft::crying_obsidian},
-        {"minecraft:blackstone", minecraft::blackstone},
-        {"minecraft:blackstone_slab", minecraft::blackstone_slab},
-        {"minecraft:blackstone_stairs", minecraft::blackstone_stairs},
-        {"minecraft:gilded_blackstone", minecraft::gilded_blackstone},
-        {"minecraft:polished_blackstone", minecraft::polished_blackstone},
-        {"minecraft:polished_blackstone_slab", minecraft::polished_blackstone_slab},
-        {"minecraft:polished_blackstone_stairs", minecraft::polished_blackstone_stairs},
-        {"minecraft:chiseled_polished_blackstone", minecraft::chiseled_polished_blackstone},
-        {"minecraft:polished_blackstone_bricks", minecraft::polished_blackstone_bricks},
-        {"minecraft:polished_blackstone_brick_slab", minecraft::polished_blackstone_brick_slab},
-        {"minecraft:polished_blackstone_brick_stairs", minecraft::polished_blackstone_brick_stairs},
-        {"minecraft:cracked_polished_blackstone_bricks", minecraft::cracked_polished_blackstone_bricks},
-        {"minecraft:crimson_fungus", minecraft::crimson_fungus},
-        {"minecraft:warped_fungus", minecraft::warped_fungus},
-        {"minecraft:crimson_roots", minecraft::crimson_roots},
-        {"minecraft:warped_roots", minecraft::warped_roots},
-        {"minecraft:nether_sprouts", minecraft::nether_sprouts},
-        {"minecraft:weeping_vines", minecraft::weeping_vines},
-        {"minecraft:twisting_vines", minecraft::twisting_vines},
-        {"minecraft:crimson_fence", minecraft::crimson_fence},
-        {"minecraft:warped_fence", minecraft::warped_fence},
-        {"minecraft:soul_torch", minecraft::soul_torch},
-        {"minecraft:chain", minecraft::chain},
-        {"minecraft:blackstone_wall", minecraft::blackstone_wall},
-        {"minecraft:polished_blackstone_wall", minecraft::polished_blackstone_wall},
-        {"minecraft:polished_blackstone_brick_wall", minecraft::polished_blackstone_brick_wall},
-        {"minecraft:soul_lantern", minecraft::soul_lantern},
-        {"minecraft:soul_campfire", minecraft::soul_campfire},
-        {"minecraft:shroomlight", minecraft::shroomlight},
-        {"minecraft:lodestone", minecraft::lodestone},
-        {"minecraft:respawn_anchor", minecraft::respawn_anchor},
-        {"minecraft:crimson_pressure_plate", minecraft::crimson_pressure_plate},
-        {"minecraft:warped_pressure_plate", minecraft::warped_pressure_plate},
-        {"minecraft:crimson_trapdoor", minecraft::crimson_trapdoor},
-        {"minecraft:warped_trapdoor", minecraft::warped_trapdoor},
-        {"minecraft:crimson_fence_gate", minecraft::crimson_fence_gate},
-        {"minecraft:warped_fence_gate", minecraft::warped_fence_gate},
-        {"minecraft:crimson_button", minecraft::crimson_button},
-        {"minecraft:warped_button", minecraft::warped_button},
-        {"minecraft:crimson_door", minecraft::crimson_door},
-        {"minecraft:warped_door", minecraft::warped_door},
-        {"minecraft:target", minecraft::target},
-        {"minecraft:twisting_vines_plant", minecraft::twisting_vines_plant},
-        {"minecraft:warped_wart_block", minecraft::warped_wart_block},
-        {"minecraft:quartz_bricks", minecraft::quartz_bricks},
-        {"minecraft:stripped_crimson_hyphae", minecraft::stripped_crimson_hyphae},
-        {"minecraft:stripped_warped_hyphae", minecraft::stripped_warped_hyphae},
-        {"minecraft:crimson_sign", minecraft::crimson_sign},
-        {"minecraft:warped_sign", minecraft::warped_sign},
-        {"minecraft:polished_blackstone_pressure_plate", minecraft::polished_blackstone_pressure_plate},
-        {"minecraft:polished_blackstone_button", minecraft::polished_blackstone_button},
-
-        // bugfix for 1.16
-        {"minecraft:warped_wall_sign", minecraft::warped_wall_sign},
-        {"minecraft:crimson_wall_sign", minecraft::crimson_wall_sign},
-        {"minecraft:soul_fire", minecraft::soul_fire},
-        {"minecraft:soul_wall_torch", minecraft::soul_wall_torch},
-        {"minecraft:weeping_vines_plant", minecraft::weeping_vines_plant},
-
-        // 1.17
-        {"minecraft:deepslate", minecraft::deepslate},
-        {"minecraft:cobbled_deepslate", minecraft::cobbled_deepslate},
-        {"minecraft:polished_deepslate", minecraft::polished_deepslate},
-        {"minecraft:calcite", minecraft::calcite},
-        {"minecraft:tuff", minecraft::tuff},
-        {"minecraft:dripstone_block", minecraft::dripstone_block},
-        {"minecraft:deepslate_coal_ore", minecraft::deepslate_coal_ore},
-        {"minecraft:deepslate_iron_ore", minecraft::deepslate_iron_ore},
-        {"minecraft:copper_ore", minecraft::copper_ore},
-        {"minecraft:deepslate_copper_ore", minecraft::deepslate_copper_ore},
-        {"minecraft:deepslate_gold_ore", minecraft::deepslate_gold_ore},
-        {"minecraft:deepslate_redstone_ore", minecraft::deepslate_redstone_ore},
-        {"minecraft:deepslate_emerald_ore", minecraft::deepslate_emerald_ore},
-        {"minecraft:deepslate_lapis_ore", minecraft::deepslate_lapis_ore},
-        {"minecraft:deepslate_diamond_ore", minecraft::deepslate_diamond_ore},
-        {"minecraft:raw_iron_block", minecraft::raw_iron_block},
-        {"minecraft:raw_copper_block", minecraft::raw_copper_block},
-        {"minecraft:raw_gold_block", minecraft::raw_gold_block},
-        {"minecraft:amethyst_block", minecraft::amethyst_block},
-        {"minecraft:budding_amethyst", minecraft::budding_amethyst},
-        {"minecraft:copper_block", minecraft::copper_block},
-        {"minecraft:exposed_copper", minecraft::exposed_copper},
-        {"minecraft:weathered_copper", minecraft::weathered_copper},
-        {"minecraft:oxidized_copper", minecraft::oxidized_copper},
-        {"minecraft:cut_copper", minecraft::cut_copper},
-        {"minecraft:exposed_cut_copper", minecraft::exposed_cut_copper},
-        {"minecraft:weathered_cut_copper", minecraft::weathered_cut_copper},
-        {"minecraft:oxidized_cut_copper", minecraft::oxidized_cut_copper},
-        {"minecraft:waxed_copper_block", minecraft::waxed_copper_block},
-        {"minecraft:waxed_exposed_copper", minecraft::waxed_exposed_copper},
-        {"minecraft:waxed_weathered_copper", minecraft::waxed_weathered_copper},
-        {"minecraft:waxed_oxidized_copper", minecraft::waxed_oxidized_copper},
-        {"minecraft:waxed_cut_copper", minecraft::waxed_cut_copper},
-        {"minecraft:waxed_exposed_cut_copper", minecraft::waxed_exposed_cut_copper},
-        {"minecraft:waxed_weathered_cut_copper", minecraft::waxed_weathered_cut_copper},
-        {"minecraft:waxed_oxidized_cut_copper", minecraft::waxed_oxidized_cut_copper},
-        {"minecraft:azalea_leaves", minecraft::azalea_leaves},
-        {"minecraft:tinted_glass", minecraft::tinted_glass},
-        {"minecraft:azalea", minecraft::azalea},
-        {"minecraft:flowering_azalea", minecraft::flowering_azalea},
-        {"minecraft:spore_blossom", minecraft::spore_blossom},
-        {"minecraft:moss_carpet", minecraft::moss_carpet},
-        {"minecraft:moss_block", minecraft::moss_block},
-        {"minecraft:hanging_roots", minecraft::hanging_roots},
-        {"minecraft:infested_deepslate", minecraft::infested_deepslate},
-        {"minecraft:deepslate_bricks", minecraft::deepslate_bricks},
-        {"minecraft:cracked_deepslate_bricks", minecraft::cracked_deepslate_bricks},
-        {"minecraft:deepslate_tiles", minecraft::deepslate_tiles},
-        {"minecraft:cracked_deepslate_tiles", minecraft::cracked_deepslate_tiles},
-        {"minecraft:chiseled_deepslate", minecraft::chiseled_deepslate},
-        {"minecraft:smooth_basalt", minecraft::smooth_basalt},
-        {"minecraft:potted_azalea_bush", minecraft::potted_azalea_bush},
-        {"minecraft:potted_flowering_azalea_bush", minecraft::potted_flowering_azalea_bush},
-        {"minecraft:powder_snow", minecraft::powder_snow},
-        {"minecraft:water_cauldron", minecraft::water_cauldron},
-        {"minecraft:lava_cauldron", minecraft::lava_cauldron},
-        {"minecraft:powder_snow_cauldron", minecraft::powder_snow_cauldron},
-        {"minecraft:dirt_path", minecraft::dirt_path},
-        {"minecraft:waxed_copper_block", minecraft::waxed_copper_block},
-        {"minecraft:rooted_dirt", minecraft::rooted_dirt},
-        {"minecraft:flowering_azalea_leaves", minecraft::flowering_azalea_leaves},
-        {"minecraft:big_dripleaf", minecraft::big_dripleaf},
-        {"minecraft:big_dripleaf_stem", minecraft::big_dripleaf_stem},
-        {"minecraft:small_dripleaf", minecraft::small_dripleaf},
-        {"minecraft:candle", minecraft::candle},
-        {"minecraft:white_candle", minecraft::white_candle},
-        {"minecraft:orange_candle", minecraft::orange_candle},
-        {"minecraft:magenta_candle", minecraft::magenta_candle},
-        {"minecraft:light_blue_candle", minecraft::light_blue_candle},
-        {"minecraft:yellow_candle", minecraft::yellow_candle},
-        {"minecraft:lime_candle", minecraft::lime_candle},
-        {"minecraft:pink_candle", minecraft::pink_candle},
-        {"minecraft:gray_candle", minecraft::gray_candle},
-        {"minecraft:light_gray_candle", minecraft::light_gray_candle},
-        {"minecraft:cyan_candle", minecraft::cyan_candle},
-        {"minecraft:purple_candle", minecraft::purple_candle},
-        {"minecraft:blue_candle", minecraft::blue_candle},
-        {"minecraft:brown_candle", minecraft::brown_candle},
-        {"minecraft:green_candle", minecraft::green_candle},
-        {"minecraft:red_candle", minecraft::red_candle},
-        {"minecraft:black_candle", minecraft::black_candle},
-        {"minecraft:candle_cake", minecraft::candle_cake},
-        {"minecraft:white_candle_cake", minecraft::white_candle_cake},
-        {"minecraft:orange_candle_cake", minecraft::orange_candle_cake},
-        {"minecraft:magenta_candle_cake", minecraft::magenta_candle_cake},
-        {"minecraft:light_blue_candle_cake", minecraft::light_blue_candle_cake},
-        {"minecraft:yellow_candle_cake", minecraft::yellow_candle_cake},
-        {"minecraft:lime_candle_cake", minecraft::lime_candle_cake},
-        {"minecraft:pink_candle_cake", minecraft::pink_candle_cake},
-        {"minecraft:gray_candle_cake", minecraft::gray_candle_cake},
-        {"minecraft:light_gray_candle_cake", minecraft::light_gray_candle_cake},
-        {"minecraft:cyan_candle_cake", minecraft::cyan_candle_cake},
-        {"minecraft:purple_candle_cake", minecraft::purple_candle_cake},
-        {"minecraft:blue_candle_cake", minecraft::blue_candle_cake},
-        {"minecraft:brown_candle_cake", minecraft::brown_candle_cake},
-        {"minecraft:green_candle_cake", minecraft::green_candle_cake},
-        {"minecraft:red_candle_cake", minecraft::red_candle_cake},
-        {"minecraft:black_candle_cake", minecraft::black_candle_cake},
-        {"minecraft:cut_copper_stairs", minecraft::cut_copper_stairs},
-        {"minecraft:exposed_cut_copper_stairs", minecraft::exposed_cut_copper_stairs},
-        {"minecraft:weathered_cut_copper_stairs", minecraft::weathered_cut_copper_stairs},
-        {"minecraft:oxidized_cut_copper_stairs", minecraft::oxidized_cut_copper_stairs},
-        {"minecraft:waxed_cut_copper_stairs", minecraft::waxed_cut_copper_stairs},
-        {"minecraft:waxed_exposed_cut_copper_stairs", minecraft::waxed_exposed_cut_copper_stairs},
-        {"minecraft:waxed_weathered_cut_copper_stairs", minecraft::waxed_weathered_cut_copper_stairs},
-        {"minecraft:waxed_oxidized_cut_copper_stairs", minecraft::waxed_oxidized_cut_copper_stairs},
-        {"minecraft:cobbled_deepslate_stairs", minecraft::cobbled_deepslate_stairs},
-        {"minecraft:polished_deepslate_stairs", minecraft::polished_deepslate_stairs},
-        {"minecraft:deepslate_brick_stairs", minecraft::deepslate_brick_stairs},
-        {"minecraft:deepslate_tile_stairs", minecraft::deepslate_tile_stairs},
-        {"minecraft:cut_copper_slab", minecraft::cut_copper_slab},
-        {"minecraft:exposed_cut_copper_slab", minecraft::exposed_cut_copper_slab},
-        {"minecraft:weathered_cut_copper_slab", minecraft::weathered_cut_copper_slab},
-        {"minecraft:oxidized_cut_copper_slab", minecraft::oxidized_cut_copper_slab},
-        {"minecraft:waxed_cut_copper_slab", minecraft::waxed_cut_copper_slab},
-        {"minecraft:waxed_exposed_cut_copper_slab", minecraft::waxed_exposed_cut_copper_slab},
-        {"minecraft:waxed_weathered_cut_copper_slab", minecraft::waxed_weathered_cut_copper_slab},
-        {"minecraft:waxed_oxidized_cut_copper_slab", minecraft::waxed_oxidized_cut_copper_slab},
-        {"minecraft:cobbled_deepslate_slab", minecraft::cobbled_deepslate_slab},
-        {"minecraft:polished_deepslate_slab", minecraft::polished_deepslate_slab},
-        {"minecraft:deepslate_brick_slab", minecraft::deepslate_brick_slab},
-        {"minecraft:deepslate_tile_slab", minecraft::deepslate_tile_slab},
-        {"minecraft:cobbled_deepslate_wall", minecraft::cobbled_deepslate_wall},
-        {"minecraft:polished_deepslate_wall", minecraft::polished_deepslate_wall},
-        {"minecraft:deepslate_brick_wall", minecraft::deepslate_brick_wall},
-        {"minecraft:deepslate_tile_wall", minecraft::deepslate_tile_wall},
-        {"minecraft:lightning_rod", minecraft::lightning_rod},
-        {"minecraft:small_amethyst_bud", minecraft::small_amethyst_bud},
-        {"minecraft:medium_amethyst_bud", minecraft::medium_amethyst_bud},
-        {"minecraft:large_amethyst_bud", minecraft::large_amethyst_bud},
-        {"minecraft:amethyst_cluster", minecraft::amethyst_cluster},
-        {"minecraft:pointed_dripstone", minecraft::pointed_dripstone},
-        {"minecraft:light", minecraft::light},
-        {"minecraft:cave_vines", minecraft::cave_vines},
-        {"minecraft:cave_vines_plant", minecraft::cave_vines_plant},
-        {"minecraft:glow_lichen", minecraft::glow_lichen},
-
-        {"minecraft:potted_crimson_fungus", minecraft::potted_crimson_fungus},
-        {"minecraft:potted_warped_fungus", minecraft::potted_warped_fungus},
-        {"minecraft:potted_crimson_roots", minecraft::potted_crimson_roots},
-        {"minecraft:potted_warped_roots", minecraft::potted_warped_roots},
-        {"minecraft:sculk_sensor", minecraft::sculk_sensor},
-    };
-    auto mappingIt = mapping.find(name);
-    if (mappingIt == mapping.end()) {
+    using namespace std;
+    static unique_ptr<unordered_map<string, blocks::BlockId> const> const mapping(CreateTable());
+    auto mappingIt = mapping->find(name);
+    if (mappingIt == mapping->end()) {
         return unknown;
     }
     return mappingIt->second;
