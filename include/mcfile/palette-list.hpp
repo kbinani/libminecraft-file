@@ -74,16 +74,20 @@ public:
         if (index.size() != size) {
             return false;
         }
+        if (palette.size() > std::numeric_limits<Index>::max()) {
+            return false;
+        }
+        Index s = static_cast<Index>(palette.size());
+        if (std::any_of(index.begin(), index.end(), [s](Index i) { return i >= s; })) {
+            return false;
+        }
+
         fIndex.clear();
         fLut.clear();
         fValue.clear();
-        size_t s = palette.size();
-        if (!std::all_of(index.begin(), index.end(), [s](Index i) { return i < s; })) {
-            return false;
-        }
         std::copy(palette.begin(), palette.end(), std::back_inserter(fValue));
         std::copy(index.begin(), index.end(), std::back_inserter(fIndex));
-        for (Index i = 0; i < palette.size(); i++) {
+        for (Index i = 0; i < s; i++) {
             Value const &value = palette[i];
             fLut[value] = i;
         }
