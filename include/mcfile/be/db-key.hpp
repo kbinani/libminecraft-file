@@ -113,7 +113,7 @@ public:
                 DbKey k;
                 k.fIsTagged = true;
                 k.fTagged.fTag = tag;
-                k.fTagged.fDimension = 0;
+                k.fTagged.fDimension = Dimension::Overworld;
                 k.fTagged.fChunk.fX = cx;
                 k.fTagged.fChunk.fZ = cz;
                 return k;
@@ -134,7 +134,7 @@ public:
                 DbKey k;
                 k.fIsTagged = true;
                 k.fTagged.fTag = tag;
-                k.fTagged.fDimension = 0;
+                k.fTagged.fDimension = Dimension::Overworld;
                 k.fTagged.fSubChunk.fX = cx;
                 k.fTagged.fSubChunk.fY = y;
                 k.fTagged.fSubChunk.fZ = cz;
@@ -155,7 +155,7 @@ public:
                 DbKey k;
                 k.fIsTagged = true;
                 k.fTagged.fTag = tag;
-                k.fTagged.fDimension = dim;
+                k.fTagged.fDimension = dim == 1 ? Dimension::Nether : Dimension::End;
                 k.fTagged.fChunk.fX = cx;
                 k.fTagged.fChunk.fZ = cz;
                 return k;
@@ -172,7 +172,7 @@ public:
                 DbKey k;
                 k.fIsTagged = true;
                 k.fTagged.fTag = tag;
-                k.fTagged.fDimension = dim;
+                k.fTagged.fDimension = dim == 1 ? Dimension::Nether : Dimension::End;
                 k.fTagged.fSubChunk.fX = cx;
                 k.fTagged.fSubChunk.fY = y;
                 k.fTagged.fSubChunk.fZ = cz;
@@ -229,20 +229,14 @@ public:
         }
         s << " ";
         switch (fTagged.fDimension) {
-        case 0:
+        case Dimension::Overworld:
             s << "overworld";
             break;
-        case 1:
+        case Dimension::End:
             s << "end";
             break;
-        case -1:
-            s << "nether(legacy)";
-            break;
-        case 2:
+        case Dimension::Nether:
             s << "nether";
-            break;
-        default:
-            s << "(unknown: " << fTagged.fDimension << ")";
             break;
         }
         return s.str();
@@ -290,7 +284,7 @@ public:
     bool fIsTagged;
     struct {
         uint8_t fTag;
-        int32_t fDimension;
+        Dimension fDimension;
         union {
             struct {
                 int fX;
@@ -302,19 +296,6 @@ public:
                 int fZ;
             } fSubChunk;
         };
-
-        std::optional<Dimension> dimension() const {
-            switch (fDimension) {
-            case 0:
-                return Dimension::Overworld;
-            case 1:
-                return Dimension::Nether;
-            case 2:
-                return Dimension::End;
-            default:
-                return std::nullopt;
-            }
-        }
     } fTagged;
     std::string fUnTagged;
 };
