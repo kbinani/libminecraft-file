@@ -43,6 +43,10 @@ public:
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::Data2D);
     }
 
+    static std::string Data2DLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {
+        return ComposeChunkKey(chunkX, chunkZ, dim, Tag::Data2DLegacy);
+    }
+
     static std::string BiomeState(int32_t chunkX, int32_t chunkZ, Dimension dim) {
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::BiomeState);
     }
