@@ -79,7 +79,7 @@ private:
         level->set("Status", make_shared<StringTag>(fStatus));
         level->set("xPos", make_shared<IntTag>(fChunkX));
         level->set("zPos", make_shared<IntTag>(fChunkZ));
-        level->set("yPos", make_shared<IntTag>(fMinChunkSectionY));
+        level->set("yPos", make_shared<IntTag>(fChunkY));
         level->set("LastUpdate", make_shared<LongTag>(fLastUpdate));
 
         auto blockEntities = make_shared<ListTag>(Tag::Type::Compound);

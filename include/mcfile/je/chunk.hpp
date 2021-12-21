@@ -136,13 +136,15 @@ public:
         return biomeAt(x, 0, z);
     }
 
-    int chunkY() const { return fMinChunkSectionY; }
+    int chunkY() const { return fChunkY; }
+
+    int maxChunkY() const { return fChunkY < 0 ? 19 : 15; }
 
     int minBlockX() const { return fChunkX * 16; }
     int maxBlockX() const { return fChunkX * 16 + 15; }
 
-    int minBlockY() const { return fMinChunkSectionY * 16; }
-    int maxBlockY() const { return fMinChunkSectionY < 0 ? 319 : 255; }
+    int minBlockY() const { return fChunkY * 16; }
+    int maxBlockY() const { return fChunkY < 0 ? 319 : 255; }
 
     int minBlockZ() const { return fChunkZ * 16; }
     int maxBlockZ() const { return fChunkZ * 16 + 15; }
@@ -271,12 +273,12 @@ public:
 protected:
     explicit Chunk(Chunk &s)
         : fChunkX(s.fChunkX)
+        , fChunkY(s.fChunkY)
         , fChunkZ(s.fChunkZ)
         , fDataVersion(s.fDataVersion)
         , fLastUpdate(s.fLastUpdate)
         , fStatus(s.fStatus)
         , fTerrianPopulated(s.fTerrianPopulated)
-        , fMinChunkSectionY(s.fMinChunkSectionY)
         , fCreateEmptySection(s.fCreateEmptySection) {
         fSections.swap(s.fSections);
         fEntities.swap(s.fEntities);
@@ -287,7 +289,7 @@ protected:
     }
 
 private:
-    Chunk(int chunkX, int chunkZ,
+    Chunk(int chunkX, int chunkY, int chunkZ,
           std::vector<std::shared_ptr<ChunkSection>> const &sections,
           int dataVersion,
           std::vector<std::shared_ptr<nbt::CompoundTag>> &entities,
@@ -300,6 +302,7 @@ private:
           std::optional<bool> terrianPopulated,
           std::function<std::shared_ptr<ChunkSection>(int sectionY)> createEmptySection)
         : fChunkX(chunkX)
+        , fChunkY(chunkY)
         , fChunkZ(chunkZ)
         , fDataVersion(dataVersion)
         , fStructures(structures)
@@ -309,31 +312,16 @@ private:
         , fStatus(status)
         , fTerrianPopulated(terrianPopulated)
         , fCreateEmptySection(createEmptySection) {
-        if (sections.empty()) {
-            fMinChunkSectionY = 0;
-        } else {
-            std::optional<int> minChunkSectionY;
-            std::optional<int> maxChunkSectionY;
-            for (auto const &section : sections) {
-                int const y = section->y();
-                if (minChunkSectionY) {
-                    minChunkSectionY = std::min(*minChunkSectionY, y);
-                } else {
-                    minChunkSectionY = y;
-                }
-                if (maxChunkSectionY) {
-                    maxChunkSectionY = std::max(*maxChunkSectionY, y);
-                } else {
-                    maxChunkSectionY = y;
-                }
-            }
-            fMinChunkSectionY = *minChunkSectionY;
-            fSections.resize(*maxChunkSectionY - *minChunkSectionY + 1);
-            for (auto const &section : sections) {
-                int const y = section->y();
-                int const idx = y - fMinChunkSectionY;
-                fSections[idx] = section;
-            }
+        int maxChunkSectionY = fChunkY;
+        for (auto const &section : sections) {
+            int const y = section->y();
+            maxChunkSectionY = std::max(maxChunkSectionY, y);
+        }
+        fSections.resize(maxChunkSectionY - fChunkY + 1);
+        for (auto const &section : sections) {
+            int const y = section->y();
+            int const idx = y - fChunkY;
+            fSections[idx] = section;
         }
         fEntities.swap(entities);
         for (auto const &item : tileEntities) {
@@ -360,6 +348,11 @@ private:
 
         auto sectionsTag = level->listTag("sections");
         if (!sectionsTag) {
+            return nullptr;
+        }
+
+        auto chunkY = level->int32("yPos");
+        if (!chunkY) {
             return nullptr;
         }
 
@@ -431,7 +424,7 @@ private:
             s = status->fValue;
         }
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion,
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, *chunkY, chunkZ, sections, dataVersion,
                                                 entities, blockEntities, structures, lastUpdate,
                                                 blockTicks, fluidTicks, s, nullopt, createEmptySection));
     }
@@ -530,14 +523,14 @@ private:
             }
         }
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, sections, dataVersion,
+        return std::shared_ptr<Chunk>(new Chunk(chunkX, 0, chunkZ, sections, dataVersion,
                                                 entities, tileEntities, structures, lastUpdate,
                                                 tileTicks, liquidTicks, s, terrianPopulated, createEmptySection));
     }
 
     std::shared_ptr<ChunkSection> unsafeSectionAtBlock(int y) const {
         int const sectionIndex = Coordinate::ChunkFromBlock(y);
-        int const idx = sectionIndex - fMinChunkSectionY;
+        int const idx = sectionIndex - fChunkY;
         if (idx < 0 || fSections.size() <= idx) {
             return nullptr;
         } else {
@@ -546,30 +539,19 @@ private:
     }
 
     std::shared_ptr<ChunkSection> sectionAtBlock(int y) {
-        int const sectionIndex = Coordinate::ChunkFromBlock(y);
-        int const idx = sectionIndex - fMinChunkSectionY;
+        int const cy = Coordinate::ChunkFromBlock(y);
+        int const idx = cy - fChunkY;
         std::shared_ptr<ChunkSection> section;
         if (0 <= idx && idx < fSections.size()) {
             section = fSections[idx];
         }
-        if (!section && 0 <= sectionIndex && sectionIndex < 16 && fCreateEmptySection) {
-            section = fCreateEmptySection(sectionIndex);
+        if (!section && fChunkY <= cy && cy <= maxChunkY() && fCreateEmptySection) {
+            section = fCreateEmptySection(cy);
             if (section) {
-                if (sectionIndex < 0 || fSections.size() <= sectionIndex) {
-                    int minChunkSectionY = std::min(sectionIndex, fMinChunkSectionY);
-                    int maxChunkSectionY = std::max(sectionIndex, fMinChunkSectionY + (int)fSections.size());
-                    std::vector<std::shared_ptr<ChunkSection>> sections;
-                    sections.resize(maxChunkSectionY - minChunkSectionY + 1);
-                    for (auto const &s : fSections) {
-                        if (!s) {
-                            continue;
-                        }
-                        sections[s->y() - minChunkSectionY] = s;
-                    }
-                    fMinChunkSectionY = minChunkSectionY;
-                    fSections.swap(sections);
+                if (fSections.size() <= idx) {
+                    fSections.resize(idx + 1);
                 }
-                fSections[sectionIndex - fMinChunkSectionY] = section;
+                fSections[idx] = section;
             }
         }
         return section;
@@ -643,6 +625,7 @@ private:
 
 public:
     int const fChunkX;
+    int const fChunkY;
     int const fChunkZ;
     std::vector<std::shared_ptr<ChunkSection>> fSections;
     int const fDataVersion;
@@ -656,7 +639,6 @@ public:
 protected:
     std::string const fStatus;
     std::optional<bool> fTerrianPopulated;
-    int fMinChunkSectionY;
     std::function<std::shared_ptr<ChunkSection>(int sectionY)> const fCreateEmptySection;
 };
 
