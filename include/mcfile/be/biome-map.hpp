@@ -40,7 +40,7 @@ public:
     std::optional<biomes::BiomeId> get(int localX, int y, int localZ) const {
         auto const &section = this->section(y);
         if (!section) {
-            return;
+            return std::nullopt;
         }
         int chunkY = Coordinate::ChunkFromBlock(y);
         int localY = y - chunkY * 16;
