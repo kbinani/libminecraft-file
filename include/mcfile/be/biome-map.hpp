@@ -37,6 +37,16 @@ public:
         section->set(localX, localY, localZ, biome);
     }
 
+    std::optional<biomes::BiomeId> get(int localX, int y, int localZ) const {
+        auto const &section = this->section(y);
+        if (!section) {
+            return;
+        }
+        int chunkY = Coordinate::ChunkFromBlock(y);
+        int localY = y - chunkY * 16;
+        return section->get(localX, localY, localZ);
+    }
+
     size_t numSections() const {
         return fSections.size();
     }
@@ -61,7 +71,7 @@ public:
     }
 
 private:
-    std::shared_ptr<BiomeSection> section(int y) {
+    std::shared_ptr<BiomeSection> section(int y) const {
         int chunkY = Coordinate::ChunkFromBlock(y);
         int index = chunkY - fMinChunkY;
         if (index < 0 || fSections.size() <= index) {

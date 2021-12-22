@@ -32,16 +32,19 @@ public:
         return blockAt(pos.fX, pos.fY, pos.fZ);
     }
 
-    biomes::BiomeId biomeAt(int x, int z) const {
+    std::optional<biomes::BiomeId> biomeAt(int x, int y, int z) const {
+        if (!fBiomes) {
+            return std::nullopt;
+        }
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
-            return biomes::unknown;
+            return std::nullopt;
         }
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
         size_t i = offsetZ * 16 + offsetX;
-        return fBiomeMap[i];
+        return fBiomes->get(offsetX, y, offsetZ);
     }
 
     static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface &db) {
@@ -73,33 +76,9 @@ public:
         unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
         LoadPendingTicks(chunkX, chunkZ, d, db, pendingTicks);
 
-        vector<uint16_t> heightMap(256, (uint16_t)0);
-        vector<biomes::BiomeId> biomeMap(256, biomes::minecraft::plains);
-        auto data2D = db.get(DbKey::Data2D(chunkX, chunkZ, d));
-        if (data2D) {
-            //TODO: update this for 1.18
-            vector<uint8_t> buffer;
-            copy(data2D->begin(), data2D->end(), back_inserter(buffer));
-            auto stream = make_shared<ByteStream>(buffer);
-            InputStreamReader sr(stream, {.fLittleEndian = true});
-            for (int i = 0; i < heightMap.size(); i++) {
-                uint16_t v = 0;
-                if (!sr.read(&v)) {
-                    break;
-                }
-                heightMap[i] = v;
-            }
-            for (int i = 0; i < biomeMap.size(); i++) {
-                uint8_t b = 0;
-                if (!sr.read(&b)) {
-                    break;
-                }
-                auto biome = Biome::FromUint32(b);
-                biomeMap[i] = biome;
-            }
-        }
+        auto biomes = LoadBiomes(chunkX, chunkZ, d, db);
 
-        return shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks, heightMap, biomeMap));
+        return shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
     }
 
 private:
@@ -108,8 +87,7 @@ private:
           std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> &blockEntities,
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
           std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &pendingTicks,
-          std::vector<uint16_t> &heightMap,
-          std::vector<biomes::BiomeId> &biomeMap)
+          std::shared_ptr<BiomeMap> &biomes)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ) {
         for (int8_t i = 0; i < kNumSubChunks; i++) {
@@ -118,8 +96,7 @@ private:
         fBlockEntities.swap(blockEntities);
         fEntities.swap(entities);
         fPendingTicks.swap(pendingTicks);
-        fHeightMap.swap(heightMap);
-        fBiomeMap.swap(biomeMap);
+        fBiomes.swap(biomes);
     }
 
     std::shared_ptr<SubChunk> subChunkAtBlock(int y) const {
@@ -196,14 +173,51 @@ private:
         });
     }
 
+    static std::shared_ptr<BiomeMap> LoadBiomes(int chunkX, int chunkZ, Dimension d, DbInterface &db) {
+        using namespace std;
+        using namespace mcfile::stream;
+        auto data2D = db.get(DbKey::Data2D(chunkX, chunkZ, d));
+        if (data2D) {
+            return BiomeMap::Decode(-4, *data2D, 512);
+        }
+
+        auto data2DLegacy = db.get(DbKey::Data2DLegacy(chunkX, chunkZ, d));
+        if (!data2DLegacy) {
+            return nullptr;
+        }
+        auto ret = make_shared<BiomeMap>(0, 15);
+        vector<uint8_t> buffer;
+        copy(data2DLegacy->begin(), data2DLegacy->end(), back_inserter(buffer));
+        auto stream = make_shared<ByteStream>(buffer);
+        InputStreamReader sr(stream, {.fLittleEndian = true});
+        for (int i = 0; i < 256; i++) {
+            uint16_t v = 0;
+            if (!sr.read(&v)) {
+                return nullptr;
+            }
+        }
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
+                uint8_t b = 0;
+                if (!sr.read(&b)) {
+                    return nullptr;
+                }
+                auto biome = Biome::FromUint32(b);
+                for (int y = 0; y < 256; y++) {
+                    ret->set(x, y, z, biome);
+                }
+            }
+        }
+        return ret;
+    }
+
 public:
     int32_t const fChunkX;
     int32_t const fChunkZ;
     std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> fBlockEntities;
     std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> fEntities;
     std::unordered_map<Pos3i, PendingTick, Pos3iHasher> fPendingTicks;
-    std::vector<uint16_t> fHeightMap;
-    std::vector<biomes::BiomeId> fBiomeMap;
+    std::shared_ptr<BiomeMap> fBiomes;
 
 private:
     std::shared_ptr<SubChunk> fSubChunks[kNumSubChunks];
