@@ -35,7 +35,7 @@ public:
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::Version);
     }
 
-    [[deprecated]] static std::string VersionLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {
+    static std::string VersionLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::VersionLegacy);
     }
 
@@ -51,7 +51,7 @@ public:
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::BiomeState);
     }
 
-    [[deprecated]] static std::string ChecksumsLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {
+    static std::string ChecksumsLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::ChecksumsLegacy);
     }
 
