@@ -132,7 +132,9 @@ private:
         InputStreamReader sr2(indexBufferStream, {.fLittleEndian = true});
         for (int i = 0; i < numWords; i++) {
             uint32_t word;
-            sr2.read(&word);
+            if (!sr2.read(&word)) {
+                return false;
+            }
             for (int j = 0; j < blocksPerWord && index.size() < 4096; j++) {
                 uint16_t v = word & mask;
                 index.push_back(v);

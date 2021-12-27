@@ -31,19 +31,19 @@ public:
         return fStream->valid();
     }
 
-    bool seek(uint64_t pos) {
+    [[nodiscard]] bool seek(uint64_t pos) {
         return fStream->seek(pos);
     }
 
-    bool read(uint8_t *v) {
+    [[nodiscard]] bool read(uint8_t *v) {
         return fStream->read(v, sizeof(uint8_t), 1);
     }
 
-    bool read(int8_t *v) {
+    [[nodiscard]] bool read(int8_t *v) {
         return fStream->read(v, sizeof(int8_t), 1);
     }
 
-    bool read(int16_t *v) {
+    [[nodiscard]] bool read(int16_t *v) {
         uint16_t t;
         if (!readRaw(&t)) {
             return false;
@@ -53,7 +53,7 @@ public:
         return true;
     }
 
-    bool read(uint16_t *v) {
+    [[nodiscard]] bool read(uint16_t *v) {
         uint16_t t;
         if (!readRaw(&t)) {
             return false;
@@ -62,7 +62,7 @@ public:
         return true;
     }
 
-    bool read(int32_t *v) {
+    [[nodiscard]] bool read(int32_t *v) {
         uint32_t t;
         if (!readRaw(&t)) {
             return false;
@@ -72,7 +72,7 @@ public:
         return true;
     }
 
-    bool read(uint32_t *v) {
+    [[nodiscard]] bool read(uint32_t *v) {
         uint32_t t;
         if (!readRaw(&t)) {
             return false;
@@ -81,7 +81,7 @@ public:
         return true;
     }
 
-    bool read(int64_t *v) {
+    [[nodiscard]] bool read(int64_t *v) {
         uint64_t t;
         if (!readRaw(&t)) {
             return false;
@@ -91,7 +91,7 @@ public:
         return true;
     }
 
-    bool read(uint64_t *v) {
+    [[nodiscard]] bool read(uint64_t *v) {
         uint64_t t;
         if (!readRaw(&t)) {
             return false;
@@ -100,17 +100,17 @@ public:
         return true;
     }
 
-    bool read(std::vector<uint8_t> &buffer) {
+    [[nodiscard]] bool read(std::vector<uint8_t> &buffer) {
         size_t const count = buffer.size();
         return fStream->read(buffer.data(), sizeof(uint8_t), count);
     }
 
     template<typename T>
-    bool copy(std::vector<T> &buffer) {
+    [[nodiscard]] bool copy(std::vector<T> &buffer) {
         return fStream->read(buffer.data(), sizeof(T), buffer.size());
     }
 
-    bool read(std::string &s) {
+    [[nodiscard]] bool read(std::string &s) {
         uint16_t length;
         if (!read(&length)) {
             return false;
@@ -145,7 +145,7 @@ public:
 
 private:
     template<typename T>
-    bool readRaw(T *v) {
+    [[nodiscard]] bool readRaw(T *v) {
         return fStream->read(v, sizeof(T), 1);
     }
 
