@@ -17,6 +17,8 @@ TEST_CASE("flatten") {
     CHECK(tempDir);
     auto chunkFile = *tempDir / "chunk.nbt";
 
+    vector<uint8_t> add(2048);
+
     for (int rx = -1; rx <= 0; rx++) {
         for (int rz = -1; rz <= 0; rz++) {
             string name = Region::GetDefaultRegionFileName(rx, rz);
@@ -46,9 +48,26 @@ TEST_CASE("flatten") {
                         if (!c) {
                             continue;
                         }
-                        auto blocks = c->byteArrayTag("Blocks");
-                        auto data = c->byteArrayTag("Data");
-                        //TODO:
+                        auto blocksTag = c->byteArrayTag("Blocks");
+                        auto dataTag = c->byteArrayTag("Data");
+                        if (!blocksTag || !dataTag) {
+                            continue;
+                        }
+                        vector<uint8_t> const &blocks = blocksTag->value();
+                        vector<uint8_t> const &data = dataTag->value();
+                        for (int y = 0; y < 16; y++) {
+                            for (int z = 0; z < 16; z++) {
+                                for (int x = 0; x < 16; x++) {
+                                    int index = y * 16 * 16 + z * 16 + x;
+                                    uint8_t const idLo = blocks[index];
+                                    uint8_t const idHi = Flatten::Nibble4(add, index);
+                                    uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
+                                    uint8_t const blockData = Flatten::Nibble4(data, index);
+                                    auto block = Flatten::DoFlatten(id, blockData);
+                                    CHECK(block != nullptr);
+                                }
+                            }
+                        }
                     }
                 }
             }
