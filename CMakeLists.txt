@@ -94,7 +94,8 @@ set(mcfile_test_files
   test/be/biome-section.test.cpp
   test/be/biome.test.cpp
   test/Point3D.hpp
-  test/BlockData.hpp)
+  test/BlockData.hpp
+  test/flatten.test.cpp)
 
 set(CMAKE_REQUIRED_FLAGS "-lstdc++fs")
 check_c_compiler_flag("" TEST_RESULT_STDCXXFS)
