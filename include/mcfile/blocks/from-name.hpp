@@ -929,5 +929,18 @@ static inline BlockId FromName(std::string const &name) {
     return mappingIt->second;
 }
 
+static inline BlockId FromNameWithMigration(std::string const &name, int fromDataVersion) {
+    if (fromDataVersion < 1451 && name == "minecraft:grass") {
+        return minecraft::grass_block;
+    }
+    if (fromDataVersion < 2724 && name == "minecraft:grass_path") {
+        return minecraft::dirt_path;
+    }
+    if (fromDataVersion < 2724 && name == "minecraft:cauldron") {
+        return minecraft::water_cauldron;
+    }
+    return FromName(name);
+}
+
 } // namespace blocks
 } // namespace mcfile

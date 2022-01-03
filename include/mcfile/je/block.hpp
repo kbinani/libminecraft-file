@@ -18,6 +18,36 @@ public:
         , fBlockData(ToString(blocks::Name(id), properties)) {
     }
 
+    static std::shared_ptr<Block const> FromBlockData(std::string const &data, int dataVersion) {
+        using namespace std;
+        string name = data;
+        string properties;
+        auto begin = data.find('[');
+        if (begin != string::npos) {
+            auto end = data.find(']', begin);
+            if (end == string::npos) {
+                return nullptr;
+            }
+            name = data.substr(0, begin);
+            properties.assign(data.begin() + begin + 1, data.begin() + end);
+        }
+        map<string, string> props;
+        for (string const &prop : String::Split(properties, ',')) {
+            auto idx = prop.find('=');
+            if (idx == string::npos) {
+                return nullptr;
+            }
+            string key = prop.substr(0, idx);
+            string value = prop.substr(idx + 1);
+            props[key] = value;
+        }
+        auto id = blocks::FromNameWithMigration(name, dataVersion);
+        if (id == blocks::unknown) {
+            return nullptr;
+        }
+        return make_shared<Block const>(id, props);
+    }
+
     bool equals(Block const &other) const {
         if (other.fName != fName) {
             return false;
