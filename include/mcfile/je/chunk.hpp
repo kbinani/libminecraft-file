@@ -198,7 +198,7 @@ public:
                 return Status::UNKNOWN;
             }
         } else {
-            if (fTerrianPopulated && *fTerrianPopulated) {
+            if (fTerrainPopulated && *fTerrainPopulated) {
                 return Status::FULL;
             } else {
                 return Status::UNKNOWN;
@@ -278,7 +278,7 @@ protected:
         , fDataVersion(s.fDataVersion)
         , fLastUpdate(s.fLastUpdate)
         , fStatus(s.fStatus)
-        , fTerrianPopulated(s.fTerrianPopulated)
+        , fTerrainPopulated(s.fTerrainPopulated)
         , fCreateEmptySection(s.fCreateEmptySection) {
         fSections.swap(s.fSections);
         fEntities.swap(s.fEntities);
@@ -299,7 +299,7 @@ private:
           std::vector<TickingBlock> tileTicks,
           std::vector<TickingBlock> liquidTicks,
           std::string const &status,
-          std::optional<bool> terrianPopulated,
+          std::optional<bool> terrainPopulated,
           std::function<std::shared_ptr<ChunkSection>(int sectionY)> createEmptySection)
         : fChunkX(chunkX)
         , fChunkY(chunkY)
@@ -310,7 +310,7 @@ private:
         , fTileTicks(tileTicks)
         , fLiquidTicks(liquidTicks)
         , fStatus(status)
-        , fTerrianPopulated(terrianPopulated)
+        , fTerrainPopulated(terrainPopulated)
         , fCreateEmptySection(createEmptySection) {
         int maxChunkSectionY = fChunkY;
         for (auto const &section : sections) {
@@ -481,7 +481,7 @@ private:
         if (status) {
             s = status->fValue;
         }
-        std::optional<bool> terrianPopulated = level->boolean("TerrianPopulated");
+        std::optional<bool> terrainPopulated = level->boolean("TerrainPopulated");
 
         auto structures = level->compoundTag("Structures");
 
@@ -525,7 +525,7 @@ private:
 
         return std::shared_ptr<Chunk>(new Chunk(chunkX, 0, chunkZ, sections, dataVersion,
                                                 entities, tileEntities, structures, lastUpdate,
-                                                tileTicks, liquidTicks, s, terrianPopulated, createEmptySection));
+                                                tileTicks, liquidTicks, s, terrainPopulated, createEmptySection));
     }
 
     std::shared_ptr<ChunkSection> unsafeSectionAtBlock(int y) const {
@@ -638,7 +638,7 @@ public:
 
 protected:
     std::string const fStatus;
-    std::optional<bool> fTerrianPopulated;
+    std::optional<bool> fTerrainPopulated;
     std::function<std::shared_ptr<ChunkSection>(int sectionY)> const fCreateEmptySection;
 };
 
