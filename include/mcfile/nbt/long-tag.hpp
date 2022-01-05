@@ -9,6 +9,10 @@ public:
         : ScalarTag() {}
     explicit LongTag(int64_t v)
         : ScalarTag(v) {}
+
+    std::shared_ptr<LongTag> copy() const {
+        return std::make_shared<LongTag>(fValue);
+    }
 };
 
 } // namespace nbt

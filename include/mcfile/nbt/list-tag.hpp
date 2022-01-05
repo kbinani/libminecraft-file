@@ -83,6 +83,10 @@ public:
     std::shared_ptr<Tag> &at(size_t idx) { return fValue[idx]; }
 
     std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
+    std::shared_ptr<ListTag> copy() const {
         auto ret = std::make_shared<ListTag>(fType);
         for (auto const &value : fValue) {
             ret->fValue.push_back(value->clone());

@@ -53,4 +53,29 @@ inline Pos3<T> operator-(Pos3<T> const &lhs, Pos3<T> const &rhs) {
 using Pos3i = detail::Pos3<int>;
 using Pos3iHasher = detail::Pos3Hasher<int>;
 
+inline std::shared_ptr<mcfile::nbt::Tag> Pos3iToNbt(Pos3i const &pos) {
+    using namespace std;
+    using namespace mcfile::nbt;
+    auto c = make_shared<CompoundTag>();
+    (*c)["x"] = make_shared<IntTag>(pos.fX);
+    (*c)["y"] = make_shared<IntTag>(pos.fY);
+    (*c)["z"] = make_shared<IntTag>(pos.fZ);
+    return c;
+}
+
+inline std::optional<Pos3i> Pos3iFromNbt(mcfile::nbt::Tag const &tag) {
+    using namespace std;
+    auto c = tag.asCompound();
+    if (!c) {
+        return nullopt;
+    }
+    auto x = c->int32("x");
+    auto y = c->int32("y");
+    auto z = c->int32("z");
+    if (!x || !y || !z) {
+        return nullopt;
+    }
+    return Pos3i(*x, *y, *z);
+}
+
 } // namespace mcfile

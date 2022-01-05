@@ -14,9 +14,13 @@ public:
     explicit ByteArrayTag(size_t size)
         : VectorTag(size) {}
 
-    std::shared_ptr<Tag> clone() const override {
+    std::shared_ptr<ByteArrayTag> copy() const {
         std::vector<uint8_t> copy = value();
         return std::shared_ptr<ByteArrayTag>(new ByteArrayTag(copy));
+    }
+
+    std::shared_ptr<Tag> clone() const override {
+        return copy();
     }
 
 private:

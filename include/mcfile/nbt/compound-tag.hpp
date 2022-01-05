@@ -163,6 +163,14 @@ public:
 
     void erase(std::string const &name) { fValue.erase(name); }
 
+    std::shared_ptr<Tag> tag(std::string const &name) const {
+        auto found = fValue.find(name);
+        if (found == fValue.end()) {
+            return nullptr;
+        }
+        return found->second;
+    }
+
     std::shared_ptr<StringTag> stringTag(std::string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
@@ -412,6 +420,10 @@ public:
     }
 
     std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
+    std::shared_ptr<CompoundTag> copy() const {
         auto ret = std::make_shared<CompoundTag>();
         for (auto const &it : fValue) {
             ret->set(it.first, it.second->clone());

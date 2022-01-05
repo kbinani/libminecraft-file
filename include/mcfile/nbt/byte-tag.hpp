@@ -9,6 +9,10 @@ public:
         : ScalarTag() {}
     explicit ByteTag(uint8_t v)
         : ScalarTag(v) {}
+
+    std::shared_ptr<ByteTag> copy() const {
+        return std::make_shared<ByteTag>(fValue);
+    }
 };
 
 } // namespace nbt

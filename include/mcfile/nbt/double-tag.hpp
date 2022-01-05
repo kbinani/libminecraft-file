@@ -28,6 +28,10 @@ public:
     Tag::Type type() const override { return Tag::Type::Double; }
 
     std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
+    std::shared_ptr<DoubleTag> copy() const {
         return std::make_shared<DoubleTag>(fValue);
     }
 

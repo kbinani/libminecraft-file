@@ -27,6 +27,10 @@ public:
     Tag::Type type() const override { return Tag::Type::String; }
 
     std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
+    std::shared_ptr<StringTag> copy() const {
         return std::make_shared<StringTag>(fValue);
     }
 

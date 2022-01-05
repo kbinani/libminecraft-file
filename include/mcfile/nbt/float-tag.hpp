@@ -28,6 +28,10 @@ public:
     Tag::Type type() const override { return Tag::Type::Float; }
 
     std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
+    std::shared_ptr<FloatTag> copy() const {
         return std::make_shared<FloatTag>(fValue);
     }
 

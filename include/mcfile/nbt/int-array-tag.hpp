@@ -15,6 +15,10 @@ public:
         : VectorTag(size) {}
 
     std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
+    std::shared_ptr<IntArrayTag> copy() const {
         std::vector<int32_t> copy = value();
         return std::shared_ptr<IntArrayTag>(new IntArrayTag(copy));
     }

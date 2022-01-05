@@ -9,6 +9,10 @@ public:
         : ScalarTag() {}
     explicit ShortTag(int16_t v)
         : ScalarTag(v) {}
+
+    std::shared_ptr<ShortTag> copy() const {
+        return std::make_shared<ShortTag>(fValue);
+    }
 };
 
 } // namespace nbt
