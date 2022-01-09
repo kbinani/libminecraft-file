@@ -40,10 +40,19 @@ private:
     }
 
     std::shared_ptr<Chunk const> chunkAt(int cx, int cz) {
+        using namespace std;
+        namespace fs = std::filesystem;
         Pos2i pos(cx, cz);
         auto found = fCache.find(pos);
         if (found == fCache.end()) {
-            auto chunk = fRegion.chunkAt(pos.fX, pos.fZ);
+            std::shared_ptr<Chunk const> chunk;
+            auto nbt = fRegion.fFilePath.parent_path() / Region::GetDefaultCompressedChunkNbtFileName(cx, cz);
+            error_code ec;
+            if (fs::is_regular_file(nbt, ec)) {
+                chunk = Chunk::LoadFromCompressedChunkNbtFile(nbt, cx, cz);
+            } else {
+                chunk = fRegion.chunkAt(pos.fX, pos.fZ);
+            }
             fCache.insert(std::make_pair(pos, chunk));
             return chunk;
         } else {

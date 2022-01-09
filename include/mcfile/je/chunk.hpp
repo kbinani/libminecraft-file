@@ -180,11 +180,11 @@ public:
         // ...
         // Java Edition 18w07a 1467 "postprocessed"
         // Java Edition 18w06a 1466 "postprocessed"
-        // Java Edition 18w05a 1464 TerrianPopulated 1
+        // Java Edition 18w05a 1464 TerrainPopulated 1
         // ...
-        // Java Edition 18w01a 1459 TerrianPopulated 1
+        // Java Edition 18w01a 1459 TerrainPopulated 1
         // ...
-        // Java Edition 17w47a 1451 TerrianPopulated 1
+        // Java Edition 17w47a 1451 TerrainPopulated 1
         if (fDataVersion >= 1912) {
             if (fStatus == "full") {
                 return Status::FULL;
