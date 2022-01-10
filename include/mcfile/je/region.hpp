@@ -336,6 +336,7 @@ public:
         loc = Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
+            // The chunk is not saved yet
             return true;
         }
         long const sectorOffset = loc >> 8;
@@ -347,12 +348,18 @@ public:
             fclose(in);
             return false;
         }
-        uint32_t chunkSize;
-        if (!File::Fread(&chunkSize, sizeof(chunkSize), 1, in)) {
+        uint32_t size;
+        if (!File::Fread(&size, sizeof(size), 1, in)) {
             fclose(in);
             return false;
         }
-        chunkSize = Int32FromBE(chunkSize) - 1;
+        size = Int32FromBE(size);
+        if (size == 0) {
+            fclose(in);
+            // The chunk is not saved yet
+            return true;
+        }
+        uint32_t const chunkSize = size - 1;
 
         uint8_t compressionType;
         if (!File::Fread(&compressionType, sizeof(compressionType), 1, in)) {
@@ -431,12 +438,18 @@ public:
             fclose(in);
             return false;
         }
-        uint32_t chunkSize;
-        if (!File::Fread(&chunkSize, sizeof(chunkSize), 1, in)) {
+        uint32_t size;
+        if (!File::Fread(&size, sizeof(size), 1, in)) {
             fclose(in);
             return false;
         }
-        chunkSize = Int32FromBE(chunkSize) - 1;
+        size = Int32FromBE(size);
+        if (size == 0) {
+            fclose(in);
+            // The chunk is not saved yet
+            return true;
+        }
+        uint32_t const chunkSize = size - 1;
 
         uint8_t compressionType;
         if (!File::Fread(&compressionType, sizeof(compressionType), 1, in)) {
@@ -493,6 +506,7 @@ public:
         loc = Int32FromBE(loc);
         if (loc == 0) {
             fclose(in);
+            // The chunk is not saved yet
             return true;
         }
 
@@ -501,12 +515,18 @@ public:
             fclose(in);
             return false;
         }
-        uint32_t chunkSize;
-        if (!File::Fread(&chunkSize, sizeof(chunkSize), 1, in)) {
+        uint32_t size;
+        if (!File::Fread(&size, sizeof(size), 1, in)) {
             fclose(in);
             return false;
         }
-        chunkSize = Int32FromBE(chunkSize) - 1;
+        size = Int32FromBE(size);
+        if (size == 0) {
+            fclose(in);
+            // The chunk is not saved yet
+            return true;
+        }
+        uint32_t const chunkSize = size - 1;
 
         uint8_t compressionType;
         if (!File::Fread(&compressionType, sizeof(compressionType), 1, in)) {
