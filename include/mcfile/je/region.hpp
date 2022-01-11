@@ -746,6 +746,9 @@ private:
         if (!sr.read(&loc)) {
             return nullptr;
         }
+        if (loc == 0) {
+            return nullptr;
+        }
 
         uint64_t sectorOffset = loc >> 8;
         if (!sr.seek(kSectorSize + 4 * index)) {
@@ -762,6 +765,9 @@ private:
         }
         uint32_t chunkSize;
         if (!sr.read(&chunkSize)) {
+            return nullptr;
+        }
+        if (chunkSize == 0) {
             return nullptr;
         }
 
