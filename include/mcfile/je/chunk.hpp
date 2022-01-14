@@ -320,6 +320,9 @@ private:
         fSections.resize(maxChunkSectionY - fChunkY + 1);
         for (auto const &section : sections) {
             int const y = section->y();
+            if (y < fChunkY) {
+                continue;
+            }
             int const idx = y - fChunkY;
             fSections[idx] = section;
         }
