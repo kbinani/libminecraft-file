@@ -81,6 +81,16 @@ public:
         return shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
     }
 
+#if __has_include(<leveldb/db.h>)
+    static bool ForAll(leveldb::DB *db, Dimension dim, std::function<void(int cx, int cz)> cb) {
+        return ForAllImpl(db, dim, [cb](int cx, int cz) { cb(cx, cz); return true; });
+    }
+
+    static bool ForAll(leveldb::DB *db, Dimension dim, std::function<bool(int cx, int cz)> cb) {
+        return ForAllImpl(db, dim, cb);
+    }
+#endif
+
 private:
     Chunk(int32_t chunkX, int32_t chunkZ,
           std::shared_ptr<SubChunk> subChunks[kNumSubChunks],
@@ -210,6 +220,49 @@ private:
         }
         return ret;
     }
+
+#if __has_include(<leveldb/db.h>)
+    static bool ForAllImpl(leveldb::DB *db, Dimension dim, std::function<bool(int cx, int cz)> cb) {
+        using namespace std;
+        using namespace leveldb;
+
+        if (!db) {
+            return false;
+        }
+        ReadOptions ro;
+        unique_ptr<Iterator> itr(db->NewIterator(ro));
+        if (!itr) {
+            return false;
+        }
+        int const expectedKeyLength = dim == Dimension::Overworld ? 9 : 13;
+        for (itr->SeekToFirst(); itr->Valid(); itr->Next()) {
+            Slice key = itr->key();
+            if (key.size() != expectedKeyLength) {
+                continue;
+            }
+            auto k = DbKey::Parse(key.ToString());
+            if (!k) {
+                continue;
+            }
+            if (!k->fIsTagged) {
+                continue;
+            }
+            uint8_t const tag = k->fTagged.fTag;
+            if (tag != static_cast<uint8_t>(DbKey::Tag::Version) && tag != static_cast<uint8_t>(DbKey::Tag::VersionLegacy)) {
+                continue;
+            }
+            if (k->fTagged.fDimension != dim) {
+                continue;
+            }
+            int cx = k->fTagged.fChunk.fX;
+            int cz = k->fTagged.fChunk.fZ;
+            if (!cb(cx, cz)) {
+                return false;
+            }
+        }
+        return true;
+    }
+#endif
 
 public:
     int32_t const fChunkX;
