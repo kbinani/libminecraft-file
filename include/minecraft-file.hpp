@@ -104,6 +104,7 @@
 #include <mcfile/be/db-key.hpp>
 #include <mcfile/be/db-interface.hpp>
 #include <mcfile/be/db.hpp>
+#include <mcfile/be/wrap-db.hpp>
 #include <mcfile/be/block.hpp>
 #include <mcfile/be/pending-tick.hpp>
 #include <mcfile/be/sub-chunk.hpp>

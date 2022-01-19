@@ -48,40 +48,22 @@ public:
     }
 
     static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface &db) {
-        using namespace std;
-        using namespace mcfile::stream;
-        using namespace mcfile::nbt;
-
-        shared_ptr<SubChunk> subChunks[kNumSubChunks];
-        fill_n(&subChunks[0], kNumSubChunks, nullptr);
-
-        for (int8_t y = kMinChunkY; y <= kMaxChunkY; y++) {
-            auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
-            if (!subChunkData) {
-                continue;
-            }
-            auto subChunk = SubChunk::Parse(*subChunkData, y);
-            if (!subChunk) {
-                continue;
-            }
-            subChunks[y - kMinChunkY] = subChunk;
-        }
-
-        unordered_map<Pos3i, shared_ptr<CompoundTag>, Pos3iHasher> blockEntities;
-        LoadBlockEntities(chunkX, chunkZ, d, db, blockEntities);
-
-        vector<shared_ptr<CompoundTag>> entities;
-        LoadEntities(chunkX, chunkZ, d, db, entities);
-
-        unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
-        LoadPendingTicks(chunkX, chunkZ, d, db, pendingTicks);
-
-        auto biomes = LoadBiomes(chunkX, chunkZ, d, db);
-
-        return shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
+        return LoadImpl(chunkX, chunkZ, d, db);
     }
 
 #if __has_include(<leveldb/db.h>)
+    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, leveldb::DB *db) {
+        using namespace std;
+        using namespace leveldb;
+
+        if (!db) {
+            return nullptr;
+        }
+
+        WrapDb wdb(db);
+        return LoadImpl(chunkX, chunkZ, d, wdb);
+    }
+
     static bool ForAll(leveldb::DB *db, Dimension dim, std::function<void(int cx, int cz)> cb) {
         return ForAllImpl(db, dim, [cb](int cx, int cz) { cb(cx, cz); return true; });
     }
@@ -219,6 +201,40 @@ private:
             }
         }
         return ret;
+    }
+
+    static std::shared_ptr<Chunk> LoadImpl(int chunkX, int chunkZ, Dimension d, DbInterface &db) {
+        using namespace std;
+        using namespace mcfile::stream;
+        using namespace mcfile::nbt;
+
+        shared_ptr<SubChunk> subChunks[kNumSubChunks];
+        fill_n(&subChunks[0], kNumSubChunks, nullptr);
+
+        for (int8_t y = kMinChunkY; y <= kMaxChunkY; y++) {
+            auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
+            if (!subChunkData) {
+                continue;
+            }
+            auto subChunk = SubChunk::Parse(*subChunkData, y);
+            if (!subChunk) {
+                continue;
+            }
+            subChunks[y - kMinChunkY] = subChunk;
+        }
+
+        unordered_map<Pos3i, shared_ptr<CompoundTag>, Pos3iHasher> blockEntities;
+        LoadBlockEntities(chunkX, chunkZ, d, db, blockEntities);
+
+        vector<shared_ptr<CompoundTag>> entities;
+        LoadEntities(chunkX, chunkZ, d, db, entities);
+
+        unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
+        LoadPendingTicks(chunkX, chunkZ, d, db, pendingTicks);
+
+        auto biomes = LoadBiomes(chunkX, chunkZ, d, db);
+
+        return shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
     }
 
 #if __has_include(<leveldb/db.h>)

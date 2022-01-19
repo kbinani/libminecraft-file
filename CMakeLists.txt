@@ -24,6 +24,7 @@ set(mcfile_files
   include/mcfile/be/db.hpp
   include/mcfile/be/pending-tick.hpp
   include/mcfile/be/sub-chunk.hpp
+  include/mcfile/be/wrap-db.hpp
   include/mcfile/biome-palette.hpp
   include/mcfile/biomes/biome-id.hpp
   include/mcfile/biomes/from-int.hpp
@@ -52,6 +53,7 @@ set(mcfile_files
   include/mcfile/je/chunksection/chunk-section-116.hpp
   include/mcfile/je/chunksection/chunk-section-118.hpp
   include/mcfile/je/chunksection/chunk-section-generator.hpp
+  include/mcfile/je/flatten.hpp
   include/mcfile/je/mca-data-source.hpp
   include/mcfile/je/region.hpp
   include/mcfile/je/set-block-options.hpp
