@@ -6,10 +6,8 @@ class Block {
 public:
     Block(std::string const &name, std::shared_ptr<nbt::CompoundTag> const &states, int32_t version)
         : fName(name)
+        , fStates(states)
         , fVersion(version) {
-        if (states) {
-            fStates.swap(states->fValue);
-        }
     }
 
     static std::shared_ptr<Block> FromCompound(nbt::CompoundTag const &tag) {
@@ -24,7 +22,7 @@ public:
 
 public:
     std::string const fName;
-    std::map<std::string, std::shared_ptr<nbt::Tag>> fStates;
+    std::shared_ptr<nbt::CompoundTag> fStates;
     int32_t const fVersion;
 };
 
