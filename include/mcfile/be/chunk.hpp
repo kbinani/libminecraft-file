@@ -287,8 +287,6 @@ public:
     std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> fEntities;
     std::unordered_map<Pos3i, PendingTick, Pos3iHasher> fPendingTicks;
     std::shared_ptr<BiomeMap> fBiomes;
-
-private:
     std::shared_ptr<SubChunk> fSubChunks[kNumSubChunks];
 };
 

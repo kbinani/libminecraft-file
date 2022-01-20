@@ -4,14 +4,14 @@ namespace mcfile::je::chunksection {
 
 class ChunkSection118 : public ChunkSection {
 public:
-    static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
+    static std::shared_ptr<ChunkSection118> MakeEmpty(int sectionY) {
         using namespace std;
         vector<shared_ptr<Block const>> blockPalette;
         vector<uint16_t> blockPaletteIndices;
         vector<biomes::BiomeId> biomePalette;
         vector<uint16_t> biomePaletteIndices;
         auto extra = make_shared<nbt::CompoundTag>();
-        return shared_ptr<ChunkSection>(new ChunkSection118(
+        return shared_ptr<ChunkSection118>(new ChunkSection118(
             sectionY,
             blockPalette,
             blockPaletteIndices,
@@ -282,21 +282,6 @@ public:
         outPackedIndices.reset(new LongArrayTag(packedData));
     }
 
-private:
-    ChunkSection118(int y,
-                    std::vector<std::shared_ptr<Block const>> const &blockPalette,
-                    std::vector<uint16_t> const &blockPaletteIndices,
-                    std::vector<mcfile::biomes::BiomeId> const &biomePalette,
-                    std::vector<uint16_t> const &biomePaletteIndices,
-                    int dataVersion,
-                    std::shared_ptr<nbt::CompoundTag> extra)
-        : fY(y)
-        , fDataVersion(dataVersion)
-        , fExtra(extra) {
-        fBlocks.reset(blockPalette, blockPaletteIndices);
-        fBiomes.reset(biomePalette, biomePaletteIndices);
-    }
-
     static std::optional<size_t> BlockIndex(int offsetX, int offsetY, int offsetZ) {
         if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
             return std::nullopt;
@@ -315,6 +300,21 @@ private:
     }
 
 private:
+    ChunkSection118(int y,
+                    std::vector<std::shared_ptr<Block const>> const &blockPalette,
+                    std::vector<uint16_t> const &blockPaletteIndices,
+                    std::vector<mcfile::biomes::BiomeId> const &biomePalette,
+                    std::vector<uint16_t> const &biomePaletteIndices,
+                    int dataVersion,
+                    std::shared_ptr<nbt::CompoundTag> extra)
+        : fY(y)
+        , fDataVersion(dataVersion)
+        , fExtra(extra) {
+        fBlocks.reset(blockPalette, blockPaletteIndices);
+        fBiomes.reset(biomePalette, biomePaletteIndices);
+    }
+
+public:
     int const fY;
     BlockPalette fBlocks;
     BiomePalette fBiomes;

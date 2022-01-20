@@ -208,12 +208,12 @@ private:
         return (offsetX * 16 + offsetZ) * 16 + offsetY;
     }
 
-private:
+public:
     std::vector<std::shared_ptr<Block const>> fPalette;
     std::vector<uint16_t> fPaletteIndices;
     std::vector<std::shared_ptr<Block const>> fWaterPalette;
     std::vector<uint16_t> fWaterPaletteIndices;
-    int8_t fChunkY;
+    int8_t const fChunkY;
 };
 
 } // namespace mcfile::be

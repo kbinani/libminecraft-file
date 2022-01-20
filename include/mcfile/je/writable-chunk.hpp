@@ -6,7 +6,20 @@ class WritableChunk : public Chunk {
 public:
     static std::shared_ptr<WritableChunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const &root) {
         auto chunk = Chunk::MakeChunk(chunkX, chunkZ, root);
+        if (!chunk) {
+            return nullptr;
+        }
         auto ret = std::shared_ptr<WritableChunk>(new WritableChunk(*chunk, root));
+        return ret;
+    }
+
+    static std::shared_ptr<WritableChunk> MakeEmpty(int chunkX, int chunkZ) {
+        using namespace std;
+        using namespace mcfile::nbt;
+
+        auto empty = make_shared<mcfile::je::Chunk>(chunkX, chunkZ);
+        auto root = make_shared<CompoundTag>();
+        auto ret = shared_ptr<WritableChunk>(new WritableChunk(*empty, root));
         return ret;
     }
 

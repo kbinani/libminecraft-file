@@ -270,6 +270,15 @@ public:
         return MakeChunk(chunkX, chunkZ, root);
     }
 
+    Chunk(int cx, int cz)
+        : fChunkX(cx)
+        , fChunkY(-4)
+        , fChunkZ(cz)
+        , fDataVersion(2865)
+        , fStatus("full")
+        , fCreateEmptySection(chunksection::ChunkSection118::MakeEmpty) {
+    }
+
 protected:
     explicit Chunk(Chunk &s)
         : fChunkX(s.fChunkX)
