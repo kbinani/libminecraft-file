@@ -3,7 +3,7 @@
 namespace mcfile::be {
 
 class Chunk {
-private:
+public:
     enum : int8_t {
         kMinChunkY = -4,
         kMaxChunkY = 19,
@@ -11,7 +11,6 @@ private:
         kNumSubChunks = kMaxChunkY - kMinChunkY + 1,
     };
 
-public:
     std::shared_ptr<Block const> blockAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
