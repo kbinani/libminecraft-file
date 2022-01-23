@@ -37,6 +37,13 @@ public:
         }
     }
 
+    static int BlockIndex(int offsetX, int offsetY, int offsetZ) {
+        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
+            return -1;
+        }
+        return (offsetX * 16 + offsetZ) * 16 + offsetY;
+    }
+
 private:
     static std::shared_ptr<SubChunk> ParseVersion9(mcfile::stream::InputStreamReader &sr, int8_t chunkY) {
         using namespace std;
@@ -199,13 +206,6 @@ private:
         }
 
         return (size_t)paletteIndex;
-    }
-
-    static int BlockIndex(int offsetX, int offsetY, int offsetZ) {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return -1;
-        }
-        return (offsetX * 16 + offsetZ) * 16 + offsetY;
     }
 
 public:
