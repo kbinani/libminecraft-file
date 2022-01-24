@@ -33,6 +33,7 @@ public:
     std::optional<std::string> get(std::string const &key) override {
         assert(fValid);
         leveldb::ReadOptions o;
+        o.fill_cache = false;
         std::string v;
         leveldb::Status st = fDb->Get(o, key, &v);
         if (st.ok()) {

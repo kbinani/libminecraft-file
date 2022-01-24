@@ -14,6 +14,7 @@ public:
             return std::nullopt;
         }
         leveldb::ReadOptions ro;
+        ro.fill_cache = false;
         std::string v;
         if (!fDb->Get(ro, leveldb::Slice(key), &v).ok()) {
             return std::nullopt;
