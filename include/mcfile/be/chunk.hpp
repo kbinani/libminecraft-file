@@ -9,6 +9,9 @@ public:
         kMaxChunkY = 19,
 
         kNumSubChunks = kMaxChunkY - kMinChunkY + 1,
+
+        kMinBlockY = -64,
+        kMaxBlockY = 319,
     };
 
     std::shared_ptr<Block const> blockAt(int x, int y, int z) const {
