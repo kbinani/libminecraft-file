@@ -9,7 +9,9 @@ public:
         kMaxChunkY = 19,
 
         kNumSubChunks = kMaxChunkY - kMinChunkY + 1,
+    };
 
+    enum : int {
         kMinBlockY = -64,
         kMaxBlockY = 319,
     };
