@@ -47,7 +47,7 @@ public:
                 return false;
             }
         }
-        return w.write((uint8_t)0);
+        return w.write(static_cast<uint8_t>(Tag::Type::End));
     }
 
     [[nodiscard]] bool writeAsRoot(mcfile::stream::OutputStreamWriter &w) const {
@@ -60,7 +60,7 @@ public:
         if (!write(w)) {
             return false;
         }
-        return w.write(static_cast<uint8_t>(Tag::Type::End));
+        return true;
     }
 
     Tag::Type type() const override { return Tag::Type::Compound; }
