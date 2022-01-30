@@ -46,37 +46,33 @@ public:
     }
 
     static void BlockStatesFromPaletteIndices(size_t numPaletteEntries, std::vector<uint16_t> const &paletteIndices, std::vector<int64_t> &blockStates) {
+        if (numPaletteEntries <= 16) {
+            PackPaletteIndexToI64<4, 16>(paletteIndices, blockStates);
+        } else if (numPaletteEntries <= 32) {
+            PackPaletteIndexToI64<5, 12>(paletteIndices, blockStates);
+        } else if (numPaletteEntries <= 64) {
+            PackPaletteIndexToI64<6, 10>(paletteIndices, blockStates);
+        } else if (numPaletteEntries <= 128) {
+            PackPaletteIndexToI64<7, 9>(paletteIndices, blockStates);
+        } else if (numPaletteEntries <= 256) {
+            PackPaletteIndexToI64<8, 8>(paletteIndices, blockStates);
+        } else {
+            PackPaletteIndexToI64<16, 4>(paletteIndices, blockStates);
+        }
+    }
+
+    template<size_t BitsPerBlock, size_t BlocksPerLong>
+    static void PackPaletteIndexToI64(std::vector<uint16_t> const &paletteIndices, std::vector<int64_t> &blockStates) {
         blockStates.clear();
 
-        uint8_t bitsPerBlock;
-        int blocksPerLong;
-        if (numPaletteEntries <= 16) {
-            bitsPerBlock = 4;
-            blocksPerLong = 16;
-        } else if (numPaletteEntries <= 32) {
-            bitsPerBlock = 5;
-            blocksPerLong = 12;
-        } else if (numPaletteEntries <= 64) {
-            bitsPerBlock = 6;
-            blocksPerLong = 10;
-        } else if (numPaletteEntries <= 128) {
-            bitsPerBlock = 7;
-            blocksPerLong = 9;
-        } else if (numPaletteEntries <= 256) {
-            bitsPerBlock = 8;
-            blocksPerLong = 8;
-        } else {
-            bitsPerBlock = 16;
-            blocksPerLong = 4;
-        }
-        uint64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - bitsPerBlock);
+        uint64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - BitsPerBlock);
         int count = 0;
         uint64_t v = 0;
         for (uint16_t idx : paletteIndices) {
-            uint64_t t = (mask & (uint64_t)idx) << (count * bitsPerBlock);
+            uint64_t t = (mask & (uint64_t)idx) << (count * BitsPerBlock);
             v |= t;
             count++;
-            if (count == blocksPerLong) {
+            if (count == BlocksPerLong) {
                 blockStates.push_back(*(int64_t *)&v);
                 count = 0;
                 v = 0;

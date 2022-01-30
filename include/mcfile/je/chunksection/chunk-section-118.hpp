@@ -208,13 +208,7 @@ public:
             vector<uint16_t> index;
             fBiomes.copy(palette, index);
             BiomePalette::ShrinkToFit(palette, index);
-            PackPalette<biomes::BiomeId, shared_ptr<StringTag>>(
-                palette, index,
-                [this](biomes::BiomeId biome) -> shared_ptr<nbt::StringTag> {
-                    auto name = biomes::Name(biome, fDataVersion);
-                    return make_shared<StringTag>(name);
-                },
-                biomePalette, biomePaletteData);
+            PackBiomePalette(palette, index, biomePalette, biomePaletteData, fDataVersion);
             biomes->set("palette", biomePalette);
             if (biomePaletteData) {
                 biomes->set("data", biomePaletteData);
@@ -230,19 +224,7 @@ public:
             vector<uint16_t> index;
             fBlocks.copy(palette, index);
             BlockPalette::ShrinkToFit(palette, index);
-            PackPalette<shared_ptr<Block const>, shared_ptr<CompoundTag>>(
-                palette, index,
-                [this](shared_ptr<Block const> const &block) -> shared_ptr<nbt::CompoundTag> {
-                    auto tag = make_shared<CompoundTag>();
-                    tag->set("Name", make_shared<StringTag>(block->fName));
-                    auto props = make_shared<CompoundTag>();
-                    for (auto it : block->fProperties) {
-                        props->set(it.first, make_shared<StringTag>(it.second));
-                    }
-                    tag->set("Properties", props);
-                    return tag;
-                },
-                blockPalette, blockPaletteData);
+            PackBlockPalette(palette, index, blockPalette, blockPaletteData);
             blockStates->set("palette", blockPalette);
             if (blockPaletteData) {
                 blockStates->set("data", blockPaletteData);
@@ -262,17 +244,15 @@ public:
         });
     }
 
-    template<class ValueType, class PaletteType>
-    static void PackPalette(std::vector<ValueType> const &inPalette,
-                            std::vector<uint16_t> const &inIndices,
-                            std::function<PaletteType(ValueType v)> valueToPalette,
-                            std::shared_ptr<nbt::ListTag> &outPalette,
-                            std::shared_ptr<nbt::LongArrayTag> &outPackedIndices) {
+    static void PackBlockPalette(std::vector<std::shared_ptr<Block const>> const &inPalette,
+                                 std::vector<uint16_t> const &inIndices,
+                                 std::shared_ptr<nbt::ListTag> &outPalette,
+                                 std::shared_ptr<nbt::LongArrayTag> &outPackedIndices) {
         using namespace std;
         using namespace mcfile::nbt;
 
-        for (ValueType const &value : inPalette) {
-            outPalette->push_back(valueToPalette(value));
+        for (auto const &value : inPalette) {
+            outPalette->push_back(value->toCompoundTag());
         }
         if (outPalette->size() <= 1) {
             return;
@@ -280,6 +260,30 @@ public:
         vector<int64_t> packedData;
         BlockStatesParser116::BlockStatesFromPaletteIndices(outPalette->size(), inIndices, packedData);
         outPackedIndices.reset(new LongArrayTag(packedData));
+    }
+
+    static void PackBiomePalette(std::vector<biomes::BiomeId> const &inPalette,
+                                 std::vector<uint16_t> const &inIndices,
+                                 std::shared_ptr<nbt::ListTag> &outPalette,
+                                 std::shared_ptr<nbt::LongArrayTag> &outPackedIndices,
+                                 int dataVersion) {
+        for (auto const &biome : inPalette) {
+            auto name = biomes::Name(biome, dataVersion);
+            outPalette->push_back(std::make_shared<mcfile::nbt::StringTag>(name));
+        }
+        size_t size = outPalette->size();
+        if (size <= 1) {
+            return;
+        }
+        std::vector<int64_t> packedData;
+        if (size <= 2) {
+            BlockStatesParser116::PackPaletteIndexToI64<1, 64>(inIndices, packedData);
+        } else if (size <= 4) {
+            BlockStatesParser116::PackPaletteIndexToI64<2, 32>(inIndices, packedData);
+        } else {
+            BlockStatesParser116::BlockStatesFromPaletteIndices(outPalette->size(), inIndices, packedData);
+        }
+        outPackedIndices.reset(new nbt::LongArrayTag(packedData));
     }
 
     static std::optional<size_t> BlockIndex(int offsetX, int offsetY, int offsetZ) {
