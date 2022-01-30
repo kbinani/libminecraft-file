@@ -51,6 +51,18 @@ public:
         return fBiomes->get(offsetX, y, offsetZ);
     }
 
+    std::shared_ptr<mcfile::nbt::CompoundTag const> blockEntityAt(Pos3i pos) const {
+        return blockEntityAt(pos.fX, pos.fY, pos.fZ);
+    }
+
+    std::shared_ptr<mcfile::nbt::CompoundTag const> blockEntityAt(int x, int y, int z) const {
+        auto found = fBlockEntities.find(Pos3i(x, y, z));
+        if (found == fBlockEntities.end()) {
+            return nullptr;
+        }
+        return found->second;
+    }
+
     static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface &db) {
         return LoadImpl(chunkX, chunkZ, d, db);
     }
