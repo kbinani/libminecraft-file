@@ -56,6 +56,34 @@ public:
         return true;
     }
 
+    bool writeEntities(stream::OutputStream &s) const {
+        using namespace std;
+        using namespace mcfile::nbt;
+        using namespace mcfile::stream;
+        auto c = make_shared<CompoundTag>();
+        auto entities = make_shared<ListTag>(Tag::Type::Compound);
+        for (auto const &it : fEntities) {
+            entities->push_back(it);
+        }
+        c->set("Entities", entities);
+        auto root = make_shared<CompoundTag>();
+        root->set("", c);
+        auto stream = make_shared<ByteStream>();
+        OutputStreamWriter osw(stream, {.fLittleEndian = false});
+        if (!root->write(osw)) {
+            return false;
+        }
+        vector<uint8_t> buffer;
+        stream->drain(buffer);
+        if (!Compression::compress(buffer)) {
+            return false;
+        }
+        if (!s.write(buffer.data(), buffer.size())) {
+            return false;
+        }
+        return true;
+    }
+
 private:
     WritableChunk(Chunk &s, std::shared_ptr<nbt::CompoundTag> const &root)
         : Chunk(s)
