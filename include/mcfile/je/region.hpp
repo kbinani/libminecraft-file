@@ -34,7 +34,11 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<McaDataSource> const &src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> src;
+        bool ok = dataSource(localChunkX, localChunkZ, sr, src);
+        if (!ok) {
+            return nullptr;
+        }
         if (!src) {
             return nullptr;
         }
@@ -49,7 +53,11 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<McaDataSource> const &src = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> src;
+        bool ok = dataSource(localChunkX, localChunkZ, sr, src);
+        if (!ok) {
+            return nullptr;
+        }
         if (!src) {
             return nullptr;
         }
@@ -65,11 +73,20 @@ public:
         }
         std::string name = fFilePath.filename().string();
         auto path = fs::path(fFilePath).remove_filename().parent_path().parent_path().append("entities").append(name);
+        std::error_code ec;
+        if (!fs::is_regular_file(path, ec)) {
+            return true;
+        }
         auto fin = std::make_shared<stream::FileInputStream>(path);
         stream::InputStreamReader sr(fin);
-        std::shared_ptr<McaDataSource> const &src = dataSource(localChunkX, localChunkZ, sr);
-        if (!src) {
+        std::shared_ptr<McaDataSource> src;
+        bool ok = dataSource(localChunkX, localChunkZ, sr, src);
+        if (!ok) {
             return false;
+        }
+        if (!src) {
+            // entity not saved yet
+            return true;
         }
         auto compound = src->load(sr);
         if (!compound) {
@@ -244,11 +261,15 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        auto data = dataSource(localChunkX, localChunkZ, sr);
+        std::shared_ptr<McaDataSource> data;
+        bool ok = dataSource(localChunkX, localChunkZ, sr, data);
+        if (!ok) {
+            return false;
+        }
         if (!data) {
             return false;
         }
-        return data->fLength > 0;
+        return true;
     }
 
     static std::string GetDefaultChunkNbtFileName(int chunkX, int chunkZ) {
@@ -733,53 +754,63 @@ private:
         , fFilePath(filePath) {
     }
 
-    std::shared_ptr<McaDataSource> dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader &sr) const {
+    bool dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader &sr, std::shared_ptr<McaDataSource> &out) const {
+        out.reset();
+
         uint64_t const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
         if (!sr.valid()) {
-            return nullptr;
+            return false;
         }
         if (!sr.seek(4 * index)) {
-            return nullptr;
+            return false;
         }
 
         uint32_t loc;
         if (!sr.read(&loc)) {
-            return nullptr;
+            return false;
         }
         if (loc == 0) {
-            return nullptr;
+            // chunk not saved yet
+            return true;
         }
 
         uint64_t sectorOffset = loc >> 8;
         if (!sr.seek(kSectorSize + 4 * index)) {
-            return nullptr;
+            return false;
         }
 
         uint32_t timestamp;
         if (!sr.read(&timestamp)) {
-            return nullptr;
+            return false;
         }
 
         if (!sr.seek(sectorOffset * kSectorSize)) {
-            return nullptr;
+            return false;
         }
         uint32_t chunkSize;
         if (!sr.read(&chunkSize)) {
-            return nullptr;
+            return false;
         }
         if (chunkSize == 0) {
-            return nullptr;
+            // chunk not saved yet
+            return true;
         }
 
         int const chunkX = this->fX * 32 + localChunkX;
         int const chunkZ = this->fZ * 32 + localChunkZ;
-        return std::make_shared<McaDataSource>(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize);
+        out.reset(new McaDataSource(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize));
+        return true;
     }
 
     bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader &sr, bool &error, LoadChunkCallback callback) const {
-        auto data = dataSource(regionX, regionZ, sr);
-        if (!data) {
+        std::shared_ptr<McaDataSource> data;
+        bool ok = dataSource(regionX, regionZ, sr, data);
+        if (!ok) {
             error = true;
+            return true;
+        }
+        if (!data) {
+            // chunk not saved yet
             return true;
         }
         if (data->loadChunk(sr, callback)) {
