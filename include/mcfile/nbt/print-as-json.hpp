@@ -46,64 +46,96 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
         break;
     case Tag::Type::Compound: {
         auto compound = value.asCompound();
-        out << "{" << std::endl;
-        for (auto it = compound->begin(); it != compound->end();) {
-            std::string name = it->first;
-            out << Indent(depth + 1) << "\"" << name << "\": ";
-            std::shared_ptr<Tag> value = it->second;
-            it++;
-            PrintAsJsonImpl(out, *value, options, it != compound->end(), depth + 1);
+        if (compound->empty()) {
+            out << "{}";
+        } else {
+            out << "{" << std::endl;
+            for (auto it = compound->begin(); it != compound->end();) {
+                std::string name = it->first;
+                out << Indent(depth + 1) << "\"" << name << "\": ";
+                std::shared_ptr<Tag> value = it->second;
+                it++;
+                PrintAsJsonImpl(out, *value, options, it != compound->end(), depth + 1);
+            }
+            out << Indent(depth) << "}";
         }
-        out << Indent(depth) << "}";
         break;
     }
     case Tag::Type::List: {
-        out << "[" << std::endl;
         auto list = value.asList();
-        for (int i = 0; i < list->fValue.size(); i++) {
-            out << Indent(depth + 1);
-            PrintAsJsonImpl(out, *list->fValue[i], options, i + 1 < list->fValue.size(), depth + 1);
+        if (list->empty()) {
+            out << "[]";
+            if (options.fTypeHint) {
+                out << " // list";
+            }
+        } else {
+            out << "[" << std::endl;
+            for (int i = 0; i < list->fValue.size(); i++) {
+                out << Indent(depth + 1);
+                PrintAsJsonImpl(out, *list->fValue[i], options, i + 1 < list->fValue.size(), depth + 1);
+            }
+            out << Indent(depth) << "]";
         }
-        out << Indent(depth) << "]";
         break;
     }
     case Tag::Type::ByteArray: {
-        out << "[";
-        if (options.fTypeHint) {
-            out << " // byte[]";
-        }
-        out << std::endl;
         auto const &list = value.asByteArray()->value();
-        for (int i = 0; i < list.size(); i++) {
-            out << Indent(depth + 1) << (int)list[i] << std::endl;
+        if (list.empty()) {
+            out << "[]";
+            if (options.fTypeHint) {
+                out << " // byte[]";
+            }
+        } else {
+            out << "[";
+            if (options.fTypeHint) {
+                out << " // byte[]";
+            }
+            out << std::endl;
+            for (int i = 0; i < list.size(); i++) {
+                out << Indent(depth + 1) << (int)list[i] << std::endl;
+            }
+            out << Indent(depth) << "]";
         }
-        out << Indent(depth) << "]";
         break;
     }
     case Tag::Type::IntArray: {
-        out << "[";
-        if (options.fTypeHint) {
-            out << " // int[]";
-        }
-        out << std::endl;
         auto const &list = value.asIntArray()->value();
-        for (int i = 0; i < list.size(); i++) {
-            out << Indent(depth + 1) << list[i] << std::endl;
+        if (list.empty()) {
+            out << "[]";
+            if (options.fTypeHint) {
+                out << " // int[]";
+            }
+        } else {
+            out << "[";
+            if (options.fTypeHint) {
+                out << " // int[]";
+            }
+            out << std::endl;
+            for (int i = 0; i < list.size(); i++) {
+                out << Indent(depth + 1) << list[i] << std::endl;
+            }
+            out << Indent(depth) << "]";
         }
-        out << Indent(depth) << "]";
         break;
     }
     case Tag::Type::LongArray: {
-        out << "[";
-        if (options.fTypeHint) {
-            out << " // long[]";
-        }
-        out << std::endl;
         auto const &list = value.asLongArray()->value();
-        for (int i = 0; i < list.size(); i++) {
-            out << Indent(depth + 1) << list[i] << std::endl;
+        if (list.empty()) {
+            out << "[]";
+            if (options.fTypeHint) {
+                out << " // long[]";
+            }
+        } else {
+            out << "[";
+            if (options.fTypeHint) {
+                out << " // long[]";
+            }
+            out << std::endl;
+            for (int i = 0; i < list.size(); i++) {
+                out << Indent(depth + 1) << list[i] << std::endl;
+            }
+            out << Indent(depth) << "]";
         }
-        out << Indent(depth) << "]";
         break;
     }
     case Tag::Type::End:
