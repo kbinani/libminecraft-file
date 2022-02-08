@@ -10,6 +10,10 @@ public:
         : fX(x)
         , fZ(z) {}
 
+    Pos2()
+        : fX(0)
+        , fZ(0) {}
+
     bool operator==(Pos2<T> const &other) const { return fX == other.fX && fZ == other.fZ; }
 
     static double DistanceSquare(Pos2<T> const &a, Pos2<T> const &b) {

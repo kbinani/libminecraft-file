@@ -11,6 +11,11 @@ public:
         , fZ(z)
         , fY(y) {}
 
+    Pos3()
+        : fX(0)
+        , fY(0)
+        , fZ(0) {}
+
     bool operator==(Pos3<T> const &other) const { return fX == other.fX && fZ == other.fZ && fY == other.fY; }
 
     static double DistanceSquare(Pos3<T> const &a, Pos3<T> const &b) {
