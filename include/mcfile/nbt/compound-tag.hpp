@@ -453,6 +453,38 @@ public:
         });
     }
 
+    static std::shared_ptr<CompoundTag> Read(std::vector<uint8_t> &buffer) {
+        auto s = std::make_shared<mcfile::stream::ByteStream>(buffer);
+        mcfile::stream::InputStreamReader isr(s, {.fLittleEndian = false});
+        auto tag = std::make_shared<CompoundTag>();
+        if (!tag->read(isr)) {
+            return nullptr;
+        }
+        return tag;
+    }
+
+    static std::shared_ptr<CompoundTag> ReadCompressed(std::vector<uint8_t> &buffer) {
+        if (!Compression::decompress(buffer)) {
+            return nullptr;
+        }
+        return Read(buffer);
+    }
+
+    static bool WriteCompressed(CompoundTag const &tag, std::filesystem::path file) {
+        auto s = std::make_shared<stream::ByteStream>();
+        stream::OutputStreamWriter osr(s, {.fLittleEndian = false});
+        if (!tag.write(osr)) {
+            return false;
+        }
+        std::vector<uint8_t> buffer;
+        s->drain(buffer);
+        if (!Compression::compress(buffer)) {
+            return false;
+        }
+        auto o = std::make_shared<stream::FileOutputStream>(file);
+        return o->write(buffer.data(), buffer.size());
+    }
+
 private:
     static void ReadDataUntilEosImpl(std::string const &data, stream::ReadOption ro, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
         std::vector<uint8_t> buffer;
