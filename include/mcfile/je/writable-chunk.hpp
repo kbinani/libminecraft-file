@@ -13,11 +13,11 @@ public:
         return ret;
     }
 
-    static std::shared_ptr<WritableChunk> MakeEmpty(int chunkX, int chunkZ) {
+    static std::shared_ptr<WritableChunk> MakeEmpty(int chunkX, int chunkY, int chunkZ) {
         using namespace std;
         using namespace mcfile::nbt;
 
-        auto empty = make_shared<mcfile::je::Chunk>(chunkX, chunkZ);
+        auto empty = make_shared<mcfile::je::Chunk>(chunkX, chunkY, chunkZ);
         auto root = make_shared<CompoundTag>();
         auto ret = shared_ptr<WritableChunk>(new WritableChunk(*empty, root));
         return ret;

@@ -4,6 +4,10 @@ namespace mcfile::je {
 
 class Chunk {
 public:
+    enum : int {
+        kDataVersion = 2865,
+    };
+
     std::shared_ptr<Block const> blockAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
@@ -270,11 +274,11 @@ public:
         return MakeChunk(chunkX, chunkZ, root);
     }
 
-    Chunk(int cx, int cz)
+    Chunk(int cx, int cy, int cz)
         : fChunkX(cx)
-        , fChunkY(-4)
+        , fChunkY(cy)
         , fChunkZ(cz)
-        , fDataVersion(2865)
+        , fDataVersion(kDataVersion)
         , fStatus("full")
         , fCreateEmptySection(chunksection::ChunkSection118::MakeEmpty) {
     }

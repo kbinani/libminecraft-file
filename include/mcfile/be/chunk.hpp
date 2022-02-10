@@ -35,7 +35,6 @@ public:
         }
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
-        size_t i = offsetZ * 16 + offsetX;
         return fBiomes->get(offsetX, y, offsetZ);
     }
 
@@ -88,19 +87,15 @@ public:
 
 private:
     Chunk(Dimension dim,
-          int32_t chunkX, int32_t chunkZ,
+          int32_t chunkX, int32_t chunkY, int32_t chunkZ,
           std::vector<std::shared_ptr<SubChunk>> &subChunks,
           std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> &blockEntities,
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
           std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &pendingTicks,
           std::shared_ptr<BiomeMap> &biomes)
         : fChunkX(chunkX)
+        , fChunkY(chunkY)
         , fChunkZ(chunkZ) {
-        if (dim == Dimension::Overworld) {
-            fChunkY = -4;
-        } else {
-            fChunkY = 0;
-        }
         int maxChunkY = fChunkY;
         for (auto const &subChunk : subChunks) {
             int cy = subChunk->fChunkY;
@@ -196,12 +191,12 @@ private:
         });
     }
 
-    static std::shared_ptr<BiomeMap> LoadBiomes(int chunkX, int chunkZ, Dimension d, DbInterface &db) {
+    static std::shared_ptr<BiomeMap> LoadBiomes(int chunkX, int chunkY, int chunkZ, Dimension d, DbInterface &db) {
         using namespace std;
         using namespace mcfile::stream;
         auto data2D = db.get(DbKey::Data2D(chunkX, chunkZ, d));
         if (data2D) {
-            return BiomeMap::Decode(-4, *data2D, 512);
+            return BiomeMap::Decode(chunkY, *data2D, 512);
         }
 
         auto data2DLegacy = db.get(DbKey::Data2DLegacy(chunkX, chunkZ, d));
@@ -265,9 +260,9 @@ private:
         unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
         LoadPendingTicks(chunkX, chunkZ, d, db, pendingTicks);
 
-        auto biomes = LoadBiomes(chunkX, chunkZ, d, db);
+        auto biomes = LoadBiomes(chunkX, minY, chunkZ, d, db);
 
-        return shared_ptr<Chunk>(new Chunk(d, chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
+        return shared_ptr<Chunk>(new Chunk(d, chunkX, minY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
     }
 
 #if __has_include(<leveldb/db.h>)
