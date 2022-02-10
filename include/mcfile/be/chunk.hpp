@@ -4,18 +4,6 @@ namespace mcfile::be {
 
 class Chunk {
 public:
-    enum : int8_t {
-        kMinChunkY = -4,
-        kMaxChunkY = 19,
-
-        kNumSubChunks = kMaxChunkY - kMinChunkY + 1,
-    };
-
-    enum : int {
-        kMinBlockY = -64,
-        kMaxBlockY = 319,
-    };
-
     std::shared_ptr<Block const> blockAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
@@ -89,17 +77,43 @@ public:
     }
 #endif
 
+    int minBlockX() const { return fChunkX * 16; }
+    int maxBlockX() const { return fChunkX * 16 + 15; }
+
+    int minBlockY() const { return fChunkY * 16; }
+    int maxBlockY() const { return fChunkY < 0 ? 319 : 255; }
+
+    int minBlockZ() const { return fChunkZ * 16; }
+    int maxBlockZ() const { return fChunkZ * 16 + 15; }
+
 private:
-    Chunk(int32_t chunkX, int32_t chunkZ,
-          std::shared_ptr<SubChunk> subChunks[kNumSubChunks],
+    Chunk(Dimension dim,
+          int32_t chunkX, int32_t chunkZ,
+          std::vector<std::shared_ptr<SubChunk>> &subChunks,
           std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> &blockEntities,
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
           std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &pendingTicks,
           std::shared_ptr<BiomeMap> &biomes)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ) {
-        for (int8_t i = 0; i < kNumSubChunks; i++) {
-            fSubChunks[i] = subChunks[i];
+        if (dim == Dimension::Overworld) {
+            fChunkY = -4;
+        } else {
+            fChunkY = 0;
+        }
+        int maxChunkY = fChunkY;
+        for (auto const &subChunk : subChunks) {
+            int cy = subChunk->fChunkY;
+            maxChunkY = (std::max)(maxChunkY, cy);
+        }
+        int numChunks = maxChunkY - fChunkY + 1;
+        fSubChunks.resize(numChunks);
+        for (auto const &subChunk : subChunks) {
+            int32_t cy = subChunk->fChunkY;
+            int index = cy - fChunkY;
+            if (0 <= index && index < fSubChunks.size()) {
+                fSubChunks[index] = subChunk;
+            }
         }
         fBlockEntities.swap(blockEntities);
         fEntities.swap(entities);
@@ -108,9 +122,10 @@ private:
     }
 
     std::shared_ptr<SubChunk> subChunkAtBlock(int y) const {
-        int index = Coordinate::ChunkFromBlock(y);
-        if (kMinChunkY <= index && index <= kMaxChunkY) {
-            return fSubChunks[index - kMinChunkY];
+        int cy = Coordinate::ChunkFromBlock(y);
+        int index = cy - fChunkY;
+        if (0 <= index && index < fSubChunks.size()) {
+            return fSubChunks[index];
         } else {
             return nullptr;
         }
@@ -224,10 +239,12 @@ private:
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
 
-        shared_ptr<SubChunk> subChunks[kNumSubChunks];
-        fill_n(&subChunks[0], kNumSubChunks, nullptr);
+        vector<shared_ptr<SubChunk>> subChunks;
 
-        for (int8_t y = kMinChunkY; y <= kMaxChunkY; y++) {
+        int8_t minY = d == Dimension::Overworld ? -4 : 0;
+        int8_t maxY = d == Dimension::Overworld ? 19 : 15;
+
+        for (int8_t y = minY; y <= maxY; y++) {
             auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
             if (!subChunkData) {
                 continue;
@@ -236,7 +253,7 @@ private:
             if (!subChunk) {
                 continue;
             }
-            subChunks[y - kMinChunkY] = subChunk;
+            subChunks.push_back(subChunk);
         }
 
         unordered_map<Pos3i, shared_ptr<CompoundTag>, Pos3iHasher> blockEntities;
@@ -250,7 +267,7 @@ private:
 
         auto biomes = LoadBiomes(chunkX, chunkZ, d, db);
 
-        return shared_ptr<Chunk>(new Chunk(chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
+        return shared_ptr<Chunk>(new Chunk(d, chunkX, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
     }
 
 #if __has_include(<leveldb/db.h>)
@@ -302,8 +319,10 @@ public:
     std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> fBlockEntities;
     std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> fEntities;
     std::unordered_map<Pos3i, PendingTick, Pos3iHasher> fPendingTicks;
+
     std::shared_ptr<BiomeMap> fBiomes;
-    std::shared_ptr<SubChunk> fSubChunks[kNumSubChunks];
+    std::vector<std::shared_ptr<SubChunk>> fSubChunks;
+    int32_t fChunkY;
 };
 
 } // namespace mcfile::be
