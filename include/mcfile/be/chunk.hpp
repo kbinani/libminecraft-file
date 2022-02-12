@@ -91,7 +91,7 @@ private:
           std::vector<std::shared_ptr<SubChunk>> &subChunks,
           std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> &blockEntities,
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
-          std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &pendingTicks,
+          std::vector<PendingTick> &pendingTicks,
           std::shared_ptr<BiomeMap> &biomes)
         : fChunkX(chunkX)
         , fChunkY(chunkY)
@@ -169,7 +169,7 @@ private:
         });
     }
 
-    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::unordered_map<Pos3i, PendingTick, Pos3iHasher> *outTickList, int32_t *outCurrentTick) {
+    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::vector<PendingTick> *outTickList, int32_t *outCurrentTick) {
         using namespace std;
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
@@ -200,23 +200,11 @@ private:
             if (!tick) {
                 continue;
             }
-            auto blockState = tick->compoundTag("blockState");
-            auto time = tick->int64("time");
-            auto x = tick->int32("x");
-            auto y = tick->int32("y");
-            auto z = tick->int32("z");
-            if (!blockState || !time || !x || !y || !z) {
+            auto pendingTick = PendingTick::FromCompound(*tick);
+            if (!pendingTick) {
                 continue;
             }
-            auto block = Block::FromCompound(*blockState);
-            if (!block) {
-                continue;
-            }
-            PendingTick pt;
-            pt.fBlockState = block;
-            pt.fTime = *time;
-            Pos3i pos(*x, *y, *z);
-            outTickList->insert(std::make_pair(pos, pt));
+            outTickList->push_back(*pendingTick);
         }
     }
 
@@ -294,7 +282,7 @@ private:
         vector<shared_ptr<CompoundTag>> entities;
         LoadEntities(chunkX, chunkZ, d, db, entities);
 
-        unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
+        vector<PendingTick> pendingTicks;
         int32_t currentTick = 0;
         LoadPendingTicks(chunkX, chunkZ, d, db, &pendingTicks, &currentTick);
 
@@ -356,7 +344,7 @@ public:
     std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> fEntities;
 
     int32_t fCurrentTick = 0;
-    std::unordered_map<Pos3i, PendingTick, Pos3iHasher> fPendingTicks;
+    std::vector<PendingTick> fPendingTicks;
 
     std::shared_ptr<BiomeMap> fBiomes;
     std::vector<std::shared_ptr<SubChunk>> fSubChunks;
