@@ -29,6 +29,18 @@ struct TickingBlock {
         tt.fZ = *z;
         return tt;
     }
+
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
+        using namespace std;
+        auto t = make_shared<nbt::CompoundTag>();
+        t->set("i", make_shared<nbt::StringTag>(fI));
+        t->set("p", make_shared<nbt::IntTag>(fP));
+        t->set("t", make_shared<nbt::IntTag>(fT));
+        t->set("x", make_shared<nbt::IntTag>(fX));
+        t->set("y", make_shared<nbt::IntTag>(fY));
+        t->set("z", make_shared<nbt::IntTag>(fZ));
+        return t;
+    }
 };
 
 } // namespace mcfile::je
