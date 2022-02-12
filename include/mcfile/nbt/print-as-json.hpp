@@ -17,10 +17,13 @@ template<class Stream>
 static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, JsonPrintOptions options, bool comma = false, int depth = 0) {
     std::string hint = "";
     switch (value.type()) {
-    case Tag::Type::Byte:
-        out << (int)value.asByte()->fValue;
+    case Tag::Type::Byte: {
+        uint8_t u8 = value.asByte()->fValue;
+        int8_t i8 = *(int8_t *)&u8;
+        out << (int)i8;
         hint = "byte";
         break;
+    }
     case Tag::Type::Int:
         out << value.asInt()->fValue;
         hint = "int";
@@ -92,7 +95,9 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
             }
             out << std::endl;
             for (int i = 0; i < list.size(); i++) {
-                out << Indent(depth + 1) << (int)list[i] << std::endl;
+                uint8_t u8 = list[i];
+                int8_t i8 = *(int8_t *)&u8;
+                out << Indent(depth + 1) << (int)i8 << std::endl;
             }
             out << Indent(depth) << "]";
         }
