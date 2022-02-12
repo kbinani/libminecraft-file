@@ -68,9 +68,7 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
         auto list = value.asList();
         if (list->empty()) {
             out << "[]";
-            if (options.fTypeHint) {
-                out << " // list";
-            }
+            hint = "list";
         } else {
             out << "[" << std::endl;
             for (int i = 0; i < list->fValue.size(); i++) {
@@ -85,9 +83,7 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
         auto const &list = value.asByteArray()->value();
         if (list.empty()) {
             out << "[]";
-            if (options.fTypeHint) {
-                out << " // byte[]";
-            }
+            hint = "byte[]";
         } else {
             out << "[";
             if (options.fTypeHint) {
@@ -107,9 +103,7 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
         auto const &list = value.asIntArray()->value();
         if (list.empty()) {
             out << "[]";
-            if (options.fTypeHint) {
-                out << " // int[]";
-            }
+            hint = "int[]";
         } else {
             out << "[";
             if (options.fTypeHint) {
@@ -127,9 +121,7 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
         auto const &list = value.asLongArray()->value();
         if (list.empty()) {
             out << "[]";
-            if (options.fTypeHint) {
-                out << " // long[]";
-            }
+            hint = "long[]";
         } else {
             out << "[";
             if (options.fTypeHint) {
