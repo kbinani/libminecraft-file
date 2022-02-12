@@ -169,26 +169,55 @@ private:
         });
     }
 
-    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::unordered_map<Pos3i, PendingTick, Pos3iHasher> &result) {
+    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::unordered_map<Pos3i, PendingTick, Pos3iHasher> *outTickList, int32_t *outCurrentTick) {
         using namespace std;
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
+
+        if (!outTickList || !outCurrentTick) {
+            return;
+        }
 
         auto value = db.get(DbKey::PendingTicks(chunkX, chunkZ, d));
         if (!value) {
             return;
         }
-        vector<uint8_t> buffer;
-        copy(value->begin(), value->end(), back_inserter(buffer));
-        auto stream = make_shared<ByteStream>(buffer);
-        InputStreamReader sr(stream, {.fLittleEndian = true});
-        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
-            auto pair = PendingTick::FromCompound(*tag);
-            if (!pair) {
-                return;
+
+        auto pendingTicks = CompoundTag::Read(*value);
+        if (!pendingTicks) {
+            return;
+        }
+        auto currentTick = pendingTicks->int32("currentTick");
+        auto tickList = pendingTicks->listTag("tickList");
+        if (!currentTick || !tickList) {
+            return;
+        }
+        *outCurrentTick = *currentTick;
+
+        outTickList->clear();
+        for (auto const &it : *tickList) {
+            auto tick = it->asCompound();
+            if (!tick) {
+                continue;
             }
-            result.insert(*pair);
-        });
+            auto blockState = tick->compoundTag("blockState");
+            auto time = tick->int64("time");
+            auto x = tick->int32("x");
+            auto y = tick->int32("y");
+            auto z = tick->int32("z");
+            if (!blockState || !time || !x || !y || !z) {
+                continue;
+            }
+            auto block = Block::FromCompound(*blockState);
+            if (!block) {
+                continue;
+            }
+            PendingTick pt;
+            pt.fBlockState = block;
+            pt.fTime = *time;
+            Pos3i pos(*x, *y, *z);
+            outTickList->insert(std::make_pair(pos, pt));
+        }
     }
 
     static std::shared_ptr<BiomeMap> LoadBiomes(int chunkX, int chunkY, int chunkZ, Dimension d, DbInterface &db) {
@@ -266,11 +295,14 @@ private:
         LoadEntities(chunkX, chunkZ, d, db, entities);
 
         unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
-        LoadPendingTicks(chunkX, chunkZ, d, db, pendingTicks);
+        int32_t currentTick = 0;
+        LoadPendingTicks(chunkX, chunkZ, d, db, &pendingTicks, &currentTick);
 
         auto biomes = LoadBiomes(chunkX, chunkY, chunkZ, d, db);
 
-        return shared_ptr<Chunk>(new Chunk(d, chunkX, chunkY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
+        auto ret = shared_ptr<Chunk>(new Chunk(d, chunkX, chunkY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
+        ret->fCurrentTick = currentTick;
+        return ret;
     }
 
 #if __has_include(<leveldb/db.h>)
@@ -320,7 +352,10 @@ public:
     int32_t const fChunkX;
     int32_t const fChunkZ;
     std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> fBlockEntities;
+
     std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> fEntities;
+
+    int32_t fCurrentTick = 0;
     std::unordered_map<Pos3i, PendingTick, Pos3iHasher> fPendingTicks;
 
     std::shared_ptr<BiomeMap> fBiomes;
