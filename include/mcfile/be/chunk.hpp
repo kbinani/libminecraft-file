@@ -236,10 +236,12 @@ private:
 
         vector<shared_ptr<SubChunk>> subChunks;
 
-        int8_t minY = d == Dimension::Overworld ? -4 : 0;
-        int8_t maxY = d == Dimension::Overworld ? 19 : 15;
+        int8_t possibleMinY = d == Dimension::Overworld ? -4 : 0;
+        int8_t possibleMaxY = d == Dimension::Overworld ? 19 : 15;
 
-        for (int8_t y = minY; y <= maxY; y++) {
+        int8_t actualMinY = 0;
+
+        for (int8_t y = possibleMinY; y <= possibleMaxY; y++) {
             auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
             if (!subChunkData) {
                 continue;
@@ -249,6 +251,12 @@ private:
                 continue;
             }
             subChunks.push_back(subChunk);
+            actualMinY = (std::min)(actualMinY, y);
+        }
+
+        int chunkY = 0;
+        if (d == Dimension::Overworld && actualMinY < 0) {
+            chunkY = -4;
         }
 
         unordered_map<Pos3i, shared_ptr<CompoundTag>, Pos3iHasher> blockEntities;
@@ -260,9 +268,9 @@ private:
         unordered_map<Pos3i, PendingTick, Pos3iHasher> pendingTicks;
         LoadPendingTicks(chunkX, chunkZ, d, db, pendingTicks);
 
-        auto biomes = LoadBiomes(chunkX, minY, chunkZ, d, db);
+        auto biomes = LoadBiomes(chunkX, chunkY, chunkZ, d, db);
 
-        return shared_ptr<Chunk>(new Chunk(d, chunkX, minY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
+        return shared_ptr<Chunk>(new Chunk(d, chunkX, chunkY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
     }
 
 #if __has_include(<leveldb/db.h>)
