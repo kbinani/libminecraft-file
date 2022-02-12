@@ -101,18 +101,34 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return biomes::unknown;
         }
-        auto const &section = unsafeSectionAtBlock(y);
-        if (!section) {
-            return biomes::unknown;
-        }
-        int const offsetX = x - chunkX * 16;
-        int const offsetZ = z - chunkZ * 16;
-        int const offsetY = y - section->y() * 16;
-        auto ret = section->biomeAt(offsetX, offsetY, offsetZ);
-        if (ret) {
-            return *ret;
+        if (fLegacyBiomes.size() == 256) {
+            int lx = x - fChunkX * 16;
+            int lz = z - fChunkZ * 16;
+            return fLegacyBiomes[lz * 16 + lx];
+        } else if (fLegacyBiomes.size() == 1024 || fLegacyBiomes.size() == 1536) {
+            int lx = (x - fChunkX * 16) / 4;
+            int ly = (y - fChunkY * 16) / 4;
+            int lz = (z - fChunkZ * 16) / 4;
+            int index = (ly * 4 + lz) * 4 + lx;
+            if (index < fLegacyBiomes.size()) {
+                return fLegacyBiomes[index];
+            } else {
+                return biomes::unknown;
+            }
         } else {
-            return biomes::unknown;
+            auto const &section = unsafeSectionAtBlock(y);
+            if (!section) {
+                return biomes::unknown;
+            }
+            int const offsetX = x - chunkX * 16;
+            int const offsetZ = z - chunkZ * 16;
+            int const offsetY = y - section->y() * 16;
+            auto ret = section->biomeAt(offsetX, offsetY, offsetZ);
+            if (ret) {
+                return *ret;
+            } else {
+                return biomes::unknown;
+            }
         }
     }
 
@@ -122,14 +138,32 @@ public:
         if (chunkX != fChunkX || chunkZ != fChunkZ) {
             return false;
         }
-        auto const &section = sectionAtBlock(y);
-        if (!section) {
-            return false;
+        if (fLegacyBiomes.size() == 256) {
+            int lx = x - fChunkX * 16;
+            int lz = z - fChunkZ * 16;
+            fLegacyBiomes[lz * 16 + lx] = biome;
+            return true;
+        } else if (fLegacyBiomes.size() == 1024 || fLegacyBiomes.size() == 1536) {
+            int lx = (x - fChunkX * 16) / 4;
+            int ly = (y - fChunkY * 16) / 4;
+            int lz = (z - fChunkZ * 16) / 4;
+            int index = (ly * 4 + lz) * 4 + lx;
+            if (index < fLegacyBiomes.size()) {
+                fLegacyBiomes[index] = biome;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            auto const &section = sectionAtBlock(y);
+            if (!section) {
+                return false;
+            }
+            int const offsetX = x - chunkX * 16;
+            int const offsetZ = z - chunkZ * 16;
+            int const offsetY = y - section->y() * 16;
+            return section->setBiomeAt(offsetX, offsetY, offsetZ, biome);
         }
-        int const offsetX = x - chunkX * 16;
-        int const offsetZ = z - chunkZ * 16;
-        int const offsetY = y - section->y() * 16;
-        return section->setBiomeAt(offsetX, offsetY, offsetZ, biome);
     }
 
     biomes::BiomeId biomeAt(Pos3i pos) const {
@@ -475,7 +509,8 @@ private:
         auto createEmptySection = chunksection::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, tileEntities, sections);
 
         auto biomesTag = level->query("Biomes");
-        ParseBiomes(biomesTag, dataVersion, sections);
+        vector<biomes::BiomeId> biomes;
+        ParseBiomes(biomesTag, dataVersion, biomes);
 
         vector<shared_ptr<nbt::CompoundTag>> entities;
         auto entitiesTag = level->listTag("Entities");
@@ -539,9 +574,11 @@ private:
             }
         }
 
-        return std::shared_ptr<Chunk>(new Chunk(chunkX, 0, chunkZ, sections, dataVersion,
-                                                entities, tileEntities, structures, lastUpdate,
-                                                tileTicks, liquidTicks, s, terrainPopulated, createEmptySection));
+        auto ret = std::shared_ptr<Chunk>(new Chunk(chunkX, 0, chunkZ, sections, dataVersion,
+                                                    entities, tileEntities, structures, lastUpdate,
+                                                    tileTicks, liquidTicks, s, terrainPopulated, createEmptySection));
+        ret->fLegacyBiomes.swap(biomes);
+        return ret;
     }
 
     std::shared_ptr<ChunkSection> unsafeSectionAtBlock(int y) const {
@@ -573,68 +610,30 @@ private:
         return section;
     }
 
-    static void ParseBiomes(nbt::Tag const *biomesTag, int dataVersion, std::vector<std::shared_ptr<ChunkSection>> const &sections) {
+    static void ParseBiomes(nbt::Tag const *biomesTag, int dataVersion, std::vector<biomes::BiomeId> &out) {
         using namespace std;
         if (!biomesTag) {
             return;
         }
 
-        vector<biomes::BiomeId> raw;
         if (biomesTag->type() == nbt::Tag::Type::IntArray) {
             vector<int32_t> const &value = biomesTag->asIntArray()->value();
             size_t const size = value.size();
             if (size != 256 && size != 1024 && size != 1536) {
                 return;
             }
-            raw.resize(size);
+            out.resize(size);
             for (int i = 0; i < size; i++) {
-                raw[i] = biomes::FromInt(value[i]);
-            }
-            optional<int> minY;
-            for (auto const &section : sections) {
-                int y = section->y();
-                if (minY) {
-                    minY = (std::min)(y, *minY);
-                } else {
-                    minY = y;
-                }
-            }
-            if (!minY) {
-                return;
-            }
-            for (auto &section : sections) {
-                int const y = section->y();
-                for (int offsetX = 0; offsetX < 4; offsetX++) {
-                    for (int offsetZ = 0; offsetZ < 4; offsetZ++) {
-                        for (int iy = 0; iy < 4; iy++) {
-                            int const offsetY = (y - *minY) * 4 + iy;
-                            int const index = offsetX + offsetZ * 4 + offsetY * 16;
-                            if (0 <= index && index < raw.size()) {
-                                auto b = raw[index];
-                                section->setBiomeAt(offsetX * 4, iy * 4, offsetZ * 4, b);
-                            }
-                        }
-                    }
-                }
+                out[i] = biomes::FromInt(value[i]);
             }
         } else if (biomesTag->type() == nbt::Tag::Type::ByteArray) {
             vector<uint8_t> const &value = biomesTag->asByteArray()->value();
             if (value.size() != 256) {
                 return;
             }
-            raw.resize(256);
+            out.resize(256);
             for (int i = 0; i < 256; i++) {
-                raw[i] = biomes::FromInt(value[i]);
-            }
-            for (auto &section : sections) {
-                for (int x = 0; x < 16; x += 4) {
-                    for (int z = 0; z < 16; z += 4) {
-                        auto b = raw[z * 16 + x];
-                        for (int y = 0; y < 16; y += 4) {
-                            section->setBiomeAt(x, y, z, b);
-                        }
-                    }
-                }
+                out[i] = biomes::FromInt(value[i]);
             }
         }
     }
@@ -651,6 +650,11 @@ public:
     int64_t fLastUpdate;
     std::vector<TickingBlock> fTileTicks;
     std::vector<TickingBlock> fLiquidTicks;
+
+    // When empty, biomes are stored in fSections.
+    // When size = 256, biomes are 2D. Biome at localX, localZ is in fLegacyBiomes[localZ * 16 + localX]
+    // When size = 1024 or 1536, biomes are 3D. Biomes at localX, localY, localZ is in fLegacyBiomes[localX / 4 + (localZ / 4) * 4 + (localY / 4) * 16]
+    std::vector<biomes::BiomeId> fLegacyBiomes;
 
 protected:
     std::string const fStatus;

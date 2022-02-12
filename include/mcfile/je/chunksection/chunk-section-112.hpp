@@ -56,30 +56,11 @@ public:
     }
 
     std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
-        using namespace std;
-        auto index = BiomeIndex(offsetX, offsetZ);
-        if (!index) {
-            return nullopt;
-        }
-        if (*index < 0 || fBiomes.size() <= *index) {
-            return nullopt;
-        }
-        return fBiomes[*index];
+        return std::nullopt;
     }
 
     bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
-        auto index = BiomeIndex(offsetX, offsetZ);
-        if (!index) {
-            return false;
-        }
-
-        if (fBiomes.size() != 256) {
-            fBiomes.clear();
-            fBiomes.resize(256, biome);
-        } else {
-            fBiomes[*index] = biome;
-        }
-        return true;
+        return false;
     }
 
     void eachBlockPalette(std::function<bool(Block const &)> visitor) const override {
@@ -414,20 +395,12 @@ private:
         return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
     }
 
-    static std::optional<size_t> BiomeIndex(int offsetX, int offsetZ) {
-        if (offsetX < 0 || 16 <= offsetX || offsetZ < 0 || 16 <= offsetZ) {
-            return std::nullopt;
-        }
-        return offsetZ * 16 + offsetX;
-    }
-
 private:
     int const fY;
 
     BlockPalette fBlocks;
     std::vector<uint8_t> fBlockLight;
     std::vector<uint8_t> fSkyLight;
-    std::vector<biomes::BiomeId> fBiomes;
 };
 
 } // namespace mcfile::je::chunksection

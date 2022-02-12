@@ -190,25 +190,19 @@ private:
         }
 
         if (fDataVersion >= 2203) { // 19w36a
-            vector<int32_t> biomes;
-            for (int y = minBlockY(); y < maxBlockY(); y += 4) {
-                for (int z = 0; z < 16; z += 4) {
-                    for (int x = 0; x < 16; x += 4) {
-                        auto b = biomeAt(x + minBlockX(), y, z + minBlockZ());
-                        biomes.push_back(b);
-                    }
-                }
+            if (fLegacyBiomes.size() == 1024 || fLegacyBiomes.size() == 1536) {
+                vector<int32_t> biomes;
+                biomes.reserve(fLegacyBiomes.size());
+                copy(fLegacyBiomes.begin(), fLegacyBiomes.end(), back_inserter(biomes));
+                level->set("Biomes", make_shared<IntArrayTag>(biomes));
             }
-            level->set("Biomes", make_shared<IntArrayTag>(biomes));
         } else {
-            vector<uint8_t> biomes(256, 0);
-            for (int z = 0; z < 16; z++) {
-                for (int x = 0; x < 16; x++) {
-                    auto b = biomeAt(x + minBlockX(), 0, z + minBlockZ());
-                    biomes.push_back(b);
-                }
+            if (fLegacyBiomes.size() == 256) {
+                vector<uint8_t> biomes;
+                biomes.reserve(256);
+                copy(fLegacyBiomes.begin(), fLegacyBiomes.end(), back_inserter(biomes));
+                level->set("Biomes", make_shared<ByteArrayTag>(biomes));
             }
-            level->set("Biomes", make_shared<ByteArrayTag>(biomes));
         }
 
         auto entities = make_shared<ListTag>(Tag::Type::Compound);

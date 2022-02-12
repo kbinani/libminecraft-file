@@ -43,19 +43,11 @@ public:
     }
 
     std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto index = BiomeIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return std::nullopt;
-        }
-        return fBiomes.get(*index);
+        return std::nullopt;
     }
 
     bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
-        auto index = BiomeIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return false;
-        }
-        return fBiomes.set(*index, biome);
+        return false;
     }
 
     std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
@@ -185,21 +177,10 @@ private:
         return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
     }
 
-    static std::optional<size_t> BiomeIndex(int offsetX, int offsetY, int offsetZ) {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return std::nullopt;
-        }
-        int x = offsetX / 4;
-        int y = offsetY / 4;
-        int z = offsetZ / 4;
-        return (y * 4 + z) * 4 + x;
-    }
-
 public:
     int const fY;
     BlockPalette fBlocks;
     std::shared_ptr<nbt::CompoundTag> fExtra;
-    BiomePalette fBiomes;
 };
 
 } // namespace mcfile::je::chunksection
