@@ -453,9 +453,28 @@ public:
         });
     }
 
-    static std::shared_ptr<CompoundTag> Read(std::vector<uint8_t> &buffer) {
+    static std::shared_ptr<CompoundTag> Read(std::string const &data, stream::ReadOption ro) {
+        std::vector<uint8_t> buffer;
+        buffer.reserve(data.size());
+        std::copy(data.begin(), data.end(), std::back_inserter(buffer));
+        return Read(buffer, ro);
+    }
+
+    static std::shared_ptr<CompoundTag> Read(std::vector<uint8_t> &buffer, stream::ReadOption ro) {
         auto s = std::make_shared<mcfile::stream::ByteStream>(buffer);
-        mcfile::stream::InputStreamReader isr(s, {.fLittleEndian = false});
+        mcfile::stream::InputStreamReader isr(s, ro);
+        uint8_t type;
+        if (!isr.read(&type)) {
+            return nullptr;
+        }
+        if (type != static_cast<uint8_t>(Tag::Type::Compound)) {
+            return nullptr;
+        }
+        std::string n;
+        if (!isr.read(n)) {
+            return nullptr;
+        }
+        assert(n.empty());
         auto tag = std::make_shared<CompoundTag>();
         if (!tag->read(isr)) {
             return nullptr;
@@ -463,17 +482,17 @@ public:
         return tag;
     }
 
-    static std::shared_ptr<CompoundTag> ReadCompressed(std::vector<uint8_t> &buffer) {
+    static std::shared_ptr<CompoundTag> ReadCompressed(std::vector<uint8_t> &buffer, stream::ReadOption ro) {
         if (!Compression::decompress(buffer)) {
             return nullptr;
         }
-        return Read(buffer);
+        return Read(buffer, ro);
     }
 
-    static bool WriteCompressed(CompoundTag const &tag, std::filesystem::path file) {
+    static bool WriteCompressed(CompoundTag const &tag, std::filesystem::path file, stream::WriteOption wo) {
         auto s = std::make_shared<stream::ByteStream>();
-        stream::OutputStreamWriter osr(s, {.fLittleEndian = false});
-        if (!tag.write(osr)) {
+        stream::OutputStreamWriter osr(s, wo);
+        if (!tag.writeAsRoot(osr)) {
             return false;
         }
         std::vector<uint8_t> buffer;

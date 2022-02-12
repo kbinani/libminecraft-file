@@ -183,7 +183,7 @@ private:
             return;
         }
 
-        auto pendingTicks = CompoundTag::Read(*value);
+        auto pendingTicks = CompoundTag::Read(*value, {.fLittleEndian = true});
         if (!pendingTicks) {
             return;
         }
