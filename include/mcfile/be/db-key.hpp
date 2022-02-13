@@ -9,7 +9,7 @@ public:
         Version = 0x2c,
         VersionLegacy = 0x76,
         Data2DLegacy = 0x2d,
-        Data2D = 0x2b,
+        Data3D = 0x2b,
         BiomeState = 0x35,
         ChecksumsLegacy = 0x3b,
         BlockEntity = 0x31,
@@ -39,8 +39,8 @@ public:
         return ComposeChunkKey(chunkX, chunkZ, dim, Tag::VersionLegacy);
     }
 
-    static std::string Data2D(int32_t chunkX, int32_t chunkZ, Dimension dim) {
-        return ComposeChunkKey(chunkX, chunkZ, dim, Tag::Data2D);
+    static std::string Data3D(int32_t chunkX, int32_t chunkZ, Dimension dim) {
+        return ComposeChunkKey(chunkX, chunkZ, dim, Tag::Data3D);
     }
 
     static std::string Data2DLegacy(int32_t chunkX, int32_t chunkZ, Dimension dim) {

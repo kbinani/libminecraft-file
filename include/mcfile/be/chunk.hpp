@@ -211,9 +211,9 @@ private:
     static std::shared_ptr<BiomeMap> LoadBiomes(int chunkX, int chunkY, int chunkZ, Dimension d, DbInterface &db) {
         using namespace std;
         using namespace mcfile::stream;
-        auto data2D = db.get(DbKey::Data2D(chunkX, chunkZ, d));
-        if (data2D) {
-            return BiomeMap::Decode(chunkY, *data2D, 512);
+        auto data3D = db.get(DbKey::Data3D(chunkX, chunkZ, d));
+        if (data3D) {
+            return BiomeMap::Decode(chunkY, *data3D, 512);
         }
 
         auto data2DLegacy = db.get(DbKey::Data2DLegacy(chunkX, chunkZ, d));
