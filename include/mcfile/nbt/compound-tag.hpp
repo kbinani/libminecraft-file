@@ -25,7 +25,7 @@ public:
             if (!tag) {
                 return false;
             }
-            if (!tag->read(r)) {
+            if (!tag->readImpl(r)) {
                 return false;
             }
             tmp.insert(std::make_pair(name, tag));
@@ -43,7 +43,7 @@ public:
             if (!w.write(it->first)) {
                 return false;
             }
-            if (!it->second->write(w)) {
+            if (!it->second->writeImpl(w)) {
                 return false;
             }
         }
@@ -57,10 +57,18 @@ public:
         if (!w.write(std::string())) {
             return false;
         }
-        if (!write(w)) {
+        if (!writeImpl(w)) {
             return false;
         }
         return true;
+    }
+
+    [[nodiscard]] [[deprecated]] bool read(::mcfile::stream::InputStreamReader &r) {
+        return readImpl(r);
+    }
+
+    [[nodiscard]] [[deprecated]] bool write(mcfile::stream::OutputStreamWriter &w) const {
+        return writeImpl(w);
     }
 
     Tag::Type type() const override { return Tag::Type::Compound; }
@@ -476,7 +484,7 @@ public:
         }
         assert(n.empty());
         auto tag = std::make_shared<CompoundTag>();
-        if (!tag->read(isr)) {
+        if (!tag->readImpl(isr)) {
             return nullptr;
         }
         return tag;
@@ -524,7 +532,7 @@ private:
                 break;
             }
             auto tag = std::make_shared<CompoundTag>();
-            if (!tag->read(reader)) {
+            if (!tag->readImpl(reader)) {
                 break;
             }
             if (!callback(tag)) {

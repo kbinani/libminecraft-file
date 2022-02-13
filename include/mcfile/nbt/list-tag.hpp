@@ -29,7 +29,7 @@ public:
         std::vector<std::shared_ptr<Tag>> tmp;
         for (int32_t i = 0; i < size; i++) {
             auto tag = TagFactory::makeTag(type);
-            if (!tag->read(r)) {
+            if (!tag->readImpl(r)) {
                 return false;
             }
             tmp.push_back(tag);
@@ -47,7 +47,7 @@ public:
             return false;
         }
         for (auto const &v : fValue) {
-            if (!v->write(w)) {
+            if (!v->writeImpl(w)) {
                 return false;
             }
         }

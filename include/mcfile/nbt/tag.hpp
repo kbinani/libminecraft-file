@@ -20,6 +20,8 @@ class LongArrayTag;
 class Tag {
 public:
     friend class TagFactory;
+    friend class CompoundTag;
+    friend class ListTag;
 
     enum class Type : uint8_t {
         End = 0,
@@ -47,23 +49,6 @@ public:
     Tag(Tag const &) = delete;
     Tag &operator=(Tag const &) = delete;
 
-    [[nodiscard]] bool read(::mcfile::stream::InputStreamReader &reader) {
-        return readImpl(reader);
-    }
-
-    [[nodiscard]] bool readData(std::string const &data, stream::ReadOption o = {.fLittleEndian = false}) {
-        using namespace std;
-        vector<uint8_t> buffer;
-        copy(data.begin(), data.end(), back_inserter(buffer));
-        auto b = make_shared<stream::ByteStream>(buffer);
-        stream::InputStreamReader reader(b, o);
-        return read(reader);
-    }
-
-    [[nodiscard]] bool write(::mcfile::stream::OutputStreamWriter &writer) const {
-        return writeImpl(writer);
-    }
-
     virtual Type type() const = 0;
 
     EndTag const *asEnd() const { return this->type() == Type::End ? reinterpret_cast<EndTag const *>(this) : nullptr; }
@@ -85,8 +70,8 @@ public:
 protected:
     Tag() {}
 
-    virtual bool readImpl(::mcfile::stream::InputStreamReader &reader) = 0;
-    virtual bool writeImpl(::mcfile::stream::OutputStreamWriter &writer) const = 0;
+    [[nodiscard]] virtual bool readImpl(::mcfile::stream::InputStreamReader &reader) = 0;
+    [[nodiscard]] virtual bool writeImpl(::mcfile::stream::OutputStreamWriter &writer) const = 0;
 };
 
 } // namespace nbt
