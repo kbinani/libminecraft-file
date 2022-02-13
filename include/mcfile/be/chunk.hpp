@@ -216,13 +216,13 @@ private:
             return BiomeMap::Decode(chunkY, *data3D, 512);
         }
 
-        auto data2DLegacy = db.get(DbKey::Data2DLegacy(chunkX, chunkZ, d));
-        if (!data2DLegacy) {
+        auto data2D = db.get(DbKey::Data2D(chunkX, chunkZ, d));
+        if (!data2D) {
             return nullptr;
         }
         auto ret = make_shared<BiomeMap>(0, 15);
         vector<uint8_t> buffer;
-        copy(data2DLegacy->begin(), data2DLegacy->end(), back_inserter(buffer));
+        copy(data2D->begin(), data2D->end(), back_inserter(buffer));
         auto stream = make_shared<ByteStream>(buffer);
         InputStreamReader sr(stream, {.fLittleEndian = true});
         for (int i = 0; i < 256; i++) {
