@@ -7,7 +7,13 @@ class ByteStream : public InputStream, public OutputStream {
 public:
     explicit ByteStream(std::vector<uint8_t> &buffer)
         : fLoc(0) {
-        this->fBuffer.swap(buffer);
+        fBuffer.swap(buffer);
+    }
+
+    explicit ByteStream(std::string const &s)
+        : fLoc(0) {
+        fBuffer.reserve(s.size());
+        std::copy(s.begin(), s.end(), std::back_inserter(fBuffer));
     }
 
     ByteStream()
@@ -63,6 +69,13 @@ public:
     void drain(std::vector<uint8_t> &out) {
         out.clear();
         out.swap(fBuffer);
+        fLoc = 0;
+    }
+
+    void drain(std::string &out) {
+        out.clear();
+        std::copy(fBuffer.begin(), fBuffer.end(), std::back_inserter(out));
+        std::vector<uint8_t>().swap(fBuffer);
         fLoc = 0;
     }
 

@@ -450,27 +450,34 @@ public:
         });
     }
 
-    static void ReadDataUntilEos(std::string const &data, stream::ReadOption ro, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
-        return ReadDataUntilEosImpl(data, ro, callback);
+    static void ReadUntilEos(std::string const &data, stream::ReadOption ro, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
+        auto s = std::make_shared<mcfile::stream::ByteStream>(data);
+        mcfile::stream::InputStreamReader reader(s, ro);
+        ReadUntilEosImpl(reader, callback);
     }
 
-    static void ReadDataUntilEos(std::string const &data, stream::ReadOption ro, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
-        return ReadDataUntilEosImpl(data, ro, [callback](std::shared_ptr<CompoundTag> const &value) {
+    static void ReadUntilEos(std::string const &data, stream::ReadOption ro, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
+        auto s = std::make_shared<mcfile::stream::ByteStream>(data);
+        mcfile::stream::InputStreamReader reader(s, ro);
+        ReadUntilEosImpl(reader, [callback](std::shared_ptr<CompoundTag> const &value) {
             callback(value);
             return true;
         });
     }
 
     static std::shared_ptr<CompoundTag> Read(std::string const &data, stream::ReadOption ro) {
-        std::vector<uint8_t> buffer;
-        buffer.reserve(data.size());
-        std::copy(data.begin(), data.end(), std::back_inserter(buffer));
-        return Read(buffer, ro);
+        auto s = std::make_shared<mcfile::stream::ByteStream>(data);
+        mcfile::stream::InputStreamReader isr(s, ro);
+        return Read(isr);
     }
 
     static std::shared_ptr<CompoundTag> Read(std::vector<uint8_t> &buffer, stream::ReadOption ro) {
         auto s = std::make_shared<mcfile::stream::ByteStream>(buffer);
         mcfile::stream::InputStreamReader isr(s, ro);
+        return Read(isr);
+    }
+
+    static std::shared_ptr<CompoundTag> Read(mcfile::stream::InputStreamReader &isr) {
         uint8_t type;
         if (!isr.read(&type)) {
             return nullptr;
@@ -490,6 +497,21 @@ public:
         return tag;
     }
 
+    static std::shared_ptr<CompoundTag> ReadCompressed(std::string const &data, stream::ReadOption ro) {
+        std::vector<uint8_t> buffer;
+        buffer.reserve(data.size());
+        std::copy(data.begin(), data.end(), std::back_inserter(buffer));
+        return Read(buffer, ro);
+    }
+
+    static std::shared_ptr<CompoundTag> ReadCompressed(mcfile::stream::InputStream &stream, stream::ReadOption ro) {
+        std::vector<uint8_t> buffer(stream.length());
+        if (!stream.read(buffer.data(), buffer.size(), 1)) {
+            return nullptr;
+        }
+        return Read(buffer, ro);
+    }
+
     static std::shared_ptr<CompoundTag> ReadCompressed(std::vector<uint8_t> &buffer, stream::ReadOption ro) {
         if (!Compression::decompress(buffer)) {
             return nullptr;
@@ -498,6 +520,21 @@ public:
     }
 
     static bool WriteCompressed(CompoundTag const &tag, std::filesystem::path file, stream::WriteOption wo) {
+        auto o = std::make_shared<stream::FileOutputStream>(file);
+        return WriteCompressed(tag, *o, wo);
+    }
+
+    static std::optional<std::string> WriteCompressed(CompoundTag const &tag, stream::WriteOption wo) {
+        auto s = std::make_shared<stream::ByteStream>();
+        if (!WriteCompressed(tag, *s, wo)) {
+            return std::nullopt;
+        }
+        std::string ret;
+        s->drain(ret);
+        return ret;
+    }
+
+    static bool WriteCompressed(CompoundTag const &tag, mcfile::stream::OutputStream &stream, stream::WriteOption wo) {
         auto s = std::make_shared<stream::ByteStream>();
         stream::OutputStreamWriter osr(s, wo);
         if (!tag.writeAsRoot(osr)) {
@@ -508,19 +545,10 @@ public:
         if (!Compression::compress(buffer)) {
             return false;
         }
-        auto o = std::make_shared<stream::FileOutputStream>(file);
-        return o->write(buffer.data(), buffer.size());
+        return stream.write(buffer.data(), buffer.size());
     }
 
 private:
-    static void ReadDataUntilEosImpl(std::string const &data, stream::ReadOption ro, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
-        std::vector<uint8_t> buffer;
-        std::copy(data.begin(), data.end(), std::back_inserter(buffer));
-        auto b = std::make_shared<stream::ByteStream>(buffer);
-        stream::InputStreamReader reader(b, ro);
-        return ReadUntilEosImpl(reader, callback);
-    }
-
     static void ReadUntilEosImpl(stream::InputStreamReader &reader, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
         while (reader.valid()) {
             uint8_t type;
