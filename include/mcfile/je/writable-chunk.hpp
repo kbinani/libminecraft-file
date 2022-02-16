@@ -40,9 +40,7 @@ public:
         }
         auto stream = make_shared<stream::ByteStream>();
         auto writer = make_shared<stream::OutputStreamWriter>(stream, stream::WriteOption{.fLittleEndian = false});
-        auto root = make_shared<nbt::CompoundTag>();
-        root->set("", compound);
-        if (!root->write(*writer)) {
+        if (!compound->writeAsRoot(*writer)) {
             return false;
         }
         std::vector<uint8_t> buffer;
@@ -66,11 +64,9 @@ public:
             entities->push_back(it);
         }
         c->set("Entities", entities);
-        auto root = make_shared<CompoundTag>();
-        root->set("", c);
         auto stream = make_shared<ByteStream>();
         OutputStreamWriter osw(stream, {.fLittleEndian = false});
-        if (!root->write(osw)) {
+        if (!c->writeAsRoot(osw)) {
             return false;
         }
         vector<uint8_t> buffer;

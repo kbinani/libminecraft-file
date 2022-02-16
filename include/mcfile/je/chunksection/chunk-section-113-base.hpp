@@ -59,7 +59,9 @@ public:
             root->set(it.first, it.second->clone());
         }
 
-        root->set("Y", make_shared<ByteTag>(fY));
+        int8_t i8 = Clamp<int8_t>(fY);
+        uint8_t u8 = *(uint8_t *)&i8;
+        root->set("Y", make_shared<ByteTag>(u8));
 
         vector<uint16_t> index;
         vector<shared_ptr<Block const>> palette;

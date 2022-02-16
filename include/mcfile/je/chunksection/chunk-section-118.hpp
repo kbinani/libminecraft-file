@@ -198,7 +198,9 @@ public:
             root->set(it.first, it.second->clone());
         }
 
-        root->set("Y", make_shared<ByteTag>(fY));
+        int8_t i8 = Clamp<int8_t>(fY);
+        uint8_t u8 = *(uint8_t *)&i8;
+        root->set("Y", make_shared<ByteTag>(u8));
 
         if (!fBiomes.empty()) {
             auto biomes = make_shared<CompoundTag>();
@@ -277,7 +279,6 @@ public:
         }
 
         int bitsPerIndex = (int)ceil(log2(size));
-        int indexPerLong = 64 / bitsPerIndex;
         std::vector<bool> bitset;
         bitset.reserve(64);
         std::vector<int64_t> packedData;
