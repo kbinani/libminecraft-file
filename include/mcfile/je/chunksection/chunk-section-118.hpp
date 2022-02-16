@@ -275,13 +275,35 @@ public:
         if (size <= 1) {
             return;
         }
+
+        int bitsPerIndex = (int)ceil(log2(size));
+        int indexPerLong = 64 / bitsPerIndex;
+        std::vector<bool> bitset;
+        bitset.reserve(64);
         std::vector<int64_t> packedData;
-        if (size <= 2) {
-            BlockStatesParser116::PackPaletteIndexToI64<1, 64>(inIndices, packedData);
-        } else if (size <= 4) {
-            BlockStatesParser116::PackPaletteIndexToI64<2, 32>(inIndices, packedData);
-        } else {
-            BlockStatesParser116::BlockStatesFromPaletteIndices(outPalette->size(), inIndices, packedData);
+        for (int i = 0; i < inIndices.size(); i++) {
+            uint16_t v = inIndices[i];
+            if (bitset.size() + bitsPerIndex > 64) {
+                uint64_t u = 0;
+                for (int j = 0; j < bitset.size(); j++) {
+                    uint64_t t = bitset[j] ? 1 : 0;
+                    u |= t << j;
+                }
+                packedData.push_back(*(int64_t *)&u);
+                bitset.clear();
+            }
+            for (int j = 0; j < bitsPerIndex; j++) {
+                bitset.push_back((v & 1) == 1);
+                v >>= 1;
+            }
+        }
+        if (!bitset.empty()) {
+            uint64_t u = 0;
+            for (int j = 0; j < bitset.size(); j++) {
+                uint64_t t = bitset[j] ? 1 : 0;
+                u |= t << j;
+            }
+            packedData.push_back(*(int64_t *)&u);
         }
         outPackedIndices.reset(new nbt::LongArrayTag(packedData));
     }
