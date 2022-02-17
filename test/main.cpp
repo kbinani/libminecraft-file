@@ -214,4 +214,47 @@ TEST_CASE("1.18") {
         std::error_code ec;
         fs::remove_all(*tempDir, ec);
     }
+
+    SUBCASE("5biomes") {
+        using namespace std;
+        using namespace mcfile;
+        using namespace mcfile::je;
+        using namespace mcfile::stream;
+        using namespace mcfile::nbt;
+
+        fs::path in = dir / "data" / "5biomes" / "c.-1.-54.nbt";
+        shared_ptr<WritableChunk> expected;
+        {
+            auto tag = CompoundTag::Read(in, {.fLittleEndian = false});
+            auto root = std::make_shared<CompoundTag>();
+            root->set("", tag);
+            expected = WritableChunk::MakeChunk(-1, -54, root);
+        }
+
+        auto tmp = File::CreateTempDir(fs::temp_directory_path());
+        auto out = *tmp / "out.nbt";
+        {
+            auto s = std::make_shared<FileOutputStream>(out);
+            expected->write(*s);
+        }
+
+        shared_ptr<Chunk> actual;
+        {
+            auto tag = CompoundTag::ReadCompressed(out, {.fLittleEndian = false});
+            auto root = make_shared<CompoundTag>();
+            root->set("", tag);
+            actual = Chunk::MakeChunk(-1, -54, root);
+        }
+
+        for (int y = expected->minBlockY(); y <= expected->maxBlockY(); y++) {
+            for (int z = expected->minBlockZ(); z <= expected->maxBlockZ(); z++) {
+                for (int x = expected->minBlockX(); x <= expected->maxBlockX(); x++) {
+                    CHECK(expected->biomeAt(x, y, z) == actual->biomeAt(x, y, z));
+                }
+            }
+        }
+
+        error_code ec;
+        fs::remove_all(*tmp, ec);
+    }
 }

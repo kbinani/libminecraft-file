@@ -465,6 +465,12 @@ public:
         });
     }
 
+    static std::shared_ptr<CompoundTag> Read(std::filesystem::path path, stream::ReadOption ro) {
+        auto s = std::make_shared<mcfile::stream::FileInputStream>(path);
+        mcfile::stream::InputStreamReader isr(s, ro);
+        return Read(isr);
+    }
+
     static std::shared_ptr<CompoundTag> Read(std::string const &data, stream::ReadOption ro) {
         auto s = std::make_shared<mcfile::stream::ByteStream>(data);
         mcfile::stream::InputStreamReader isr(s, ro);
@@ -497,11 +503,16 @@ public:
         return tag;
     }
 
+    static std::shared_ptr<CompoundTag> ReadCompressed(std::filesystem::path p, stream::ReadOption ro) {
+        auto s = std::make_shared<mcfile::stream::FileInputStream>(p);
+        return ReadCompressed(*s, ro);
+    }
+
     static std::shared_ptr<CompoundTag> ReadCompressed(std::string const &data, stream::ReadOption ro) {
         std::vector<uint8_t> buffer;
         buffer.reserve(data.size());
         std::copy(data.begin(), data.end(), std::back_inserter(buffer));
-        return Read(buffer, ro);
+        return ReadCompressed(buffer, ro);
     }
 
     static std::shared_ptr<CompoundTag> ReadCompressed(mcfile::stream::InputStream &stream, stream::ReadOption ro) {
@@ -509,7 +520,7 @@ public:
         if (!stream.read(buffer.data(), buffer.size(), 1)) {
             return nullptr;
         }
-        return Read(buffer, ro);
+        return ReadCompressed(buffer, ro);
     }
 
     static std::shared_ptr<CompoundTag> ReadCompressed(std::vector<uint8_t> &buffer, stream::ReadOption ro) {
