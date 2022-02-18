@@ -50,7 +50,7 @@ inline Pos2<T> operator-(Pos2<T> const &lhs, Pos2<T> const &rhs) {
 
 } // namespace detail
 
-using Pos2i = detail::Pos2<int>;
-using Pos2iHasher = detail::Pos2Hasher<int>;
+using Pos2i = detail::Pos2<int32_t>;
+using Pos2iHasher = detail::Pos2Hasher<int32_t>;
 
 } // namespace mcfile

@@ -55,8 +55,8 @@ inline Pos3<T> operator-(Pos3<T> const &lhs, Pos3<T> const &rhs) {
 
 } // namespace detail
 
-using Pos3i = detail::Pos3<int>;
-using Pos3iHasher = detail::Pos3Hasher<int>;
+using Pos3i = detail::Pos3<int32_t>;
+using Pos3iHasher = detail::Pos3Hasher<int32_t>;
 
 inline std::shared_ptr<mcfile::nbt::Tag> Pos3iToNbt(Pos3i const &pos) {
     using namespace std;
