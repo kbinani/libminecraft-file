@@ -519,9 +519,6 @@ public:
     static std::shared_ptr<CompoundTag> ReadCompressed(mcfile::stream::InputStream &stream, stream::ReadOption ro) {
         std::vector<uint8_t> buffer;
         mcfile::stream::InputStream::ReadUntilEos(stream, buffer);
-        if (!stream.read(buffer.data(), buffer.size(), 1)) {
-            return nullptr;
-        }
         return ReadCompressed(buffer, ro);
     }
 
