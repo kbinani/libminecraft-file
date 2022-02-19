@@ -24,15 +24,6 @@ public:
 
     ByteStream &operator=(ByteStream const &) = delete;
 
-    bool read(void *buf, size_t size, size_t count) override {
-        if (fBuffer.size() < fLoc + size * count) {
-            return false;
-        }
-        std::copy(fBuffer.begin() + fLoc, fBuffer.begin() + fLoc + size * count, (uint8_t *)buf);
-        fLoc += size * count;
-        return true;
-    }
-
     size_t read(void *buf, size_t size) override {
         if (fLoc >= fBuffer.size()) {
             return 0;

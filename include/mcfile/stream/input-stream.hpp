@@ -12,8 +12,6 @@ public:
 
     virtual ~InputStream() {}
 
-    [[deprecated]] virtual bool read(void *buffer, size_t size, size_t count) = 0;
-
     virtual size_t read(void *buffer, size_t size) = 0;
 
     virtual bool seek(uint64_t offset) = 0;

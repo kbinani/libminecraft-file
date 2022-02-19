@@ -35,11 +35,11 @@ public:
     }
 
     [[nodiscard]] bool read(uint8_t *v) {
-        return fStream->read(v, sizeof(uint8_t), 1);
+        return fStream->read(v, sizeof(uint8_t)) == sizeof(uint8_t);
     }
 
     [[nodiscard]] bool read(int8_t *v) {
-        return fStream->read(v, sizeof(int8_t), 1);
+        return fStream->read(v, sizeof(int8_t)) == sizeof(int8_t);
     }
 
     [[nodiscard]] bool read(int16_t *v) {
@@ -99,14 +99,10 @@ public:
         return true;
     }
 
-    [[nodiscard]] bool read(std::vector<uint8_t> &buffer) {
-        size_t const count = buffer.size();
-        return fStream->read(buffer.data(), sizeof(uint8_t), count);
-    }
-
     template<typename T>
-    [[nodiscard]] bool copy(std::vector<T> &buffer) {
-        return fStream->read(buffer.data(), sizeof(T), buffer.size());
+    [[nodiscard]] bool read(std::vector<T> &buffer) {
+        static_assert(std::is_standard_layout_v<T>);
+        return fStream->read(buffer.data(), sizeof(T) * buffer.size()) == sizeof(T) * buffer.size();
     }
 
     [[nodiscard]] bool read(std::string &s) {
@@ -138,7 +134,7 @@ public:
 private:
     template<typename T>
     [[nodiscard]] bool readRaw(T *v) {
-        return fStream->read(v, sizeof(T), 1);
+        return fStream->read(v, sizeof(T)) == sizeof(T);
     }
 
     uint64_t int64FromRaw(uint64_t v) const {

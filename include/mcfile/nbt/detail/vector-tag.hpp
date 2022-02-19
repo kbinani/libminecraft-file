@@ -33,7 +33,7 @@ public:
             return false;
         }
         fValue.resize(length);
-        if (!r.copy(fValue)) {
+        if (!r.read(fValue)) {
             return false;
         }
         fLittleEndian = r.isLittleEndian();

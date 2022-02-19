@@ -43,18 +43,6 @@ public:
 
     FileInputStream &operator=(FileInputStream const &) = delete;
 
-    bool read(void *buffer, size_t size, size_t count) override {
-        if (!fFile) {
-            return false;
-        }
-        if (size == 0 || count == 0) {
-            return true;
-        }
-        size_t read = fread(buffer, size, count, fFile);
-        fLoc += read * size;
-        return read == count;
-    }
-
     size_t read(void *buffer, size_t size) override {
         if (!fFile) {
             return 0;
