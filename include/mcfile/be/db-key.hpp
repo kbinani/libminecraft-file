@@ -199,9 +199,9 @@ public:
         }
         ostringstream s;
         static unordered_map<uint8_t, string> const sMap = {
-            {0x2b, "Data2D"},
+            {0x2b, "Data3D"},
             {0x2c, "ChunkVersion"},
-            {0x2d, "Data2DLegacy"},
+            {0x2d, "Data2D"},
             {0x2f, "SubChunk"},
             {0x31, "BlockEntity"},
             {0x32, "Entity"},
