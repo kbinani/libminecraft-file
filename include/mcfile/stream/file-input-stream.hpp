@@ -51,7 +51,7 @@ public:
             return true;
         }
         size_t read = fread(buffer, size, count, fFile);
-        fLoc += read;
+        fLoc += read * size;
         return read == count;
     }
 
@@ -62,7 +62,7 @@ public:
         if (size == 0) {
             return 0;
         }
-        size_t read = fread(buffer, size, 1, fFile);
+        size_t read = fread(buffer, 1, size, fFile);
         fLoc += read;
         return read;
     }

@@ -35,7 +35,7 @@ public:
             return true;
         }
         size_t read = gzfread(buffer, size, count, fFile);
-        fPos += read;
+        fPos += read * size;
         return read == count;
     }
 
@@ -46,7 +46,7 @@ public:
         if (size == 0) {
             return 0;
         }
-        size_t read = gzfread(buffer, size, 1, fFile);
+        size_t read = gzfread(buffer, 1, size, fFile);
         fPos += read;
         return read;
     }
