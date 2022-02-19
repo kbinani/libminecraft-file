@@ -13,6 +13,7 @@ endif()
 
 set(mcfile_files
   # git ls-files | grep 'hpp$' | grep -v '^test' | pbcopy
+  #begin libminecraft-file source files
   include/mcfile/algorithm.hpp
   include/mcfile/be/biome-map.hpp
   include/mcfile/be/biome-section.hpp
@@ -85,13 +86,16 @@ set(mcfile_files
   include/mcfile/stream/byte-stream.hpp
   include/mcfile/stream/file-input-stream.hpp
   include/mcfile/stream/file-output-stream.hpp
+  include/mcfile/stream/gz-file-input-stream.hpp
   include/mcfile/stream/gz-file-output-stream.hpp
   include/mcfile/stream/input-stream-reader.hpp
   include/mcfile/stream/input-stream.hpp
   include/mcfile/stream/output-stream-writer.hpp
   include/mcfile/stream/output-stream.hpp
   include/mcfile/string.hpp
-  include/minecraft-file.hpp)
+  include/minecraft-file.hpp
+  #end libminecraft-file source files
+  )
 set(mcfile_test_files
   test/main.cpp
   test/be/biome-section.test.cpp

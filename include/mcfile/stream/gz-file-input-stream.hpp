@@ -2,44 +2,40 @@
 
 namespace mcfile::stream {
 
-class GzFileOutputStream : public OutputStream {
+class GzFileInputStream : public InputStream {
 public:
-    explicit GzFileOutputStream(std::filesystem::path const &filePath)
+    explicit GzFileInputStream(std::filesystem::path const &filePath)
         : fFile(nullptr)
         , fPos(0) {
-        gzFile fp = File::GzOpen(filePath, File::Mode::Write);
+        gzFile fp = File::GzOpen(filePath, File::Mode::Read);
         if (!fp) {
             return;
         }
         fFile = fp;
     }
 
-    GzFileOutputStream(std::string const &) = delete;
-    GzFileOutputStream(std::wstring const &) = delete;
+    GzFileInputStream(std::string const &) = delete;
+    GzFileInputStream(std::wstring const &) = delete;
 
-    ~GzFileOutputStream() {
+    ~GzFileInputStream() {
         if (fFile) {
             gzclose(fFile);
         }
     }
 
-    GzFileOutputStream(GzFileOutputStream const &) = delete;
+    GzFileInputStream(GzFileInputStream const &) = delete;
 
-    GzFileOutputStream &operator=(GzFileOutputStream const &) = delete;
+    GzFileInputStream &operator=(GzFileInputStream const &) = delete;
 
-    bool write(void const *buffer, size_t size) override {
+    bool read(void *buffer, size_t size, size_t count) override {
         if (!fFile) {
             return false;
         }
-        if (size == 0) {
+        if (size == 0 || count == 0) {
             return true;
         }
-        if (gzwrite(fFile, buffer, size) == 0) {
-            return false;
-        } else {
-            fPos += size;
-            return true;
-        }
+        fPos += size * count;
+        return gzfread(buffer, size, count, fFile) == count;
     }
 
     bool seek(uint64_t offset) override {

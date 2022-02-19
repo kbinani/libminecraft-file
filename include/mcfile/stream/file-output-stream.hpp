@@ -30,6 +30,9 @@ public:
     FileOutputStream &operator=(FileOutputStream const &) = delete;
 
     bool write(void const *buffer, size_t size) override {
+        if (!fFile) {
+            return false;
+        }
         if (size == 0) {
             return true;
         }
@@ -42,6 +45,9 @@ public:
     }
 
     bool seek(uint64_t offset) override {
+        if (!fFile) {
+            return false;
+        }
         if (File::Fseek(fFile, offset, SEEK_SET)) {
             fPos = offset;
             return true;

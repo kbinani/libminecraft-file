@@ -1,0 +1,16 @@
+#!/bin/bash
+
+(
+  cd "$(dirname "$0")"
+
+  mcfile_start=$(cat CMakeLists.txt | grep -n '#begin libminecraft-file' | cut -f1 -d:)
+  mcfile_end=$(cat CMakeLists.txt | grep -n '#end libminecraft-file' | cut -f1 -d:)
+
+  tmp=$(mktemp)
+
+  cat CMakeLists.txt | head -n $mcfile_start > "$tmp"
+  git ls-files | grep ^include | sed 's:\(.*\):  \1:g' >> "$tmp"
+  cat CMakeLists.txt | tail -n +${mcfile_end} >> "$tmp"
+
+  mv -f "$tmp" CMakeLists.txt
+)

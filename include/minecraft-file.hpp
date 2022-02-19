@@ -44,6 +44,7 @@
 #include <mcfile/stream/file-input-stream.hpp>
 #include <mcfile/stream/file-output-stream.hpp>
 #include <mcfile/stream/gz-file-output-stream.hpp>
+#include <mcfile/stream/gz-file-input-stream.hpp>
 #include <mcfile/stream/byte-stream.hpp>
 #include <mcfile/stream/input-stream-reader.hpp>
 #include <mcfile/stream/output-stream-writer.hpp>
