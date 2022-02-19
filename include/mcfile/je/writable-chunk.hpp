@@ -45,7 +45,7 @@ public:
         }
         std::vector<uint8_t> buffer;
         stream->drain(buffer);
-        if (!Compression::compress(buffer)) {
+        if (!Compression::Compress(buffer)) {
             return false;
         }
         if (!s.write(buffer.data(), buffer.size())) {
@@ -71,7 +71,7 @@ public:
         }
         vector<uint8_t> buffer;
         stream->drain(buffer);
-        if (!Compression::compress(buffer)) {
+        if (!Compression::Compress(buffer)) {
             return false;
         }
         if (!s.write(buffer.data(), buffer.size())) {

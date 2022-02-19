@@ -33,7 +33,7 @@ public:
         if (!reader.read(buffer)) {
             return nullptr;
         }
-        if (!Compression::decompress(buffer)) {
+        if (!Compression::Decompress(buffer)) {
             return nullptr;
         }
         auto root = std::make_shared<nbt::CompoundTag>();

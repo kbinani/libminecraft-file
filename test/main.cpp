@@ -136,7 +136,7 @@ std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromCompressedFile(fs::pat
     std::vector<uint8_t> buffer(size);
     FILE *fp = mcfile::File::Open(p, mcfile::File::Mode::Read);
     fread(buffer.data(), size, 1, fp);
-    mcfile::Compression::decompress(buffer);
+    mcfile::Compression::Decompress(buffer);
     auto s = std::make_shared<mcfile::stream::ByteStream>(buffer);
     mcfile::stream::InputStreamReader reader(s, {.fLittleEndian = false});
     auto tag = std::make_shared<mcfile::nbt::CompoundTag>();

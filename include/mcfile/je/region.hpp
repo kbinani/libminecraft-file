@@ -404,7 +404,7 @@ public:
             fclose(out);
             return false;
         }
-        if (!Compression::decompress(buffer)) {
+        if (!Compression::Decompress(buffer)) {
             fclose(in);
             fclose(out);
             return false;

@@ -296,7 +296,7 @@ public:
         if (!File::Fread(buffer.data(), size, 1, in)) {
             return nullptr;
         }
-        if (!Compression::decompress(buffer)) {
+        if (!Compression::Decompress(buffer)) {
             return nullptr;
         }
         auto root = std::make_shared<mcfile::nbt::CompoundTag>();

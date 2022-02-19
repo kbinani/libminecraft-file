@@ -6,7 +6,7 @@ class Compression {
 public:
     Compression() = delete;
 
-    static bool compress(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
+    static bool Compress(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
         z_stream zs;
         std::vector<uint8_t> buff(kSegSize, 0);
         std::vector<uint8_t> outData;
@@ -41,7 +41,7 @@ public:
         return true;
     }
 
-    static bool decompress(std::vector<uint8_t> &inout) {
+    static bool Decompress(std::vector<uint8_t> &inout) {
         int ret;
         z_stream zs;
         std::vector<uint8_t> buff(kSegSize, 0);
@@ -75,7 +75,7 @@ public:
     }
 
 #if __has_include(<zopfli.h>)
-    static bool compressZopfli(std::vector<uint8_t> &inout) {
+    static bool CompressZopfli(std::vector<uint8_t> &inout) {
         if (inout.empty()) {
             return true;
         }
