@@ -6,8 +6,7 @@
 #include <endian.h>
 #endif
 
-namespace mcfile {
-namespace stream {
+namespace mcfile::stream {
 
 struct ReadOption {
     bool fLittleEndian;
@@ -125,13 +124,6 @@ public:
         return true;
     }
 
-    uint64_t length() const {
-        if (!fStream) {
-            return 0;
-        }
-        return fStream->length();
-    }
-
     uint64_t pos() const {
         if (!fStream) {
             return 0;
@@ -178,5 +170,4 @@ private:
     bool fLittleEndian;
 };
 
-} // namespace stream
-} // namespace mcfile
+} // namespace mcfile::stream

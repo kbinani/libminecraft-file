@@ -1,13 +1,12 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 class CompoundTag : public Tag {
 public:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         std::map<std::string, std::shared_ptr<Tag>> tmp;
-        while (r.pos() < r.length()) {
+        while (r.valid()) {
             uint8_t type;
             if (!r.read(&type)) {
                 break;
@@ -467,19 +466,21 @@ public:
 
     static std::shared_ptr<CompoundTag> Read(std::filesystem::path path, stream::ReadOption ro) {
         auto s = std::make_shared<mcfile::stream::FileInputStream>(path);
-        mcfile::stream::InputStreamReader isr(s, ro);
-        return Read(isr);
+        return Read(s, ro);
     }
 
     static std::shared_ptr<CompoundTag> Read(std::string const &data, stream::ReadOption ro) {
         auto s = std::make_shared<mcfile::stream::ByteStream>(data);
-        mcfile::stream::InputStreamReader isr(s, ro);
-        return Read(isr);
+        return Read(s, ro);
     }
 
     static std::shared_ptr<CompoundTag> Read(std::vector<uint8_t> &buffer, stream::ReadOption ro) {
         auto s = std::make_shared<mcfile::stream::ByteStream>(buffer);
-        mcfile::stream::InputStreamReader isr(s, ro);
+        return Read(s, ro);
+    }
+
+    static std::shared_ptr<CompoundTag> Read(std::shared_ptr<stream::InputStream> const &stream, stream::ReadOption ro) {
+        mcfile::stream::InputStreamReader isr(stream, ro);
         return Read(isr);
     }
 
@@ -516,7 +517,8 @@ public:
     }
 
     static std::shared_ptr<CompoundTag> ReadCompressed(mcfile::stream::InputStream &stream, stream::ReadOption ro) {
-        std::vector<uint8_t> buffer(stream.length());
+        std::vector<uint8_t> buffer;
+        mcfile::stream::InputStream::ReadUntilEos(stream, buffer);
         if (!stream.read(buffer.data(), buffer.size(), 1)) {
             return nullptr;
         }
@@ -584,5 +586,4 @@ public:
     std::map<std::string, std::shared_ptr<Tag>> fValue;
 };
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

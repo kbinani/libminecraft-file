@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace stream {
+namespace mcfile::stream {
 
 class FileInputStream : public InputStream {
 public:
@@ -51,8 +50,21 @@ public:
         if (size == 0 || count == 0) {
             return true;
         }
-        fLoc += size * count;
-        return fread(buffer, size, count, fFile) == count;
+        size_t read = fread(buffer, size, count, fFile);
+        fLoc += read;
+        return read == count;
+    }
+
+    size_t read(void *buffer, size_t size) override {
+        if (!fFile) {
+            return 0;
+        }
+        if (size == 0) {
+            return 0;
+        }
+        size_t read = fread(buffer, size, 1, fFile);
+        fLoc += read;
+        return read;
     }
 
     bool seek(uint64_t offset) override {
@@ -64,10 +76,11 @@ public:
     }
 
     bool valid() const override {
-        return fFile != nullptr;
+        if (!fFile) {
+            return false;
+        }
+        return feof(fFile) == 0;
     }
-
-    uint64_t length() const override { return fLength; }
 
     uint64_t pos() const override { return fLoc; }
 
@@ -77,5 +90,4 @@ private:
     uint64_t fLoc;
 };
 
-} // namespace stream
-} // namespace mcfile
+} // namespace mcfile::stream

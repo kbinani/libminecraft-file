@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace stream {
+namespace mcfile::stream {
 
 class ByteStream : public InputStream, public OutputStream {
 public:
@@ -34,6 +33,20 @@ public:
         return true;
     }
 
+    size_t read(void *buf, size_t size) override {
+        if (fLoc >= fBuffer.size()) {
+            return 0;
+        }
+        if (size == 0) {
+            return 0;
+        }
+        uint64_t next = (std::min)(fLoc + size, fBuffer.size());
+        size_t read = next - fLoc;
+        std::copy(fBuffer.begin() + fLoc, fBuffer.begin() + next, (uint8_t *)buf);
+        fLoc = next;
+        return read;
+    }
+
     bool write(void const *buf, size_t size) override {
         if (fBuffer.size() <= fLoc + size) {
             size_t add = fLoc + size - fBuffer.size();
@@ -60,9 +73,9 @@ public:
         return true;
     }
 
-    uint64_t length() const override { return fBuffer.size(); }
-
-    bool valid() const override { return true; }
+    bool valid() const override {
+        return true;
+    }
 
     uint64_t pos() const override { return fLoc; }
 
@@ -84,5 +97,4 @@ private:
     uint64_t fLoc;
 };
 
-} // namespace stream
-} // namespace mcfile
+} // namespace mcfile::stream

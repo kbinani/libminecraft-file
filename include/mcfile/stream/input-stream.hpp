@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace stream {
+namespace mcfile::stream {
 
 class InputStream {
 public:
@@ -13,16 +12,26 @@ public:
 
     virtual ~InputStream() {}
 
-    virtual uint64_t length() const = 0;
+    [[deprecated]] virtual bool read(void *buffer, size_t size, size_t count) = 0;
 
-    virtual bool read(void *buffer, size_t size, size_t count) = 0;
+    virtual size_t read(void *buffer, size_t size) = 0;
 
     virtual bool seek(uint64_t offset) = 0;
 
     virtual bool valid() const = 0;
 
     virtual uint64_t pos() const = 0;
+
+    static void ReadUntilEos(InputStream &s, std::vector<uint8_t> &buffer, size_t chunk = 512) {
+        std::vector<uint8_t> tmp((std::max)((size_t)1, chunk));
+        while (true) {
+            auto read = s.read(tmp.data(), tmp.size());
+            std::copy_n(tmp.begin(), read, std::back_inserter(buffer));
+            if (read < tmp.size()) {
+                break;
+            }
+        }
+    }
 };
 
-} // namespace stream
-} // namespace mcfile
+} // namespace mcfile::stream

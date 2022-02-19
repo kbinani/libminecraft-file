@@ -34,8 +34,21 @@ public:
         if (size == 0 || count == 0) {
             return true;
         }
-        fPos += size * count;
-        return gzfread(buffer, size, count, fFile) == count;
+        size_t read = gzfread(buffer, size, count, fFile);
+        fPos += read;
+        return read == count;
+    }
+
+    size_t read(void *buffer, size_t size) override {
+        if (!fFile) {
+            return 0;
+        }
+        if (size == 0) {
+            return 0;
+        }
+        size_t read = gzfread(buffer, size, 1, fFile);
+        fPos += read;
+        return read;
     }
 
     bool seek(uint64_t offset) override {
@@ -52,6 +65,13 @@ public:
 
     uint64_t pos() const override {
         return fPos;
+    }
+
+    bool valid() const override {
+        if (!fFile) {
+            return false;
+        }
+        return gzeof(fFile) != 1;
     }
 
 private:
