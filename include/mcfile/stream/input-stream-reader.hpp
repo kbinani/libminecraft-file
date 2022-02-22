@@ -139,25 +139,25 @@ private:
 
     uint64_t int64FromRaw(uint64_t v) const {
         if (fLittleEndian) {
-            return mcfile::Int64FromLE(v);
+            return mcfile::U64FromLE(v);
         } else {
-            return mcfile::Int64FromBE(v);
+            return mcfile::U64FromBE(v);
         }
     }
 
     uint32_t int32FromRaw(uint32_t v) const {
         if (fLittleEndian) {
-            return mcfile::Int32FromLE(v);
+            return mcfile::U32FromLE(v);
         } else {
-            return mcfile::Int32FromBE(v);
+            return mcfile::U32FromBE(v);
         }
     }
 
     uint16_t int16FromRaw(uint16_t v) const {
         if (fLittleEndian) {
-            return mcfile::Int16FromLE(v);
+            return mcfile::U16FromLE(v);
         } else {
-            return mcfile::Int16FromBE(v);
+            return mcfile::U16FromBE(v);
         }
     }
 

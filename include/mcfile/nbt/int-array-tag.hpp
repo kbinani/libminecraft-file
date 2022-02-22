@@ -27,9 +27,9 @@ private:
     int32_t convert(int32_t v, bool littleEndian) const override {
         uint32_t t = *(uint32_t *)&v;
         if (littleEndian) {
-            t = ::mcfile::Int32FromLE(t);
+            t = ::mcfile::U32FromLE(t);
         } else {
-            t = ::mcfile::Int32FromBE(t);
+            t = ::mcfile::U32FromBE(t);
         }
         return *(int32_t *)&t;
     }

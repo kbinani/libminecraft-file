@@ -203,7 +203,7 @@ public:
             fclose(fp);
             return false;
         }
-        loc = Int32FromBE(loc);
+        loc = U32FromBE(loc);
         if (loc == 0) {
             fclose(fp);
             return true;
@@ -237,7 +237,7 @@ public:
             fclose(fp);
             return false;
         }
-        chunkSize = Int32FromBE(chunkSize);
+        chunkSize = U32FromBE(chunkSize);
         for (uint32_t i = 0; i < chunkSize; i++) {
             uint8_t zero = 0;
             if (!File::Fwrite(&zero, sizeof(zero), 1, fp)) {
@@ -354,7 +354,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = Int32FromBE(loc);
+        loc = U32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             // The chunk is not saved yet
@@ -374,7 +374,7 @@ public:
             fclose(in);
             return false;
         }
-        size = Int32FromBE(size);
+        size = U32FromBE(size);
         if (size == 0) {
             fclose(in);
             // The chunk is not saved yet
@@ -447,7 +447,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = Int32FromBE(loc);
+        loc = U32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             // The chunk is not saved yet
@@ -464,7 +464,7 @@ public:
             fclose(in);
             return false;
         }
-        size = Int32FromBE(size);
+        size = U32FromBE(size);
         if (size == 0) {
             fclose(in);
             // The chunk is not saved yet
@@ -524,7 +524,7 @@ public:
             fclose(in);
             return false;
         }
-        loc = Int32FromBE(loc);
+        loc = U32FromBE(loc);
         if (loc == 0) {
             fclose(in);
             // The chunk is not saved yet
@@ -541,7 +541,7 @@ public:
             fclose(in);
             return false;
         }
-        size = Int32FromBE(size);
+        size = U32FromBE(size);
         if (size == 0) {
             fclose(in);
             // The chunk is not saved yet
@@ -563,11 +563,11 @@ public:
         fclose(in);
         in = nullptr;
 
-        if (!Compression::decompress(buffer)) {
+        if (!Compression::Decompress(buffer)) {
             return false;
         }
 
-        if (!Compression::compressZopfli(buffer)) {
+        if (!Compression::CompressZopfli(buffer)) {
             return false;
         }
 
@@ -635,7 +635,7 @@ public:
                 }
                 size_t const size = fs::file_size(filepath);
                 uint8_t compressionType = 2;
-                uint32_t s = Int32BEFromNative(size + sizeof(compressionType));
+                uint32_t s = U32BEFromNative(size + sizeof(compressionType));
                 if (!File::Fwrite(&s, sizeof(s), 1, out)) {
                     fclose(in);
                     fclose(out);
@@ -656,7 +656,7 @@ public:
                 size_t headerSize = sizeof(s) + sizeof(compressionType);
                 uint32_t const numSectors = Ceil(size + headerSize, kSectorSize) / kSectorSize;
                 uint32_t const loc = (((((uint32_t)location) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
-                locationLut[index] = Int32BEFromNative(loc);
+                locationLut[index] = U32BEFromNative(loc);
             }
         }
         long const current = ftell(out);
