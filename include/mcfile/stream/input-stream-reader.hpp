@@ -1,22 +1,12 @@
 #pragma once
 
-#if defined(__APPLE__)
-#include <libkern/OSByteOrder.h>
-#elif defined(__linux__) || defined(__CYGWIN__)
-#include <endian.h>
-#endif
-
 namespace mcfile::stream {
-
-struct ReadOption {
-    bool fLittleEndian;
-};
 
 class InputStreamReader {
 public:
-    explicit InputStreamReader(std::shared_ptr<InputStream> stream, ReadOption option = {.fLittleEndian = false})
+    explicit InputStreamReader(std::shared_ptr<InputStream> stream, std::endian endian = std::endian::big)
         : fStream(stream)
-        , fLittleEndian(option.fLittleEndian) {
+        , fEndian(endian) {
     }
 
     InputStreamReader(InputStreamReader const &) = delete;
@@ -43,66 +33,78 @@ public:
     }
 
     [[nodiscard]] bool read(int16_t *v) {
-        uint16_t t;
-        if (!readRaw(&t)) {
+        if (!readRaw(v)) {
             return false;
         }
-        t = int16FromRaw(t);
-        *v = *(int16_t *)&t;
+        if (fEndian != std::endian::native) {
+            *v = SwapI16(*v);
+        }
         return true;
     }
 
     [[nodiscard]] bool read(uint16_t *v) {
-        uint16_t t;
-        if (!readRaw(&t)) {
+        if (!readRaw(v)) {
             return false;
         }
-        *v = int16FromRaw(t);
+        if (fEndian != std::endian::native) {
+            *v = SwapU16(*v);
+        }
         return true;
     }
 
     [[nodiscard]] bool read(int32_t *v) {
-        uint32_t t;
-        if (!readRaw(&t)) {
+        if (!readRaw(v)) {
             return false;
         }
-        t = int32FromRaw(t);
-        *v = *(int32_t *)&t;
+        if (fEndian != std::endian::native) {
+            *v = SwapI32(*v);
+        }
         return true;
     }
 
     [[nodiscard]] bool read(uint32_t *v) {
-        uint32_t t;
-        if (!readRaw(&t)) {
+        if (!readRaw(v)) {
             return false;
         }
-        *v = int32FromRaw(t);
+        if (fEndian != std::endian::native) {
+            *v = SwapU32(*v);
+        }
         return true;
     }
 
     [[nodiscard]] bool read(int64_t *v) {
-        uint64_t t;
-        if (!readRaw(&t)) {
+        if (!readRaw(v)) {
             return false;
         }
-        t = int64FromRaw(t);
-        *v = *(int64_t *)&t;
+        if (fEndian != std::endian::native) {
+            *v = SwapI64(*v);
+        }
         return true;
     }
 
     [[nodiscard]] bool read(uint64_t *v) {
-        uint64_t t;
-        if (!readRaw(&t)) {
+        if (!readRaw(v)) {
             return false;
         }
-        *v = int64FromRaw(t);
+        if (fEndian != std::endian::native) {
+            *v = SwapU64(*v);
+        }
         return true;
     }
 
-    template<typename T>
+    template<class T>
     [[nodiscard]] bool read(std::vector<T> &buffer) {
         static_assert(std::is_standard_layout_v<T>);
-        return fStream->read(buffer.data(), sizeof(T) * buffer.size()) == sizeof(T) * buffer.size();
+        if (fStream->read(buffer.data(), buffer.size() * sizeof(T)) != buffer.size() * sizeof(T)) {
+            return false;
+        }
+        if (fEndian != std::endian::native) {
+            size_t size = buffer.size();
+            for (size_t i = 0; i < size; i++) {
+                buffer[i] = ByteSwap(buffer[i]);
+            }
+        }
+        return true;
     }
 
     [[nodiscard]] bool read(std::string &s) {
@@ -127,43 +129,15 @@ public:
         return fStream->pos();
     }
 
-    bool isLittleEndian() const {
-        return fLittleEndian;
-    }
-
 private:
-    template<typename T>
+    template<class T>
     [[nodiscard]] bool readRaw(T *v) {
         return fStream->read(v, sizeof(T)) == sizeof(T);
     }
 
-    uint64_t int64FromRaw(uint64_t v) const {
-        if (fLittleEndian) {
-            return mcfile::U64FromLE(v);
-        } else {
-            return mcfile::U64FromBE(v);
-        }
-    }
-
-    uint32_t int32FromRaw(uint32_t v) const {
-        if (fLittleEndian) {
-            return mcfile::U32FromLE(v);
-        } else {
-            return mcfile::U32FromBE(v);
-        }
-    }
-
-    uint16_t int16FromRaw(uint16_t v) const {
-        if (fLittleEndian) {
-            return mcfile::U16FromLE(v);
-        } else {
-            return mcfile::U16FromBE(v);
-        }
-    }
-
 private:
     std::shared_ptr<InputStream> fStream;
-    bool fLittleEndian;
+    std::endian const fEndian;
 };
 
 } // namespace mcfile::stream

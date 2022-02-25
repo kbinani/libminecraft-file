@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 class ByteArrayTag : public detail::VectorTag<uint8_t, Tag::Type::ByteArray> {
 public:
@@ -22,10 +21,6 @@ public:
     std::shared_ptr<Tag> clone() const override {
         return copy();
     }
-
-private:
-    uint8_t convert(uint8_t v, bool littleEndian) const override { return v; }
 };
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

@@ -21,7 +21,7 @@ public:
         copy(data.begin(), data.end(), back_inserter(buffer));
 
         auto bs = make_shared<ByteStream>(buffer);
-        InputStreamReader sr(bs, {.fLittleEndian = true});
+        InputStreamReader sr(bs, std::endian::little);
 
         uint8_t version;
         if (!sr.read(&version)) {
@@ -136,7 +136,7 @@ private:
         uint32_t const mask = ~((~((uint32_t)0)) << bitsPerBlock);
         index.reserve(4096);
         auto indexBufferStream = make_shared<ByteStream>(indexBuffer);
-        InputStreamReader sr2(indexBufferStream, {.fLittleEndian = true});
+        InputStreamReader sr2(indexBufferStream, std::endian::little);
         for (int i = 0; i < numWords; i++) {
             uint32_t word;
             if (!sr2.read(&word)) {

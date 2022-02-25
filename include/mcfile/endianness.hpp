@@ -3,15 +3,15 @@
 namespace mcfile {
 
 constexpr bool IsBigEndian() {
-#if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
-    return true;
-#else
-    return false;
-#endif
+    return std::endian::native == std::endian::big;
 }
 
 inline uint64_t SwapU64(uint64_t v) {
+#if defined(_MSC_VER)
+    return _byteswap_uint64(v);
+#else
     return ((v & 0x00000000000000ffLL) << 56) | ((v & 0x000000000000ff00LL) << 40) | ((v & 0x0000000000ff0000LL) << 24) | ((v & 0x00000000ff000000LL) << 8) | ((v & 0x000000ff00000000LL) >> 8) | ((v & 0x0000ff0000000000LL) >> 24) | ((v & 0x00ff000000000000LL) >> 40) | ((v & 0xff00000000000000LL) >> 56);
+#endif
 }
 
 inline int64_t SwapI64(int64_t v) {
@@ -21,12 +21,17 @@ inline int64_t SwapI64(int64_t v) {
 }
 
 inline uint32_t SwapU32(uint32_t v) {
+#if defined(_MSC_VER)
+    static_assert(sizeof(unsigned long) == sizeof(uint32_t));
+    return _byteswap_ulong(v);
+#else
     uint32_t r;
     r = v << 24;
     r |= (v & 0x0000FF00) << 8;
     r |= (v & 0x00FF0000) >> 8;
     r |= v >> 24;
     return r;
+#endif
 }
 
 inline int32_t SwapI32(int32_t v) {
@@ -36,16 +41,41 @@ inline int32_t SwapI32(int32_t v) {
 }
 
 inline uint16_t SwapU16(uint16_t v) {
+#if defined(_MSC_VER)
+    static_assert(sizeof(unsigned short) == sizeof(uint16_t));
+    return _byteswap_ushort(v);
+#else
     uint16_t r;
     r = v << 8;
     r |= (v & 0xFF00) >> 8;
     return r;
+#endif
 }
 
 inline int16_t SwapI16(int16_t v) {
     uint16_t u = *(uint16_t *)&v;
     u = SwapU16(u);
     return *(int16_t *)&u;
+}
+
+template<class T>
+inline T ByteSwap(T v) {
+    static_assert(std::is_same_v<T, uint64_t> || std::is_same_v<T, int64_t> || std::is_same_v<T, uint32_t> || std::is_same_v<T, int32_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, int16_t> || std::is_same_v<T, uint8_t> || std::is_same_v<T, int8_t>);
+    if constexpr (std::is_same_v<T, uint64_t>) {
+        return SwapU64(v);
+    } else if constexpr (std::is_same_v<T, int64_t>) {
+        return SwapI64(v);
+    } else if constexpr (std::is_same_v<T, uint32_t>) {
+        return SwapU32(v);
+    } else if constexpr (std::is_same_v<T, int32_t>) {
+        return SwapI32(v);
+    } else if constexpr (std::is_same_v<T, uint16_t>) {
+        return SwapU16(v);
+    } else if constexpr (std::is_same_v<T, int16_t>) {
+        return SwapI16(v);
+    } else {
+        return v;
+    }
 }
 
 inline uint64_t U64FromBE(uint64_t v) {

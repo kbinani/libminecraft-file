@@ -1,17 +1,12 @@
 #pragma once
 
-namespace mcfile {
-namespace stream {
-
-struct WriteOption {
-    bool fLittleEndian;
-};
+namespace mcfile::stream {
 
 class OutputStreamWriter {
 public:
-    explicit OutputStreamWriter(std::shared_ptr<OutputStream> stream, WriteOption option = {.fLittleEndian = false})
+    explicit OutputStreamWriter(std::shared_ptr<OutputStream> stream, std::endian endian = std::endian::big)
         : fStream(stream)
-        , fLittleEndian(option.fLittleEndian) {
+        , fEndian(endian) {
     }
 
     OutputStreamWriter(OutputStreamWriter const &) = delete;
@@ -23,60 +18,45 @@ public:
     }
 
     [[nodiscard]] bool write(uint64_t v) {
-        if (fLittleEndian) {
-            v = mcfile::U64LEFromNative(v);
-        } else {
-            v = mcfile::U64BEFromNative(v);
+        if (fEndian != std::endian::native) {
+            v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(uint32_t v) {
-        if (fLittleEndian) {
-            v = mcfile::U32LEFromNative(v);
-        } else {
-            v = mcfile::U32BEFromNative(v);
+        if (fEndian != std::endian::native) {
+            v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(uint16_t v) {
-        if (fLittleEndian) {
-            v = mcfile::U16LEFromNative(v);
-        } else {
-            v = mcfile::U16BEFromNative(v);
+        if (fEndian != std::endian::native) {
+            v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(int64_t v) {
-        uint64_t t;
-        if (fLittleEndian) {
-            t = mcfile::U64LEFromNative(*(int64_t *)&v);
-        } else {
-            t = mcfile::U64BEFromNative(*(int64_t *)&v);
+        if (fEndian != std::endian::native) {
+            v = ByteSwap(v);
         }
-        return fStream->write(&t, sizeof(t));
+        return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(int32_t v) {
-        uint32_t t;
-        if (fLittleEndian) {
-            t = mcfile::U32LEFromNative(*(int32_t *)&v);
-        } else {
-            t = mcfile::U32BEFromNative(*(int32_t *)&v);
+        if (fEndian != std::endian::native) {
+            v = ByteSwap(v);
         }
-        return fStream->write(&t, sizeof(t));
+        return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(int16_t v) {
-        uint16_t t;
-        if (fLittleEndian) {
-            t = mcfile::U16LEFromNative(*(int16_t *)&v);
-        } else {
-            t = mcfile::U16BEFromNative(*(int16_t *)&v);
+        if (fEndian != std::endian::native) {
+            v = ByteSwap(v);
         }
-        return fStream->write(&t, sizeof(t));
+        return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(std::vector<uint8_t> const &buffer) {
@@ -96,34 +76,8 @@ public:
     }
 
 private:
-    uint64_t int64LE(uint64_t v) const {
-        if (fLittleEndian) {
-            return mcfile::U64LEFromNative(v);
-        } else {
-            return mcfile::U64LEFromNative(v);
-        }
-    }
-
-    uint32_t int32FromRaw(uint32_t v) const {
-        if (fLittleEndian) {
-            return mcfile::U32FromLE(v);
-        } else {
-            return mcfile::U32FromBE(v);
-        }
-    }
-
-    uint16_t int16FromRaw(uint16_t v) const {
-        if (fLittleEndian) {
-            return mcfile::U16FromLE(v);
-        } else {
-            return mcfile::U16FromBE(v);
-        }
-    }
-
-private:
     std::shared_ptr<OutputStream> fStream;
-    bool fLittleEndian;
+    std::endian const fEndian;
 };
 
-} // namespace stream
-} // namespace mcfile
+} // namespace mcfile::stream

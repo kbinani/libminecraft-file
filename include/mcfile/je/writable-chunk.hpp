@@ -39,7 +39,7 @@ public:
             return false;
         }
         auto stream = make_shared<stream::ByteStream>();
-        auto writer = make_shared<stream::OutputStreamWriter>(stream, stream::WriteOption{.fLittleEndian = false});
+        auto writer = make_shared<stream::OutputStreamWriter>(stream, std::endian::big);
         if (!compound->writeAsRoot(*writer)) {
             return false;
         }
@@ -65,7 +65,7 @@ public:
         }
         c->set("Entities", entities);
         auto stream = make_shared<ByteStream>();
-        OutputStreamWriter osw(stream, {.fLittleEndian = false});
+        OutputStreamWriter osw(stream, std::endian::big);
         if (!c->writeAsRoot(osw)) {
             return false;
         }

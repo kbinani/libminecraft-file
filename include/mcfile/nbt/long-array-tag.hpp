@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 class LongArrayTag : public detail::VectorTag<int64_t, Tag::Type::LongArray> {
 public:
@@ -22,18 +21,6 @@ public:
         std::vector<int64_t> copy = value();
         return std::shared_ptr<LongArrayTag>(new LongArrayTag(copy));
     }
-
-private:
-    int64_t convert(int64_t v, bool littleEndian) const override {
-        uint64_t t = *(uint64_t *)&v;
-        if (littleEndian) {
-            t = ::mcfile::U64FromLE(t);
-        } else {
-            t = ::mcfile::U64FromBE(t);
-        }
-        return *(int64_t *)&t;
-    }
 };
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

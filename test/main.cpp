@@ -125,7 +125,7 @@ TEST_CASE("block-id") {
 namespace {
 std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromFile(fs::path p) {
     auto s = std::make_shared<mcfile::stream::FileInputStream>(p);
-    mcfile::stream::InputStreamReader reader(s, {.fLittleEndian = false});
+    mcfile::stream::InputStreamReader reader(s, std::endian::big);
     auto tag = std::make_shared<mcfile::nbt::CompoundTag>();
     CHECK(tag->read(reader));
     return tag;
@@ -138,7 +138,7 @@ std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromCompressedFile(fs::pat
     fread(buffer.data(), size, 1, fp);
     mcfile::Compression::Decompress(buffer);
     auto s = std::make_shared<mcfile::stream::ByteStream>(buffer);
-    mcfile::stream::InputStreamReader reader(s, {.fLittleEndian = false});
+    mcfile::stream::InputStreamReader reader(s, std::endian::big);
     auto tag = std::make_shared<mcfile::nbt::CompoundTag>();
     CHECK(tag->read(reader));
     return tag;
@@ -225,7 +225,7 @@ TEST_CASE("1.18") {
         fs::path in = dir / "data" / "5biomes" / "c.-1.-54.nbt";
         shared_ptr<WritableChunk> expected;
         {
-            auto tag = CompoundTag::Read(in, {.fLittleEndian = false});
+            auto tag = CompoundTag::Read(in, std::endian::big);
             auto root = std::make_shared<CompoundTag>();
             root->set("", tag);
             expected = WritableChunk::MakeChunk(-1, -54, root);
@@ -240,7 +240,7 @@ TEST_CASE("1.18") {
 
         shared_ptr<Chunk> actual;
         {
-            auto tag = CompoundTag::ReadCompressed(out, {.fLittleEndian = false});
+            auto tag = CompoundTag::ReadCompressed(out, std::endian::big);
             auto root = make_shared<CompoundTag>();
             root->set("", tag);
             actual = Chunk::MakeChunk(-1, -54, root);

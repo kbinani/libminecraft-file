@@ -1,29 +1,21 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
-namespace detail {
+namespace mcfile::nbt::detail {
 
 template<typename T, Tag::Type ID>
 class VectorTag : public Tag {
 public:
     VectorTag()
-        : Tag()
-        , fPrepared(false)
-        , fLittleEndian(false) {
+        : Tag() {
     }
 
     explicit VectorTag(std::vector<T> &input)
-        : Tag()
-        , fPrepared(true)
-        , fLittleEndian(false) {
+        : Tag() {
         fValue.swap(input);
     }
 
     explicit VectorTag(size_t size)
-        : Tag()
-        , fPrepared(true)
-        , fLittleEndian(false) {
+        : Tag() {
         fValue.resize(size);
     }
 
@@ -36,17 +28,16 @@ public:
         if (!r.read(fValue)) {
             return false;
         }
-        fLittleEndian = r.isLittleEndian();
         return true;
     }
 
     bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
-        std::vector<T> const &b = value();
-        if (!w.write((uint32_t)fValue.size())) {
+        uint32_t size = fValue.size();
+        if (!w.write(size)) {
             return false;
         }
-        for (size_t i = 0; i < b.size(); i++) {
-            if (!w.write(b[i])) {
+        for (size_t i = 0; i < size; i++) {
+            if (!w.write(fValue[i])) {
                 return false;
             }
         }
@@ -56,24 +47,11 @@ public:
     Tag::Type type() const override { return ID; }
 
     std::vector<T> const &value() const {
-        if (!fPrepared) {
-            for (size_t i = 0; i < fValue.size(); i++) {
-                fValue[i] = convert(fValue[i], fLittleEndian);
-            }
-            fPrepared = true;
-        }
         return fValue;
     }
 
-protected:
-    virtual T convert(T v, bool littleEndian) const = 0;
-
-private:
-    std::vector<T> mutable fValue;
-    bool mutable fPrepared = false;
-    bool fLittleEndian;
+public:
+    std::vector<T> fValue;
 };
 
-} // namespace detail
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt::detail

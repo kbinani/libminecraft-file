@@ -138,7 +138,7 @@ private:
         vector<uint8_t> buffer;
         copy(value->begin(), value->end(), back_inserter(buffer));
         auto stream = make_shared<ByteStream>(buffer);
-        InputStreamReader sr(stream, {.fLittleEndian = true});
+        InputStreamReader sr(stream, std::endian::little);
         CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
             auto bx = tag->int32("x");
             auto by = tag->int32("y");
@@ -163,7 +163,7 @@ private:
         vector<uint8_t> buffer;
         copy(value->begin(), value->end(), back_inserter(buffer));
         auto stream = make_shared<ByteStream>(buffer);
-        InputStreamReader sr(stream, {.fLittleEndian = true});
+        InputStreamReader sr(stream, std::endian::little);
         CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
             result.push_back(tag);
         });
@@ -183,7 +183,7 @@ private:
             return;
         }
 
-        auto pendingTicks = CompoundTag::Read(*value, {.fLittleEndian = true});
+        auto pendingTicks = CompoundTag::Read(*value, std::endian::little);
         if (!pendingTicks) {
             return;
         }
@@ -224,7 +224,7 @@ private:
         vector<uint8_t> buffer;
         copy(data2D->begin(), data2D->end(), back_inserter(buffer));
         auto stream = make_shared<ByteStream>(buffer);
-        InputStreamReader sr(stream, {.fLittleEndian = true});
+        InputStreamReader sr(stream, std::endian::little);
         for (int i = 0; i < 256; i++) {
             uint16_t v = 0;
             if (!sr.read(&v)) {
