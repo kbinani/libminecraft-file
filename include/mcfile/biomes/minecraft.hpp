@@ -1,8 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace biomes {
-namespace minecraft {
+namespace mcfile::biomes::minecraft {
 
 enum : BiomeId {
     ocean = 0,
@@ -101,9 +99,10 @@ enum : BiomeId {
     frozen_peaks,
     stony_peaks,
 
+    // 1.19
+    deep_dark,
+
     minecraft_max_biome_id
 };
 
-} // namespace minecraft
-} // namespace biomes
-} // namespace mcfile
+}

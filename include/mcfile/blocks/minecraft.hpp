@@ -1,8 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace blocks {
-namespace minecraft {
+namespace mcfile::blocks::minecraft {
 
 enum : BlockId {
     acacia_button = 1,
@@ -933,9 +931,15 @@ enum : BlockId {
     potted_warped_roots,
     sculk_sensor,
 
+    // 1.19
+
+    reinforced_deepslate,
+    sculk,
+    sculk_catalyst,
+    sculk_shrieker,
+    sculk_vein,
+
     minecraft_max_block_id,
 };
 
-} // namespace minecraft
-} // namespace blocks
-} // namespace mcfile
+}
