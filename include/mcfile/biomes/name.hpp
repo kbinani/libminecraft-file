@@ -161,7 +161,7 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
         {minecraft::jagged_peaks, "minecraft:jagged_peaks"},
         {minecraft::meadow, "minecraft:meadow"},
         {minecraft::frozen_peaks, "minecraft:frozen_peaks"},
-        {minecraft::stony_peaks, "minecraft::stony_peaks"},
+        {minecraft::stony_peaks, "minecraft:stony_peaks"},
 
         // 1.19
 
