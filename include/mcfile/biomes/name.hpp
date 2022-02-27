@@ -162,6 +162,10 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
         {minecraft::meadow, "minecraft:meadow"},
         {minecraft::frozen_peaks, "minecraft:frozen_peaks"},
         {minecraft::stony_peaks, "minecraft::stony_peaks"},
+
+        // 1.19
+
+        {minecraft::deep_dark, "minecraft:deep_dark"},
     };
     auto mappingIt = mapping.find(id);
     if (mappingIt == mapping.end()) {

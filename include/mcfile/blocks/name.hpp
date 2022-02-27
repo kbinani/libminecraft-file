@@ -920,6 +920,12 @@ static inline std::vector<Characteristics> CreateTable() {
     m[potted_warped_roots] = {.name = "minecraft:potted_warped_roots", .opaque = false};
     m[sculk_sensor] = {.name = "minecraft:sculk_sensor", .opaque = false};
 
+    m[reinforced_deepslate] = {.name = "minecraft:reinforced_deepslate", .opaque = true};
+    m[sculk] = {.name = "minecraft:sculk", .opaque = true};
+    m[sculk_catalyst] = {.name = "minecraft:sculk_catalyst", .opaque = true};
+    m[sculk_shrieker] = {.name = "minecraft:sculk_shrieker", .opaque = false};
+    m[sculk_vein] = {.name = "minecraft:sculk_vein", .opaque = false};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);

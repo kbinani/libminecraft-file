@@ -122,6 +122,18 @@ TEST_CASE("block-id") {
     }
 }
 
+TEST_CASE("biome_id") {
+    for (mcfile::biomes::BiomeId id = 1; id < biomes::minecraft::minecraft_max_biome_id; id++) {
+        auto name = biomes::Name(id, mcfile::je::Chunk::kDataVersion);
+        CHECK(!name.empty());
+        auto reverse = biomes::FromName(name);
+        CHECK(reverse == id);
+        if (reverse != id) {
+            std::cout << name << std::endl;
+        }
+    }
+}
+
 namespace {
 std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromFile(fs::path p) {
     auto s = std::make_shared<mcfile::stream::FileInputStream>(p);

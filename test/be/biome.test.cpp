@@ -10,7 +10,11 @@ using namespace mcfile::biomes;
 TEST_CASE("be/biome") {
     using namespace mcfile::biomes::minecraft;
     for (BiomeId b = 1; b <= minecraft::minecraft_max_biome_id; b++) {
-        auto name = Name(b, 4000);
+        if (b == minecraft::deep_dark) {
+            //TODO: deep_dark is not defined 1.19 BE yet
+            continue;
+        }
+        auto name = Name(b, mcfile::je::Chunk::kDataVersion);
         if (name.empty()) {
             continue;
         }
