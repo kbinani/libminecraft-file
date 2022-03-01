@@ -22,6 +22,14 @@ public:
         return dx * dx + dz * dz;
     }
 
+    Pos2<T> rotated(T radian) const {
+        T sin = std::sin(radian);
+        T cos = std::cos(radian);
+        T x = fX * cos - fZ * sin;
+        T z = fX * sin + fZ * cos;
+        return Pos2<T>(x, z);
+    }
+
 public:
     T fX;
     T fZ;
