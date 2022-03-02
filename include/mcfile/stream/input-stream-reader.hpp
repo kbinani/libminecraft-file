@@ -135,9 +135,11 @@ private:
         return fStream->read(v, sizeof(T)) == sizeof(T);
     }
 
+public:
+    std::endian const fEndian;
+
 private:
     std::shared_ptr<InputStream> fStream;
-    std::endian const fEndian;
 };
 
 } // namespace mcfile::stream

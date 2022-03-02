@@ -12,7 +12,7 @@ public:
         return fPalette[*index];
     }
 
-    static std::shared_ptr<SubChunk> Parse(std::string const &data, int8_t chunkY) {
+    static std::shared_ptr<SubChunk> Parse(std::string const &data, int8_t chunkY, std::endian endian) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
@@ -21,7 +21,7 @@ public:
         copy(data.begin(), data.end(), back_inserter(buffer));
 
         auto bs = make_shared<ByteStream>(buffer);
-        InputStreamReader sr(bs, std::endian::little);
+        InputStreamReader sr(bs, endian);
 
         uint8_t version;
         if (!sr.read(&version)) {
@@ -136,7 +136,7 @@ private:
         uint32_t const mask = ~((~((uint32_t)0)) << bitsPerBlock);
         index.reserve(4096);
         auto indexBufferStream = make_shared<ByteStream>(indexBuffer);
-        InputStreamReader sr2(indexBufferStream, std::endian::little);
+        InputStreamReader sr2(indexBufferStream, sr.fEndian);
         for (int i = 0; i < numWords; i++) {
             uint32_t word;
             if (!sr2.read(&word)) {
