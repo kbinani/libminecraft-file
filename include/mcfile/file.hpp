@@ -102,14 +102,16 @@ public:
         using namespace std;
         namespace fs = std::filesystem;
 #if defined(_MSC_VER)
-        wchar_t *dir = _wtempnam(tempDir.native().c_str(), L"mcfile-tmp-");
-        if (dir) {
-            fs::path ret(dir);
-            fs::create_directory(ret);
-            free(dir);
-            return ret;
-        } else {
-            return std::nullopt;
+        while (true) {
+            random_device rd;
+            mt19937_64 mt(rd());
+            uint64_t rnd = mt();
+            auto candidate = tempDir / ("mcfile-tmp-" + to_string(rnd));
+            error_code ec;
+            fs::create_directories(candidate, ec);
+            if (!ec) {
+                return candidate;
+            }
         }
 #else
         string tmpl = (tempDir / "mcfile-tmp-XXXXXX").string();
