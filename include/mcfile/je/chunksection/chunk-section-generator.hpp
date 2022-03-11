@@ -97,6 +97,18 @@ public:
         }
     }
 
+    static std::function<std::shared_ptr<ChunkSection>(int sectionY)> GetEmptySectionCreatorFromDataVersion(int dataVersion) {
+        if (dataVersion < kMinDataVersionChunkSection113) {
+            return chunksection::ChunkSection112::MakeEmpty;
+        } else if (dataVersion < kMinDataVersionChunkSection116) {
+            return chunksection::ChunkSection113::MakeEmpty;
+        } else if (dataVersion < kMinDataVersionChunkSection118) {
+            return chunksection::ChunkSection116::MakeEmpty;
+        } else {
+            return chunksection::ChunkSection118::MakeEmpty;
+        }
+    }
+
 private:
     ChunkSectionGenerator() = delete;
 };

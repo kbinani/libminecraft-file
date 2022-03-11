@@ -308,13 +308,13 @@ public:
         return MakeChunk(chunkX, chunkZ, root);
     }
 
-    Chunk(int cx, int cy, int cz)
+    Chunk(int cx, int cy, int cz, int dataVersion = kDataVersion)
         : fChunkX(cx)
         , fChunkY(cy)
         , fChunkZ(cz)
-        , fDataVersion(kDataVersion)
+        , fDataVersion(dataVersion)
         , fStatus("full")
-        , fCreateEmptySection(chunksection::ChunkSection118::MakeEmpty) {
+        , fCreateEmptySection(chunksection::ChunkSectionGenerator::GetEmptySectionCreatorFromDataVersion(dataVersion)) {
     }
 
 protected:
