@@ -7,7 +7,8 @@ public:
     static std::shared_ptr<ChunkSection118> MakeEmpty(int sectionY) {
         using namespace std;
         vector<shared_ptr<Block const>> blockPalette;
-        vector<uint16_t> blockPaletteIndices;
+        blockPalette.push_back(make_shared<Block const>("minecraft:air"));
+        vector<uint16_t> blockPaletteIndices(4096, 0);
         vector<biomes::BiomeId> biomePalette;
         vector<uint16_t> biomePaletteIndices;
         auto extra = make_shared<nbt::CompoundTag>();

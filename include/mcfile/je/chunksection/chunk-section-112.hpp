@@ -28,7 +28,8 @@ public:
     static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
         using namespace std;
         vector<shared_ptr<Block const>> palette;
-        vector<uint16_t> indices;
+        palette.push_back(make_shared<Block const>("minecraft:air"));
+        vector<uint16_t> indices(4096, 0);
         vector<uint8_t> blockLight;
         vector<uint8_t> skyLight(2048, 0xff);
         return shared_ptr<ChunkSection112>(new ChunkSection112(sectionY, palette, indices, blockLight, skyLight));
