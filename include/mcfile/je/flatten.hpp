@@ -421,7 +421,10 @@ public:
                 break;
             }
             break;
-        case 96: id = blocks::minecraft::oak_trapdoor; break;
+        case 96:
+            id = blocks::minecraft::oak_trapdoor;
+            Trapdoor(data, props);
+            break;
         case 97:
             switch (data) {
             case 1: id = blocks::minecraft::infested_cobblestone; break;
@@ -794,7 +797,17 @@ public:
         case 176: id = blocks::minecraft::white_banner; break;
         case 177: id = blocks::minecraft::white_wall_banner; break;
         case 178: id = blocks::minecraft::daylight_detector; break; // inverted_daylight_detector
-        case 179: id = blocks::minecraft::red_sandstone; break;
+        case 179:
+            id = blocks::minecraft::red_sandstone;
+            switch (data) {
+            case 1: id = blocks::minecraft::chiseled_red_sandstone; break;
+            case 2: id = blocks::minecraft::cut_red_sandstone; break;
+            case 0:
+            default:
+                id = blocks::minecraft::red_sandstone;
+                break;
+            }
+            break;
         case 180:
             id = blocks::minecraft::red_sandstone_stairs;
             Stairs(data, props);
@@ -1079,7 +1092,6 @@ public:
         return index % 2 == 0 ? arr[index / 2] & 0x0F : (arr[index / 2] >> 4) & 0x0F;
     }
 
-private:
     static void Stairs(uint8_t data, std::map<std::string, std::string> &props) {
         static std::string const facing[4] = {"east", "west", "south", "north"};
         props["facing"] = facing[std::clamp(data & 0x3, 0, 3)];
@@ -1204,6 +1216,20 @@ private:
         case 2: props["facing"] = "north"; break;
         case 3: props["facing"] = "east"; break;
         }
+    }
+
+    static void Trapdoor(uint8_t data, std::map<std::string, std::string> &props) {
+        switch (data & 0x3) {
+        case 1: props["facing"] = "south"; break;
+        case 2: props["facing"] = "west"; break;
+        case 3: props["facing"] = "east"; break;
+        default:
+        case 0:
+            props["facing"] = "north";
+            break;
+        }
+        props["half"] = (data & 0x8) == 0x8 ? "top" : "bottom";
+        props["open"] = (data & 0x4) == 0x4 ? "true" : "fasle";
     }
 };
 } // namespace mcfile::je
