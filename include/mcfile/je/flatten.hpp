@@ -127,7 +127,10 @@ public:
         case 20: id = blocks::minecraft::glass; break;
         case 21: id = blocks::minecraft::lapis_ore; break;
         case 22: id = blocks::minecraft::lapis_block; break;
-        case 23: id = blocks::minecraft::dispenser; break;
+        case 23:
+            id = blocks::minecraft::dispenser;
+            props["facing"] = FacingA(data);
+            break;
         case 24:
             switch (data) {
             case 1: id = blocks::minecraft::chiseled_sandstone; break;
@@ -160,6 +163,7 @@ public:
             switch (data) {
             case 2: id = blocks::minecraft::fern; break;
             case 1:
+            case 0: // shrub. Legacy console edition only
             default:
                 id = blocks::minecraft::grass;
                 break;
@@ -170,7 +174,11 @@ public:
             id = blocks::minecraft::piston;
             Piston(data, props);
             break;
-        case 34: id = blocks::minecraft::piston_head; break;
+        case 34:
+            id = blocks::minecraft::piston_head;
+            props["facing"] = FacingA(data & 7);
+            props["type"] = (data & 0x8) == 0x8 ? "sticky" : "normal";
+            break;
         case 35:
             switch (data) {
             case 1: id = blocks::minecraft::orange_wool; break;
@@ -348,7 +356,10 @@ public:
             Stairs(data, props);
             break;
         case 68: id = blocks::minecraft::oak_wall_sign; break;
-        case 69: id = blocks::minecraft::lever; break;
+        case 69:
+            id = blocks::minecraft::lever;
+            Lever(data, props);
+            break;
         case 70: id = blocks::minecraft::stone_pressure_plate; break;
         case 71:
             id = blocks::minecraft::iron_door;
@@ -357,21 +368,33 @@ public:
         case 72: id = blocks::minecraft::oak_pressure_plate; break;
         case 73: id = blocks::minecraft::redstone_ore; break;
         case 74: id = blocks::minecraft::redstone_ore; break; // glowing_redstone_ore
-        case 75:                                              // unlit_redstone_torch
+        case 75:
+        case 76:
             if (data == 5) {
                 id = blocks::minecraft::redstone_torch;
             } else {
                 id = blocks::minecraft::redstone_wall_torch;
+                switch (data) {
+                case 1:
+                    props["facing"] = "east";
+                    break;
+                case 2:
+                    props["facing"] = "west";
+                    break;
+                case 3:
+                    props["facing"] = "south";
+                    break;
+                case 4:
+                    props["facing"] = "north";
+                    break;
+                }
             }
+            props["lit"] = blockId == 76 ? "true" : "false";
             break;
-        case 76: //redstone_torch
-            if (data == 5) {
-                id = blocks::minecraft::redstone_torch;
-            } else {
-                id = blocks::minecraft::redstone_wall_torch;
-            }
+        case 77:
+            id = blocks::minecraft::stone_button;
+            Button(data, props);
             break;
-        case 77: id = blocks::minecraft::stone_button; break;
         case 78:
             id = blocks::minecraft::snow;
             props["layers"] = std::to_string(std::clamp(data + 1, 1, 8));
@@ -396,8 +419,27 @@ public:
             props["facing"] = FacingB(data);
             break;
         case 92: id = blocks::minecraft::cake; break;
-        case 93: id = blocks::minecraft::repeater; break;
-        case 94: id = blocks::minecraft::repeater; break; // powered_repeater
+        case 93:
+        case 94:
+            id = blocks::minecraft::repeater;
+            switch (data & 0x3) {
+            case 1:
+                props["facing"] = "west";
+                break;
+            case 2:
+                props["facing"] = "north";
+                break;
+            case 3:
+                props["facing"] = "east";
+                break;
+            case 0:
+            default:
+                props["facing"] = "south";
+                break;
+            }
+            props["delay"] = std::to_string(((data & 0xc) >> 2) + 1);
+            props["powered"] = blockId == 94 ? "true" : "false";
+            break;
         case 95:
             switch (data) {
             case 1: id = blocks::minecraft::orange_stained_glass; break;
@@ -449,7 +491,32 @@ public:
                 break;
             }
             break;
-        case 99: id = blocks::minecraft::brown_mushroom_block; break;
+        case 99:
+            switch (data) {
+            case 10:
+                id = blocks::minecraft::mushroom_stem;
+                props["down"] = "false";
+                props["up"] = "false";
+                props["east"] = "true";
+                props["south"] = "true";
+                props["west"] = "true";
+                props["north"] = "true";
+                break;
+            case 11:
+                id = blocks::minecraft::brown_mushroom_block;
+                break;
+            case 0:
+            default:
+                id = blocks::minecraft::brown_mushroom_block;
+                props["down"] = "false";
+                props["up"] = "false";
+                props["east"] = "false";
+                props["south"] = "false";
+                props["west"] = "false";
+                props["north"] = "false";
+                break;
+            }
+            break;
         case 100: id = blocks::minecraft::red_mushroom_block; break;
         case 101: id = blocks::minecraft::iron_bars; break;
         case 102: id = blocks::minecraft::glass_pane; break;
@@ -462,7 +529,13 @@ public:
             id = blocks::minecraft::melon_stem;
             props["age"] = std::to_string(data);
             break;
-        case 106: id = blocks::minecraft::vine; break;
+        case 106:
+            id = blocks::minecraft::vine;
+            props["south"] = (data & 0x1) == 0x1 ? "true" : "false";
+            props["west"] = (data & 0x2) == 0x2 ? "true" : "false";
+            props["north"] = (data & 0x4) == 0x4 ? "true" : "false";
+            props["east"] = (data & 0x8) == 0x8 ? "true" : "false";
+            break;
         case 107: id = blocks::minecraft::oak_fence_gate; break;
         case 108:
             id = blocks::minecraft::brick_stairs;
@@ -503,8 +576,14 @@ public:
             break;
         case 121: id = blocks::minecraft::end_stone; break;
         case 122: id = blocks::minecraft::dragon_egg; break;
-        case 123: id = blocks::minecraft::redstone_lamp; break;
-        case 124: id = blocks::minecraft::redstone_lamp; break; // lit_redstone_lamp
+        case 123:
+            id = blocks::minecraft::redstone_lamp;
+            props["lit"] = "false";
+            break;
+        case 124:
+            id = blocks::minecraft::redstone_lamp;
+            props["lit"] = "true";
+            break;
         case 125:
             switch (data) {
             case 1: id = blocks::minecraft::spruce_slab; break;
@@ -543,7 +622,26 @@ public:
             id = blocks::minecraft::ender_chest;
             Chest(data, props);
             break;
-        case 131: id = blocks::minecraft::tripwire_hook; break;
+        case 131:
+            id = blocks::minecraft::tripwire_hook;
+            switch (data & 0x3) {
+            case 1:
+                props["facing"] = "west";
+                break;
+            case 2:
+                props["facing"] = "north";
+                break;
+            case 3:
+                props["facing"] = "east";
+                break;
+            case 0:
+            default:
+                props["facing"] = "south";
+                break;
+            }
+            props["attached"] = (data & 0x4) == 0x4 ? "true" : "false";
+            props["powered"] = (data & 0x8) == 0x8 ? "true" : "false";
+            break;
         case 132: id = blocks::minecraft::tripwire; break;
         case 133: id = blocks::minecraft::emerald_block; break;
         case 134:
@@ -577,7 +675,10 @@ public:
             id = blocks::minecraft::potatoes;
             props["age"] = std::to_string(data);
             break;
-        case 143: id = blocks::minecraft::oak_button; break;
+        case 143:
+            id = blocks::minecraft::oak_button;
+            Button(data, props);
+            break;
         case 144:
             switch (data) {
             case 1: id = blocks::minecraft::skeleton_skull; break;
@@ -624,12 +725,41 @@ public:
             break;
         case 147: id = blocks::minecraft::light_weighted_pressure_plate; break;
         case 148: id = blocks::minecraft::heavy_weighted_pressure_plate; break;
-        case 149: id = blocks::minecraft::comparator; break; //unpowered_comparator
-        case 150: id = blocks::minecraft::comparator; break;
-        case 151: id = blocks::minecraft::daylight_detector; break;
+        case 149:
+        case 150:
+            id = blocks::minecraft::comparator;
+            props["facing"] = FacingN2E3S0W1(data & 0x3);
+            props["powered"] = blockId == 150 ? "true" : "false";
+            props["mode"] = (data & 0x4) == 0x4 ? "subtract" : "compare";
+            break;
+        case 151:
+            id = blocks::minecraft::daylight_detector;
+            props["inverted"] = "false";
+            break;
         case 152: id = blocks::minecraft::redstone_block; break;
         case 153: id = blocks::minecraft::nether_quartz_ore; break;
-        case 154: id = blocks::minecraft::hopper; break;
+        case 154:
+            id = blocks::minecraft::hopper;
+            switch (data & 0x7) {
+            case 2:
+                props["facing"] = "north";
+                break;
+            case 3:
+                props["facing"] = "south";
+                break;
+            case 4:
+                props["facing"] = "west";
+                break;
+            case 5:
+                props["facing"] = "east";
+                break;
+            case 0:
+            default:
+                props["facing"] = "down";
+                break;
+            }
+            props["enabled"] = (data & 0x8) == 0x8 ? "false" : "true";
+            break;
         case 155:
             switch (data) {
             case 1:
@@ -661,7 +791,10 @@ public:
             id = blocks::minecraft::activator_rail;
             PoweredRail(data, props);
             break;
-        case 158: id = blocks::minecraft::dropper; break;
+        case 158:
+            id = blocks::minecraft::dropper;
+            props["facing"] = FacingA(data);
+            break;
         case 159:
             switch (data) {
             case 1: id = blocks::minecraft::orange_terracotta; break;
@@ -799,7 +932,10 @@ public:
             break;
         case 176: id = blocks::minecraft::white_banner; break;
         case 177: id = blocks::minecraft::white_wall_banner; break;
-        case 178: id = blocks::minecraft::daylight_detector; break; // inverted_daylight_detector
+        case 178:
+            id = blocks::minecraft::daylight_detector;
+            props["inverted"] = "true";
+            break;
         case 179:
             id = blocks::minecraft::red_sandstone;
             switch (data) {
@@ -910,7 +1046,10 @@ public:
             props["axis"] = Axis(data >> 2);
             break;
         case 217: id = blocks::minecraft::structure_void; break;
-        case 218: id = blocks::minecraft::observer; break;
+        case 218:
+            id = blocks::minecraft::observer;
+            props["facing"] = FacingA(data);
+            break;
         case 219:
             id = blocks::minecraft::white_shulker_box;
             props["facing"] = FacingA(data);
@@ -1233,6 +1372,83 @@ public:
         }
         props["half"] = (data & 0x8) == 0x8 ? "top" : "bottom";
         props["open"] = (data & 0x4) == 0x4 ? "true" : "fasle";
+    }
+
+    static void Button(uint8_t data, std::map<std::string, std::string> &props) {
+        switch (data & 0x7) {
+        case 0:
+            props["face"] = "ceiling";
+            break;
+        case 1:
+            props["face"] = "wall";
+            props["facing"] = "east";
+            break;
+        case 2:
+            props["face"] = "wall";
+            props["facing"] = "west";
+            break;
+        case 3:
+            props["face"] = "wall";
+            props["facing"] = "south";
+            break;
+        case 4:
+            props["face"] = "wall";
+            props["facing"] = "north";
+            break;
+        case 5:
+            props["face"] = "floor";
+            break;
+        }
+        props["powered"] = (data & 0x8) == 0x8 ? "true" : "false";
+    }
+
+    static void Lever(uint8_t data, std::map<std::string, std::string> &props) {
+        switch (data & 0x7) {
+        case 0:
+            props["face"] = "ceiling";
+            props["facing"] = "west";
+            break;
+        case 1:
+            props["face"] = "wall";
+            props["facing"] = "east";
+            break;
+        case 2:
+            props["face"] = "wall";
+            props["facing"] = "west";
+            break;
+        case 3:
+            props["face"] = "wall";
+            props["facing"] = "south";
+            break;
+        case 4:
+            props["face"] = "wall";
+            props["facing"] = "north";
+            break;
+        case 5:
+            props["face"] = "floor";
+            props["facing"] = "north";
+            break;
+        case 6:
+            props["face"] = "floor";
+            props["facing"] = "west";
+            break;
+        case 7:
+            props["face"] = "ceiling";
+            props["facing"] = "north";
+            break;
+        }
+        props["powered"] = (data & 0x8) == 0x8 ? "true" : "false";
+    }
+
+    static std::string FacingN2E3S0W1(uint8_t data) {
+        switch (data) {
+        case 1: return "west";
+        case 2: return "north";
+        case 3: return "east";
+        case 0:
+        default:
+            return "south";
+        }
     }
 };
 } // namespace mcfile::je
