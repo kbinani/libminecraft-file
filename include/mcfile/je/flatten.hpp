@@ -241,7 +241,7 @@ public:
             case 7: id = blocks::minecraft::quartz_slab; break;
             case 0:
             default:
-                id = blocks::minecraft::stone_slab;
+                id = blocks::minecraft::smooth_stone_slab;
                 break;
             }
             props["type"] = "double";
@@ -271,7 +271,7 @@ public:
                 break;
             case 0:
             default:
-                id = id = blocks::minecraft::stone_slab;
+                id = id = blocks::minecraft::smooth_stone_slab;
                 break;
             }
             props["type"] = ((data >> 3) & 0x1) == 0x1 ? "top" : "bottom";
@@ -740,7 +740,10 @@ public:
             break;
         case 165: id = blocks::minecraft::slime_block; break;
         case 166: id = blocks::minecraft::barrier; break;
-        case 167: id = blocks::minecraft::iron_trapdoor; break;
+        case 167:
+            id = blocks::minecraft::iron_trapdoor;
+            Trapdoor(data, props);
+            break;
         case 168:
             switch (data) {
             case 1: id = blocks::minecraft::prismarine_bricks; break;
