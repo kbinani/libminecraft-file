@@ -308,7 +308,10 @@ public:
             id = blocks::minecraft::chest;
             Chest(data, props);
             break;
-        case 55: id = blocks::minecraft::redstone_wire; break;
+        case 55:
+            id = blocks::minecraft::redstone_wire;
+            props["power"] = std::to_string(data);
+            break;
         case 56: id = blocks::minecraft::diamond_ore; break;
         case 57: id = blocks::minecraft::diamond_block; break;
         case 58: id = blocks::minecraft::crafting_table; break;
@@ -559,7 +562,14 @@ public:
             break;
         case 116: id = blocks::minecraft::enchanting_table; break;
         case 117: id = blocks::minecraft::brewing_stand; break;
-        case 118: id = blocks::minecraft::water_cauldron; break;
+        case 118:
+            if (data / 2 == 0) {
+                id = blocks::minecraft::cauldron;
+            } else {
+                id = blocks::minecraft::water_cauldron;
+                props["level"] = std::to_string(data / 2);
+            }
+            break;
         case 119: id = blocks::minecraft::end_portal; break;
         case 120:
             id = blocks::minecraft::end_portal_frame;
@@ -612,7 +622,11 @@ public:
             }
             props["type"] = data < 8 ? "bottom" : "top";
             break;
-        case 127: id = blocks::minecraft::cocoa; break;
+        case 127:
+            id = blocks::minecraft::cocoa;
+            props["facing"] = FacingN2E3S0W1(data & 0x3);
+            props["age"] = std::to_string(data >> 2);
+            break;
         case 128:
             id = blocks::minecraft::sandstone_stairs;
             Stairs(data, props);
