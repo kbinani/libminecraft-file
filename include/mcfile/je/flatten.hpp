@@ -1546,6 +1546,7 @@ public:
             props["north"] = "true";
             return id;
         case 0:
+        default:
             props["down"] = "false";
             props["up"] = "false";
             props["east"] = "false";
