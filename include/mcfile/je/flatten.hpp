@@ -416,7 +416,18 @@ public:
         case 87: id = blocks::minecraft::netherrack; break;
         case 88: id = blocks::minecraft::soul_sand; break;
         case 89: id = blocks::minecraft::glowstone; break;
-        case 90: id = blocks::minecraft::nether_portal; break;
+        case 90:
+            id = blocks::minecraft::nether_portal;
+            switch (data) {
+            case 2:
+                props["axis"] = "z";
+                break;
+            case 1:
+            default:
+                props["axis"] = "x";
+                break;
+            }
+            break;
         case 91:
             id = blocks::minecraft::jack_o_lantern;
             props["facing"] = FacingB(data);
