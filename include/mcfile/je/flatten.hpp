@@ -6,7 +6,7 @@ class Flatten {
 
 public:
     static std::shared_ptr<Block const> DoFlatten(uint16_t blockId, uint8_t data) {
-        auto id = blocks::minecraft::air;
+        blocks::BlockId id = blocks::minecraft::air;
         std::map<std::string, std::string> props;
         switch (blockId) {
         case 0: id = blocks::minecraft::air; break;
@@ -506,32 +506,11 @@ public:
             }
             break;
         case 99:
-            switch (data) {
-            case 10:
-                id = blocks::minecraft::mushroom_stem;
-                props["down"] = "false";
-                props["up"] = "false";
-                props["east"] = "true";
-                props["south"] = "true";
-                props["west"] = "true";
-                props["north"] = "true";
-                break;
-            case 11:
-                id = blocks::minecraft::brown_mushroom_block;
-                break;
-            case 0:
-            default:
-                id = blocks::minecraft::brown_mushroom_block;
-                props["down"] = "false";
-                props["up"] = "false";
-                props["east"] = "false";
-                props["south"] = "false";
-                props["west"] = "false";
-                props["north"] = "false";
-                break;
-            }
+            id = MushroomBlock(blocks::minecraft::brown_mushroom_block, data, props);
             break;
-        case 100: id = blocks::minecraft::red_mushroom_block; break;
+        case 100:
+            id = MushroomBlock(blocks::minecraft::red_mushroom_block, data, props);
+            break;
         case 101: id = blocks::minecraft::iron_bars; break;
         case 102: id = blocks::minecraft::glass_pane; break;
         case 103: id = blocks::minecraft::melon; break;
@@ -1473,6 +1452,107 @@ public:
         case 0:
         default:
             return "south";
+        }
+    }
+
+    static mcfile::blocks::BlockId MushroomBlock(mcfile::blocks::BlockId id, uint8_t data, std::map<std::string, std::string> &props) {
+        switch (data) {
+        case 1:
+            props["down"] = "false";
+            props["east"] = "false";
+            props["north"] = "true";
+            props["south"] = "false";
+            props["up"] = "true";
+            props["west"] = "true";
+            return id;
+        case 2:
+            props["down"] = "false";
+            props["east"] = "false";
+            props["north"] = "true";
+            props["south"] = "false";
+            props["up"] = "true";
+            props["west"] = "false";
+            return id;
+        case 3:
+            props["down"] = "false";
+            props["east"] = "true";
+            props["north"] = "true";
+            props["south"] = "false";
+            props["up"] = "true";
+            props["west"] = "false";
+            return id;
+        case 4:
+            props["down"] = "false";
+            props["east"] = "false";
+            props["north"] = "false";
+            props["south"] = "false";
+            props["up"] = "true";
+            props["west"] = "true";
+            return id;
+        case 5:
+            props["down"] = "false";
+            props["east"] = "false";
+            props["north"] = "false";
+            props["south"] = "false";
+            props["up"] = "true";
+            props["west"] = "false";
+            return id;
+        case 6:
+            props["down"] = "false";
+            props["east"] = "true";
+            props["north"] = "false";
+            props["south"] = "false";
+            props["up"] = "true";
+            props["west"] = "false";
+            return id;
+        case 7:
+            props["down"] = "false";
+            props["east"] = "false";
+            props["north"] = "false";
+            props["south"] = "true";
+            props["up"] = "true";
+            props["west"] = "true";
+            return id;
+        case 8:
+            props["down"] = "false";
+            props["east"] = "false";
+            props["north"] = "false";
+            props["south"] = "true";
+            props["up"] = "true";
+            props["west"] = "false";
+            return id;
+        case 9:
+            props["down"] = "false";
+            props["east"] = "true";
+            props["north"] = "false";
+            props["south"] = "true";
+            props["up"] = "true";
+            props["west"] = "false";
+            return id;
+        case 10:
+            props["down"] = "false";
+            props["up"] = "false";
+            props["east"] = "true";
+            props["south"] = "true";
+            props["west"] = "true";
+            props["north"] = "true";
+            return blocks::minecraft::mushroom_stem;
+        case 11:
+            props["down"] = "true";
+            props["up"] = "true";
+            props["east"] = "true";
+            props["south"] = "true";
+            props["west"] = "true";
+            props["north"] = "true";
+            return id;
+        case 0:
+            props["down"] = "false";
+            props["up"] = "false";
+            props["east"] = "false";
+            props["south"] = "false";
+            props["west"] = "false";
+            props["north"] = "false";
+            return id;
         }
     }
 };
