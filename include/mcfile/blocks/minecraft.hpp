@@ -122,7 +122,7 @@ enum : BlockId {
     carrots,
     cartography_table,
     carved_pumpkin,
-    // cauldron, // renamed to water_cauldron in 1.17
+    cauldron,
     cave_air,
     chain_command_block,
     chest,

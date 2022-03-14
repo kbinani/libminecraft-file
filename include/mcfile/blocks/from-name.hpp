@@ -126,7 +126,7 @@ static inline std::unordered_map<std::string, BlockId> *CreateTable() {
     t["minecraft:carrots"] = carrots;
     t["minecraft:cartography_table"] = cartography_table;
     t["minecraft:carved_pumpkin"] = carved_pumpkin;
-    t["minecraft:cauldron"] = water_cauldron;
+    t["minecraft:cauldron"] = cauldron;
     t["minecraft:cave_air"] = cave_air;
     t["minecraft:chain_command_block"] = chain_command_block;
     t["minecraft:chest"] = chest;
@@ -942,9 +942,6 @@ static inline BlockId FromNameWithMigration(std::string const &name, int fromDat
     }
     if (fromDataVersion < 2724 && name == "minecraft:grass_path") {
         return minecraft::dirt_path;
-    }
-    if (fromDataVersion < 2724 && name == "minecraft:cauldron") {
-        return minecraft::water_cauldron;
     }
     return FromName(name);
 }

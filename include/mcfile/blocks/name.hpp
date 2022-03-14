@@ -831,6 +831,7 @@ static inline std::vector<Characteristics> CreateTable() {
     m[potted_azalea_bush] = {.name = "minecraft:potted_azalea_bush", .opaque = false};
     m[potted_flowering_azalea_bush] = {.name = "minecraft:potted_flowering_azalea_bush", .opaque = false};
     m[powder_snow] = {.name = "minecraft:powder_snow", .opaque = true};
+    m[cauldron] = {.name = "minecraft:cauldron", .opaque = false};
     m[water_cauldron] = {.name = "minecraft:water_cauldron", .opaque = false};
     m[lava_cauldron] = {.name = "minecraft:lava_cauldron", .opaque = false};
     m[powder_snow_cauldron] = {.name = "minecraft:powder_snow_cauldron", .opaque = false};
