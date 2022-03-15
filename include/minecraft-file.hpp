@@ -74,6 +74,7 @@
 #include <mcfile/blocks/minecraft.hpp>
 #include <mcfile/blocks/from-name.hpp>
 #include <mcfile/blocks/name.hpp>
+
 #include <mcfile/je/block.hpp>
 #include <mcfile/biomes/biome-id.hpp>
 #include <mcfile/biomes/minecraft.hpp>
@@ -115,6 +116,15 @@
 #include <mcfile/be/biome-section.hpp>
 #include <mcfile/be/biome-map.hpp>
 #include <mcfile/be/chunk.hpp>
+
+#include <mcfile/blocks/block-data.hpp>
+
+#include <mcfile/blocks/data/bisected.hpp>
+#include <mcfile/blocks/data/directional.hpp>
+#include <mcfile/blocks/data/stairs.hpp>
+
+#include <mcfile/blocks/stairs.hpp>
+#include <mcfile/blocks/make-block-data.hpp>
 
 #include <mcfile/nbt/print-as-json.hpp>
 #include <mcfile/pos2.hpp>

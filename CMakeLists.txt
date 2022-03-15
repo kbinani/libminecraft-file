@@ -32,10 +32,16 @@ set(mcfile_files
   include/mcfile/biomes/from-name.hpp
   include/mcfile/biomes/minecraft.hpp
   include/mcfile/biomes/name.hpp
+  include/mcfile/blocks/block-data.hpp
   include/mcfile/blocks/block-id.hpp
+  include/mcfile/blocks/data/bisected.hpp
+  include/mcfile/blocks/data/directional.hpp
+  include/mcfile/blocks/data/stairs.hpp
   include/mcfile/blocks/from-name.hpp
+  include/mcfile/blocks/make-block-data.hpp
   include/mcfile/blocks/minecraft.hpp
   include/mcfile/blocks/name.hpp
+  include/mcfile/blocks/stairs.hpp
   include/mcfile/compression.hpp
   include/mcfile/coordinate.hpp
   include/mcfile/dimension.hpp
