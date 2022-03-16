@@ -33,16 +33,7 @@ public:
         if (!reader.read(buffer)) {
             return nullptr;
         }
-        if (!Compression::Decompress(buffer)) {
-            return nullptr;
-        }
-        auto root = std::make_shared<nbt::CompoundTag>();
-        auto bs = std::make_shared<stream::ByteStream>(buffer);
-        auto sr = std::make_shared<stream::InputStreamReader>(bs);
-        if (!root->read(*sr)) {
-            return nullptr;
-        }
-        return root;
+        return nbt::CompoundTag::ReadCompressed(buffer, reader.fEndian);
     }
 
     std::shared_ptr<Chunk> loadChunk(::mcfile::stream::InputStreamReader &reader) const {

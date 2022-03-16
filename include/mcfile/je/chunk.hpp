@@ -250,10 +250,10 @@ public:
         }
 
         int dataVersion = 0;
-        auto dataVersionTag = root->query("/DataVersion")->asInt();
+        auto dataVersionTag = root->int32("DataVersion");
         if (dataVersionTag) {
             // *.mca created by Minecraft 1.2.1 does not have /DataVersion tag
-            dataVersion = dataVersionTag->fValue;
+            dataVersion = *dataVersionTag;
         }
 
         if (dataVersion <= 2840) {
@@ -296,13 +296,8 @@ public:
         if (!File::Fread(buffer.data(), size, 1, in)) {
             return nullptr;
         }
-        if (!Compression::Decompress(buffer)) {
-            return nullptr;
-        }
-        auto root = std::make_shared<mcfile::nbt::CompoundTag>();
-        auto bs = std::make_shared<mcfile::stream::ByteStream>(buffer);
-        stream::InputStreamReader reader(bs);
-        if (!root->read(reader)) {
+        auto root = nbt::CompoundTag::ReadCompressed(buffer, std::endian::big);
+        if (!root) {
             return nullptr;
         }
         return MakeChunk(chunkX, chunkZ, root);
@@ -388,20 +383,15 @@ private:
     }
 
 private:
-    static std::shared_ptr<Chunk> MakeChunk118(int chunkX, int chunkZ, nbt::CompoundTag const &root, int dataVersion) {
+    static std::shared_ptr<Chunk> MakeChunk118(int chunkX, int chunkZ, nbt::CompoundTag const &tag, int dataVersion) {
         using namespace std;
 
-        auto level = root.compoundTag("");
-        if (!level) {
-            return nullptr;
-        }
-
-        auto sectionsTag = level->listTag("sections");
+        auto sectionsTag = tag.listTag("sections");
         if (!sectionsTag) {
             return nullptr;
         }
 
-        auto chunkY = level->int32("yPos");
+        auto chunkY = tag.int32("yPos");
         if (!chunkY) {
             return nullptr;
         }
@@ -414,16 +404,16 @@ private:
         //NOTE: Always empty
         vector<shared_ptr<nbt::CompoundTag>> entities;
 
-        auto structures = level->compoundTag("structures");
+        auto structures = tag.compoundTag("structures");
 
-        auto lastUpdateTag = level->int64("LastUpdate");
+        auto lastUpdateTag = tag.int64("LastUpdate");
         int64_t lastUpdate = 0;
         if (lastUpdateTag) {
             lastUpdate = *lastUpdateTag;
         }
 
         vector<shared_ptr<nbt::CompoundTag>> blockEntities;
-        auto blockEntitiesList = level->listTag("block_entities");
+        auto blockEntitiesList = tag.listTag("block_entities");
         if (blockEntitiesList && blockEntitiesList->fType == nbt::Tag::Type::Compound) {
             for (auto it : *blockEntitiesList) {
                 auto comp = it->asCompound();
@@ -436,7 +426,7 @@ private:
             }
         }
 
-        auto blockTicksTag = level->listTag("block_ticks");
+        auto blockTicksTag = tag.listTag("block_ticks");
         vector<TickingBlock> blockTicks;
         if (blockTicksTag) {
             for (auto it : *blockTicksTag) {
@@ -452,7 +442,7 @@ private:
             }
         }
 
-        auto fluidTicksTag = level->listTag("fluid_ticks");
+        auto fluidTicksTag = tag.listTag("fluid_ticks");
         vector<TickingBlock> fluidTicks;
         if (fluidTicksTag) {
             for (auto it : *fluidTicksTag) {
@@ -469,7 +459,7 @@ private:
         }
 
         string s;
-        auto status = level->stringTag("Status");
+        auto status = tag.stringTag("Status");
         if (status) {
             s = status->fValue;
         }
@@ -479,10 +469,10 @@ private:
                                                 blockTicks, fluidTicks, s, nullopt, createEmptySection));
     }
 
-    static std::shared_ptr<Chunk> MakeChunk112(int chunkX, int chunkZ, nbt::CompoundTag &root, int dataVersion) {
+    static std::shared_ptr<Chunk> MakeChunk112(int chunkX, int chunkZ, nbt::CompoundTag &tag, int dataVersion) {
         using namespace std;
 
-        auto level = root.query("/Level")->asCompound();
+        auto level = tag.compoundTag("Level");
         if (!level) {
             return nullptr;
         }

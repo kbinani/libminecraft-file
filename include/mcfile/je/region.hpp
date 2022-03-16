@@ -88,11 +88,7 @@ public:
             // entity not saved yet
             return true;
         }
-        auto compound = src->load(sr);
-        if (!compound) {
-            return false;
-        }
-        auto root = compound->compoundTag("");
+        auto root = src->load(sr);
         if (!root) {
             return false;
         }

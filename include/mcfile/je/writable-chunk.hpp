@@ -102,9 +102,8 @@ private:
             "sections",
         };
         auto level = make_shared<CompoundTag>();
-        shared_ptr<CompoundTag> existing = fRoot->compoundTag("");
-        if (existing) {
-            for (auto it : *existing) {
+        if (fRoot) {
+            for (auto it : *fRoot) {
                 if (sExclude.find(it.first) != sExclude.end()) {
                     continue;
                 }
