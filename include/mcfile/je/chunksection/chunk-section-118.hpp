@@ -141,16 +141,24 @@ public:
     }
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
+        auto const idx = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!idx) {
             return nullptr;
         }
-        auto ret = fBlocks.get(*index);
+        auto ret = fBlocks.get(*idx);
         if (ret) {
             return *ret;
         } else {
             return nullptr;
         }
+    }
+
+    std::optional<int> blockPaletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
+        auto const idx = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!idx) {
+            return std::nullopt;
+        }
+        return fBlocks.index(*idx);
     }
 
     int y() const override {

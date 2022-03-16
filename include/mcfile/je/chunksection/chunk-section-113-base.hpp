@@ -6,16 +6,24 @@ template<class BlockStatesParser>
 class ChunkSection113Base : public ChunkSection {
 public:
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
+        auto idx = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!idx) {
             return nullptr;
         }
-        auto ret = fBlocks.get(*index);
+        auto ret = fBlocks.get(*idx);
         if (ret) {
             return *ret;
         } else {
             return nullptr;
         }
+    }
+
+    std::optional<int> blockPaletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
+        auto idx = BlockIndex(offsetX, offsetY, offsetZ);
+        if (!idx) {
+            return std::nullopt;
+        }
+        return fBlocks.index(*idx);
     }
 
     bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) override {

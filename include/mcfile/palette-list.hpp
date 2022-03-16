@@ -18,14 +18,21 @@ class PaletteList {
 
 public:
     std::optional<Value> get(size_t idx) const {
+        auto index = this->index(idx);
+        if (!index) {
+            return std::nullopt;
+        }
+        if (fValue.size() <= *index) {
+            return std::nullopt;
+        }
+        return fValue[*index];
+    }
+
+    std::optional<Index> index(size_t idx) const {
         if (fIndex.empty() || fIndex.size() <= idx) {
             return std::nullopt;
         }
-        Index index = fIndex[idx];
-        if (fValue.size() <= index) {
-            return std::nullopt;
-        }
-        return fValue[index];
+        return fIndex[idx];
     }
 
     bool set(size_t idx, Value value) {
