@@ -1,8 +1,8 @@
 #pragma once
 
-namespace mcfile::blocks {
+namespace mcfile::blocks::data::type {
 
-class Stairs : public BlockData, public data::Stairs {
+class Stairs : public BlockData, public Bisected, public Directional {
 public:
     explicit Stairs(mcfile::je::Block const &j)
         : BlockData(j) {}
@@ -47,4 +47,4 @@ public:
     }
 };
 
-} // namespace mcfile::blocks
+} // namespace mcfile::blocks::data::type

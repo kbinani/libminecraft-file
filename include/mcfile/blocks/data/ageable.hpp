@@ -2,7 +2,10 @@
 
 namespace mcfile::blocks::data {
 
-class Stairs : public Bisected, public Directional {
+class Ageable {
+public:
+    virtual ~Ageable() {}
+    virtual int age() const = 0;
 };
 
 } // namespace mcfile::blocks::data

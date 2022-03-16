@@ -9,6 +9,7 @@ public:
         Top,
     };
 
+    virtual ~Bisected() {}
     virtual Half half() const = 0;
 };
 

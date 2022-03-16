@@ -26,6 +26,7 @@ public:
         Down = 1 << 18,
     };
 
+    virtual ~Directional() {}
     virtual BlockFace facing() const = 0;
 };
 

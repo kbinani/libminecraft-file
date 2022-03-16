@@ -14,8 +14,8 @@ public:
         }
     }
 
-    static std::shared_ptr<BlockData> Make(mcfile::je::Block const &j);
-    static std::shared_ptr<BlockData> Make(mcfile::be::Block const &b);
+    static inline std::shared_ptr<BlockData> Make(mcfile::je::Block const &j);
+    static inline std::shared_ptr<BlockData> Make(mcfile::be::Block const &b);
 
 protected:
     explicit BlockData(mcfile::je::Block const &j)

@@ -121,9 +121,9 @@
 
 #include <mcfile/blocks/data/bisected.hpp>
 #include <mcfile/blocks/data/directional.hpp>
-#include <mcfile/blocks/data/stairs.hpp>
+#include <mcfile/blocks/data/ageable.hpp>
 
-#include <mcfile/blocks/stairs.hpp>
+#include <mcfile/blocks/data/type/stairs.hpp>
 #include <mcfile/blocks/make-block-data.hpp>
 
 #include <mcfile/nbt/print-as-json.hpp>
