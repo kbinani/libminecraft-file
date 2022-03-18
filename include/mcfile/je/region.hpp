@@ -584,9 +584,9 @@ public:
         bool fDeleteInput = false;
     };
 
-    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, ConcatOptions options = {}) = delete;
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, ConcatOptions options = ConcatOptions{}) = delete;
 
-    static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const &directory, std::filesystem::path const &resultMcaFilePath, ConcatOptions options = {}) {
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const &directory, std::filesystem::path const &resultMcaFilePath, ConcatOptions options = ConcatOptions{}) {
         namespace fs = std::filesystem;
 
         int const minChunkX = regionX * 32;
