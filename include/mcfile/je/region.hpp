@@ -579,9 +579,14 @@ public:
     }
 #endif
 
-    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) = delete;
+    struct ConcatOptions {
+        std::function<std::string(int chunkX, int chunkZ)> fChunkFileName = Region::GetDefaultCompressedChunkNbtFileName;
+        bool fDeleteInput = false;
+    };
 
-    static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const &directory, std::filesystem::path const &resultMcaFilePath, std::function<std::string(int chunkX, int chunkZ)> name = Region::GetDefaultCompressedChunkNbtFileName) {
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, ConcatOptions options = {}) = delete;
+
+    static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const &directory, std::filesystem::path const &resultMcaFilePath, ConcatOptions options = {}) {
         namespace fs = std::filesystem;
 
         int const minChunkX = regionX * 32;
@@ -591,7 +596,7 @@ public:
         bool exists = false;
         for (int z = minChunkZ; z <= maxChunkZ; z++) {
             for (int x = minChunkX; x <= maxChunkX; x++) {
-                fs::path const filepath = fs::path(directory).append(name(x, z));
+                fs::path const filepath = fs::path(directory).append(options.fChunkFileName(x, z));
                 std::error_code ec;
                 if (fs::exists(filepath, ec)) {
                     exists = true;
@@ -617,7 +622,7 @@ public:
             for (int x = minChunkX; x <= maxChunkX; x++) {
                 int const localChunkX = x - minChunkX;
                 int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
-                fs::path const filepath = directory / name(x, z);
+                fs::path const filepath = directory / options.fChunkFileName(x, z);
                 FILE *in = File::Open(filepath, File::Mode::Read);
                 if (!in) {
                     continue;
@@ -648,6 +653,11 @@ public:
                     return false;
                 }
                 fclose(in);
+
+                if (options.fDeleteInput) {
+                    std::error_code ec;
+                    fs::remove(filepath, ec);
+                }
 
                 size_t headerSize = sizeof(s) + sizeof(compressionType);
                 uint32_t const numSectors = Ceil(size + headerSize, kSectorSize) / kSectorSize;
