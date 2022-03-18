@@ -934,8 +934,28 @@ public:
                 break;
             }
             break;
-        case 176: id = blocks::minecraft::white_banner; break;
-        case 177: id = blocks::minecraft::white_wall_banner; break;
+        case 176:
+            id = blocks::minecraft::white_banner;
+            props["rotation"] = std::to_string(data);
+            break;
+        case 177:
+            id = blocks::minecraft::white_wall_banner;
+            switch (data) {
+            case 3:
+                props["facing"] = "south";
+                break;
+            case 4:
+                props["facing"] = "west";
+                break;
+            case 5:
+                props["facing"] = "east";
+                break;
+            case 2:
+            default:
+                props["facing"] = "north";
+                break;
+            }
+            break;
         case 178:
             id = blocks::minecraft::daylight_detector;
             props["inverted"] = "true";
