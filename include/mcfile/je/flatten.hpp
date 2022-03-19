@@ -333,7 +333,10 @@ public:
                 break;
             }
             break;
-        case 63: id = blocks::minecraft::oak_sign; break;
+        case 63:
+            id = blocks::minecraft::oak_sign;
+            props["rotation"] = std::to_string(data);
+            break;
         case 64:
             id = blocks::minecraft::oak_door;
             Door(data, props);
@@ -358,7 +361,23 @@ public:
             id = blocks::minecraft::cobblestone_stairs;
             Stairs(data, props);
             break;
-        case 68: id = blocks::minecraft::oak_wall_sign; break;
+        case 68:
+            id = blocks::minecraft::oak_wall_sign;
+            switch (data) {
+            case 3:
+                props["facing"] = "south";
+                break;
+            case 4:
+                props["facing"] = "west";
+                break;
+            case 5:
+                props["facing"] = "east";
+                break;
+            case 2:
+            default:
+                props["facing"] = "north";
+            }
+            break;
         case 69:
             id = blocks::minecraft::lever;
             Lever(data, props);
