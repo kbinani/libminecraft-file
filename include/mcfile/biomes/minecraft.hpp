@@ -18,7 +18,7 @@ enum : BiomeId {
     snowy_plains, // was "snowy_tundra" before 1.18
     snowy_mountains,
     mushroom_fields,
-    mushroom_field_shore,
+    mushroom_field_shore, // removed at 21w40a (1.18)
     beach,
     desert_hills,
     wooded_hills,

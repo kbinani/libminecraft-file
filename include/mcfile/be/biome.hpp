@@ -50,7 +50,7 @@ public:
         case 160: return old_growth_spruce_taiga;
         case 161: return giant_spruce_taiga_hills;
         case 14: return mushroom_fields;
-        case 15: return mushroom_field_shore;
+        case 15: return mushroom_fields; // was mushroom_field_shore before 21w40a
         case 6: return swamp;
         case 134: return swamp_hills;
         case 35: return savanna;

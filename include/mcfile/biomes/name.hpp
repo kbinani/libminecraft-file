@@ -77,6 +77,12 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
         } else {
             return "minecraft:old_growth_birch_forest";
         }
+    } else if (id == minecraft::mushroom_field_shore) {
+        if (chunkDataVersion < 2838) {
+            return "minecraft::mushroom_field_shore";
+        } else {
+            return "minecraft::mushroom_field";
+        }
     }
 
     static std::map<BiomeId, std::string> const mapping = {
