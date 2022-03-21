@@ -123,7 +123,14 @@ TEST_CASE("block-id") {
 }
 
 TEST_CASE("biome_id") {
+    CHECK(biomes::Name(biomes::minecraft::mushroom_field_shore, mcfile::je::Chunk::kDataVersion) == "minecraft:mushroom_fields");
+    CHECK(biomes::Name(biomes::minecraft::mushroom_field_shore, 2838 - 1) == "minecraft:mushroom_field_shore");
+    CHECK(biomes::FromName("minecraft:mushroom_field_shore") == biomes::minecraft::mushroom_field_shore);
+
     for (mcfile::biomes::BiomeId id = 1; id < biomes::minecraft::minecraft_max_biome_id; id++) {
+        if (id == biomes::minecraft::mushroom_field_shore) {
+            continue;
+        }
         auto name = biomes::Name(id, mcfile::je::Chunk::kDataVersion);
         CHECK(!name.empty());
         auto reverse = biomes::FromName(name);

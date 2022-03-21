@@ -79,9 +79,9 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
         }
     } else if (id == minecraft::mushroom_field_shore) {
         if (chunkDataVersion < 2838) {
-            return "minecraft::mushroom_field_shore";
+            return "minecraft:mushroom_field_shore";
         } else {
-            return "minecraft::mushroom_field";
+            return "minecraft:mushroom_fields";
         }
     }
 
