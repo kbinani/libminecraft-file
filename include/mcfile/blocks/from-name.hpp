@@ -950,6 +950,7 @@ static inline std::unordered_map<std::string, BlockId> *CreateTable() {
     t["minecraft:mangrove_door"] = mangrove_door;
     t["minecraft:mangrove_trapdoor"] = mangrove_trapdoor;
     t["minecraft:frogspawn"] = frogspawn;
+    t["minecraft:potted_mangrove_propagule"] = potted_mangrove_propagule;
 
     return ret;
 }
