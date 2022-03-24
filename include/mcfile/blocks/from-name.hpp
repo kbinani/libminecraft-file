@@ -923,6 +923,34 @@ static inline std::unordered_map<std::string, BlockId> *CreateTable() {
     t["minecraft:sculk_shrieker"] = sculk_shrieker;
     t["minecraft:sculk_vein"] = sculk_vein;
 
+    t["minecraft:mangrove_planks"] = mangrove_planks;
+    t["minecraft:mangrove_roots"] = mangrove_roots;
+    t["minecraft:muddy_mangrove_roots"] = muddy_mangrove_roots;
+    t["minecraft:mangrove_log"] = mangrove_log;
+    t["minecraft:stripped_mangrove_log"] = stripped_mangrove_log;
+    t["minecraft:stripped_mangrove_wood"] = stripped_mangrove_wood;
+    t["minecraft:mangrove_wood"] = mangrove_wood;
+    t["minecraft:mangrove_slab"] = mangrove_slab;
+    t["minecraft:mud_brick_slab"] = mud_brick_slab;
+    t["minecraft:packed_mud"] = packed_mud;
+    t["minecraft:mud_bricks"] = mud_bricks;
+    t["minecraft:mangrove_fence"] = mangrove_fence;
+    t["minecraft:mangrove_stairs"] = mangrove_stairs;
+    t["minecraft:mangrove_fence_gate"] = mangrove_fence_gate;
+    t["minecraft:mud_brick_wall"] = mud_brick_wall;
+    t["minecraft:mangrove_sign"] = mangrove_sign;
+    t["minecraft:mangrove_wall_sign"] = mangrove_wall_sign;
+    t["minecraft:ochre_froglight"] = ochre_froglight;
+    t["minecraft:verdant_froglight"] = verdant_froglight;
+    t["minecraft:pearlescent_froglight"] = pearlescent_froglight;
+    t["minecraft:mangrove_leaves"] = mangrove_leaves;
+    t["minecraft:mangrove_propagule"] = mangrove_propagule;
+    t["minecraft:mangrove_button"] = mangrove_button;
+    t["minecraft:mangrove_pressure_plate"] = mangrove_pressure_plate;
+    t["minecraft:mangrove_door"] = mangrove_door;
+    t["minecraft:mangrove_trapdoor"] = mangrove_trapdoor;
+    t["minecraft:frogspawn"] = frogspawn;
+
     return ret;
 }
 

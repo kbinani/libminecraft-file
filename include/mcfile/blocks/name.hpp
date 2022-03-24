@@ -927,6 +927,34 @@ static inline std::vector<Characteristics> CreateTable() {
     m[sculk_shrieker] = {.name = "minecraft:sculk_shrieker", .opaque = false};
     m[sculk_vein] = {.name = "minecraft:sculk_vein", .opaque = false};
 
+    m[mangrove_planks] = {.name = "minecraft:mangrove_planks", .opaque = true};
+    m[mangrove_roots] = {.name = "minecraft:mangrove_roots", .opaque = false};
+    m[muddy_mangrove_roots] = {.name = "minecraft:muddy_mangrove_roots", .opaque = false};
+    m[mangrove_log] = {.name = "minecraft:mangrove_log", .opaque = true};
+    m[stripped_mangrove_log] = {.name = "minecraft:stripped_mangrove_log", .opaque = true};
+    m[stripped_mangrove_wood] = {.name = "minecraft:stripped_mangrove_wood", .opaque = true};
+    m[mangrove_wood] = {.name = "minecraft:mangrove_wood", .opaque = true};
+    m[mangrove_slab] = {.name = "minecraft:mangrove_slab", .opaque = false};
+    m[mud_brick_slab] = {.name = "minecraft:mud_brick_slab", .opaque = false};
+    m[packed_mud] = {.name = "minecraft:packed_mud", .opaque = true};
+    m[mud_bricks] = {.name = "minecraft:mud_bricks", .opaque = true};
+    m[mangrove_fence] = {.name = "minecraft:mangrove_fence", .opaque = false};
+    m[mangrove_stairs] = {.name = "minecraft:mangrove_stairs", .opaque = false};
+    m[mangrove_fence_gate] = {.name = "minecraft:mangrove_fence_gate", .opaque = false};
+    m[mud_brick_wall] = {.name = "minecraft:mud_brick_wall", .opaque = false};
+    m[mangrove_sign] = {.name = "minecraft:mangrove_sign", .opaque = false};
+    m[mangrove_wall_sign] = {.name = "minecraft:mangrove_wall_sign", .opaque = false};
+    m[ochre_froglight] = {.name = "minecraft:ochre_froglight", .opaque = false};
+    m[verdant_froglight] = {.name = "minecraft:verdant_froglight", .opaque = false};
+    m[pearlescent_froglight] = {.name = "minecraft:pearlescent_froglight", .opaque = false};
+    m[mangrove_leaves] = {.name = "minecraft:mangrove_leaves", .opaque = false};
+    m[mangrove_propagule] = {.name = "minecraft:mangrove_propagule", .opaque = false};
+    m[mangrove_button] = {.name = "minecraft:mangrove_button", .opaque = false};
+    m[mangrove_pressure_plate] = {.name = "minecraft:mangrove_pressure_plate", .opaque = false};
+    m[mangrove_door] = {.name = "minecraft:mangrove_door", .opaque = false};
+    m[mangrove_trapdoor] = {.name = "minecraft:mangrove_trapdoor", .opaque = false};
+    m[frogspawn] = {.name = "minecraft:frogspawn", .opaque = false};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);
