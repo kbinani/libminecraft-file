@@ -4,6 +4,3 @@
 [submodule "test/ext/zlib-ng"]
 	path = deps/zlib-ng
 	url = https://github.com/zlib-ng/zlib-ng.git
-[submodule "deps/cmake_setup_source_groups"]
-	path = deps/cmake_setup_source_groups
-	url = https://github.com/kbinani/cmake_setup_source_groups.git

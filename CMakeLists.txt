@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.8)
 project(mcfile)
 
 include(CheckCCompilerFlag)
-include(deps/cmake_setup_source_groups/setup_source_groups.cmake)
 set(BUILD_SHARED_LIBS OFF)
 
 if (NOT CMAKE_CXX_STANDARD)
@@ -149,5 +148,4 @@ target_include_directories(mcfile-test PRIVATE test/deps/doctest)
 add_executable(mcfile-example example/main.cpp)
 target_link_libraries(mcfile-example mcfile)
 
-get_filename_component(project_root_dir "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
-setup_source_groups("${mcfile_test_files}" "${project_root_dir}")
+source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${mcfile_test_files})
