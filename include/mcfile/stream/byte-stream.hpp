@@ -31,7 +31,7 @@ public:
         if (size == 0) {
             return 0;
         }
-        uint64_t next = (std::min)(fLoc + size, fBuffer.size());
+        uint64_t next = (std::min)(fLoc + size, (uint64_t)fBuffer.size());
         size_t read = next - fLoc;
         std::copy(fBuffer.begin() + fLoc, fBuffer.begin() + next, (uint8_t *)buf);
         fLoc = next;
