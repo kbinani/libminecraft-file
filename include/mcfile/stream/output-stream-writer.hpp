@@ -4,7 +4,7 @@ namespace mcfile::stream {
 
 class OutputStreamWriter {
 public:
-    explicit OutputStreamWriter(std::shared_ptr<OutputStream> stream, std::endian endian = std::endian::big)
+    explicit OutputStreamWriter(std::shared_ptr<OutputStream> stream, Endian endian = Endian::Big)
         : fStream(stream)
         , fEndian(endian) {
     }
@@ -18,42 +18,42 @@ public:
     }
 
     [[nodiscard]] bool write(uint64_t v) {
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(uint32_t v) {
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(uint16_t v) {
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(int64_t v) {
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(int32_t v) {
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
     }
 
     [[nodiscard]] bool write(int16_t v) {
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             v = ByteSwap(v);
         }
         return fStream->write(&v, sizeof(v));
@@ -77,7 +77,7 @@ public:
 
 private:
     std::shared_ptr<OutputStream> fStream;
-    std::endian const fEndian;
+    Endian const fEndian;
 };
 
 } // namespace mcfile::stream

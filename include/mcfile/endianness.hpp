@@ -2,8 +2,18 @@
 
 namespace mcfile {
 
+enum class Endian {
+    Big,
+    Little,
+#if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
+    Native = Big,
+#else
+    Native = Little,
+#endif
+};
+
 constexpr bool IsBigEndian() {
-    return std::endian::native == std::endian::big;
+    return Endian::Native == Endian::Big;
 }
 
 inline uint64_t SwapU64(uint64_t v) {

@@ -296,7 +296,7 @@ public:
         if (!File::Fread(buffer.data(), size, 1, in)) {
             return nullptr;
         }
-        auto root = nbt::CompoundTag::ReadCompressed(buffer, std::endian::big);
+        auto root = nbt::CompoundTag::ReadCompressed(buffer, Endian::Big);
         if (!root) {
             return nullptr;
         }

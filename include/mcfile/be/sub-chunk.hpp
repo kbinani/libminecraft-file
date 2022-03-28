@@ -12,7 +12,7 @@ public:
         return fPalette[*index];
     }
 
-    static std::shared_ptr<SubChunk> Parse(std::string const &data, int8_t chunkY, std::endian endian) {
+    static std::shared_ptr<SubChunk> Parse(std::string const &data, int8_t chunkY, Endian endian) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;

@@ -4,7 +4,7 @@ namespace mcfile::stream {
 
 class InputStreamReader {
 public:
-    explicit InputStreamReader(std::shared_ptr<InputStream> stream, std::endian endian = std::endian::big)
+    explicit InputStreamReader(std::shared_ptr<InputStream> stream, Endian endian = Endian::Big)
         : fStream(stream)
         , fEndian(endian) {
     }
@@ -36,7 +36,7 @@ public:
         if (!readRaw(v)) {
             return false;
         }
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             *v = SwapI16(*v);
         }
         return true;
@@ -46,7 +46,7 @@ public:
         if (!readRaw(v)) {
             return false;
         }
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             *v = SwapU16(*v);
         }
         return true;
@@ -56,7 +56,7 @@ public:
         if (!readRaw(v)) {
             return false;
         }
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             *v = SwapI32(*v);
         }
         return true;
@@ -66,7 +66,7 @@ public:
         if (!readRaw(v)) {
             return false;
         }
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             *v = SwapU32(*v);
         }
         return true;
@@ -76,7 +76,7 @@ public:
         if (!readRaw(v)) {
             return false;
         }
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             *v = SwapI64(*v);
         }
         return true;
@@ -86,7 +86,7 @@ public:
         if (!readRaw(v)) {
             return false;
         }
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             *v = SwapU64(*v);
         }
         return true;
@@ -98,7 +98,7 @@ public:
         if (fStream->read(buffer.data(), buffer.size() * sizeof(T)) != buffer.size() * sizeof(T)) {
             return false;
         }
-        if (fEndian != std::endian::native) {
+        if (fEndian != Endian::Native) {
             size_t size = buffer.size();
             for (size_t i = 0; i < size; i++) {
                 buffer[i] = ByteSwap(buffer[i]);
@@ -136,7 +136,7 @@ private:
     }
 
 public:
-    std::endian const fEndian;
+    Endian const fEndian;
 
 private:
     std::shared_ptr<InputStream> fStream;

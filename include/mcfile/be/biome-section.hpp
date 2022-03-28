@@ -50,7 +50,7 @@ public:
 
         d->clear();
         auto s = make_shared<stream::ByteStream>();
-        stream::OutputStreamWriter w(s, std::endian::little);
+        stream::OutputStreamWriter w(s, Endian::Little);
 
         if (fPalette.empty()) {
             return false;

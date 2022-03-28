@@ -50,12 +50,12 @@ public:
         return found->second;
     }
 
-    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::endian endian) {
+    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian) {
         return LoadImpl(chunkX, chunkZ, d, db, endian);
     }
 
 #if __has_include(<leveldb/db.h>)
-    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, leveldb::DB *db, std::endian endian) {
+    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, leveldb::DB *db, Endian endian) {
         using namespace std;
         using namespace leveldb;
 
@@ -126,7 +126,7 @@ private:
         }
     }
 
-    static void LoadBlockEntities(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::endian endian, std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher> &result) {
+    static void LoadBlockEntities(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian, std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher> &result) {
         using namespace std;
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
@@ -151,7 +151,7 @@ private:
         });
     }
 
-    static void LoadEntities(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::endian endian, std::vector<std::shared_ptr<nbt::CompoundTag>> &result) {
+    static void LoadEntities(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian, std::vector<std::shared_ptr<nbt::CompoundTag>> &result) {
         using namespace std;
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
@@ -169,7 +169,7 @@ private:
         });
     }
 
-    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::endian endian, std::vector<PendingTick> *outTickList, int32_t *outCurrentTick) {
+    static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian, std::vector<PendingTick> *outTickList, int32_t *outCurrentTick) {
         using namespace std;
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
@@ -208,7 +208,7 @@ private:
         }
     }
 
-    static std::shared_ptr<BiomeMap> LoadBiomes(int chunkX, int chunkY, int chunkZ, Dimension d, DbInterface &db, std::endian endian) {
+    static std::shared_ptr<BiomeMap> LoadBiomes(int chunkX, int chunkY, int chunkZ, Dimension d, DbInterface &db, Endian endian) {
         using namespace std;
         using namespace mcfile::stream;
         auto data3D = db.get(DbKey::Data3D(chunkX, chunkZ, d));
@@ -246,7 +246,7 @@ private:
         return ret;
     }
 
-    static std::shared_ptr<Chunk> LoadImpl(int chunkX, int chunkZ, Dimension d, DbInterface &db, std::endian endian) {
+    static std::shared_ptr<Chunk> LoadImpl(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
