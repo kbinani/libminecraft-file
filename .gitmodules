@@ -1,6 +1,6 @@
 [submodule "test/ext/doctest"]
 	path = test/deps/doctest
-	url = https://github.com/onqtam/doctest.git
+	url = https://github.com/doctest/doctest.git
 [submodule "test/ext/zlib-ng"]
 	path = deps/zlib-ng
 	url = https://github.com/zlib-ng/zlib-ng.git
