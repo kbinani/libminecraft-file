@@ -19,6 +19,7 @@ public:
         StructureBounds = 0x39,
         UnknownTag3e = 0x3e,
         UnknownTag3d = 0x3d,
+        UnknownTag3f = 0x3f,
     };
 
     static std::string SubChunk(int32_t chunkX, int32_t chunkY, int32_t chunkZ, Dimension dim) {
