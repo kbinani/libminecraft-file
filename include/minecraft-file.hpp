@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <zlib.h>
+#if __has_include(<unistd.h>)
+#include <unistd.h>
+#endif
 
 #include <algorithm>
 #include <cassert>
