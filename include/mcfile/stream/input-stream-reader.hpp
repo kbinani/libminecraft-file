@@ -5,8 +5,8 @@ namespace mcfile::stream {
 class InputStreamReader {
 public:
     explicit InputStreamReader(std::shared_ptr<InputStream> stream, Endian endian = Endian::Big)
-        : fStream(stream)
-        , fEndian(endian) {
+        : fEndian(endian)
+        , fStream(stream) {
     }
 
     InputStreamReader(InputStreamReader const &) = delete;

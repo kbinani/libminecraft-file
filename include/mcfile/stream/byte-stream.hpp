@@ -18,7 +18,7 @@ public:
     ByteStream()
         : fLoc(0) {}
 
-    ~ByteStream() {}
+    ~ByteStream() override {}
 
     ByteStream(ByteStream const &) = delete;
 
@@ -42,14 +42,14 @@ public:
         if (fBuffer.size() <= fLoc + size) {
             size_t add = fLoc + size - fBuffer.size();
             try {
-                for (int i = 0; i < add; i++) {
+                for (size_t i = 0; i < add; i++) {
                     fBuffer.push_back(0);
                 }
             } catch (...) {
                 return false;
             }
         }
-        for (int i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
             fBuffer[fLoc + i] = ((uint8_t *)buf)[i];
         }
         fLoc += size;

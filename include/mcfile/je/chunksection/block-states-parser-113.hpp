@@ -56,16 +56,16 @@ public:
         vector<bool> bitset;
         bitset.reserve(bitsPerBlock * 4096);
         assert(paletteIndices.size() == 4096);
-        for (int i = 0; i < 4096; i++) {
+        for (size_t i = 0; i < 4096; i++) {
             uint16_t v = paletteIndices[i];
             for (int j = 0; j < bitsPerBlock; j++) {
                 bitset.push_back((v & 1) == 1);
                 v >>= 1;
             }
         }
-        for (int i = 0; i < bitset.size(); i += 64) {
+        for (size_t i = 0; i < bitset.size(); i += 64) {
             uint64_t v = 0;
-            for (int j = i; j < i + 64 && j < bitset.size(); j++) {
+            for (size_t j = i; j < i + 64 && j < bitset.size(); j++) {
                 uint64_t t = ((uint64_t)(bitset[j] ? 1 : 0)) << (j - i);
                 v |= t;
             }

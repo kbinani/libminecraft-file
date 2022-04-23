@@ -33,7 +33,7 @@ public:
     FileInputStream(std::string const &) = delete;
     FileInputStream(std::wstring const &) = delete;
 
-    ~FileInputStream() {
+    ~FileInputStream() override {
         if (fFile) {
             fclose(fFile);
         }

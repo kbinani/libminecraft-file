@@ -94,8 +94,8 @@ private:
           std::vector<PendingTick> &pendingTicks,
           std::shared_ptr<BiomeMap> &biomes)
         : fChunkX(chunkX)
-        , fChunkY(chunkY)
-        , fChunkZ(chunkZ) {
+        , fChunkZ(chunkZ)
+        , fChunkY(chunkY) {
         int maxChunkY = fChunkY;
         for (auto const &subChunk : subChunks) {
             int cy = subChunk->fChunkY;

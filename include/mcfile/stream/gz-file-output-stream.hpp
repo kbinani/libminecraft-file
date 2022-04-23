@@ -17,7 +17,7 @@ public:
     GzFileOutputStream(std::string const &) = delete;
     GzFileOutputStream(std::wstring const &) = delete;
 
-    ~GzFileOutputStream() {
+    ~GzFileOutputStream() override {
         if (fFile) {
             gzclose(fFile);
         }

@@ -287,15 +287,15 @@ public:
             return;
         }
 
-        int bitsPerIndex = (int)ceil(log2(size));
+        size_t bitsPerIndex = (size_t)ceil(log2(size));
         std::vector<bool> bitset;
         bitset.reserve(64);
         std::vector<int64_t> packedData;
-        for (int i = 0; i < inIndices.size(); i++) {
+        for (size_t i = 0; i < inIndices.size(); i++) {
             uint16_t v = inIndices[i];
             if (bitset.size() + bitsPerIndex > 64) {
                 uint64_t u = 0;
-                for (int j = 0; j < bitset.size(); j++) {
+                for (size_t j = 0; j < bitset.size(); j++) {
                     uint64_t t = bitset[j] ? 1 : 0;
                     u |= t << j;
                 }
@@ -309,7 +309,7 @@ public:
         }
         if (!bitset.empty()) {
             uint64_t u = 0;
-            for (int j = 0; j < bitset.size(); j++) {
+            for (size_t j = 0; j < bitset.size(); j++) {
                 uint64_t t = bitset[j] ? 1 : 0;
                 u |= t << j;
             }

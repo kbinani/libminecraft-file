@@ -19,7 +19,7 @@ public:
     FileOutputStream(std::string const &) = delete;
     FileOutputStream(std::wstring const &) = delete;
 
-    ~FileOutputStream() {
+    ~FileOutputStream() override {
         if (fFile) {
             fclose(fFile);
         }
