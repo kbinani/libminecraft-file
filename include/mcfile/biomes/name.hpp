@@ -176,6 +176,7 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
     };
     auto mappingIt = mapping.find(id);
     if (mappingIt == mapping.end()) {
+        assert(false);
         return "";
     }
     return mappingIt->second;

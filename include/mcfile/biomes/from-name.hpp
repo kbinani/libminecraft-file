@@ -118,6 +118,7 @@ static inline std::optional<mcfile::biomes::BiomeId> FromName(std::string const 
     };
     auto found = sMapping.find(name);
     if (found == sMapping.end()) {
+        assert(false);
         return std::nullopt;
     } else {
         return found->second;

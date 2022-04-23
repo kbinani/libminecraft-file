@@ -951,6 +951,7 @@ static inline std::unordered_map<std::string, BlockId> *CreateTable() {
     t["minecraft:mangrove_trapdoor"] = mangrove_trapdoor;
     t["minecraft:frogspawn"] = frogspawn;
     t["minecraft:potted_mangrove_propagule"] = potted_mangrove_propagule;
+    t["minecraft:mud"] = mud;
 
     return ret;
 }
@@ -960,6 +961,7 @@ static inline BlockId FromName(std::string const &name) {
     static unique_ptr<unordered_map<string, blocks::BlockId> const> const mapping(CreateTable());
     auto mappingIt = mapping->find(name);
     if (mappingIt == mapping->end()) {
+        assert(false);
         return unknown;
     }
     return mappingIt->second;
