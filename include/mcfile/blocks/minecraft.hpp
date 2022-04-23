@@ -966,6 +966,7 @@ enum : BlockId {
     mangrove_trapdoor,
     frogspawn,
     potted_mangrove_propagule,
+    mud,
 
     minecraft_max_block_id,
 };
