@@ -101,6 +101,7 @@ enum : BiomeId {
 
     // 1.19
     deep_dark,
+    mangrove_swamp,
 
     minecraft_max_biome_id
 };

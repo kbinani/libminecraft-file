@@ -172,6 +172,7 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
         // 1.19
 
         {minecraft::deep_dark, "minecraft:deep_dark"},
+        {minecraft::mangrove_swamp, "minecraft:mangrove_swamp"},
     };
     auto mappingIt = mapping.find(id);
     if (mappingIt == mapping.end()) {
