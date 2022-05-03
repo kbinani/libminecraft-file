@@ -693,6 +693,71 @@ public:
         return true;
     }
 
+    static bool SquashChunksAsMca(mcfile::stream::OutputStream &output,
+                                  std::function<std::shared_ptr<mcfile::nbt::CompoundTag>(int localChunkX, int localChunkZ, bool &stop)> callback) {
+        using namespace std;
+        using namespace mcfile::stream;
+        namespace fs = std::filesystem;
+
+        map<uint64_t, uint32_t> deferredWrite;
+
+        if (!output.seek(2048 * 4)) {
+            return false;
+        }
+
+        int index = 0;
+        for (int z = 0; z < 32; z++) {
+            for (int x = 0; x < 32; x++, index++) {
+                bool stop = false;
+                auto tag = callback(x, z, stop);
+                if (stop) {
+                    return false;
+                }
+                if (!tag) {
+                    continue;
+                }
+                uint32_t const beforeLocation = Ceil(output.pos(), kSectorSize);
+
+                if (!output.seek(beforeLocation + 4)) {
+                    return false;
+                }
+                uint8_t compressionType = 2;
+                if (!output.write(&compressionType, sizeof(compressionType))) {
+                    return false;
+                }
+                if (!mcfile::nbt::CompoundTag::WriteCompressed(*tag, output, Endian::Big)) {
+                    return false;
+                }
+                uint64_t const afterLocation = output.pos();
+                uint32_t const size = (afterLocation - beforeLocation);
+                deferredWrite[beforeLocation] = U32BEFromNative(size);
+
+                uint32_t const numSectors = Ceil(size, kSectorSize) / kSectorSize;
+                uint32_t const loc = ((((beforeLocation) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
+                deferredWrite[index * 4] = U32BEFromNative(loc);
+                deferredWrite[4096 + index * 4] = U32BEFromNative(std::time(nullptr));
+            }
+        }
+        uint64_t const current = output.pos();
+        uint64_t const numZeroFill = Ceil(current, kSectorSize) - current;
+        vector<uint8_t> zerofill(numZeroFill);
+        if (!output.write(zerofill.data(), numZeroFill)) {
+            return false;
+        }
+        for (auto const &it : deferredWrite) {
+            uint64_t pos = it.first;
+            if (!output.seek(pos)) {
+                return false;
+            }
+            uint32_t data = it.second;
+            if (!output.write(&data, sizeof(data))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     static bool IterateRegionForCompressedNbtFiles(std::string const &chunkFilesDirectory,
                                                    std::function<bool(int regionX, int regionZ, std::string const &chunkFilesDirectory)> callback,
                                                    std::function<std::string(int regionX, int regionZ)> regionFileName = Region::GetDefaultRegionFileName) {
