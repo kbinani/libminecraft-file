@@ -420,6 +420,11 @@ public:
     bool exportToCompressedNbt(int chunkX, int chunkZ, std::string const &filePath) const = delete;
 
     bool exportToCompressedNbt(int chunkX, int chunkZ, std::filesystem::path const &filePath) const {
+        mcfile::stream::FileOutputStream output(filePath);
+        return exportToCompressedNbt(chunkX, chunkZ, output);
+    }
+
+    bool exportToCompressedNbt(int chunkX, int chunkZ, mcfile::stream::OutputStream &output) const {
         int const localChunkX = chunkX - fX * 32;
         int const localChunkZ = chunkZ - fZ * 32;
         if (localChunkX < 0 || 32 <= localChunkX) {
@@ -474,21 +479,21 @@ public:
             return false;
         }
 
-        FILE *out = File::Open(filePath, File::Mode::Write);
-        if (!out) {
-            fclose(in);
-            return false;
+        uint8_t buffer[512] = {0};
+        uint32_t remaining = chunkSize;
+        while (remaining > 0) {
+            uint32_t amount = (std::min)(remaining, (uint32_t)512);
+            if (!File::Fread(buffer, amount, 1, in)) {
+                fclose(in);
+                return false;
+            }
+            if (!output.write(buffer, amount)) {
+                fclose(in);
+                return false;
+            }
+            remaining -= amount;
         }
-
-        if (!File::Copy(in, out, chunkSize)) {
-            fclose(in);
-            fclose(out);
-            return false;
-        }
-
         fclose(in);
-        fclose(out);
-
         return true;
     }
 
@@ -694,7 +699,7 @@ public:
     }
 
     static bool SquashChunksAsMca(mcfile::stream::OutputStream &output,
-                                  std::function<std::shared_ptr<mcfile::nbt::CompoundTag>(int localChunkX, int localChunkZ, bool &stop)> callback) {
+                                  std::function<void(int localChunkX, int localChunkZ, mcfile::stream::OutputStream &output, bool &stop)> callback) {
         using namespace std;
         using namespace mcfile::stream;
         namespace fs = std::filesystem;
@@ -708,26 +713,21 @@ public:
         int index = 0;
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++, index++) {
-                bool stop = false;
-                auto tag = callback(x, z, stop);
-                if (stop) {
-                    return false;
-                }
-                if (!tag) {
-                    continue;
-                }
                 uint32_t const beforeLocation = Ceil(output.pos(), kSectorSize);
-
                 if (!output.seek(beforeLocation + 4)) {
                     return false;
                 }
                 uint8_t compressionType = 2;
-                if (!output.write(&compressionType, sizeof(compressionType))) {
+                if (!output.write(&compressionType, 1)) {
                     return false;
                 }
-                if (!mcfile::nbt::CompoundTag::WriteCompressed(*tag, output, Endian::Big)) {
+
+                bool stop = false;
+                callback(x, z, output, stop);
+                if (stop) {
                     return false;
                 }
+
                 uint64_t const afterLocation = output.pos();
                 uint32_t const size = (afterLocation - beforeLocation);
                 deferredWrite[beforeLocation] = U32BEFromNative(size);
@@ -756,6 +756,22 @@ public:
         }
 
         return true;
+    }
+
+    static bool SquashChunksAsMca(mcfile::stream::OutputStream &output,
+                                  std::function<std::shared_ptr<mcfile::nbt::CompoundTag>(int localChunkX, int localChunkZ, bool &stop)> callback) {
+        return SquashChunksAsMca(output, [&callback](int x, int z, mcfile::stream::OutputStream &out, bool &stop) {
+            auto tag = callback(x, z, stop);
+            if (stop) {
+                return;
+            }
+            if (!tag) {
+                return;
+            }
+            if (!mcfile::nbt::CompoundTag::WriteCompressed(*tag, Endian::Big)) {
+                stop = true;
+            }
+        });
     }
 
     static bool IterateRegionForCompressedNbtFiles(std::string const &chunkFilesDirectory,
