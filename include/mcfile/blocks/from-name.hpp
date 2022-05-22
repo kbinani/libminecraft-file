@@ -952,6 +952,7 @@ static inline std::unordered_map<std::string, BlockId> *CreateTable() {
     t["minecraft:frogspawn"] = frogspawn;
     t["minecraft:potted_mangrove_propagule"] = potted_mangrove_propagule;
     t["minecraft:mud"] = mud;
+    t["minecraft:mud_brick_stairs"] = mud_brick_stairs;
 
     return ret;
 }
