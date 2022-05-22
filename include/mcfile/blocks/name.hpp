@@ -956,6 +956,7 @@ static inline std::vector<Characteristics> CreateTable() {
     m[frogspawn] = {.name = "minecraft:frogspawn", .opaque = false};
     m[potted_mangrove_propagule] = {.name = "minecraft:potted_mangrove_propagule", .opaque = false};
     m[mud] = {.name = "minecraft:mud", .opaque = true};
+    m[mud_brick_stairs] = {.name = "minecraft:mud_brick_stairs", .opaque = false};
 
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
