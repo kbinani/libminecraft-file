@@ -156,17 +156,24 @@ private:
         using namespace mcfile::nbt;
         using namespace mcfile::stream;
 
-        auto value = db.get(DbKey::Entity(chunkX, chunkZ, d));
-        if (!value) {
-            return;
+        if (auto entities = db.get(DbKey::Entity(chunkX, chunkZ, d)); entities) {
+            CompoundTag::ReadUntilEos(*entities, endian, [&result](shared_ptr<CompoundTag> const &tag) {
+                result.push_back(tag);
+            });
         }
-        vector<uint8_t> buffer;
-        copy(value->begin(), value->end(), back_inserter(buffer));
-        auto stream = make_shared<ByteStream>(buffer);
-        InputStreamReader sr(stream, endian);
-        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
-            result.push_back(tag);
-        });
+        if (auto digp = db.get(DbKey::Digp(chunkX, chunkZ, d)); digp) {
+            DbKey::EnumerateActorprefixKeys(*digp, [&db, &result, endian](int index, string const &key, bool &stop) {
+                auto actor = db.get(DbKey::Actorprefix(key));
+                if (!actor) {
+                    return;
+                }
+                auto c = CompoundTag::Read(*actor, endian);
+                if (!c) {
+                    return;
+                }
+                result.push_back(c);
+            });
+        }
     }
 
     static void LoadPendingTicks(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian, std::vector<PendingTick> *outTickList, int32_t *outCurrentTick) {
