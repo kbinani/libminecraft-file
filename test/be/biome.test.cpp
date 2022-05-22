@@ -9,7 +9,7 @@ using namespace mcfile::biomes;
 
 TEST_CASE("be/biome") {
     using namespace mcfile::biomes::minecraft;
-    for (BiomeId b = 1; b <= minecraft::minecraft_max_biome_id; b++) {
+    for (BiomeId b = 1; b < minecraft::minecraft_max_biome_id; b++) {
         if (b == minecraft::deep_dark || b == minecraft::mangrove_swamp) {
             //TODO: Not defined 1.19 BE yet
             continue;
