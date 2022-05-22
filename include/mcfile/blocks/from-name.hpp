@@ -727,7 +727,9 @@ static inline std::unordered_map<std::string, BlockId> *CreateTable() {
     t["minecraft:polished_blackstone_brick_stairs"] = polished_blackstone_brick_stairs;
     t["minecraft:cracked_polished_blackstone_bricks"] = cracked_polished_blackstone_bricks;
     t["minecraft:crimson_fungus"] = crimson_fungus;
+    t["minecraft:crimson_fungi"] = crimson_fungus; // 20w06a
     t["minecraft:warped_fungus"] = warped_fungus;
+    t["minecraft:warped_fungi"] = warped_fungus; // 20w06a
     t["minecraft:crimson_roots"] = crimson_roots;
     t["minecraft:warped_roots"] = warped_roots;
     t["minecraft:nether_sprouts"] = nether_sprouts;
