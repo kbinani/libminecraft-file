@@ -90,6 +90,8 @@ public:
         case 178: return soul_sand_valley;
         case 181: return basalt_deltas;
         case 9: return the_end;
+        case 190: return deep_dark;
+        case 191: return mangrove_swamp;
         default:
             return ocean;
         }
@@ -191,6 +193,8 @@ public:
         case end_midlands:
         case small_end_islands:
             return 9;
+        case deep_dark: return 190;
+        case mangrove_swamp: return 191;
         default:
             return 0;
         }
