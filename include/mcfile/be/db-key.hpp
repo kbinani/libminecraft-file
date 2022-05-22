@@ -88,6 +88,47 @@ public:
 
     static std::string MobEvents() { return "mobevents"; }
 
+    static std::string Digp(int32_t chunkX, int32_t chunkZ, Dimension dim) {
+        std::string ret("digp");
+        ret.resize(12);
+        *((int32_t *)(ret.data() + 4)) = I32LEFromNative(chunkX);
+        *((int32_t *)(ret.data() + 8)) = I32LEFromNative(chunkZ);
+        int32_t d = 0;
+        if (dim == Dimension::Nether) {
+            d = 1;
+        } else if (dim == Dimension::End) {
+            d = 2;
+        }
+        if (d != 0) {
+            ret.resize(16);
+            *((int32_t *)(ret.data() + 12)) = I32LEFromNative(d);
+        }
+        return ret;
+    }
+
+    static bool EnumerateActorprefixKeys(std::string const &digpValue, std::function<void(int index, std::string const &key, bool &stop)> callback) {
+        if (!callback) {
+            return false;
+        }
+        if (digpValue.size() % 8 != 0) {
+            return false;
+        }
+        int num = digpValue.size() / 8;
+        for (int i = 0; i < num; i++) {
+            std::string key = digpValue.substr(i * 8, 8);
+            bool stop = false;
+            callback(i, key, stop);
+            if (stop) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static std::string Actorprefix(std::string const &key) {
+        return "actorprefix" + key;
+    }
+
     static std::string ComposeChunkKey(int32_t chunkX, int32_t chunkZ, Dimension dim, uint8_t tag) {
         std::vector<char> b;
         PlaceXZTag(b, chunkX, chunkZ, tag);
