@@ -80,6 +80,34 @@ public:
         return setBlockAt(pos.fX, pos.fY, pos.fZ, block, options);
     }
 
+    std::shared_ptr<nbt::CompoundTag const> tileEntityAt(int x, int y, int z) const {
+        int const chunkX = Coordinate::ChunkFromBlock(x);
+        int const chunkZ = Coordinate::ChunkFromBlock(z);
+        if (chunkX != fChunkX || chunkZ != fChunkZ) {
+            return nullptr;
+        }
+        Pos3i pos(x, y, z);
+        auto found = fTileEntities.find(pos);
+        if (found == fTileEntities.end()) {
+            return nullptr;
+        }
+        return found->second;
+    }
+
+    std::shared_ptr<nbt::CompoundTag> tileEntityAt(int x, int y, int z) {
+        int const chunkX = Coordinate::ChunkFromBlock(x);
+        int const chunkZ = Coordinate::ChunkFromBlock(z);
+        if (chunkX != fChunkX || chunkZ != fChunkZ) {
+            return nullptr;
+        }
+        Pos3i pos(x, y, z);
+        auto found = fTileEntities.find(pos);
+        if (found == fTileEntities.end()) {
+            return nullptr;
+        }
+        return found->second;
+    }
+
     bool removeTileEntityAt(int x, int y, int z) {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
