@@ -93,6 +93,27 @@ public:
         return root;
     }
 
+    static std::shared_ptr<Block const> FromCompoundTag(nbt::CompoundTag const &tag) {
+        using namespace std;
+        auto name = tag.string("Name");
+        if (!name) {
+            return nullptr;
+        }
+        auto properties = tag.compoundTag("Properties");
+        map<string, string> props;
+        if (properties) {
+            for (auto p : properties->fValue) {
+                string key = p.first;
+                nbt::StringTag const *s = p.second->asString();
+                if (s == nullptr) {
+                    continue;
+                }
+                props[key] = s->fValue;
+            }
+        }
+        return make_shared<Block const>(*name, props);
+    }
+
 private:
     static std::string ToString(std::string const &name, std::map<std::string, std::string> const &props) {
         using namespace std;
