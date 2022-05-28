@@ -20,6 +20,17 @@ public:
         return std::make_shared<Block>(*name, states, *version);
     }
 
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
+        using namespace std;
+        auto tag = make_shared<nbt::CompoundTag>();
+        tag->set("name", make_shared<nbt::StringTag>(fName));
+        if (fStates) {
+            tag->set("states", fStates->clone());
+        }
+        tag->set("version", make_shared<nbt::IntTag>(fVersion));
+        return tag;
+    }
+
 public:
     std::string const fName;
     std::shared_ptr<nbt::CompoundTag> fStates;
