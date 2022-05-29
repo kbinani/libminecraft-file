@@ -62,11 +62,11 @@ public:
         return true;
     }
 
-    [[nodiscard]] [[deprecated]] bool read(::mcfile::stream::InputStreamReader &r) {
+    [[nodiscard]] bool read(::mcfile::stream::InputStreamReader &r) {
         return readImpl(r);
     }
 
-    [[nodiscard]] [[deprecated]] bool write(mcfile::stream::OutputStreamWriter &w) const {
+    [[nodiscard]] bool write(mcfile::stream::OutputStreamWriter &w) const {
         return writeImpl(w);
     }
 
