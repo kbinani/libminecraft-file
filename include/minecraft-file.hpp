@@ -34,10 +34,6 @@
 #include <leveldb/db.h>
 #endif
 
-#if __has_include(<zopfli.h>)
-#include <zopfli.h>
-#endif
-
 // clang-format off
 
 #include <mcfile/endianness.hpp>
