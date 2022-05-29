@@ -964,11 +964,6 @@ static inline BlockId FromName(std::string const &name) {
     static unique_ptr<unordered_map<string, blocks::BlockId> const> const mapping(CreateTable());
     auto mappingIt = mapping->find(name);
     if (mappingIt == mapping->end()) {
-#if !defined(NDEBUG)
-        if (name != "minecraft:flowing_water" && name != "minecraft:flowing_lava") {
-            assert(false);
-        }
-#endif
         return unknown;
     }
     return mappingIt->second;
