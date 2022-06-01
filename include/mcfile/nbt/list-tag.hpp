@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 class ListTag : public Tag {
     friend class TagFactory;
@@ -13,46 +12,6 @@ private:
 public:
     explicit ListTag(Tag::Type type)
         : fType(type) {}
-
-    bool readImpl(::mcfile::stream::InputStreamReader &r) override {
-        uint8_t type;
-        if (!r.read(&type)) {
-            return false;
-        }
-        if (type < static_cast<uint8_t>(TypeLimits::Min) || static_cast<uint8_t>(TypeLimits::Max) < type) {
-            return false;
-        }
-        int32_t size;
-        if (!r.read(&size)) {
-            return false;
-        }
-        std::vector<std::shared_ptr<Tag>> tmp;
-        for (int32_t i = 0; i < size; i++) {
-            auto tag = TagFactory::makeTag(type);
-            if (!tag->readImpl(r)) {
-                return false;
-            }
-            tmp.push_back(tag);
-        }
-        fType = static_cast<Tag::Type>(type);
-        tmp.swap(fValue);
-        return true;
-    }
-
-    bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
-        if (!w.write(static_cast<uint8_t>(fType))) {
-            return false;
-        }
-        if (!w.write((int32_t)fValue.size())) {
-            return false;
-        }
-        for (auto const &v : fValue) {
-            if (!v->writeImpl(w)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     Tag::Type type() const override { return Tag::Type::List; }
 
@@ -94,10 +53,50 @@ public:
         return ret;
     }
 
+protected:
+    bool readImpl(::mcfile::stream::InputStreamReader &r) override {
+        uint8_t type;
+        if (!r.read(&type)) {
+            return false;
+        }
+        if (type < static_cast<uint8_t>(TypeLimits::Min) || static_cast<uint8_t>(TypeLimits::Max) < type) {
+            return false;
+        }
+        int32_t size;
+        if (!r.read(&size)) {
+            return false;
+        }
+        std::vector<std::shared_ptr<Tag>> tmp;
+        for (int32_t i = 0; i < size; i++) {
+            auto tag = TagFactory::makeTag(type);
+            if (!tag->readImpl(r)) {
+                return false;
+            }
+            tmp.push_back(tag);
+        }
+        fType = static_cast<Tag::Type>(type);
+        tmp.swap(fValue);
+        return true;
+    }
+
+    bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
+        if (!w.write(static_cast<uint8_t>(fType))) {
+            return false;
+        }
+        if (!w.write((int32_t)fValue.size())) {
+            return false;
+        }
+        for (auto const &v : fValue) {
+            if (!v->writeImpl(w)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 public:
     Tag::Type fType;
     std::vector<std::shared_ptr<Tag>> fValue;
 };
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

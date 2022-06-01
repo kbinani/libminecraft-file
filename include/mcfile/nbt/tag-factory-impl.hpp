@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 inline std::shared_ptr<Tag> TagFactory::makeTag(uint8_t id) {
     switch (id) {
@@ -36,5 +35,4 @@ inline std::shared_ptr<Tag> TagFactory::makeTag(uint8_t id) {
     }
 }
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

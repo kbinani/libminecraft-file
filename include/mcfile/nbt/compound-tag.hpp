@@ -3,7 +3,7 @@
 namespace mcfile::nbt {
 
 class CompoundTag : public Tag {
-public:
+protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         std::map<std::string, std::shared_ptr<Tag>> tmp;
         while (r.valid()) {
@@ -47,6 +47,15 @@ public:
             }
         }
         return w.write(static_cast<uint8_t>(Tag::Type::End));
+    }
+
+public:
+    bool read(::mcfile::stream::InputStreamReader &r) {
+        return readImpl(r);
+    }
+
+    bool write(::mcfile::stream::OutputStreamWriter &w) const {
+        return writeImpl(w);
     }
 
     [[nodiscard]] static bool Write(CompoundTag const &tag, mcfile::stream::OutputStreamWriter &w) {

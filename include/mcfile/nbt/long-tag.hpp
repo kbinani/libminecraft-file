@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 class LongTag : public detail::ScalarTag<int64_t, Tag::Type::Long> {
 public:
@@ -15,5 +14,4 @@ public:
     }
 };
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

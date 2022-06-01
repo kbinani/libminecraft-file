@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 class EndTag;
 class ByteTag;
@@ -74,5 +73,4 @@ protected:
     [[nodiscard]] virtual bool writeImpl(::mcfile::stream::OutputStreamWriter &writer) const = 0;
 };
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

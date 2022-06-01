@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 class Tag;
 
@@ -17,5 +16,4 @@ private:
     }
 };
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

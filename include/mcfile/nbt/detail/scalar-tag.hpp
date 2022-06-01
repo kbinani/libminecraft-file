@@ -1,8 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
-namespace detail {
+namespace mcfile::nbt::detail {
 
 template<typename T, Tag::Type ID>
 class ScalarTag : public Tag {
@@ -14,6 +12,13 @@ public:
         fValue = v;
     }
 
+    Tag::Type type() const override { return ID; }
+
+    std::shared_ptr<Tag> clone() const override {
+        return std::make_shared<ScalarTag>(fValue);
+    }
+
+protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         T v;
         if (!r.read(&v)) {
@@ -27,16 +32,8 @@ public:
         return w.write(fValue);
     }
 
-    Tag::Type type() const override { return ID; }
-
-    std::shared_ptr<Tag> clone() const override {
-        return std::make_shared<ScalarTag>(fValue);
-    }
-
 public:
     T fValue;
 };
 
-} // namespace detail
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt::detail

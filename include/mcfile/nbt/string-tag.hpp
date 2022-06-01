@@ -1,7 +1,6 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 class StringTag : public Tag {
 public:
@@ -11,6 +10,17 @@ public:
         : fValue(v) {
     }
 
+    Tag::Type type() const override { return Tag::Type::String; }
+
+    std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
+    std::shared_ptr<StringTag> copy() const {
+        return std::make_shared<StringTag>(fValue);
+    }
+
+protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         std::string tmp;
         if (!r.read(tmp)) {
@@ -24,19 +34,8 @@ public:
         return w.write(fValue);
     }
 
-    Tag::Type type() const override { return Tag::Type::String; }
-
-    std::shared_ptr<Tag> clone() const override {
-        return copy();
-    }
-
-    std::shared_ptr<StringTag> copy() const {
-        return std::make_shared<StringTag>(fValue);
-    }
-
 public:
     std::string fValue;
 };
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt

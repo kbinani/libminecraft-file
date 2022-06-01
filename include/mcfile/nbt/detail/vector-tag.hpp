@@ -19,6 +19,13 @@ public:
         fValue.resize(size);
     }
 
+    Tag::Type type() const override { return ID; }
+
+    std::vector<T> const &value() const {
+        return fValue;
+    }
+
+protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint32_t length;
         if (!r.read(&length)) {
@@ -42,12 +49,6 @@ public:
             }
         }
         return true;
-    }
-
-    Tag::Type type() const override { return ID; }
-
-    std::vector<T> const &value() const {
-        return fValue;
     }
 
 public:
