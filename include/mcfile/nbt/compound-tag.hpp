@@ -49,25 +49,34 @@ public:
         return w.write(static_cast<uint8_t>(Tag::Type::End));
     }
 
-    [[nodiscard]] bool writeAsRoot(mcfile::stream::OutputStreamWriter &w) const {
+    [[nodiscard]] static bool Write(CompoundTag const &tag, mcfile::stream::OutputStreamWriter &w) {
         if (!w.write(static_cast<uint8_t>(Tag::Type::Compound))) {
             return false;
         }
         if (!w.write(std::string())) {
             return false;
         }
-        if (!writeImpl(w)) {
-            return false;
+        return tag.writeImpl(w);
+    }
+
+    [[nodiscard]] static bool Write(CompoundTag const &tag, std::filesystem::path const &file, Endian endian) {
+        auto stream = std::make_shared<mcfile::stream::FileOutputStream>(file);
+        return Write(tag, stream, endian);
+    }
+
+    [[nodiscard]] static bool Write(CompoundTag const &tag, std::shared_ptr<mcfile::stream::OutputStream> const &stream, Endian endian) {
+        mcfile::stream::OutputStreamWriter w(stream, endian);
+        return Write(tag, w);
+    }
+
+    static std::optional<std::string> Write(CompoundTag const &tag, Endian endian) {
+        auto s = std::make_shared<mcfile::stream::ByteStream>();
+        if (!Write(tag, s, endian)) {
+            return std::nullopt;
         }
-        return true;
-    }
-
-    [[nodiscard]] bool read(::mcfile::stream::InputStreamReader &r) {
-        return readImpl(r);
-    }
-
-    [[nodiscard]] bool write(mcfile::stream::OutputStreamWriter &w) const {
-        return writeImpl(w);
+        std::string ret;
+        s->drain(ret);
+        return ret;
     }
 
     Tag::Type type() const override { return Tag::Type::Compound; }
@@ -547,7 +556,7 @@ public:
     static bool WriteCompressed(CompoundTag const &tag, mcfile::stream::OutputStream &stream, Endian endian) {
         auto s = std::make_shared<stream::ByteStream>();
         stream::OutputStreamWriter osr(s, endian);
-        if (!tag.writeAsRoot(osr)) {
+        if (!Write(tag, osr)) {
             return false;
         }
         std::vector<uint8_t> buffer;

@@ -158,16 +158,8 @@ private:
         palette.reserve(numPaletteEntries);
 
         for (uint32_t i = 0; i < numPaletteEntries; i++) {
-            auto tag = make_shared<CompoundTag>();
-            uint8_t type;
-            if (!sr.read(&type)) {
-                return false;
-            }
-            string empty;
-            if (!sr.read(empty)) {
-                return false;
-            }
-            if (!tag->read(sr)) {
+            auto tag = CompoundTag::Read(sr);
+            if (!tag) {
                 return false;
             }
             auto block = Block::FromCompound(*tag);

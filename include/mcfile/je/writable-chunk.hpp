@@ -32,52 +32,22 @@ public:
     }
 
     bool write(stream::OutputStream &s) const {
-        using namespace std;
-        using namespace mcfile;
         auto compound = toCompoundTag();
         if (!compound) {
             return false;
         }
-        auto stream = make_shared<stream::ByteStream>();
-        auto writer = make_shared<stream::OutputStreamWriter>(stream, Endian::Big);
-        if (!compound->writeAsRoot(*writer)) {
-            return false;
-        }
-        std::vector<uint8_t> buffer;
-        stream->drain(buffer);
-        if (!Compression::Compress(buffer)) {
-            return false;
-        }
-        if (!s.write(buffer.data(), buffer.size())) {
-            return false;
-        }
-        return true;
+        return nbt::CompoundTag::WriteCompressed(*compound, s, Endian::Big);
     }
 
     bool writeEntities(stream::OutputStream &s) const {
-        using namespace std;
         using namespace mcfile::nbt;
-        using namespace mcfile::stream;
-        auto c = make_shared<CompoundTag>();
-        auto entities = make_shared<ListTag>(Tag::Type::Compound);
+        auto c = std::make_shared<CompoundTag>();
+        auto entities = std::make_shared<ListTag>(Tag::Type::Compound);
         for (auto const &it : fEntities) {
             entities->push_back(it);
         }
         c->set("Entities", entities);
-        auto stream = make_shared<ByteStream>();
-        OutputStreamWriter osw(stream, Endian::Big);
-        if (!c->writeAsRoot(osw)) {
-            return false;
-        }
-        vector<uint8_t> buffer;
-        stream->drain(buffer);
-        if (!Compression::Compress(buffer)) {
-            return false;
-        }
-        if (!s.write(buffer.data(), buffer.size())) {
-            return false;
-        }
-        return true;
+        return CompoundTag::WriteCompressed(*c, s, Endian::Big);
     }
 
 private:
