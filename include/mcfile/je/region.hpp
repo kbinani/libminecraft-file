@@ -626,27 +626,39 @@ public:
         int index = 0;
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++, index++) {
-                uint32_t const beforeLocation = Ceil(output.pos(), kSectorSize);
-                if (!output.seek(beforeLocation + 4)) {
+                uint32_t const sectionHead = Ceil(output.pos(), kSectorSize);
+                if (!output.seek(sectionHead + 4 + 1)) {
                     return false;
                 }
-                uint8_t compressionType = 2;
-                if (!output.write(&compressionType, 1)) {
-                    return false;
-                }
+                uint32_t const before = sectionHead + 4;
 
                 bool stop = false;
                 callback(x, z, output, stop);
                 if (stop) {
                     return false;
                 }
+                uint64_t const after = output.pos();
+                if (after == before + 1) {
+                    continue;
+                }
+                if (!output.seek(sectionHead)) {
+                    return false;
+                }
+                uint32_t sizeValue = U32BEFromNative(after - before);
+                if (!output.write(&sizeValue, sizeof(sizeValue))) {
+                    return false;
+                }
+                uint8_t compressionType = 2;
+                if (!output.write(&compressionType, 1)) {
+                    return false;
+                }
+                if (!output.seek(after)) {
+                    return false;
+                }
 
-                uint64_t const afterLocation = output.pos();
-                uint32_t const size = (afterLocation - beforeLocation);
-                deferredWrite[beforeLocation] = U32BEFromNative(size);
-
+                uint32_t const size = after - sectionHead;
                 uint32_t const numSectors = Ceil(size, kSectorSize) / kSectorSize;
-                uint32_t const loc = ((((beforeLocation) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
+                uint32_t const loc = (((sectionHead >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
                 deferredWrite[index * 4] = U32BEFromNative(loc);
                 deferredWrite[4096 + index * 4] = U32BEFromNative(std::time(nullptr));
             }
@@ -681,7 +693,7 @@ public:
             if (!tag) {
                 return;
             }
-            if (!mcfile::nbt::CompoundTag::WriteCompressed(*tag, Endian::Big)) {
+            if (!mcfile::nbt::CompoundTag::WriteCompressed(*tag, out, Endian::Big)) {
                 stop = true;
             }
         });
