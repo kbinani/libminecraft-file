@@ -626,7 +626,8 @@ public:
         int index = 0;
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++, index++) {
-                uint32_t const sectionHead = Ceil(output.pos(), kSectorSize);
+                uint64_t pos = output.pos();
+                uint32_t const sectionHead = Ceil(pos, kSectorSize);
                 if (!output.seek(sectionHead + 4 + 1)) {
                     return false;
                 }
@@ -639,6 +640,10 @@ public:
                 }
                 uint64_t const after = output.pos();
                 if (after == before + 1) {
+                    // nothing written, so seek back to initial position
+                    if (!output.seek(pos)) {
+                        return false;
+                    }
                     continue;
                 }
                 if (!output.seek(sectionHead)) {
