@@ -668,7 +668,15 @@ public:
                 deferredWrite[4096 + index * 4] = U32BEFromNative(std::time(nullptr));
             }
         }
+
         uint64_t const current = output.pos();
+        if (current == 2048 * 4) {
+            if (!output.seek(0)) {
+                return false;
+            }
+            return output.truncate();
+        }
+
         uint64_t const numZeroFill = Ceil(current, kSectorSize) - current;
         vector<uint8_t> zerofill(numZeroFill);
         if (!output.write(zerofill.data(), numZeroFill)) {

@@ -9,6 +9,9 @@
 #if __has_include(<unistd.h>)
 #include <unistd.h>
 #endif
+#if __has_include(<io.h>)
+#include <io.h>
+#endif
 
 #include <algorithm>
 #include <cassert>

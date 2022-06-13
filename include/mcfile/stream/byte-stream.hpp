@@ -70,6 +70,13 @@ public:
 
     uint64_t pos() const override { return fLoc; }
 
+    bool truncate() override {
+        if (fBuffer.size() > fLoc) {
+            fBuffer.resize(fLoc);
+        }
+        return true;
+    }
+
     void drain(std::vector<uint8_t> &out) {
         out.clear();
         out.swap(fBuffer);

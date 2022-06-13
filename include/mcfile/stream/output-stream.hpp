@@ -18,6 +18,8 @@ public:
     virtual bool seek(uint64_t offset) = 0;
 
     virtual uint64_t pos() const = 0;
+
+    virtual bool truncate() = 0;
 };
 
 } // namespace stream

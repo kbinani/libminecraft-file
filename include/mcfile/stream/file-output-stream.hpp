@@ -60,6 +60,14 @@ public:
         return fPos;
     }
 
+    bool truncate() override {
+#if defined(_MSC_VER)
+        return _chsize_s(fileno(fFile), fPos) == 0;
+#else
+        return ftruncate(fileno(fFile), fPos) == 0;
+#endif
+    }
+
 private:
     FILE *fFile;
     uint64_t fPos = 0;

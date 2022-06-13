@@ -58,6 +58,11 @@ public:
         return fPos;
     }
 
+    bool truncate() override {
+        // unsupported operation
+        return false;
+    }
+
 private:
     gzFile fFile;
     uint64_t fPos = 0;
