@@ -508,107 +508,33 @@ public:
     static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, ConcatOptions options = ConcatOptions()) = delete;
 
     static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const &directory, std::filesystem::path const &resultMcaFilePath, ConcatOptions options = ConcatOptions()) {
+        using namespace std;
         namespace fs = std::filesystem;
 
-        int const minChunkX = regionX * 32;
-        int const maxChunkX = minChunkX + 31;
-        int const minChunkZ = regionZ * 32;
-        int const maxChunkZ = minChunkZ + 31;
-        bool exists = false;
-        for (int z = minChunkZ; z <= maxChunkZ; z++) {
-            for (int x = minChunkX; x <= maxChunkX; x++) {
-                fs::path const filepath = fs::path(directory).append(options.fChunkFileName(x, z));
-                std::error_code ec;
-                if (fs::exists(filepath, ec)) {
-                    exists = true;
-                    break;
+        auto output = make_shared<mcfile::stream::FileOutputStream>(resultMcaFilePath);
+        return SquashChunksAsMca(*output, [regionX, regionZ, options, directory](int localChunkX, int localChunkZ, mcfile::stream::OutputStream &stream, bool &stop) {
+            int cx = regionX * 32 + localChunkX;
+            int cz = regionZ * 32 + localChunkZ;
+            string filename = options.fChunkFileName(cx, cz);
+            auto file = fs::path(directory) / filename;
+            error_code ec;
+            if (!fs::is_regular_file(file, ec)) {
+                return;
+            }
+            if (ec) {
+                stop = true;
+                return;
+            }
+            auto input = make_shared<mcfile::stream::FileInputStream>(file);
+            vector<uint8_t> buffer(512);
+            while (input->valid()) {
+                size_t read = input->read(buffer.data(), buffer.size());
+                if (!stream.write(buffer.data(), read)) {
+                    stop = true;
+                    return;
                 }
             }
-        }
-        if (!exists) {
-            return true;
-        }
-
-        FILE *out = File::Open(resultMcaFilePath, File::Mode::Write);
-        if (!out) {
-            return false;
-        }
-        if (!File::Fseek(out, 2 * kSectorSize, SEEK_SET)) {
-            return false;
-        }
-
-        std::vector<uint32_t> locationLut(1024, 0);
-        for (int z = minChunkZ; z <= maxChunkZ; z++) {
-            int const localChunkZ = z - minChunkZ;
-            for (int x = minChunkX; x <= maxChunkX; x++) {
-                int const localChunkX = x - minChunkX;
-                int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
-                fs::path const filepath = directory / options.fChunkFileName(x, z);
-                FILE *in = File::Open(filepath, File::Mode::Read);
-                if (!in) {
-                    continue;
-                }
-                long const currentLocation = ftell(out);
-                long const location = Ceil(currentLocation, kSectorSize);
-                if (!File::Fseek(out, location, SEEK_SET)) {
-                    fclose(in);
-                    fclose(out);
-                    return false;
-                }
-                size_t const size = fs::file_size(filepath);
-                uint8_t compressionType = 2;
-                uint32_t s = U32BEFromNative(size + sizeof(compressionType));
-                if (!File::Fwrite(&s, sizeof(s), 1, out)) {
-                    fclose(in);
-                    fclose(out);
-                    return false;
-                }
-                if (!File::Fwrite(&compressionType, sizeof(compressionType), 1, out)) {
-                    fclose(in);
-                    fclose(out);
-                    return false;
-                }
-                if (!File::Copy(in, out, size)) {
-                    fclose(in);
-                    fclose(out);
-                    return false;
-                }
-                fclose(in);
-
-                if (options.fDeleteInput) {
-                    std::error_code ec;
-                    fs::remove(filepath, ec);
-                }
-
-                size_t headerSize = sizeof(s) + sizeof(compressionType);
-                uint32_t const numSectors = Ceil(size + headerSize, kSectorSize) / kSectorSize;
-                uint32_t const loc = (((((uint32_t)location) >> 12) << 8) & 0xFFFFFF00) | (numSectors & 0xFF);
-                locationLut[index] = U32BEFromNative(loc);
-            }
-        }
-        long const current = ftell(out);
-        long const numZeroFill = Ceil(current, kSectorSize) - current;
-        std::vector<uint8_t> zerofill(numZeroFill);
-        if (!File::Fwrite(zerofill.data(), sizeof(uint8_t), numZeroFill, out)) {
-            fclose(out);
-            return false;
-        }
-
-        if (!File::Fseek(out, 0, SEEK_SET)) {
-            fclose(out);
-            return false;
-        }
-        if (!File::Fwrite(locationLut.data(), sizeof(uint32_t), locationLut.size(), out)) {
-            fclose(out);
-            return false;
-        }
-        std::vector<uint32_t> timestamp(1024, std::time(nullptr));
-        if (!File::Fwrite(timestamp.data(), sizeof(uint32_t), timestamp.size(), out)) {
-            fclose(out);
-            return false;
-        }
-        fclose(out);
-        return true;
+        });
     }
 
     static bool SquashChunksAsMca(mcfile::stream::OutputStream &output,
