@@ -5,15 +5,13 @@ namespace stream {
 
 class FileOutputStream : public OutputStream {
 public:
-    explicit FileOutputStream(std::filesystem::path const &filePath)
+    explicit FileOutputStream(std::filesystem::path const &filePath, bool deferOpen = false)
         : fFile(nullptr)
-        , fPos(0) {
-        FILE *fp = File::Open(filePath, File::Mode::Write);
-
-        if (!fp) {
-            return;
+        , fPos(0)
+        , fPath(filePath) {
+        if (!deferOpen) {
+            ensureOpened();
         }
-        this->fFile = fp;
     }
 
     FileOutputStream(std::string const &) = delete;
@@ -30,13 +28,14 @@ public:
     FileOutputStream &operator=(FileOutputStream const &) = delete;
 
     bool write(void const *buffer, size_t size) override {
-        if (!fFile) {
+        FILE *file = ensureOpened();
+        if (!file) {
             return false;
         }
         if (size == 0) {
             return true;
         }
-        if (fwrite(buffer, size, 1, fFile) == 1) {
+        if (fwrite(buffer, size, 1, file) == 1) {
             fPos += size;
             return true;
         } else {
@@ -45,10 +44,11 @@ public:
     }
 
     bool seek(uint64_t offset) override {
-        if (!fFile) {
+        FILE *file = ensureOpened();
+        if (!file) {
             return false;
         }
-        if (File::Fseek(fFile, offset, SEEK_SET)) {
+        if (File::Fseek(file, offset, SEEK_SET)) {
             fPos = offset;
             return true;
         } else {
@@ -61,16 +61,32 @@ public:
     }
 
     bool truncate() override {
+        FILE *file = ensureOpened();
 #if defined(_MSC_VER)
-        return _chsize_s(fileno(fFile), fPos) == 0;
+        return _chsize_s(fileno(file), fPos) == 0;
 #else
-        return ftruncate(fileno(fFile), fPos) == 0;
+        return ftruncate(fileno(file), fPos) == 0;
 #endif
+    }
+
+private:
+    FILE *ensureOpened() {
+        if (fFile) {
+            return fFile;
+        }
+        if (!fPath) {
+            return nullptr;
+        }
+        FILE *fp = File::Open(*fPath, File::Mode::Write);
+        fFile = fp;
+        fPath = std::nullopt;
+        return fFile;
     }
 
 private:
     FILE *fFile;
     uint64_t fPos = 0;
+    std::optional<std::filesystem::path> fPath;
 };
 
 } // namespace stream
