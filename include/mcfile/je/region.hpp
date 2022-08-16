@@ -511,7 +511,7 @@ public:
         using namespace std;
         namespace fs = std::filesystem;
 
-        auto output = make_shared<mcfile::stream::FileOutputStream>(resultMcaFilePath, true);
+        auto output = make_shared<mcfile::stream::DeferOpeningOutputStream>([resultMcaFilePath]() { return make_shared<mcfile::stream::FileOutputStream>(resultMcaFilePath); });
         return SquashChunksAsMca(*output, [regionX, regionZ, options, directory](int localChunkX, int localChunkZ, mcfile::stream::OutputStream &stream, bool &stop) {
             int cx = regionX * 32 + localChunkX;
             int cz = regionZ * 32 + localChunkZ;

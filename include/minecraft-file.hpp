@@ -51,6 +51,7 @@
 #include <mcfile/stream/byte-stream.hpp>
 #include <mcfile/stream/input-stream-reader.hpp>
 #include <mcfile/stream/output-stream-writer.hpp>
+#include <mcfile/stream/defer-opening-output-stream.hpp>
 #include <mcfile/compression.hpp>
 #include <mcfile/string.hpp>
 #include <mcfile/nbt/tag-factory.hpp>
