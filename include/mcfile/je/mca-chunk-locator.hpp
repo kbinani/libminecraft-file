@@ -2,9 +2,9 @@
 
 namespace mcfile::je {
 
-class McaDataSource {
+class McaChunkLocator {
 public:
-    McaDataSource(int chunkX, int chunkZ, uint32_t timestamp, uint64_t offset, uint64_t length)
+    McaChunkLocator(int chunkX, int chunkZ, uint32_t timestamp, uint64_t offset, uint64_t length)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
         , fTimestamp(timestamp)

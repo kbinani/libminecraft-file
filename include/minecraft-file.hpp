@@ -104,7 +104,7 @@
 #include <mcfile/je/ticking-block.hpp>
 #include <mcfile/je/chunk.hpp>
 #include <mcfile/je/writable-chunk.hpp>
-#include <mcfile/je/mca-data-source.hpp>
+#include <mcfile/je/mca-chunk-locator.hpp>
 #include <mcfile/je/region.hpp>
 #include <mcfile/je/world.hpp>
 

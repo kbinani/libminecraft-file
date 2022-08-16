@@ -34,8 +34,8 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<McaDataSource> src;
-        bool ok = dataSource(localChunkX, localChunkZ, sr, src);
+        std::shared_ptr<McaChunkLocator> src;
+        bool ok = chunkLocator(localChunkX, localChunkZ, sr, src);
         if (!ok) {
             return nullptr;
         }
@@ -53,8 +53,8 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<McaDataSource> src;
-        bool ok = dataSource(localChunkX, localChunkZ, sr, src);
+        std::shared_ptr<McaChunkLocator> src;
+        bool ok = chunkLocator(localChunkX, localChunkZ, sr, src);
         if (!ok) {
             return nullptr;
         }
@@ -79,8 +79,8 @@ public:
         }
         auto fin = std::make_shared<stream::FileInputStream>(path);
         stream::InputStreamReader sr(fin);
-        std::shared_ptr<McaDataSource> src;
-        bool ok = dataSource(localChunkX, localChunkZ, sr, src);
+        std::shared_ptr<McaChunkLocator> src;
+        bool ok = chunkLocator(localChunkX, localChunkZ, sr, src);
         if (!ok) {
             return false;
         }
@@ -257,8 +257,8 @@ public:
         }
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
-        std::shared_ptr<McaDataSource> data;
-        bool ok = dataSource(localChunkX, localChunkZ, sr, data);
+        std::shared_ptr<McaChunkLocator> data;
+        bool ok = chunkLocator(localChunkX, localChunkZ, sr, data);
         if (!ok) {
             return false;
         }
@@ -415,6 +415,24 @@ public:
         fclose(out);
 
         return true;
+    }
+
+    std::shared_ptr<mcfile::nbt::CompoundTag> exportToNbt(int chunkX, int chunkZ) const {
+        auto s = std::make_shared<mcfile::stream::FileInputStream>(fFilePath);
+        mcfile::stream::InputStreamReader sr(s);
+        if (!sr.valid()) {
+            return nullptr;
+        }
+        std::shared_ptr<McaChunkLocator> locator;
+        int x = chunkX - fX * 32;
+        int z = chunkZ - fZ * 32;
+        if (!chunkLocator(x, z, sr, locator)) {
+            return nullptr;
+        }
+        if (!locator) {
+            return nullptr;
+        }
+        return locator->load(sr);
     }
 
     bool exportToCompressedNbt(int chunkX, int chunkZ, std::string const &filePath) const = delete;
@@ -708,7 +726,7 @@ private:
         , fFilePath(filePath) {
     }
 
-    bool dataSource(int localChunkX, int localChunkZ, stream::InputStreamReader &sr, std::shared_ptr<McaDataSource> &out) const {
+    bool chunkLocator(int localChunkX, int localChunkZ, stream::InputStreamReader &sr, std::shared_ptr<McaChunkLocator> &out) const {
         out.reset();
 
         uint64_t const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
@@ -752,13 +770,13 @@ private:
 
         int const chunkX = this->fX * 32 + localChunkX;
         int const chunkZ = this->fZ * 32 + localChunkZ;
-        out.reset(new McaDataSource(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize));
+        out.reset(new McaChunkLocator(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize));
         return true;
     }
 
     bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader &sr, bool &error, LoadChunkCallback callback) const {
-        std::shared_ptr<McaDataSource> data;
-        bool ok = dataSource(regionX, regionZ, sr, data);
+        std::shared_ptr<McaChunkLocator> data;
+        bool ok = chunkLocator(regionX, regionZ, sr, data);
         if (!ok) {
             error = true;
             return true;
