@@ -10,6 +10,7 @@ public:
     enum class Mode {
         Read,
         Write,
+        ReadWrite,
         Append,
     };
 
@@ -136,6 +137,8 @@ private:
             return "wb";
         case Mode::Append:
             return "ab";
+        case Mode::ReadWrite:
+            return "rb+";
         }
         return "rb";
     }
@@ -148,6 +151,8 @@ private:
             return L"wb";
         case Mode::Append:
             return L"ab";
+        case Mode::ReadWrite:
+            return L"rb+";
         }
         return L"rb";
     }
