@@ -35,7 +35,7 @@ public:
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
         std::shared_ptr<McaChunkLocator> src;
-        bool ok = chunkLocator(localChunkX, localChunkZ, sr, src);
+        bool ok = ChunkLocator(fX, fZ, localChunkX, localChunkZ, sr, src);
         if (!ok) {
             return nullptr;
         }
@@ -54,7 +54,7 @@ public:
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
         std::shared_ptr<McaChunkLocator> src;
-        bool ok = chunkLocator(localChunkX, localChunkZ, sr, src);
+        bool ok = ChunkLocator(fX, fZ, localChunkX, localChunkZ, sr, src);
         if (!ok) {
             return nullptr;
         }
@@ -64,6 +64,12 @@ public:
         return src->loadWritableChunk(sr);
     }
 
+    std::filesystem::path entitiesRegionFilePath() const {
+        auto name = fFilePath.filename();
+        auto path = std::filesystem::path(fFilePath).remove_filename().parent_path().parent_path().append("entities") / name;
+        return path;
+    }
+
     bool entitiesAt(int chunkX, int chunkZ, std::vector<std::shared_ptr<nbt::CompoundTag>> &buffer) const {
         namespace fs = std::filesystem;
         int const localChunkX = chunkX - fX * 32;
@@ -71,8 +77,7 @@ public:
         if (localChunkX < 0 || 32 <= localChunkX || localChunkZ < 0 || 32 <= localChunkZ) {
             return false;
         }
-        std::string name = fFilePath.filename().string();
-        auto path = fs::path(fFilePath).remove_filename().parent_path().parent_path().append("entities").append(name);
+        auto path = entitiesRegionFilePath();
         std::error_code ec;
         if (!fs::is_regular_file(path, ec)) {
             return true;
@@ -80,7 +85,7 @@ public:
         auto fin = std::make_shared<stream::FileInputStream>(path);
         stream::InputStreamReader sr(fin);
         std::shared_ptr<McaChunkLocator> src;
-        bool ok = chunkLocator(localChunkX, localChunkZ, sr, src);
+        bool ok = ChunkLocator(fX, fZ, localChunkX, localChunkZ, sr, src);
         if (!ok) {
             return false;
         }
@@ -185,65 +190,21 @@ public:
             return false;
         }
 
-        FILE *fp = File::Open(fFilePath, File::Mode::Read);
-        if (!fp) {
+        return Clear(fFilePath, fX, fZ, localChunkX, localChunkZ);
+    }
+
+    bool clearEntities(int chunkX, int chunkZ) {
+        int const localChunkX = chunkX - fX * 32;
+        int const localChunkZ = chunkZ - fZ * 32;
+        if (localChunkX < 0 || 32 <= localChunkX) {
             return false;
         }
-        int const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
-        if (!File::Fseek(fp, 4 * index, SEEK_SET)) {
-            fclose(fp);
-            return false;
-        }
-        uint32_t loc;
-        if (!File::Fread(&loc, sizeof(loc), 1, fp)) {
-            fclose(fp);
-            return false;
-        }
-        loc = U32FromBE(loc);
-        if (loc == 0) {
-            fclose(fp);
-            return true;
-        }
-        long const sectorOffset = loc >> 8;
-        if (!File::Fseek(fp, 4 * index, SEEK_SET)) {
-            fclose(fp);
-            return false;
-        }
-        loc = 0;
-        if (!File::Fwrite(&loc, sizeof(loc), 1, fp)) {
-            fclose(fp);
+        if (localChunkZ < 0 || 32 <= localChunkZ) {
             return false;
         }
 
-        if (!File::Fseek(fp, kSectorSize + 4 * index, SEEK_SET)) {
-            fclose(fp);
-            return false;
-        }
-        uint32_t timestamp = 0;
-        if (!File::Fwrite(&timestamp, sizeof(timestamp), 1, fp)) {
-            fclose(fp);
-            return false;
-        }
-        if (!File::Fseek(fp, sectorOffset * kSectorSize, SEEK_SET)) {
-            fclose(fp);
-            return false;
-        }
-        uint32_t chunkSize;
-        if (!File::Fread(&chunkSize, sizeof(chunkSize), 1, fp)) {
-            fclose(fp);
-            return false;
-        }
-        chunkSize = U32FromBE(chunkSize);
-        for (uint32_t i = 0; i < chunkSize; i++) {
-            uint8_t zero = 0;
-            if (!File::Fwrite(&zero, sizeof(zero), 1, fp)) {
-                fclose(fp);
-                return false;
-            }
-        }
-
-        fclose(fp);
-        return true;
+        auto file = entitiesRegionFilePath();
+        return Clear(file, fX, fZ, localChunkX, localChunkZ);
     }
 
     bool chunkExists(int chunkX, int chunkZ) const {
@@ -258,7 +219,7 @@ public:
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         stream::InputStreamReader sr(fs);
         std::shared_ptr<McaChunkLocator> data;
-        bool ok = chunkLocator(localChunkX, localChunkZ, sr, data);
+        bool ok = ChunkLocator(fX, fZ, localChunkX, localChunkZ, sr, data);
         if (!ok) {
             return false;
         }
@@ -426,7 +387,7 @@ public:
         std::shared_ptr<McaChunkLocator> locator;
         int x = chunkX - fX * 32;
         int z = chunkZ - fZ * 32;
-        if (!chunkLocator(x, z, sr, locator)) {
+        if (!ChunkLocator(fX, fZ, x, z, sr, locator)) {
             return nullptr;
         }
         if (!locator) {
@@ -726,7 +687,33 @@ private:
         , fFilePath(filePath) {
     }
 
-    bool chunkLocator(int localChunkX, int localChunkZ, stream::InputStreamReader &sr, std::shared_ptr<McaChunkLocator> &out) const {
+    bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader &sr, bool &error, LoadChunkCallback callback) const {
+        std::shared_ptr<McaChunkLocator> data;
+        bool ok = ChunkLocator(fX, fZ, regionX, regionZ, sr, data);
+        if (!ok) {
+            error = true;
+            return true;
+        }
+        if (!data) {
+            // chunk not saved yet
+            return true;
+        }
+        if (data->loadChunk(sr, callback)) {
+            return true;
+        } else {
+            error = true;
+            return true;
+        }
+    }
+
+    static uint32_t Ceil(uint32_t v, uint32_t div) {
+        if (v % div == 0) {
+            return v;
+        }
+        return v + (div - (v % div));
+    }
+
+    static bool ChunkLocator(int regionX, int regionZ, int localChunkX, int localChunkZ, stream::InputStreamReader &sr, std::shared_ptr<McaChunkLocator> &out) {
         out.reset();
 
         uint64_t const index = (localChunkX & 31) + (localChunkZ & 31) * 32;
@@ -768,36 +755,62 @@ private:
             return true;
         }
 
-        int const chunkX = this->fX * 32 + localChunkX;
-        int const chunkZ = this->fZ * 32 + localChunkZ;
+        int const chunkX = regionX * 32 + localChunkX;
+        int const chunkZ = regionZ * 32 + localChunkZ;
         out.reset(new McaChunkLocator(chunkX, chunkZ, timestamp, sectorOffset * kSectorSize, chunkSize));
         return true;
     }
 
-    bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader &sr, bool &error, LoadChunkCallback callback) const {
-        std::shared_ptr<McaChunkLocator> data;
-        bool ok = chunkLocator(regionX, regionZ, sr, data);
-        if (!ok) {
-            error = true;
-            return true;
+    static bool Clear(std::filesystem::path const &file, int regionX, int regionZ, int localChunkX, int localChunkZ) {
+        if (localChunkX < 0 || 32 <= localChunkX) {
+            return false;
         }
-        if (!data) {
-            // chunk not saved yet
-            return true;
+        if (localChunkZ < 0 || 32 <= localChunkZ) {
+            return false;
         }
-        if (data->loadChunk(sr, callback)) {
-            return true;
-        } else {
-            error = true;
-            return true;
-        }
-    }
 
-    static uint32_t Ceil(uint32_t v, uint32_t div) {
-        if (v % div == 0) {
-            return v;
+        std::shared_ptr<McaChunkLocator> data;
+        {
+            auto fs = std::make_shared<stream::FileInputStream>(file);
+            stream::InputStreamReader sr(fs);
+            if (!ChunkLocator(regionX, regionZ, localChunkX, localChunkZ, sr, data)) {
+                return true;
+            }
+            if (!data) {
+                return false;
+            }
+            fs.reset();
         }
-        return v + (div - (v % div));
+
+        ScopedFile fp(File::Open(file, File::Mode::ReadWrite));
+        if (!fp) {
+            return false;
+        }
+        uint64_t index = localChunkX + localChunkZ * 32;
+        if (!File::Fseek(fp.get(), index * 4, SEEK_SET)) {
+            return false;
+        }
+        uint32_t zero = 0;
+        if (!File::Fwrite(&zero, sizeof(zero), 1, fp.get())) {
+            return false;
+        }
+        if (!File::Fseek(fp.get(), data->fOffset, SEEK_SET)) {
+            return false;
+        }
+        if (!File::Fwrite(&zero, sizeof(zero), 1, fp.get())) {
+            return false;
+        }
+        uint8_t clear[128] = {0};
+        uint64_t remains = data->fLength;
+        while (remains > 0) {
+            uint64_t amount = remains > 128 ? 128 : remains;
+            if (!File::Fwrite(clear, amount, 1, fp.get())) {
+                return false;
+            }
+            remains -= amount;
+        }
+
+        return true;
     }
 
 public:
