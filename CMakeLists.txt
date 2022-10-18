@@ -121,20 +121,17 @@ if (TEST_RESULT_STDCXXFS AND "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
 endif()
 
 if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
-  set(ZLIB_COMPAT ON)
-  add_subdirectory(deps/zlib-ng EXCLUDE_FROM_ALL)
-  set(ZLIB_INCLUDE_DIR $<TARGET_PROPERTY:zlib,INCLUDE_DIRECTORIES>)
-  set(ZLIB_LIBRARY $<TARGET_LINKER_FILE:zlib>)
+  add_subdirectory(deps/zlib EXCLUDE_FROM_ALL)
+  set(ZLIB_INCLUDE_DIR $<TARGET_PROPERTY:zlibstatic,INCLUDE_DIRECTORIES>)
+  set(ZLIB_LIBRARY $<TARGET_LINKER_FILE:zlibstatic>)
 
-  list(APPEND mcfile_test_link_libraries zlib)
+  list(APPEND mcfile_test_link_libraries zlibstatic)
 elseif("${EMSCRIPTEN}" STREQUAL "1")
-  set(ZLIB_COMPAT ON)
-  set(WITH_OPTIM OFF)
-  add_subdirectory(deps/zlib-ng EXCLUDE_FROM_ALL)
-  set(ZLIB_INCLUDE_DIR $<TARGET_PROPERTY:zlib,INCLUDE_DIRECTORIES>)
-  set(ZLIB_LIBRARY $<TARGET_LINKER_FILE:zlib>)
+  add_subdirectory(deps/zlib EXCLUDE_FROM_ALL)
+  set(ZLIB_INCLUDE_DIR $<TARGET_PROPERTY:zlibstatic,INCLUDE_DIRECTORIES>)
+  set(ZLIB_LIBRARY $<TARGET_LINKER_FILE:zlibstatic>)
 
-  list(APPEND mcfile_test_link_libraries zlib)
+  list(APPEND mcfile_test_link_libraries zlibstatic)
 else()
   list(APPEND mcfile_test_link_libraries z)
 endif()
@@ -142,8 +139,8 @@ endif()
 add_library(mcfile INTERFACE ${mcfile_files})
 target_include_directories(mcfile INTERFACE
   include
-  deps/zlib-ng
-  ${CMAKE_BINARY_DIR}/deps/zlib-ng)
+  deps/zlib
+  ${CMAKE_CURRENT_BINARY_DIR}/deps/zlib)
 target_link_libraries(mcfile INTERFACE ${mcfile_test_link_libraries})
 
 add_executable(mcfile-test ${mcfile_test_files})
