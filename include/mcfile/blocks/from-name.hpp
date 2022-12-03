@@ -956,6 +956,47 @@ static inline std::unordered_map<std::string, BlockId> *CreateTable() {
     t["minecraft:mud"] = mud;
     t["minecraft:mud_brick_stairs"] = mud_brick_stairs;
 
+    // 1.19.3 (rc1)
+    t["minecraft:acacia_hanging_sign"] = acacia_hanging_sign;
+    t["minecraft:acacia_wall_hanging_sign"] = acacia_wall_hanging_sign;
+    t["minecraft:bamboo_block"] = bamboo_block;
+    t["minecraft:bamboo_button"] = bamboo_button;
+    t["minecraft:bamboo_door"] = bamboo_door;
+    t["minecraft:bamboo_fence"] = bamboo_fence;
+    t["minecraft:bamboo_fence_gate"] = bamboo_fence_gate;
+    t["minecraft:bamboo_hanging_sign"] = bamboo_hanging_sign;
+    t["minecraft:bamboo_mosaic"] = bamboo_mosaic;
+    t["minecraft:bamboo_mosaic_slab"] = bamboo_mosaic_slab;
+    t["minecraft:bamboo_mosaic_stairs"] = bamboo_mosaic_stairs;
+    t["minecraft:bamboo_planks"] = bamboo_planks;
+    t["minecraft:bamboo_pressure_plate"] = bamboo_pressure_plate;
+    t["minecraft:bamboo_sign"] = bamboo_sign;
+    t["minecraft:bamboo_slab"] = bamboo_slab;
+    t["minecraft:bamboo_stairs"] = bamboo_stairs;
+    t["minecraft:bamboo_trapdoor"] = bamboo_trapdoor;
+    t["minecraft:bamboo_wall_hanging_sign"] = bamboo_wall_hanging_sign;
+    t["minecraft:bamboo_wall_sign"] = bamboo_wall_sign;
+    t["minecraft:birch_hanging_sign"] = birch_hanging_sign;
+    t["minecraft:birch_wall_hanging_sign"] = birch_wall_hanging_sign;
+    t["minecraft:chiseled_bookshelf"] = chiseled_bookshelf;
+    t["minecraft:crimson_hanging_sign"] = crimson_hanging_sign;
+    t["minecraft:crimson_wall_hanging_sign"] = crimson_wall_hanging_sign;
+    t["minecraft:dark_oak_hanging_sign"] = dark_oak_hanging_sign;
+    t["minecraft:dark_oak_wall_hanging_sign"] = dark_oak_wall_hanging_sign;
+    t["minecraft:jungle_hanging_sign"] = jungle_hanging_sign;
+    t["minecraft:jungle_wall_hanging_sign"] = jungle_wall_hanging_sign;
+    t["minecraft:mangrove_hanging_sign"] = mangrove_hanging_sign;
+    t["minecraft:mangrove_wall_hanging_sign"] = mangrove_wall_hanging_sign;
+    t["minecraft:oak_hanging_sign"] = oak_hanging_sign;
+    t["minecraft:oak_wall_hanging_sign"] = oak_wall_hanging_sign;
+    t["minecraft:piglin_head"] = piglin_head;
+    t["minecraft:piglin_wall_head"] = piglin_wall_head;
+    t["minecraft:spruce_hanging_sign"] = spruce_hanging_sign;
+    t["minecraft:spruce_wall_hanging_sign"] = spruce_wall_hanging_sign;
+    t["minecraft:stripped_bamboo_block"] = stripped_bamboo_block;
+    t["minecraft:warped_hanging_sign"] = warped_hanging_sign;
+    t["minecraft:warped_wall_hanging_sign"] = warped_wall_hanging_sign;
+
     return ret;
 }
 

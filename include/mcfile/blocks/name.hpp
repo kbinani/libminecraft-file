@@ -958,6 +958,47 @@ static inline std::vector<Characteristics> CreateTable() {
     m[mud] = {.name = "minecraft:mud", .opaque = true};
     m[mud_brick_stairs] = {.name = "minecraft:mud_brick_stairs", .opaque = false};
 
+    // 1.19.3(rc1)
+    m[acacia_hanging_sign] = {.name = "minecraft:acacia_hanging_sign", .opaque = false};
+    m[acacia_wall_hanging_sign] = {.name = "minecraft:acacia_wall_hanging_sign", .opaque = false};
+    m[bamboo_block] = {.name = "minecraft:bamboo_block", .opaque = true};
+    m[bamboo_button] = {.name = "minecraft:bamboo_button", .opaque = false};
+    m[bamboo_door] = {.name = "minecraft:bamboo_door", .opaque = false};
+    m[bamboo_fence] = {.name = "minecraft:bamboo_fence", .opaque = false};
+    m[bamboo_fence_gate] = {.name = "minecraft:bamboo_fence_gate", .opaque = false};
+    m[bamboo_hanging_sign] = {.name = "minecraft:bamboo_hanging_sign", .opaque = false};
+    m[bamboo_mosaic] = {.name = "minecraft:bamboo_mosaic", .opaque = true};
+    m[bamboo_mosaic_slab] = {.name = "minecraft:bamboo_mosaic_slab", .opaque = false};
+    m[bamboo_mosaic_stairs] = {.name = "minecraft:bamboo_mosaic_stairs", .opaque = false};
+    m[bamboo_planks] = {.name = "minecraft:bamboo_planks", .opaque = true};
+    m[bamboo_pressure_plate] = {.name = "minecraft:bamboo_pressure_plate", .opaque = false};
+    m[bamboo_sign] = {.name = "minecraft:bamboo_sign", .opaque = false};
+    m[bamboo_slab] = {.name = "minecraft:bamboo_slab", .opaque = false};
+    m[bamboo_stairs] = {.name = "minecraft:bamboo_stairs", .opaque = false};
+    m[bamboo_trapdoor] = {.name = "minecraft:bamboo_trapdoor", .opaque = false};
+    m[bamboo_wall_hanging_sign] = {.name = "minecraft:bamboo_wall_hanging_sign", .opaque = false};
+    m[bamboo_wall_sign] = {.name = "minecraft:bamboo_wall_sign", .opaque = false};
+    m[birch_hanging_sign] = {.name = "minecraft:birch_hanging_sign", .opaque = false};
+    m[birch_wall_hanging_sign] = {.name = "minecraft:birch_wall_hanging_sign", .opaque = false};
+    m[chiseled_bookshelf] = {.name = "minecraft:chiseled_bookshelf", .opaque = true};
+    m[crimson_hanging_sign] = {.name = "minecraft:crimson_hanging_sign", .opaque = false};
+    m[crimson_wall_hanging_sign] = {.name = "minecraft:crimson_wall_hanging_sign", .opaque = false};
+    m[dark_oak_hanging_sign] = {.name = "minecraft:dark_oak_hanging_sign", .opaque = false};
+    m[dark_oak_wall_hanging_sign] = {.name = "minecraft:dark_oak_wall_hanging_sign", .opaque = false};
+    m[jungle_hanging_sign] = {.name = "minecraft:jungle_hanging_sign", .opaque = false};
+    m[jungle_wall_hanging_sign] = {.name = "minecraft:jungle_wall_hanging_sign", .opaque = false};
+    m[mangrove_hanging_sign] = {.name = "minecraft:mangrove_hanging_sign", .opaque = false};
+    m[mangrove_wall_hanging_sign] = {.name = "minecraft:mangrove_wall_hanging_sign", .opaque = false};
+    m[oak_hanging_sign] = {.name = "minecraft:oak_hanging_sign", .opaque = false};
+    m[oak_wall_hanging_sign] = {.name = "minecraft:oak_wall_hanging_sign", .opaque = false};
+    m[piglin_head] = {.name = "minecraft:piglin_head", .opaque = false};
+    m[piglin_wall_head] = {.name = "minecraft:piglin_wall_head", .opaque = false};
+    m[spruce_hanging_sign] = {.name = "minecraft:spruce_hanging_sign", .opaque = false};
+    m[spruce_wall_hanging_sign] = {.name = "minecraft:spruce_wall_hanging_sign", .opaque = false};
+    m[stripped_bamboo_block] = {.name = "minecraft:stripped_bamboo_block", .opaque = true};
+    m[warped_hanging_sign] = {.name = "minecraft:warped_hanging_sign", .opaque = false};
+    m[warped_wall_hanging_sign] = {.name = "minecraft:warped_wall_hanging_sign", .opaque = false};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);
