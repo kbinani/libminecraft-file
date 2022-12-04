@@ -74,7 +74,7 @@ private:
                 return nullptr;
             }
         }
-        return shared_ptr<SubChunk>(new SubChunk(palette, indices, waterPalette, waterIndices, chunkY));
+        return shared_ptr<SubChunk>(new SubChunk(palette, indices, waterPalette, waterIndices, chunkY, 9));
     }
 
     static std::shared_ptr<SubChunk> ParseVersion8(mcfile::stream::InputStreamReader &sr, int8_t chunkY) {
@@ -102,7 +102,7 @@ private:
                 return nullptr;
             }
         }
-        return shared_ptr<SubChunk>(new SubChunk(palette, indices, waterPalette, waterIndices, chunkY));
+        return shared_ptr<SubChunk>(new SubChunk(palette, indices, waterPalette, waterIndices, chunkY, 8));
     }
 
     static bool ParsePalette(mcfile::stream::InputStreamReader &sr, std::vector<uint16_t> &index, std::vector<std::shared_ptr<Block const>> &palette) {
@@ -175,8 +175,10 @@ private:
     SubChunk(
         std::vector<std::shared_ptr<Block const>> &palette, std::vector<uint16_t> &paletteIndices,
         std::vector<std::shared_ptr<Block const>> &waterPalette, std::vector<uint16_t> &waterPaletteIndices,
-        int8_t chunkY)
-        : fChunkY(chunkY) {
+        int8_t chunkY,
+        uint8_t chunkVersion)
+        : fChunkY(chunkY)
+        , fChunkVersion(chunkVersion) {
         fPalette.swap(palette);
         fPaletteIndices.swap(paletteIndices);
         fWaterPalette.swap(waterPalette);
@@ -206,6 +208,7 @@ public:
     std::vector<std::shared_ptr<Block const>> fWaterPalette;
     std::vector<uint16_t> fWaterPaletteIndices;
     int8_t const fChunkY;
+    uint8_t const fChunkVersion;
 };
 
 } // namespace mcfile::be
