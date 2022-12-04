@@ -456,6 +456,113 @@ public:
         return ret;
     }
 
+    bool equals(CompoundTag const &o) const {
+        using namespace std;
+        if (size() != o.size()) {
+            return false;
+        }
+        for (auto const &it : *this) {
+            auto tagO = o.tag(it.first);
+            if (!tagO) {
+                return false;
+            }
+            if (!Equals(*tagO, *it.second)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static bool Equals(Tag const &a, Tag const &b) {
+        if (a.type() != b.type()) {
+            return false;
+        }
+        switch (a.type()) {
+        case Tag::Type::Byte:
+            if (!a.asByte()->equals(*b.asByte())) {
+                return false;
+            }
+            break;
+        case Tag::Type::ByteArray:
+            if (!a.asByteArray()->equals(*b.asByteArray())) {
+                return false;
+            }
+            break;
+        case Tag::Type::Compound:
+            if (!a.asCompound()->equals(*b.asCompound())) {
+                return false;
+            }
+            break;
+        case Tag::Type::Double:
+            if (!a.asDouble()->equals(*b.asDouble())) {
+                return false;
+            }
+            break;
+        case Tag::Type::End:
+            break;
+        case Tag::Type::Float:
+            if (!a.asFloat()->equals(*b.asFloat())) {
+                return false;
+            }
+            break;
+        case Tag::Type::Int:
+            if (!a.asInt()->equals(*b.asInt())) {
+                return false;
+            }
+            break;
+        case Tag::Type::IntArray:
+            if (!a.asIntArray()->equals(*b.asIntArray())) {
+                return false;
+            }
+            break;
+        case Tag::Type::List: {
+            ListTag const &av = *a.asList();
+            ListTag const &bv = *b.asList();
+            if (av.size() != bv.size()) {
+                return false;
+            }
+            if (av.fType != bv.fType) {
+                return false;
+            }
+            for (size_t i = 0; i < av.size(); i++) {
+                auto const &avi = av.at(i);
+                auto const &bvi = bv.at(i);
+                if (avi && bvi) {
+                    if (!Equals(*avi, *bvi)) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+            break;
+        }
+        case Tag::Type::Long:
+            if (!a.asLong()->equals(*b.asLong())) {
+                return false;
+            }
+            break;
+        case Tag::Type::LongArray:
+            if (!a.asLongArray()->equals(*b.asLongArray())) {
+                return false;
+            }
+            break;
+        case Tag::Type::Short:
+            if (!a.asShort()->equals(*b.asShort())) {
+                return false;
+            }
+            break;
+        case Tag::Type::String:
+            if (!a.asString()->equals(*b.asString())) {
+                return false;
+            }
+            break;
+        default:
+            return false;
+        }
+        return true;
+    }
+
     static void ReadUntilEos(stream::InputStreamReader &reader, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
         ReadUntilEosImpl(reader, callback);
     }

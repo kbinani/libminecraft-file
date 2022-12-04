@@ -18,6 +18,10 @@ public:
         return std::make_shared<ScalarTag>(fValue);
     }
 
+    bool equals(ScalarTag<T, ID> const &o) const {
+        return fValue == o.fValue;
+    }
+
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         T v;

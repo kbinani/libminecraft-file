@@ -20,6 +20,10 @@ public:
         return std::make_shared<DoubleTag>(fValue);
     }
 
+    bool equals(DoubleTag const &o) const {
+        return o.fValue == fValue;
+    }
+
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint64_t v;

@@ -25,6 +25,20 @@ public:
         return fValue;
     }
 
+    bool equals(VectorTag<T, ID> const &o) const {
+        std::vector<T> const &tv = value();
+        std::vector<T> const &ov = o.value();
+        if (tv.size() != ov.size()) {
+            return false;
+        }
+        for (size_t i = 0; i < tv.size(); i++) {
+            if (tv[i] != ov[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint32_t length;

@@ -20,6 +20,10 @@ public:
         return std::make_shared<FloatTag>(fValue);
     }
 
+    bool equals(FloatTag const &o) const {
+        return o.fValue == fValue;
+    }
+
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint32_t v;
