@@ -113,6 +113,13 @@ public:
         }
     }
 
+    void fill(Value v) {
+        fValue.resize(1, v);
+        fIndex.resize(size, 0);
+        fLut.clear();
+        fLut[v] = 0;
+    }
+
     static bool ShrinkToFit(std::vector<Value> &inoutPalette, std::vector<Index> &inoutIndex) {
         return ShrinkToFitImpl(inoutPalette, inoutIndex);
     }
