@@ -91,10 +91,10 @@ public:
     static std::string Digp(int32_t chunkX, int32_t chunkZ, Dimension dim) {
         std::string ret("digp");
         int32_t cx = I32LEFromNative(chunkX);
-        ret.append((char const*)&cx, 4);
+        ret.append((char const *)&cx, 4);
 
         int32_t cz = I32LEFromNative(chunkZ);
-        ret.append((char const*)&cz, 4);
+        ret.append((char const *)&cz, 4);
 
         int32_t d = 0;
         if (dim == Dimension::Nether) {
@@ -103,7 +103,7 @@ public:
             d = 2;
         }
         if (d != 0) {
-            ret.append((char const*)&d, 4);
+            ret.append((char const *)&d, 4);
         }
         return ret;
     }
