@@ -90,9 +90,12 @@ public:
 
     static std::string Digp(int32_t chunkX, int32_t chunkZ, Dimension dim) {
         std::string ret("digp");
-        ret.resize(12);
-        *((int32_t *)(ret.data() + 4)) = I32LEFromNative(chunkX);
-        *((int32_t *)(ret.data() + 8)) = I32LEFromNative(chunkZ);
+        int32_t cx = I32LEFromNative(chunkX);
+        ret.append((char const*)&cx, 4);
+
+        int32_t cz = I32LEFromNative(chunkZ);
+        ret.append((char const*)&cz, 4);
+
         int32_t d = 0;
         if (dim == Dimension::Nether) {
             d = 1;
@@ -100,8 +103,7 @@ public:
             d = 2;
         }
         if (d != 0) {
-            ret.resize(16);
-            *((int32_t *)(ret.data() + 12)) = I32LEFromNative(d);
+            ret.append((char const*)&d, 4);
         }
         return ret;
     }
@@ -150,8 +152,8 @@ public:
                 return k;
             } else {
                 uint8_t tag = key[8];
-                int32_t cx = *(int32_t *)key.data();
-                int32_t cz = *(int32_t *)(key.data() + 4);
+                int32_t cx = Mem::Read<int32_t>(key, 0);
+                int32_t cz = Mem::Read<int32_t>(key, 4);
                 DbKey k;
                 k.fIsTagged = true;
                 k.fTagged.fTag = tag;
@@ -169,8 +171,8 @@ public:
                 k.fUnTagged = key;
                 return k;
             } else {
-                int32_t cx = *(int32_t *)key.data();
-                int32_t cz = *(int32_t *)(key.data() + 4);
+                int32_t cx = Mem::Read<int32_t>(key, 0);
+                int32_t cz = Mem::Read<int32_t>(key, 4);
                 uint8_t rawY = key[9];
                 int8_t y = *(int8_t *)&rawY;
                 DbKey k;
@@ -191,9 +193,9 @@ public:
                 return k;
             } else {
                 uint8_t tag = key[12];
-                int32_t cx = *(int32_t *)key.data();
-                int32_t cz = *(int32_t *)(key.data() + 4);
-                int32_t dim = *(int32_t *)(key.data() + 8);
+                int32_t cx = Mem::Read<int32_t>(key, 0);
+                int32_t cz = Mem::Read<int32_t>(key, 4);
+                int32_t dim = Mem::Read<int32_t>(key, 8);
                 DbKey k;
                 k.fIsTagged = true;
                 k.fTagged.fTag = tag;
@@ -206,9 +208,9 @@ public:
         case 14: {
             uint8_t tag = key[12];
             if (tag == 0x2f) {
-                int32_t cx = *(int32_t *)key.data();
-                int32_t cz = *(int32_t *)(key.data() + 4);
-                int32_t dim = *(int32_t *)(key.data() + 8);
+                int32_t cx = Mem::Read<int32_t>(key, 0);
+                int32_t cz = Mem::Read<int32_t>(key, 4);
+                int32_t dim = Mem::Read<int32_t>(key, 8);
                 uint8_t rawY = key[13];
                 int8_t y = *(int8_t *)&rawY;
                 DbKey k;
@@ -295,8 +297,8 @@ private:
     static void PlaceXZTag(std::vector<char> &out, int32_t chunkX, int32_t chunkZ, uint8_t tag) {
         out.clear();
         out.resize(9);
-        *(uint32_t *)out.data() = mcfile::U32LEFromNative(*(uint32_t *)&chunkX);
-        *(uint32_t *)(out.data() + 4) = mcfile::U32LEFromNative(*(uint32_t *)&chunkZ);
+        Mem::Write(out, 0, mcfile::U32LEFromNative(*(uint32_t *)&chunkX));
+        Mem::Write(out, 4, mcfile::U32LEFromNative(*(uint32_t *)&chunkZ));
         out[8] = tag;
     }
 
@@ -318,7 +320,7 @@ private:
         default:
             break;
         }
-        *(uint32_t *)(out.data() + 8) = mcfile::U32LEFromNative(v);
+        Mem::Write(out, 8, mcfile::U32LEFromNative(v));
         out[12] = tag;
     }
 

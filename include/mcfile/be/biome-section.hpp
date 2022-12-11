@@ -121,7 +121,7 @@ public:
             if (data.size() < ptr + 4) {
                 return nullptr;
             }
-            uint32_t raw = *(uint32_t *)(data.data() + ptr);
+            uint32_t raw = Mem::Read<uint32_t>(data, ptr);
             biomes::BiomeId biome = Biome::FromUint32(raw);
             ret->fill(biome);
             *offset = ptr + 4;
@@ -145,7 +145,7 @@ public:
         }
         vector<bool> buffer;
         for (int i = 0; i < numDwords; i++) {
-            uint32_t v = *(uint32_t *)(data.data() + ptr);
+            uint32_t v = Mem::Read<uint32_t>(data, ptr);
             ptr += 4;
             for (int j = 0; j < bitsUsedPerDword; j++) {
                 bool flag = ((v >> j) & 0x1) == 0x1;
@@ -155,7 +155,7 @@ public:
         if (data.size() < ptr + 4) {
             return nullptr;
         }
-        uint32_t numPaletteEntries = *(uint32_t *)(data.data() + ptr);
+        uint32_t numPaletteEntries = Mem::Read<uint32_t>(data, ptr);
         ptr += 4;
         if (data.size() < ptr + 4 * numPaletteEntries) {
             return nullptr;
@@ -164,7 +164,7 @@ public:
             return nullptr;
         }
         for (int i = 0; i < numPaletteEntries; i++) {
-            uint32_t raw = *(uint32_t *)(data.data() + ptr);
+            uint32_t raw = Mem::Read<uint32_t>(data, ptr);
             ptr += 4;
             biomes::BiomeId biome = Biome::FromUint32(raw);
             ret->fPalette.push_back(biome);

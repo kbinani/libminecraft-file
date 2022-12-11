@@ -69,6 +69,7 @@ set(mcfile_files
   include/mcfile/je/ticking-block.hpp
   include/mcfile/je/world.hpp
   include/mcfile/je/writable-chunk.hpp
+  include/mcfile/mem.hpp
   include/mcfile/nbt/byte-array-tag.hpp
   include/mcfile/nbt/byte-tag.hpp
   include/mcfile/nbt/compound-tag.hpp
