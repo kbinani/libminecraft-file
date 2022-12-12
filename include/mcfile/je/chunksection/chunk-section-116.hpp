@@ -4,7 +4,7 @@ namespace mcfile::je::chunksection {
 
 class ChunkSection116 : public ChunkSection113Base<BlockStatesParser116> {
 public:
-    static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
+    static std::shared_ptr<ChunkSection116> MakeEmpty(int sectionY) {
         using namespace std;
         vector<shared_ptr<Block const>> palette;
         palette.push_back(make_shared<Block const>("minecraft:air"));
@@ -31,6 +31,10 @@ public:
             return false;
         }
         return fBiomes.set(*index, biome);
+    }
+
+    void fill(biomes::BiomeId biome) override {
+        fBiomes.fill(biome);
     }
 
 private:

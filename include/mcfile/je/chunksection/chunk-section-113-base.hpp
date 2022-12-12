@@ -58,6 +58,9 @@ public:
         return false;
     }
 
+    void fill(biomes::BiomeId biome) override {
+    }
+
     std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
         using namespace std;
         using namespace mcfile::nbt;

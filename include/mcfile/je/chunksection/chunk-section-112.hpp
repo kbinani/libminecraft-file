@@ -72,6 +72,9 @@ public:
         return false;
     }
 
+    void fill(biomes::BiomeId biome) override {
+    }
+
     void eachBlockPalette(std::function<bool(Block const &)> visitor) const override {
         fBlocks.eachValue([visitor](std::shared_ptr<Block const> const &v) {
             if (!v) {

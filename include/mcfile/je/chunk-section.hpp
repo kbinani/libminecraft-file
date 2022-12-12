@@ -11,6 +11,7 @@ public:
     virtual int rawY() const = 0;
     virtual std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) = 0;
+    virtual void fill(mcfile::biomes::BiomeId biome) = 0;
 
     virtual void eachBlockPalette(std::function<bool(Block const &)> visitor) const = 0;
 
