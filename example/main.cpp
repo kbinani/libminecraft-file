@@ -26,7 +26,7 @@ int main() {
 
     // get biome type at (x, y, z) = (1, 0, 2)
     biomes::BiomeId biome = chunk->biomeAt(1, 2);
-    std::cout << biomes::Name(biome, chunk->fDataVersion) << std::endl; // "minecraft:crimson_forest" etc.
+    std::cout << biomes::Name(biome, chunk->dataVersion()) << std::endl; // "minecraft:crimson_forest" etc.
 
     // accessing all chunks in the region
     bool err = false;
