@@ -92,9 +92,11 @@ private:
           std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> &blockEntities,
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
           std::vector<PendingTick> &pendingTicks,
-          std::shared_ptr<BiomeMap> &biomes)
+          std::shared_ptr<BiomeMap> &biomes,
+          int8_t version)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
+        , fVersion(version)
         , fChunkY(chunkY) {
         int maxChunkY = fChunkY;
         for (auto const &subChunk : subChunks) {
@@ -265,6 +267,17 @@ private:
 
         int8_t actualMinY = 0;
 
+        int8_t chunkVersion = std::numeric_limits<int8_t>::lowest();
+        if (auto version = db.get(DbKey::Version(chunkX, chunkZ, d)); version) {
+            if (version->size() == 1) {
+                chunkVersion = Mem::Read<int8_t>(*version, 0);
+            }
+        } else if (auto legacyVersion = db.get(DbKey::VersionLegacy(chunkX, chunkZ, d)); legacyVersion) {
+            if (legacyVersion->size() == 1) {
+                chunkVersion = Mem::Read<int8_t>(*legacyVersion, 0);
+            }
+        }
+
         for (int8_t y = possibleMinY; y <= possibleMaxY; y++) {
             auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
             if (!subChunkData) {
@@ -295,7 +308,7 @@ private:
 
         auto biomes = LoadBiomes(chunkX, chunkY, chunkZ, d, db, endian);
 
-        auto ret = shared_ptr<Chunk>(new Chunk(d, chunkX, chunkY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes));
+        auto ret = shared_ptr<Chunk>(new Chunk(d, chunkX, chunkY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes, chunkVersion));
         ret->fCurrentTick = currentTick;
         return ret;
     }
@@ -346,6 +359,7 @@ private:
 public:
     int32_t const fChunkX;
     int32_t const fChunkZ;
+    int8_t const fVersion;
     std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> fBlockEntities;
 
     std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> fEntities;
