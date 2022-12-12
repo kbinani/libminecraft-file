@@ -131,6 +131,9 @@ else()
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
 
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+  add_definitions(-DDO_NOT_USE_WMAIN)
+endif()
 add_subdirectory(test/deps/Catch2)
 
 add_library(mcfile INTERFACE ${mcfile_files})
