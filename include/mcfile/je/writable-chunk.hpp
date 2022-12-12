@@ -50,6 +50,10 @@ public:
         return CompoundTag::WriteCompressed(*c, s, Endian::Big);
     }
 
+    void dataVersion(int version) {
+        fDataVersion = version;
+    }
+
 private:
     WritableChunk(Chunk &s, std::shared_ptr<nbt::CompoundTag> const &root)
         : Chunk(s)

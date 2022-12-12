@@ -272,6 +272,10 @@ public:
         }
     }
 
+    int dataVersion() const {
+        return fDataVersion;
+    }
+
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const &root) {
         if (!root) {
             return nullptr;
@@ -335,9 +339,9 @@ public:
         : fChunkX(cx)
         , fChunkY(cy)
         , fChunkZ(cz)
-        , fDataVersion(dataVersion)
         , fStatus("full")
-        , fCreateEmptySection(chunksection::ChunkSectionGenerator::GetEmptySectionCreatorFromDataVersion(dataVersion)) {
+        , fCreateEmptySection(chunksection::ChunkSectionGenerator::GetEmptySectionCreatorFromDataVersion(dataVersion))
+        , fDataVersion(dataVersion) {
     }
 
 protected:
@@ -346,10 +350,10 @@ protected:
         , fChunkY(s.fChunkY)
         , fChunkZ(s.fChunkZ)
         , fDataVersion(s.fDataVersion)
-        , fLastUpdate(s.fLastUpdate)
         , fStatus(s.fStatus)
         , fTerrainPopulated(s.fTerrainPopulated)
-        , fCreateEmptySection(s.fCreateEmptySection) {
+        , fCreateEmptySection(s.fCreateEmptySection)
+        , fLastUpdate(s.fLastUpdate) {
         fSections.swap(s.fSections);
         fEntities.swap(s.fEntities);
         fTileEntities.swap(s.fTileEntities);
@@ -374,14 +378,14 @@ private:
         : fChunkX(chunkX)
         , fChunkY(chunkY)
         , fChunkZ(chunkZ)
-        , fDataVersion(dataVersion)
         , fStructures(structures)
         , fLastUpdate(lastUpdate)
         , fTileTicks(tileTicks)
         , fLiquidTicks(liquidTicks)
         , fStatus(status)
         , fTerrainPopulated(terrainPopulated)
-        , fCreateEmptySection(createEmptySection) {
+        , fCreateEmptySection(createEmptySection)
+        , fDataVersion(dataVersion) {
         int maxChunkSectionY = fChunkY;
         for (auto const &section : sections) {
             int const y = section->y();
@@ -661,7 +665,6 @@ public:
     int const fChunkY;
     int const fChunkZ;
     std::vector<std::shared_ptr<ChunkSection>> fSections;
-    int const fDataVersion;
     std::vector<std::shared_ptr<nbt::CompoundTag>> fEntities;
     std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher> fTileEntities;
     std::shared_ptr<mcfile::nbt::CompoundTag> fStructures;
@@ -678,6 +681,7 @@ protected:
     std::string const fStatus;
     std::optional<bool> fTerrainPopulated;
     std::function<std::shared_ptr<ChunkSection>(int sectionY)> const fCreateEmptySection;
+    int fDataVersion;
 };
 
 } // namespace mcfile::je
