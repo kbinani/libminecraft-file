@@ -67,11 +67,11 @@ public:
         return true;
     }
 
-    std::string toString() const {
+    std::string const &toString() const {
         return fBlockData;
     }
 
-    std::string property(std::string const &name, std::string const &fallback = "") const {
+    std::string const &property(std::string const &name, std::string const &fallback = "") const {
         auto value = fProperties.find(name);
         if (value == fProperties.end()) {
             return fallback;
