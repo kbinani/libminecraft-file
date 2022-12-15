@@ -37,10 +37,7 @@ public:
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
         auto idx = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!idx) {
-            return nullptr;
-        }
-        auto ret = fBlocks.get(*idx);
+        auto ret = fBlocks.get(idx);
         if (ret) {
             return *ret;
         } else {
@@ -50,10 +47,7 @@ public:
 
     std::optional<int> blockPaletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
         auto idx = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!idx) {
-            return std::nullopt;
-        }
-        return fBlocks.index(*idx);
+        return fBlocks.index(idx);
     }
 
     int y() const override {
@@ -142,7 +136,7 @@ private:
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
                 for (int x = 0; x < 16; x++) {
-                    auto index = *BlockIndex(x, y, z);
+                    auto index = BlockIndex(x, y, z);
                     uint8_t const idLo = blocks[index];
                     uint8_t const idHi = Flatten::Nibble4(add, index);
                     uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
@@ -400,11 +394,9 @@ private:
         return (*found)->blockAt(offsetX, offsetY, offsetZ);
     }
 
-    static inline std::optional<size_t> BlockIndex(int offsetX, int offsetY, int offsetZ) {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return std::nullopt;
-        }
-        return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
+    static inline size_t BlockIndex(int offsetX, int offsetY, int offsetZ) {
+        assert(0 <= offsetX && offsetX < 16 && 0 <= offsetY && offsetY < 16 && 0 <= offsetZ && offsetZ < 16);
+        return offsetY << 8 + offsetZ << 4 + offsetX;
     }
 
 private:

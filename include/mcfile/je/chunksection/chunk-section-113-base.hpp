@@ -7,10 +7,7 @@ class ChunkSection113Base : public ChunkSection {
 public:
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
         auto idx = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!idx) {
-            return nullptr;
-        }
-        auto ret = fBlocks.get(*idx);
+        auto ret = fBlocks.get(idx);
         if (ret) {
             return *ret;
         } else {
@@ -20,26 +17,19 @@ public:
 
     std::optional<int> blockPaletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
         auto idx = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!idx) {
-            return std::nullopt;
-        }
-        return fBlocks.index(*idx);
+        return fBlocks.index(idx);
     }
 
     bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) override {
-        using namespace std;
         if (!block) {
             return false;
         }
         auto index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return false;
-        }
         if (fBlocks.empty()) {
             auto air = std::make_shared<Block>("minecraft:air");
             fBlocks.set(0, air);
         }
-        return fBlocks.set(*index, block);
+        return fBlocks.set(index, block);
     }
 
     int y() const override {
@@ -183,11 +173,9 @@ protected:
     }
 
 private:
-    static std::optional<size_t> BlockIndex(int offsetX, int offsetY, int offsetZ) {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return std::nullopt;
-        }
-        return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
+    static size_t BlockIndex(int offsetX, int offsetY, int offsetZ) {
+        assert(0 <= offsetX && offsetX < 16 && 0 <= offsetY && offsetY < 16 && 0 <= offsetZ && offsetZ < 16);
+        return offsetY << 8 + offsetZ << 4 + offsetX;
     }
 
 public:

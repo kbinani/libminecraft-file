@@ -141,11 +141,8 @@ public:
     }
 
     std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const idx = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!idx) {
-            return nullptr;
-        }
-        auto ret = fBlocks.get(*idx);
+        auto idx = BlockIndex(offsetX, offsetY, offsetZ);
+        auto ret = fBlocks.get(idx);
         if (ret) {
             return *ret;
         } else {
@@ -154,11 +151,8 @@ public:
     }
 
     std::optional<int> blockPaletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
-        auto const idx = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!idx) {
-            return std::nullopt;
-        }
-        return fBlocks.index(*idx);
+        auto idx = BlockIndex(offsetX, offsetY, offsetZ);
+        return fBlocks.index(idx);
     }
 
     int y() const override {
@@ -170,31 +164,21 @@ public:
     }
 
     bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) override {
-        using namespace std;
         if (!block) {
             return false;
         }
         auto index = BlockIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return false;
-        }
-        return fBlocks.set(*index, block);
+        return fBlocks.set(index, block);
     }
 
     std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
         auto index = BiomeIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return std::nullopt;
-        }
-        return fBiomes.get(*index);
+        return fBiomes.get(index);
     }
 
     bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) override {
         auto index = BiomeIndex(offsetX, offsetY, offsetZ);
-        if (!index) {
-            return false;
-        }
-        return fBiomes.set(*index, biome);
+        return fBiomes.set(index, biome);
     }
 
     void fill(biomes::BiomeId biome) override {
@@ -322,21 +306,17 @@ public:
         outPackedIndices.reset(new nbt::LongArrayTag(packedData));
     }
 
-    static std::optional<size_t> BlockIndex(int offsetX, int offsetY, int offsetZ) {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return std::nullopt;
-        }
-        return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
+    static size_t BlockIndex(int offsetX, int offsetY, int offsetZ) {
+        assert(0 <= offsetX && offsetX < 16 && 0 <= offsetY && offsetY < 16 && 0 <= offsetZ && offsetZ < 16);
+        return offsetY << 8 + offsetZ << 4 + offsetX;
     }
 
-    static std::optional<size_t> BiomeIndex(int offsetX, int offsetY, int offsetZ) {
-        if (offsetX < 0 || 16 <= offsetX || offsetY < 0 || 16 <= offsetY || offsetZ < 0 || 16 <= offsetZ) {
-            return std::nullopt;
-        }
-        int x = offsetX / 4;
-        int y = offsetY / 4;
-        int z = offsetZ / 4;
-        return (y * 4 + z) * 4 + x;
+    static size_t BiomeIndex(int offsetX, int offsetY, int offsetZ) {
+        assert(0 <= offsetX && offsetX < 16 && 0 <= offsetY && offsetY < 16 && 0 <= offsetZ && offsetZ < 16);
+        int x = offsetX >> 2;
+        int y = offsetY >> 2;
+        int z = offsetZ >> 2;
+        return y << 4 + z << 2 + x;
     }
 
 private:
