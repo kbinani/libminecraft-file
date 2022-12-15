@@ -175,7 +175,7 @@ protected:
 private:
     static size_t BlockIndex(int offsetX, int offsetY, int offsetZ) {
         assert(0 <= offsetX && offsetX < 16 && 0 <= offsetY && offsetY < 16 && 0 <= offsetZ && offsetZ < 16);
-        return offsetY << 8 + offsetZ << 4 + offsetX;
+        return offsetY * 16 * 16 + offsetZ * 16 + offsetX;
     }
 
 public:
