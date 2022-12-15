@@ -1,6 +1,6 @@
 [submodule "deps/zlib"]
 	path = deps/zlib
-	url = https://github.com/madler/zlib.git
+	url = https://github.com/intel/zlib.git
 [submodule "test/deps/Catch2"]
 	path = test/deps/Catch2
 	url = https://github.com/catchorg/Catch2.git
