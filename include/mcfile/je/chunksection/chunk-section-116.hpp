@@ -41,10 +41,10 @@ private:
 
     static size_t BiomeIndex(int offsetX, int offsetY, int offsetZ) {
         assert(0 <= offsetX && offsetX < 16 && 0 <= offsetY && offsetY < 16 && 0 <= offsetZ && offsetZ < 16);
-        int x = offsetX / 4;
-        int y = offsetY / 4;
-        int z = offsetZ / 4;
-        return (y * 4 + z) * 4 + x;
+        int x = offsetX >> 2;
+        int y = offsetY >> 2;
+        int z = offsetZ >> 2;
+        return (y << 4) + (z << 2) + x;
     }
 
 public:
