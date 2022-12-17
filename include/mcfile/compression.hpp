@@ -7,40 +7,24 @@ public:
     Compression() = delete;
 
     template<class Out>
-    static bool Compress(void *in, size_t inSize, Out &out, int level = Z_BEST_COMPRESSION) {
-        if (inSize == 0) {
-            return true;
-        }
-        auto compressor = libdeflate_alloc_compressor(level);
-        size_t bound = libdeflate_zlib_compress_bound(compressor, inSize);
-        out.resize(bound, 0);
-        size_t size = libdeflate_zlib_compress(compressor, in, inSize, out.data(), out.size());
-        libdeflate_free_compressor(compressor);
-        if (size == 0) {
-            return false;
-        }
-        out.resize(size);
-        return true;
+    static bool CompressDeflate(void *in, size_t inSize, Out &out, int level = Z_BEST_COMPRESSION) {
+        return CompressImpl(in, inSize, out, libdeflate_deflate_compress_bound, libdeflate_deflate_compress, level);
     }
 
-    static bool Compress(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
-        if (inout.empty()) {
-            return true;
-        }
-        auto compressor = libdeflate_alloc_compressor(level);
-        size_t bound = libdeflate_zlib_compress_bound(compressor, inout.size());
-        std::vector<uint8_t> buff(bound, 0);
-        size_t size = libdeflate_zlib_compress(compressor, inout.data(), inout.size(), buff.data(), buff.size());
-        libdeflate_free_compressor(compressor);
-        if (size == 0) {
-            return false;
-        }
-        buff.resize(size);
-        inout.swap(buff);
-        return true;
+    static bool CompressDeflate(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
+        return CompressImpl(inout, libdeflate_deflate_compress_bound, libdeflate_deflate_compress, level);
     }
 
-    static bool Decompress(std::vector<uint8_t> &inout) {
+    template<class Out>
+    static bool CompressZlib(void *in, size_t inSize, Out &out, int level = Z_BEST_COMPRESSION) {
+        return CompressImpl(in, inSize, out, libdeflate_zlib_compress_bound, libdeflate_zlib_compress, level);
+    }
+
+    static bool CompressZlib(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
+        return CompressImpl(inout, libdeflate_zlib_compress_bound, libdeflate_zlib_compress, level);
+    }
+
+    static bool DecompressZlib(std::vector<uint8_t> &inout) {
         if (inout.empty()) {
             return true;
         }
@@ -73,6 +57,42 @@ public:
         }
 
         inout.swap(outData);
+        return true;
+    }
+
+private:
+    template<class GetBound, class Compress, class Out>
+    static bool CompressImpl(void *in, size_t inSize, Out &out, GetBound getBound, Compress compress, int level = Z_BEST_COMPRESSION) {
+        if (inSize == 0) {
+            return true;
+        }
+        auto compressor = libdeflate_alloc_compressor(level);
+        size_t bound = getBound(compressor, inSize);
+        out.resize(bound, 0);
+        size_t size = compress(compressor, in, inSize, out.data(), out.size());
+        libdeflate_free_compressor(compressor);
+        if (size == 0) {
+            return false;
+        }
+        out.resize(size);
+        return true;
+    }
+
+    template<class GetBound, class Compress>
+    static bool CompressImpl(std::vector<uint8_t> &inout, GetBound getBound, Compress compress, int level = Z_BEST_COMPRESSION) {
+        if (inout.empty()) {
+            return true;
+        }
+        auto compressor = libdeflate_alloc_compressor(level);
+        size_t bound = getBound(compressor, inout.size());
+        std::vector<uint8_t> buff(bound, 0);
+        size_t size = compress(compressor, inout.data(), inout.size(), buff.data(), buff.size());
+        libdeflate_free_compressor(compressor);
+        if (size == 0) {
+            return false;
+        }
+        buff.resize(size);
+        inout.swap(buff);
         return true;
     }
 

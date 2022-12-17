@@ -361,7 +361,7 @@ public:
             fclose(out);
             return false;
         }
-        if (!Compression::Decompress(buffer)) {
+        if (!Compression::DecompressZlib(buffer)) {
             fclose(in);
             fclose(out);
             return false;

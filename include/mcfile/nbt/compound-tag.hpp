@@ -648,7 +648,7 @@ public:
     }
 
     static std::shared_ptr<CompoundTag> ReadCompressed(std::vector<uint8_t> &buffer, Endian endian) {
-        if (!Compression::Decompress(buffer)) {
+        if (!Compression::DecompressZlib(buffer)) {
             return nullptr;
         }
         return Read(buffer, endian);
@@ -677,7 +677,7 @@ public:
         }
         std::vector<uint8_t> buffer;
         s->drain(buffer);
-        if (!Compression::Compress(buffer)) {
+        if (!Compression::CompressZlib(buffer)) {
             return false;
         }
         return stream.write(buffer.data(), buffer.size());
