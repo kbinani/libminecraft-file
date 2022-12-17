@@ -73,6 +73,7 @@ int main() {
 # dependency
 
 - zlib
+- libdeflate
 
 # license
 
