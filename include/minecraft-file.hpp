@@ -36,6 +36,7 @@
 #if __has_include(<leveldb/db.h>)
 #include <leveldb/db.h>
 #endif
+#include <libdeflate.h>
 
 // clang-format off
 

@@ -131,6 +131,9 @@ else()
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
 
+add_subdirectory(deps/libdeflate EXCLUDE_FROM_ALL)
+  list(APPEND mcfile_test_link_libraries libdeflate::libdeflate_static)
+
 if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
   add_definitions(-DDO_NOT_USE_WMAIN)
 endif()
