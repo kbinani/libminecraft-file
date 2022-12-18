@@ -13,10 +13,8 @@ public:
         if (!fDb) {
             return std::nullopt;
         }
-        leveldb::ReadOptions ro;
-        ro.fill_cache = false;
         std::string v;
-        if (!fDb->Get(ro, leveldb::Slice(key), &v).ok()) {
+        if (!fDb->Get({}, leveldb::Slice(key), &v).ok()) {
             return std::nullopt;
         }
         return v;
