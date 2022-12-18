@@ -25,6 +25,7 @@ public:
     }
 
     std::optional<biomes::BiomeId> biomeAt(int x, int y, int z) const {
+        assert(fWhat.fBiomes);
         if (!fBiomes) {
             return std::nullopt;
         }
@@ -39,10 +40,12 @@ public:
     }
 
     std::shared_ptr<mcfile::nbt::CompoundTag const> blockEntityAt(Pos3i pos) const {
+        assert(fWhat.fBlockEntities);
         return blockEntityAt(pos.fX, pos.fY, pos.fZ);
     }
 
     std::shared_ptr<mcfile::nbt::CompoundTag const> blockEntityAt(int x, int y, int z) const {
+        assert(fWhat.fBlockEntities);
         auto found = fBlockEntities.find(Pos3i(x, y, z));
         if (found == fBlockEntities.end()) {
             return nullptr;
@@ -50,12 +53,24 @@ public:
         return found->second;
     }
 
-    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian) {
-        return LoadImpl(chunkX, chunkZ, d, db, endian);
+    struct LoadWhat {
+        bool fBiomes = true;
+        bool fPendingTicks = true;
+        bool fBlockEntities = true;
+        bool fEntities = true;
+
+        static LoadWhat Everything() {
+            LoadWhat ret;
+            return ret;
+        }
+    };
+
+    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian, LoadWhat what = LoadWhat::Everything()) {
+        return LoadImpl(chunkX, chunkZ, d, db, endian, what);
     }
 
 #if __has_include(<leveldb/db.h>)
-    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, leveldb::DB *db, Endian endian) {
+    static std::shared_ptr<Chunk> Load(int chunkX, int chunkZ, Dimension d, leveldb::DB *db, Endian endian, LoadWhat what = LoadWhat::Everything()) {
         using namespace std;
         using namespace leveldb;
 
@@ -64,7 +79,7 @@ public:
         }
 
         WrapDb wdb(db);
-        return LoadImpl(chunkX, chunkZ, d, wdb, endian);
+        return LoadImpl(chunkX, chunkZ, d, wdb, endian, what);
     }
 
     static bool ForAll(leveldb::DB *db, Dimension dim, std::function<void(int cx, int cz)> cb) {
@@ -85,6 +100,41 @@ public:
     int minBlockZ() const { return fChunkZ * 16; }
     int maxBlockZ() const { return fChunkZ * 16 + 15; }
 
+    int32_t currentTick() const {
+        assert(fWhat.fPendingTicks);
+        return fCurrentTick;
+    }
+
+    std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> &blockEntities() {
+        assert(fWhat.fBlockEntities);
+        return fBlockEntities;
+    }
+
+    std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> const &blockEntities() const {
+        assert(fWhat.fBlockEntities);
+        return fBlockEntities;
+    }
+
+    std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities() {
+        assert(fWhat.fEntities);
+        return fEntities;
+    }
+
+    std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> const &entities() const {
+        assert(fWhat.fEntities);
+        return fEntities;
+    }
+
+    std::vector<PendingTick> &pendingTicks() {
+        assert(fWhat.fPendingTicks);
+        return fPendingTicks;
+    }
+
+    std::vector<PendingTick> const &pendingTicks() const {
+        assert(fWhat.fPendingTicks);
+        return fPendingTicks;
+    }
+
 private:
     Chunk(Dimension dim,
           int32_t chunkX, int32_t chunkY, int32_t chunkZ,
@@ -93,11 +143,13 @@ private:
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
           std::vector<PendingTick> &pendingTicks,
           std::shared_ptr<BiomeMap> &biomes,
-          int8_t version)
+          int8_t version,
+          LoadWhat what)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
         , fVersion(version)
-        , fChunkY(chunkY) {
+        , fChunkY(chunkY)
+        , fWhat(what) {
         int maxChunkY = fChunkY;
         for (auto const &subChunk : subChunks) {
             int cy = subChunk->fChunkY;
@@ -255,7 +307,7 @@ private:
         return ret;
     }
 
-    static std::shared_ptr<Chunk> LoadImpl(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian) {
+    static std::shared_ptr<Chunk> LoadImpl(int chunkX, int chunkZ, Dimension d, DbInterface &db, Endian endian, LoadWhat what) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
@@ -297,18 +349,27 @@ private:
         }
 
         unordered_map<Pos3i, shared_ptr<CompoundTag>, Pos3iHasher> blockEntities;
-        LoadBlockEntities(chunkX, chunkZ, d, db, endian, blockEntities);
+        if (what.fBlockEntities) {
+            LoadBlockEntities(chunkX, chunkZ, d, db, endian, blockEntities);
+        }
 
         vector<shared_ptr<CompoundTag>> entities;
-        LoadEntities(chunkX, chunkZ, d, db, endian, entities);
+        if (what.fEntities) {
+            LoadEntities(chunkX, chunkZ, d, db, endian, entities);
+        }
 
         vector<PendingTick> pendingTicks;
         int32_t currentTick = 0;
-        LoadPendingTicks(chunkX, chunkZ, d, db, endian, &pendingTicks, &currentTick);
+        if (what.fPendingTicks) {
+            LoadPendingTicks(chunkX, chunkZ, d, db, endian, &pendingTicks, &currentTick);
+        }
 
-        auto biomes = LoadBiomes(chunkX, chunkY, chunkZ, d, db, endian);
+        shared_ptr<BiomeMap> biomes;
+        if (what.fBiomes) {
+            biomes = LoadBiomes(chunkX, chunkY, chunkZ, d, db, endian);
+        }
 
-        auto ret = shared_ptr<Chunk>(new Chunk(d, chunkX, chunkY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes, chunkVersion));
+        auto ret = shared_ptr<Chunk>(new Chunk(d, chunkX, chunkY, chunkZ, subChunks, blockEntities, entities, pendingTicks, biomes, chunkVersion, what));
         ret->fCurrentTick = currentTick;
         return ret;
     }
@@ -360,16 +421,16 @@ public:
     int32_t const fChunkX;
     int32_t const fChunkZ;
     int8_t const fVersion;
-    std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> fBlockEntities;
-
-    std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> fEntities;
-
-    int32_t fCurrentTick = 0;
-    std::vector<PendingTick> fPendingTicks;
-
-    std::shared_ptr<BiomeMap> fBiomes;
     std::vector<std::shared_ptr<SubChunk>> fSubChunks;
     int32_t fChunkY;
+    LoadWhat const fWhat;
+
+private:
+    std::unordered_map<Pos3i, std::shared_ptr<mcfile::nbt::CompoundTag>, Pos3iHasher> fBlockEntities;
+    std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> fEntities;
+    std::vector<PendingTick> fPendingTicks;
+    std::shared_ptr<BiomeMap> fBiomes;
+    int32_t fCurrentTick = 0;
 };
 
 } // namespace mcfile::be
