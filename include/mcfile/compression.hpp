@@ -24,6 +24,16 @@ public:
         return CompressImpl(inout, libdeflate_zlib_compress_bound, libdeflate_zlib_compress, level);
     }
 
+    template<class Out>
+    static bool DecompressZlib(void *in, size_t inSize, Out &out, size_t outSizeExact) {
+        return DecompressImpl(in, inSize, out, outSizeExact, libdeflate_zlib_decompress);
+    }
+
+    template<class Out>
+    static bool DecompressDeflate(void *in, size_t inSize, Out &out, size_t outSizeExact) {
+        return DecompressImpl(in, inSize, out, outSizeExact, libdeflate_deflate_decompress);
+    }
+
     static bool DecompressZlib(std::vector<uint8_t> &inout) {
         if (inout.empty()) {
             return true;
@@ -93,6 +103,21 @@ private:
         }
         buff.resize(size);
         inout.swap(buff);
+        return true;
+    }
+
+    template<class Decompress, class Out>
+    static bool DecompressImpl(void *in, size_t inSize, Out &out, size_t outSize, Decompress decompress) {
+        if (inSize == 0) {
+            return true;
+        }
+        auto decompressor = libdeflate_alloc_decompressor();
+        out.resize(outSize, 0);
+        auto ret = decompress(decompressor, in, inSize, out.data(), outSize, nullptr);
+        libdeflate_free_decompressor(decompressor);
+        if (ret != LIBDEFLATE_SUCCESS) {
+            return false;
+        }
         return true;
     }
 
