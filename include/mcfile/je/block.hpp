@@ -12,6 +12,10 @@ public:
         : Block(blocks::FromName(name), name, PackProperties(props)) {
     }
 
+    explicit Block(blocks::BlockId id, std::string const &data = "")
+        : Block(id, blocks::Name(id), data) {
+    }
+
     Block(blocks::BlockId id, std::map<std::string, std::string> const &props)
         : Block(id, blocks::Name(id), PackProperties(props)) {
     }
