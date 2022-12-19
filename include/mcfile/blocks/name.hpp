@@ -1018,7 +1018,7 @@ static inline std::optional<Characteristics> BlockCharacteristic(BlockId id) {
         return std::nullopt;
     }
     uint32_t index = i - 1;
-    if (table.size() < index) {
+    if (table.size() <= index) {
         return std::nullopt;
     }
     return table[index];
