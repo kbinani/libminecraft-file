@@ -3,9 +3,9 @@
 namespace mcfile {
 namespace blocks {
 
-static inline std::unordered_map<std::string, BlockId> *CreateTable() {
+static inline std::unordered_map<std::string_view, BlockId> *CreateTable() {
     using namespace blocks::minecraft;
-    auto ret = new std::unordered_map<std::string, BlockId>();
+    auto ret = new std::unordered_map<std::string_view, BlockId>();
     auto &t = *ret;
     t["minecraft:acacia_button"] = acacia_button;
     t["minecraft:acacia_door"] = acacia_door;
@@ -1000,9 +1000,9 @@ static inline std::unordered_map<std::string, BlockId> *CreateTable() {
     return ret;
 }
 
-static inline BlockId FromName(std::string const &name) {
+static inline BlockId FromName(std::string_view const &name) {
     using namespace std;
-    static unique_ptr<unordered_map<string, blocks::BlockId> const> const mapping(CreateTable());
+    static unique_ptr<unordered_map<string_view, blocks::BlockId> const> const mapping(CreateTable());
     auto mappingIt = mapping->find(name);
     if (mappingIt == mapping->end()) {
         return unknown;

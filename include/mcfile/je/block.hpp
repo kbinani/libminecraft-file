@@ -5,21 +5,15 @@ namespace mcfile::je {
 class Block {
 public:
     explicit Block(std::string const &name, std::string const &data = "")
-        : fId(blocks::FromName(name))
-        , fName(name)
-        , fData(data) {
+        : Block(blocks::FromName(name), name, data) {
     }
 
-    explicit Block(std::string const &name, std::map<std::string, std::string> const &props)
-        : fId(blocks::FromName(name))
-        , fName(name)
-        , fData(PackProperties(props)) {
+    Block(std::string const &name, std::map<std::string, std::string> const &props)
+        : Block(blocks::FromName(name), name, PackProperties(props)) {
     }
 
-    explicit Block(blocks::BlockId id, std::map<std::string, std::string> const &props)
-        : fId(id)
-        , fName(blocks::Name(id))
-        , fData(PackProperties(props)) {
+    Block(blocks::BlockId id, std::map<std::string, std::string> const &props)
+        : Block(id, blocks::Name(id), PackProperties(props)) {
     }
 
     static std::shared_ptr<Block const> FromBlockData(std::string const &data, int dataVersion) {
@@ -37,14 +31,14 @@ public:
     }
 
     bool equals(Block const &other) const {
-        return other.fName == fName && other.fData == fData;
+        return other.fBlockData == fBlockData;
     }
 
-    std::string toString() const {
-        return fName + fData;
+    std::string const &toString() const {
+        return fBlockData;
     }
 
-    std::string property(std::string const &name, std::string const &fallback = "") const {
+    std::string_view property(std::string const &name, std::string const &fallback = "") const {
         using namespace std;
         if (fData.empty()) {
             return fallback;
@@ -70,7 +64,7 @@ public:
     std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
         using namespace std;
         auto root = make_shared<nbt::CompoundTag>();
-        root->set("Name", make_shared<nbt::StringTag>(fName));
+        root->set("Name", make_shared<nbt::StringTag>(name()));
         if (!fData.empty()) {
             assert(fData.front() == '[' && fData.back() == ']');
             auto properties = make_shared<nbt::CompoundTag>();
@@ -86,7 +80,7 @@ public:
                     to = fData.size() - 1;
                 }
                 auto value = fData.substr(eq + 1, to - (eq + 1));
-                properties->set(string(key.data(), key.size()), make_shared<nbt::StringTag>(value));
+                properties->set(string(key.data(), key.size()), make_shared<nbt::StringTag>(string(value)));
                 off = to + 1;
             }
             root->set("Properties", properties);
@@ -100,7 +94,7 @@ public:
 
     std::shared_ptr<Block const> applying(std::map<std::string, std::optional<std::string>> const &properties) const {
         using namespace std;
-        map<string, string> props;
+        map<string_view, string_view> props;
         ExtractProperties(fData, props);
         for (auto const &it : properties) {
             if (it.second) {
@@ -112,13 +106,13 @@ public:
         return shared_ptr<Block const>(new Block(fId, string(fName.data(), fName.size()), PackProperties(props)));
     }
 
-    std::shared_ptr<Block const> renamed(std::string const &name) const {
+    std::shared_ptr<Block const> renamed(std::string_view const &name) const {
         auto id = blocks::FromName(name);
-        return std::shared_ptr<Block const>(new Block(id, name, fData));
+        return std::shared_ptr<Block const>(new Block(id, std::string(name), std::string(fData)));
     }
 
     std::shared_ptr<Block const> copy() const {
-        return std::shared_ptr<Block const>(new Block(fId, fName, fData));
+        return std::shared_ptr<Block const>(new Block(fId, std::string(fName), std::string(fData)));
     }
 
     static std::shared_ptr<Block const> FromCompoundTag(nbt::CompoundTag const &tag) {
@@ -151,11 +145,17 @@ public:
         return std::shared_ptr<Block const>(new Block(id, *name, data));
     }
 
+    std::string name() const {
+        return std::string(fName);
+    }
+
 private:
     Block(blocks::BlockId id, std::string const &name, std::string const &data)
         : fId(id)
-        , fName(name)
-        , fData(data) {}
+        , fBlockData(name + data)
+        , fName(fBlockData.begin(), fBlockData.begin() + name.size())
+        , fData(fBlockData.begin() + name.size(), fBlockData.end()) {
+    }
 
     static std::string ToString(std::string const &name, std::map<std::string, std::string> const &props) {
         using namespace std;
@@ -165,7 +165,8 @@ private:
         return name + PackProperties(props);
     }
 
-    static std::string PackProperties(std::map<std::string, std::string> const &props) {
+    template<class String>
+    static std::string PackProperties(std::map<String, String> const &props) {
         std::string data;
         for (auto const &it : props) {
             if (data.empty()) {
@@ -183,7 +184,7 @@ private:
         return data;
     }
 
-    static void ExtractProperties(std::string const &data, std::map<std::string, std::string> &props) {
+    static void ExtractProperties(std::string_view const &data, std::map<std::string_view, std::string_view> &props) {
         using namespace std;
         if (data.empty()) {
             return;
@@ -209,8 +210,9 @@ private:
 
 public:
     blocks::BlockId const fId;
-    std::string const fName; // "minecraft:grass_block"
-    std::string const fData; // "[snowy=true]"
+    std::string const fBlockData; // "minecraft:grass_block[snowy=true]"
+    std::string_view const fName; // "minecraft:grass_block"
+    std::string_view const fData; // "[snowy=true]"
 };
 
 } // namespace mcfile::je

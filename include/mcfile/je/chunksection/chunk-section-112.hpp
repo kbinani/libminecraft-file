@@ -205,12 +205,12 @@ private:
                         auto const &block = it->blockAt(x, y, z);
                         assert(block);
                         shared_ptr<Block const> converted;
-                        string name = block->fName;
+                        auto name = block->fName;
                         if (name.size() > 10 && name.substr(0, 10) == "minecraft:") {
                             name = name.substr(10);
                         }
                         if (String::EndsWith(name, "_door")) {
-                            string half = block->property("half", "lower");
+                            auto half = block->property("half", "lower");
                             string hinge = "left";
                             string powered = "false";
                             string facing = "east";

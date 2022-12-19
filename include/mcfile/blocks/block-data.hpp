@@ -6,7 +6,7 @@ class BlockData {
 public:
     virtual ~BlockData() {}
 
-    std::string name() const {
+    std::string_view name() const {
         if (fJava) {
             return fJava->fName;
         } else {
