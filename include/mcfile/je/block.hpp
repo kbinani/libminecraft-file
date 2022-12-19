@@ -4,93 +4,121 @@ namespace mcfile::je {
 
 class Block {
 public:
-    explicit Block(std::string const &name, std::map<std::string, std::string> const &properties = std::map<std::string, std::string>())
+    explicit Block(std::string const &name, std::string const &data = "")
         : fId(blocks::FromName(name))
         , fName(name)
-        , fProperties(properties)
-        , fBlockData(ToString(name, properties)) {
+        , fData(data) {
     }
 
-    explicit Block(blocks::BlockId id, std::map<std::string, std::string> const &properties = std::map<std::string, std::string>())
+    explicit Block(std::string const &name, std::map<std::string, std::string> const &props)
+        : fId(blocks::FromName(name))
+        , fName(name)
+        , fData(PackProperties(props)) {
+    }
+
+    explicit Block(blocks::BlockId id, std::map<std::string, std::string> const &props)
         : fId(id)
         , fName(blocks::Name(id))
-        , fProperties(properties)
-        , fBlockData(ToString(blocks::Name(id), properties)) {
+        , fData(PackProperties(props)) {
     }
 
     static std::shared_ptr<Block const> FromBlockData(std::string const &data, int dataVersion) {
         using namespace std;
+        size_t bra = data.find('[');
         string name = data;
-        string properties;
-        auto begin = data.find('[');
-        if (begin != string::npos) {
-            auto end = data.find(']', begin);
-            if (end == string::npos) {
-                return nullptr;
-            }
-            name = data.substr(0, begin);
-            properties.assign(data.begin() + begin + 1, data.begin() + end);
-        }
-        map<string, string> props;
-        for (string const &prop : String::Split(properties, ',')) {
-            auto idx = prop.find('=');
-            if (idx == string::npos) {
-                return nullptr;
-            }
-            string key = prop.substr(0, idx);
-            string value = prop.substr(idx + 1);
-            props[key] = value;
+        if (bra != string::npos) {
+            name = data.substr(0, bra);
         }
         auto id = blocks::FromNameWithMigration(name, dataVersion);
         if (id == blocks::unknown) {
             return nullptr;
         }
-        return make_shared<Block const>(id, props);
+        return shared_ptr<Block const>(new Block(id, name, data));
     }
 
     bool equals(Block const &other) const {
-        if (other.fName != fName) {
-            return false;
-        }
-        if (other.fProperties.size() != fProperties.size()) {
-            return false;
-        }
-        for (auto it : other.fProperties) {
-            auto found = fProperties.find(it.first);
-            if (found == fProperties.end()) {
-                return false;
-            }
-            if (found->second != it.second) {
-                return false;
-            }
-        }
-        return true;
+        return other.fName == fName && other.fData == fData;
     }
 
-    std::string const &toString() const {
-        return fBlockData;
+    std::string toString() const {
+        return fName + fData;
     }
 
-    std::string const &property(std::string const &name, std::string const &fallback = "") const {
-        auto value = fProperties.find(name);
-        if (value == fProperties.end()) {
+    std::string property(std::string const &name, std::string const &fallback = "") const {
+        using namespace std;
+        if (fData.empty()) {
             return fallback;
         }
-        return value->second;
+        assert(fData.front() == '[' && fData.back() == ']');
+        size_t start = fData.find("[" + name + "=");
+        if (start == string::npos) {
+            start = fData.find("," + name + "=");
+        }
+        if (start == string::npos) {
+            return fallback;
+        }
+        size_t from = start + 1 + name.size() + 1;
+        size_t ket = fData.size() - 1;
+        size_t to = ket;
+        size_t comma = fData.find(',', start + 1 + name.size() + 1);
+        if (comma != string::npos) {
+            to = comma;
+        }
+        return fData.substr(from, to - from);
     }
 
     std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
         using namespace std;
         auto root = make_shared<nbt::CompoundTag>();
         root->set("Name", make_shared<nbt::StringTag>(fName));
-        if (!fProperties.empty()) {
+        if (!fData.empty()) {
+            assert(fData.front() == '[' && fData.back() == ']');
             auto properties = make_shared<nbt::CompoundTag>();
-            for (auto it : fProperties) {
-                properties->set(it.first, make_shared<nbt::StringTag>(it.second));
+            size_t off = 1;
+            while (off < fData.size()) {
+                size_t eq = fData.find('=', off);
+                if (eq == string::npos) {
+                    break;
+                }
+                auto key = fData.substr(off, eq - off);
+                size_t to = fData.find(',', eq + 1);
+                if (to == string::npos) {
+                    to = fData.size() - 1;
+                }
+                auto value = fData.substr(eq + 1, to - (eq + 1));
+                properties->set(string(key.data(), key.size()), make_shared<nbt::StringTag>(value));
+                off = to + 1;
             }
             root->set("Properties", properties);
         }
         return root;
+    }
+
+    std::shared_ptr<Block const> applying(std::initializer_list<std::pair<std::string const, std::optional<std::string>>> properties) const {
+        return applying(std::map<std::string, std::optional<std::string>>(properties));
+    }
+
+    std::shared_ptr<Block const> applying(std::map<std::string, std::optional<std::string>> const &properties) const {
+        using namespace std;
+        map<string, string> props;
+        ExtractProperties(fData, props);
+        for (auto const &it : properties) {
+            if (it.second) {
+                props[it.first] = *it.second;
+            } else {
+                props.erase(it.first);
+            }
+        }
+        return shared_ptr<Block const>(new Block(fId, string(fName.data(), fName.size()), PackProperties(props)));
+    }
+
+    std::shared_ptr<Block const> renamed(std::string const &name) const {
+        auto id = blocks::FromName(name);
+        return std::shared_ptr<Block const>(new Block(id, name, fData));
+    }
+
+    std::shared_ptr<Block const> copy() const {
+        return std::shared_ptr<Block const>(new Block(fId, fName, fData));
     }
 
     static std::shared_ptr<Block const> FromCompoundTag(nbt::CompoundTag const &tag) {
@@ -99,8 +127,9 @@ public:
         if (!name) {
             return nullptr;
         }
+        auto id = blocks::FromName(*name);
         auto properties = tag.compoundTag("Properties");
-        map<string, string> props;
+        string data;
         if (properties) {
             for (auto p : properties->fValue) {
                 string key = p.first;
@@ -108,38 +137,80 @@ public:
                 if (s == nullptr) {
                     continue;
                 }
-                props[key] = s->fValue;
+                if (data.empty()) {
+                    data += "[";
+                } else {
+                    data += ",";
+                }
+                data += key + "=" + s->fValue;
+            }
+            if (!data.empty()) {
+                data += "]";
             }
         }
-        return make_shared<Block const>(*name, props);
+        return std::shared_ptr<Block const>(new Block(id, *name, data));
     }
 
 private:
+    Block(blocks::BlockId id, std::string const &name, std::string const &data)
+        : fId(id)
+        , fName(name)
+        , fData(data) {}
+
     static std::string ToString(std::string const &name, std::map<std::string, std::string> const &props) {
         using namespace std;
-        string s = name;
         if (props.empty()) {
-            return s;
+            return name;
         }
-        bool first = true;
+        return name + PackProperties(props);
+    }
+
+    static std::string PackProperties(std::map<std::string, std::string> const &props) {
+        std::string data;
         for (auto const &it : props) {
-            if (first) {
-                s += "[";
+            if (data.empty()) {
+                data += "[";
             } else {
-                s += ",";
+                data += ",";
             }
-            s += it.first + "=" + it.second;
-            first = false;
+            data.append(it.first);
+            data.append("=");
+            data.append(it.second);
         }
-        s += "]";
-        return s;
+        if (!data.empty()) {
+            data += "]";
+        }
+        return data;
+    }
+
+    static void ExtractProperties(std::string const &data, std::map<std::string, std::string> &props) {
+        using namespace std;
+        if (data.empty()) {
+            return;
+        }
+        assert(data.front() == '[' && data.back() == ']');
+        size_t off = 1;
+        while (off < data.size()) {
+            size_t eq = data.find('=', off);
+            if (eq == string::npos) {
+                break;
+            }
+            size_t to = data.size() - 1;
+            size_t comma = data.find(',', eq + 1);
+            if (comma != string::npos) {
+                to = comma;
+            }
+            auto key = data.substr(off, eq - off);
+            auto value = data.substr(eq + 1, to - eq - 1);
+            props[key] = value;
+            off = to + 1;
+        }
     }
 
 public:
     blocks::BlockId const fId;
-    std::string const fName;
-    std::map<std::string, std::string> const fProperties;
-    std::string const fBlockData;
+    std::string const fName; // "minecraft:grass_block"
+    std::string const fData; // "[snowy=true]"
 };
 
 } // namespace mcfile::je

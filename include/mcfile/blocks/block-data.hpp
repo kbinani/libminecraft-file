@@ -19,7 +19,7 @@ public:
 
 protected:
     explicit BlockData(mcfile::je::Block const &j)
-        : fJava(std::make_shared<mcfile::je::Block const>(j.fName, j.fProperties)) {}
+        : fJava(j.copy()) {}
 
     explicit BlockData(mcfile::be::Block const &b)
         : fBedrock(std::make_shared<mcfile::be::Block const>(b.fName, b.fStates->copy(), b.fVersion)) {}

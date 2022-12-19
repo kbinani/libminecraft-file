@@ -234,45 +234,41 @@ private:
                                     open = lower->property("open", "false");
                                 }
                             }
-                            map<string, string> props(block->fProperties);
-                            props["hinge"] = hinge;
-                            props["powered"] = powered;
-                            props["facing"] = facing;
-                            props["open"] = open;
-                            converted.reset(new Block(block->fName, props));
+                            converted = block->applying({
+                                {"hinge", hinge},
+                                {"powered", powered},
+                                {"facing", facing},
+                                {"open", open},
+                            });
                         } else if (name == "red_bed") {
                             auto tile = tileAt(x, by, z);
                             if (tile && tile->string("id", "") == "minecraft:bed") {
                                 auto colorCode = tile->int32("color", 0);
                                 auto color = ColorNameFromCode(colorCode);
-                                converted.reset(new Block("minecraft:" + color + "_bed", block->fProperties));
+                                converted = block->renamed("minecraft:" + color + "_bed");
                             }
                         } else if (name == "note_block") {
                             auto tile = tileAt(x, by, z);
                             if (tile && tile->string("id", "") == "minecraft:noteblock") {
                                 auto note = tile->byte("note", 0);
                                 auto powered = tile->boolean("powered", false);
-                                map<string, string> props(block->fProperties);
-                                props["note"] = to_string(note);
-                                props["powered"] = powered ? "true" : "false";
-                                converted.reset(new Block(block->fName, props));
+                                converted = block->applying({
+                                    {"note", to_string(note)},
+                                    {"powered", powered ? "true" : "false"},
+                                });
                             }
                         } else if (name == "sunflower") {
                             auto lower = GetBlockAt(x, by - 1, z, raw);
                             if (lower) {
                                 if (lower->fName == "minecraft:lilac" || lower->fName == "minecraft:tall_grass" || lower->fName == "minecraft:large_fern" || lower->fName == "minecraft:rose_bush" || lower->fName == "minecraft:peony") {
-                                    map<string, string> props;
-                                    props["half"] = "upper";
-                                    converted.reset(new Block(lower->fName, props));
+                                    converted = block->applying({{"half", "upper"}});
                                 } else {
-                                    map<string, string> props;
-                                    props["half"] = lower->fName == "minecraft:sunflower" ? "upper" : "lower";
-                                    converted.reset(new Block(block->fName, props));
+                                    converted = block->applying({{"half", lower->fName == "minecraft:sunflower" ? "upper" : "lower"}});
                                 }
                             } else {
-                                map<string, string> props(block->fProperties);
-                                props["half"] = "lower"; // sunflower on y = 0?
-                                converted.reset(new Block(block->fName, props));
+                                converted = block->applying({
+                                    {"half", "lower"}, // sunflower on y = 0?
+                                });
                             }
                         } else if (name == "skeleton_skull" || name == "skeleton_wall_skull") {
                             auto tile = tileAt(x, by, z);
@@ -280,7 +276,6 @@ private:
                                 auto rot = tile->byte("Rot");
                                 auto type = tile->byte("SkullType");
                                 if (rot && type) {
-                                    map<string, string> props(block->fProperties);
                                     string n = "skeleton";
                                     string p = "skull";
                                     switch (*type) {
@@ -310,10 +305,9 @@ private:
                                         break;
                                     }
                                     if (name == "skeleton_skull") {
-                                        props["rotation"] = std::to_string(*rot);
-                                        converted.reset(new Block("minecraft:" + n + "_" + p, props));
+                                        converted = block->renamed("minecraft:" + n + "_" + p)->applying({{"rotation", std::to_string(*rot)}});
                                     } else {
-                                        converted.reset(new Block("minecraft:" + n + "_wall_" + p, props));
+                                        converted = block->renamed("minecraft:" + n + "_wall_" + p);
                                     }
                                 }
                             }
