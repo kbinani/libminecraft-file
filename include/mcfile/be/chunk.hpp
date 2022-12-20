@@ -17,7 +17,7 @@ public:
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - Coordinate::ChunkFromBlock(y) * 16;
-        return subChunk->blockAt(offsetX, offsetY, offsetZ);
+        return subChunk->blockAtUnchecked(offsetX, offsetY, offsetZ);
     }
 
     std::shared_ptr<Block const> blockAt(Pos3i pos) const {
@@ -36,7 +36,7 @@ public:
         }
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
-        return fBiomes->get(offsetX, y, offsetZ);
+        return fBiomes->getUnchecked(offsetX, y, offsetZ);
     }
 
     std::shared_ptr<mcfile::nbt::CompoundTag const> blockEntityAt(Pos3i pos) const {

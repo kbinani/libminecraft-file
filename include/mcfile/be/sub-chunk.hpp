@@ -12,6 +12,15 @@ public:
         return fPalette[*index];
     }
 
+    std::shared_ptr<Block const> blockAtUnchecked(int offsetX, int offsetY, int offsetZ) const {
+        if (fPalette.empty()) {
+            return nullptr;
+        }
+        auto index = BlockIndex(offsetX, offsetY, offsetZ);
+        auto paletteIndex = fPaletteIndices[index];
+        return fPalette[paletteIndex];
+    }
+
     static std::shared_ptr<SubChunk> Parse(std::string const &data, int8_t chunkY, Endian endian) {
         using namespace std;
         using namespace mcfile::stream;

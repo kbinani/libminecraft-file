@@ -47,6 +47,16 @@ public:
         return section->get(localX, localY, localZ);
     }
 
+    std::optional<biomes::BiomeId> getUnchecked(int localX, int y, int localZ) const {
+        auto const &section = this->section(y);
+        if (!section) {
+            return std::nullopt;
+        }
+        int chunkY = Coordinate::ChunkFromBlock(y);
+        int localY = y - chunkY * 16;
+        return section->getUnchecked(localX, localY, localZ);
+    }
+
     size_t numSections() const {
         return fSections.size();
     }

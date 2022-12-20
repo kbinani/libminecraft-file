@@ -22,6 +22,15 @@ public:
         return fPalette[idx];
     }
 
+    std::optional<biomes::BiomeId> getUnchecked(int localX, int localY, int localZ) const {
+        if (fPalette.empty()) {
+            return std::nullopt;
+        }
+        auto index = Index(localX, localY, localZ);
+        int idx = fIndex[*index];
+        return fPalette[idx];
+    }
+
     void set(int localX, int localY, int localZ, biomes::BiomeId biome) {
         auto index = Index(localX, localY, localZ);
         assert(index);
