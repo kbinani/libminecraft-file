@@ -152,19 +152,23 @@ public:
         if (data.size() < ptr + numBytes) {
             return nullptr;
         }
-        vector<bool> buffer;
+        uint16_t mask = ~(0xffff << bitsPerBlock);
         for (int i = 0; i < numDwords; i++) {
-            uint32_t v = Mem::Read<uint32_t>(data, ptr);
-            ptr += 4;
-            for (int j = 0; j < bitsUsedPerDword; j++) {
-                bool flag = ((v >> j) & 0x1) == 0x1;
-                buffer.push_back(flag);
+            uint32_t v = Mem::Read<uint32_t>(data, ptr + i * 4);
+            for (int j = 0; j < blocksPerDword; j++) {
+                uint16_t idx = mask & (v >> (j * bitsPerBlock));
+                ret->fIndex[i * blocksPerDword + j] = idx;
             }
         }
+        ptr += numBytes;
         if (data.size() < ptr + 4) {
             return nullptr;
         }
+        uint16_t maxIndex = *std::max_element(ret->fIndex, ret->fIndex + 4096);
         uint32_t numPaletteEntries = Mem::Read<uint32_t>(data, ptr);
+        if (maxIndex >= numPaletteEntries) {
+            return nullptr;
+        }
         ptr += 4;
         if (data.size() < ptr + 4 * numPaletteEntries) {
             return nullptr;
@@ -177,18 +181,6 @@ public:
             ptr += 4;
             biomes::BiomeId biome = Biome::FromUint32(raw);
             ret->fPalette.push_back(biome);
-        }
-        for (int i = 0; i < 4096; i++) {
-            uint16_t idx = 0;
-            for (int j = 0; j < bitsPerBlock; j++) {
-                if (buffer[i * bitsPerBlock + j]) {
-                    idx = idx | (uint16_t(0x1) << j);
-                }
-            }
-            if (ret->fPalette.size() <= idx) {
-                return nullptr;
-            }
-            ret->fIndex[i] = idx;
         }
         *offset = ptr;
         return ret;
