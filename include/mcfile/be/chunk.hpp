@@ -281,24 +281,17 @@ private:
         if (!data2D) {
             return nullptr;
         }
+        if (data2D->size() < 768) {
+            return nullptr;
+        }
         auto ret = make_shared<BiomeMap>(0, 15);
         vector<uint8_t> buffer;
-        copy(data2D->begin(), data2D->end(), back_inserter(buffer));
-        auto stream = make_shared<ByteStream>(buffer);
-        InputStreamReader sr(stream, endian);
-        for (int i = 0; i < 256; i++) {
-            uint16_t v = 0;
-            if (!sr.read(&v)) {
-                return nullptr;
-            }
-        }
+        buffer.reserve(256);
+        copy_n(data2D->begin() + 512, 256, back_inserter(buffer));
+        int idx = 0;
         for (int z = 0; z < 16; z++) {
-            for (int x = 0; x < 16; x++) {
-                uint8_t b = 0;
-                if (!sr.read(&b)) {
-                    return nullptr;
-                }
-                auto biome = Biome::FromUint32(b);
+            for (int x = 0; x < 16; x++, idx++) {
+                auto biome = Biome::FromUint32(buffer[idx]);
                 for (int y = 0; y < 256; y++) {
                     ret->set(x, y, z, biome);
                 }
