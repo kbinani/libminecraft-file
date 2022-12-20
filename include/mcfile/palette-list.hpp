@@ -17,6 +17,10 @@ class PaletteList {
     static_assert(size > 0);
 
 public:
+    Value getUnchecked(size_t idx) const {
+        return fValue[fIndex[idx]];
+    }
+
     std::optional<Value> get(size_t idx) const {
         auto index = this->index(idx);
         if (!index) {

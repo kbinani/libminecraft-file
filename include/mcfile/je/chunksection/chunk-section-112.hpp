@@ -45,6 +45,14 @@ public:
         }
     }
 
+    std::shared_ptr<Block const> blockAtUnchecked(int offsetX, int offsetY, int offsetZ) const override {
+        if (fBlocks.empty()) {
+            return nullptr;
+        }
+        auto idx = BlockIndex(offsetX, offsetY, offsetZ);
+        return fBlocks.getUnchecked(idx);
+    }
+
     std::optional<int> blockPaletteIndexAt(int offsetX, int offsetY, int offsetZ) const override {
         auto idx = BlockIndex(offsetX, offsetY, offsetZ);
         return fBlocks.index(idx);
