@@ -14,8 +14,7 @@ public:
     virtual void fill(mcfile::biomes::BiomeId biome) = 0;
 
     virtual std::optional<int> blockPaletteIndexAt(int offsetX, int offsetY, int offsetZ) const = 0;
-    virtual int blockPaletteIndexAtUnchecked(int offsetX, int offsetY, int offsetZ) const = 0;
-    virtual void eachBlockPalette(std::function<bool(Block const &block, size_t index)> visitor) const = 0;
+    virtual void eachBlockPalette(std::function<bool(std::shared_ptr<Block const> const &block, size_t index)> visitor) const = 0;
 
     // optional
 
