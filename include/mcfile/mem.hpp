@@ -21,7 +21,7 @@ public:
             return v;
         }
 #else
-        return *(T *)(buffer.data() + offset);
+        return *(T *)(buffer.data() + off);
 #endif
     }
 
@@ -40,7 +40,7 @@ public:
             return v;
         }
 #else
-        return *(T *)(buffer.data() + offset);
+        return *(T *)(buffer.data() + off);
 #endif
     }
 
@@ -57,7 +57,7 @@ public:
             memcpy(p, (void *)&v, sizeof(v));
         }
 #else
-        *(T *)(buffer.data() + offset) = v;
+        *(T *)(buffer.data() + off) = v;
 #endif
     }
 
@@ -74,7 +74,7 @@ public:
             memcpy(p, (void *)&v, sizeof(v));
         }
 #else
-        *(T *)(buffer.data() + offset) = v;
+        *(T *)(buffer.data() + off) = v;
 #endif
     }
 };
