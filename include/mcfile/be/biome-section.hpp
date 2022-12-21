@@ -152,12 +152,13 @@ public:
         if (data.size() < ptr + numBytes) {
             return nullptr;
         }
-        uint16_t mask = ~(0xffff << bitsPerBlock);
+        uint16_t mask = ~(uint16_t(0xffff) << bitsPerBlock);
+        size_t p = 0;
         for (int i = 0; i < numDwords; i++) {
             uint32_t v = Mem::Read<uint32_t>(data, ptr + i * 4);
-            for (int j = 0; j < blocksPerDword; j++) {
+            for (int j = 0; j < blocksPerDword && p < 4096; j++, p++) {
                 uint16_t idx = mask & (v >> (j * bitsPerBlock));
-                ret->fIndex[i * blocksPerDword + j] = idx;
+                ret->fIndex[p] = idx;
             }
         }
         ptr += numBytes;
