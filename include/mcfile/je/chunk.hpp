@@ -21,7 +21,7 @@ public:
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - section->y() * 16;
-        return section->blockAt(offsetX, offsetY, offsetZ);
+        return section->blockAtUnchecked(offsetX, offsetY, offsetZ);
     }
 
     std::shared_ptr<Block const> blockAt(Pos3i pos) const {

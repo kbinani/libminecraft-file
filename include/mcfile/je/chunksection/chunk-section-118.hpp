@@ -163,6 +163,11 @@ public:
         return fBlocks.index(idx);
     }
 
+    int blockPaletteIndexAtUnchecked(int offsetX, int offsetY, int offsetZ) const override {
+        auto idx = BlockIndex(offsetX, offsetY, offsetZ);
+        return fBlocks.indexUnchecked(idx);
+    }
+
     int y() const override {
         return fY;
     }
@@ -242,12 +247,10 @@ public:
         return root;
     }
 
-    void eachBlockPalette(std::function<bool(Block const &)> visitor) const override {
-        fBlocks.eachValue([visitor](std::shared_ptr<Block const> const &v) {
-            if (!v) {
-                return true;
-            }
-            return visitor(*v);
+    void eachBlockPalette(std::function<bool(Block const &, size_t)> visitor) const override {
+        fBlocks.eachValue([visitor](std::shared_ptr<Block const> const &v, size_t i) {
+            assert(v);
+            return visitor(*v, i);
         });
     }
 

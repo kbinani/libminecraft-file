@@ -39,6 +39,10 @@ public:
         return fIndex[idx];
     }
 
+    Index indexUnchecked(size_t idx) const {
+        return fIndex[idx];
+    }
+
     bool set(size_t idx, Value value) {
         if (size <= idx) {
             return false;
@@ -109,9 +113,9 @@ public:
         return fIndex.size() != size;
     }
 
-    void eachValue(std::function<bool(Value const &)> cb) const {
-        for (Value const &v : fValue) {
-            if (!cb(v)) {
+    void eachValue(std::function<bool(Value const &, size_t)> cb) const {
+        for (size_t i = 0; i < fValue.size(); i++) {
+            if (!cb(fValue[i], i)) {
                 return;
             }
         }
