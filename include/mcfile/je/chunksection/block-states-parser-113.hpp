@@ -33,25 +33,18 @@ public:
         blockStates.clear();
 
         uint8_t bitsPerBlock;
-        int blocksPerLong;
         if (numPaletteEntries <= 16) {
             bitsPerBlock = 4;
-            blocksPerLong = 16;
         } else if (numPaletteEntries <= 32) {
             bitsPerBlock = 5;
-            blocksPerLong = 12;
         } else if (numPaletteEntries <= 64) {
             bitsPerBlock = 6;
-            blocksPerLong = 10;
         } else if (numPaletteEntries <= 128) {
             bitsPerBlock = 7;
-            blocksPerLong = 9;
         } else if (numPaletteEntries <= 256) {
             bitsPerBlock = 8;
-            blocksPerLong = 8;
         } else {
             bitsPerBlock = 16;
-            blocksPerLong = 4;
         }
         vector<bool> bitset;
         bitset.reserve(bitsPerBlock * 4096);

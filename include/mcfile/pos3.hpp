@@ -13,8 +13,8 @@ public:
 
     Pos3()
         : fX(0)
-        , fY(0)
-        , fZ(0) {}
+        , fZ(0)
+        , fY(0) {}
 
     bool operator==(Pos3<T> const &other) const { return fX == other.fX && fZ == other.fZ && fY == other.fY; }
 

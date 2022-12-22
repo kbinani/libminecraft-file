@@ -339,6 +339,7 @@ public:
         : fChunkX(cx)
         , fChunkY(cy)
         , fChunkZ(cz)
+        , fLastUpdate(0)
         , fStatus("full")
         , fCreateEmptySection(chunksection::ChunkSectionGenerator::GetEmptySectionCreatorFromDataVersion(dataVersion))
         , fDataVersion(dataVersion) {
@@ -349,11 +350,11 @@ protected:
         : fChunkX(s.fChunkX)
         , fChunkY(s.fChunkY)
         , fChunkZ(s.fChunkZ)
-        , fDataVersion(s.fDataVersion)
+        , fLastUpdate(s.fLastUpdate)
         , fStatus(s.fStatus)
         , fTerrainPopulated(s.fTerrainPopulated)
         , fCreateEmptySection(s.fCreateEmptySection)
-        , fLastUpdate(s.fLastUpdate) {
+        , fDataVersion(s.fDataVersion) {
         fSections.swap(s.fSections);
         fEntities.swap(s.fEntities);
         fTileEntities.swap(s.fTileEntities);

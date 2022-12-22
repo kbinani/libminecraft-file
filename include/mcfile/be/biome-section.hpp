@@ -146,7 +146,6 @@ public:
         bitsPerBlock /= 2;
 
         int blocksPerDword = 32 / bitsPerBlock;
-        int bitsUsedPerDword = bitsPerBlock * blocksPerDword;
         int numDwords = (4096 + (4096 % blocksPerDword)) / blocksPerDword;
         int numBytes = 4 * numDwords;
         if (data.size() < ptr + numBytes) {
