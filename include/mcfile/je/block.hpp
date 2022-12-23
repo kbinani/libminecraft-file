@@ -157,8 +157,8 @@ private:
     Block(blocks::BlockId id, std::string const &name, std::string const &data)
         : fId(id)
         , fBlockData(name + data)
-        , fName(fBlockData.data(), fBlockData.data() + name.size())
-        , fData(fBlockData.data() + name.size(), fBlockData.data() + fBlockData.size()) {
+        , fName(fBlockData.data(), name.size())
+        , fData(fBlockData.data() + name.size(), fBlockData.size() - name.size()) {
     }
 
     static std::string ToString(std::string const &name, std::map<std::string, std::string> const &props) {
