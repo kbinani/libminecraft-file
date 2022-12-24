@@ -178,14 +178,18 @@ private:
             if (fLegacyBiomes.size() == 1024 || fLegacyBiomes.size() == 1536) {
                 vector<int32_t> biomes;
                 biomes.reserve(fLegacyBiomes.size());
-                copy(fLegacyBiomes.begin(), fLegacyBiomes.end(), back_inserter(biomes));
+                for (uint16_t b : fLegacyBiomes) {
+                    biomes.push_back((uint8_t)(0xff & b));
+                }
                 level->set("Biomes", make_shared<IntArrayTag>(biomes));
             }
         } else {
             if (fLegacyBiomes.size() == 256) {
                 vector<uint8_t> biomes;
                 biomes.reserve(256);
-                copy(fLegacyBiomes.begin(), fLegacyBiomes.end(), back_inserter(biomes));
+                for (uint16_t b : fLegacyBiomes) {
+                    biomes.push_back((uint8_t)(0xff & b));
+                }
                 level->set("Biomes", make_shared<ByteArrayTag>(biomes));
             }
         }
