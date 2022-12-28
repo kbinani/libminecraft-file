@@ -1,9 +1,9 @@
+[submodule "test/ext/doctest"]
+	path = test/deps/doctest
+	url = https://github.com/doctest/doctest.git
 [submodule "deps/zlib"]
 	path = deps/zlib
 	url = https://github.com/madler/zlib.git
-[submodule "test/deps/Catch2"]
-	path = test/deps/Catch2
-	url = https://github.com/catchorg/Catch2.git
 [submodule "deps/libdeflate"]
 	path = deps/libdeflate
 	url = https://github.com/ebiggers/libdeflate.git

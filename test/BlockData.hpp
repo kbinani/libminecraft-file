@@ -2,7 +2,6 @@
 
 #include "Point3D.hpp"
 
-#include <fstream>
 #include <map>
 #include <sstream>
 #include <string>

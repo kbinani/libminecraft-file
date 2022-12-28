@@ -1,11 +1,10 @@
-#include <catch2/catch_test_macros.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
 
 #include "minecraft-file.hpp"
 
 #include "BlockData.hpp"
 #include "Point3D.hpp"
-
-#include <iostream>
 
 using namespace mcfile;
 namespace fs = std::filesystem;
@@ -18,7 +17,7 @@ TEST_CASE("1.13.2") {
 
     je::World world(dir / "data" / "1.13.2" / "mitomitoyapparikawaiiyo");
 
-    SECTION("Chunk::{blockAt}") {
+    SUBCASE("Chunk::{blockAt}") {
         auto region = world.region(0, 0);
         CHECK(region != nullptr);
         auto const &chunk = region->chunkAt(0, 0);
@@ -48,7 +47,7 @@ TEST_CASE("1.13.2") {
         }
     }
 
-    SECTION("Chunk::blockIdAt") {
+    SUBCASE("Chunk::blockIdAt") {
         auto region = world.region(0, 0);
         CHECK(region != nullptr);
         auto const &chunk = region->chunkAt(0, 0);
@@ -73,7 +72,7 @@ TEST_CASE("1.13.2") {
         }
     }
 
-    SECTION("World::eachBlock") {
+    SUBCASE("World::eachBlock") {
         auto const ret = world.eachBlock(0, 0, 15, 15, [&expected](int x, int y, int z, std::shared_ptr<je::Block const> const &block) {
             auto pos = MakePoint3D(x, y, z);
             auto expectedIt = expected.find(pos);
@@ -95,7 +94,7 @@ TEST_CASE("20w06a") {
     auto dir = file.parent_path();
     je::World world(dir / "data" / "20w06a" / "world" / "DIM-1");
 
-    SECTION("biomeAt") {
+    SUBCASE("biomeAt") {
         auto const &region = world.region(-1, -1);
         CHECK(region);
         auto const &chunk = region->chunkAt(-12, -5);
@@ -159,7 +158,7 @@ TEST_CASE("1.18") {
     auto const file = fs::path(__FILE__);
     auto dir = file.parent_path();
     je::World world(dir / "data" / "1.18rc3" / "12345678");
-    SECTION("blockAt") {
+    SUBCASE("blockAt") {
         auto const &chunk = world.chunkAt(0, 0);
         CHECK(chunk);
         auto bricks = chunk->blockAt(14, -52, 9);
@@ -169,7 +168,7 @@ TEST_CASE("1.18") {
         CHECK(stoneBricks);
         CHECK(stoneBricks->fName == "minecraft:stone_bricks");
     }
-    SECTION("biomeAt") {
+    SUBCASE("biomeAt") {
         {
             auto const &chunk = world.chunkAt(10, 17);
             CHECK(chunk->biomeAt(161, 2, 278) == biomes::minecraft::lush_caves);
@@ -181,7 +180,7 @@ TEST_CASE("1.18") {
             CHECK(chunk->biomeAt(15, -52, 202) == biomes::minecraft::snowy_taiga);
         }
     }
-    SECTION("toCompoundTag") {
+    SUBCASE("toCompoundTag") {
         auto tempDir = File::CreateTempDir(fs::temp_directory_path());
         auto region = world.region(0, 0);
         auto original = *tempDir / "original_c.0.0.nbt";
@@ -224,7 +223,7 @@ TEST_CASE("1.18") {
         fs::remove_all(*tempDir, ec);
     }
 
-    SECTION("5biomes") {
+    SUBCASE("5biomes") {
         using namespace std;
         using namespace mcfile;
         using namespace mcfile::je;

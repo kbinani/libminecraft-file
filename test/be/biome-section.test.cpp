@@ -1,4 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
+#include <doctest/doctest.h>
 
 #include "minecraft-file.hpp"
 
@@ -7,12 +7,12 @@ using namespace mcfile;
 using namespace mcfile::be;
 
 TEST_CASE("be/biome-section") {
-    SECTION("encode") {
+    SUBCASE("encode") {
         auto section = make_shared<BiomeSection>();
         section->fill(biomes::minecraft::taiga);
         CHECK(section->encode(nullptr) == false);
     }
-    SECTION("format0") {
+    SUBCASE("format0") {
         auto section = make_shared<BiomeSection>();
         section->fill(biomes::minecraft::taiga);
         string encoded;
@@ -36,7 +36,7 @@ TEST_CASE("be/biome-section") {
             }
         }
     }
-    SECTION("format3") {
+    SUBCASE("format3") {
         auto section = make_shared<BiomeSection>();
         section->fill(biomes::minecraft::taiga);
         section->set(0, 0, 0, biomes::minecraft::desert);
