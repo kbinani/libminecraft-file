@@ -42,10 +42,10 @@ public:
         return fBlockData;
     }
 
-    std::string_view property(std::string const &name, std::string const &fallback = "") const {
+    std::string_view property(std::string const &name, char const *fallback = "") const {
         using namespace std;
         if (fData.empty()) {
-            return fallback;
+            return fallback ? fallback : "";
         }
         assert(fData.front() == '[' && fData.back() == ']');
         size_t start = fData.find("[" + name + "=");
@@ -53,7 +53,7 @@ public:
             start = fData.find("," + name + "=");
         }
         if (start == string::npos) {
-            return fallback;
+            return fallback ? fallback : "";
         }
         size_t from = start + 1 + name.size() + 1;
         size_t ket = fData.size() - 1;
