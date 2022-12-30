@@ -288,15 +288,15 @@ private:
         vector<uint8_t> buffer;
         buffer.reserve(256);
         copy_n(data2D->begin() + 512, 256, back_inserter(buffer));
+        mcfile::biomes::BiomeId biomesXZ[16][16];
         int idx = 0;
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++, idx++) {
-                auto biome = Biome::FromUint32(buffer[idx]);
-                for (int y = 0; y < 256; y++) {
-                    ret->set(x, y, z, biome);
-                }
+                auto id = Biome::FromUint32(buffer[idx]);
+                biomesXZ[x][z] = id;
             }
         }
+        ret->set2D(biomesXZ);
         return ret;
     }
 

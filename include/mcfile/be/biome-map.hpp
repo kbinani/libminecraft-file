@@ -37,6 +37,14 @@ public:
         section->set(localX, localY, localZ, biome);
     }
 
+    void set2D(biomes::BiomeId biomesXZ[16][16]) {
+        for (auto &section : fSections) {
+            if (section) {
+                section->set2D(biomesXZ);
+            }
+        }
+    }
+
     std::optional<biomes::BiomeId> get(int localX, int y, int localZ) const {
         auto const &section = this->section(y);
         if (!section) {
