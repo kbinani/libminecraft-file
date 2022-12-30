@@ -28,8 +28,8 @@ public:
     template<class T, class Element, class = std::enable_if_t<sizeof(Element) == 1>>
     static inline T Read(std::vector<Element> const &buffer, size_t off) {
         assert(off + sizeof(T) <= buffer.size());
-        void *p = (void *)(buffer.data() + off);
 #if defined(__APPLE__)
+        void *p = (void *)(buffer.data() + off);
         void *ptr = p;
         size_t space = buffer.size() - off;
         if (std::align(sizeof(T), sizeof(T), ptr, space) == p) {
