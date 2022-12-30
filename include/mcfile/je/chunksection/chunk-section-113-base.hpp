@@ -56,6 +56,10 @@ public:
         return false;
     }
 
+    bool setBiomes(biomes::BiomeId biomesXYZ[4][4][4]) override {
+        return false;
+    }
+
     void fill(biomes::BiomeId biome) override {
     }
 

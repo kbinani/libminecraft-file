@@ -189,6 +189,39 @@ public:
         return fBiomes.set(index, biome);
     }
 
+    bool setBiomes(biomes::BiomeId biomesXYZ[4][4][4]) override {
+        using namespace std;
+        for (int y = 0; y < 4; y++) {
+            for (int z = 0; z < 4; z++) {
+                for (int x = 0; x < 4; x++) {
+                    if (biomesXYZ[x][y][z] >= biomes::minecraft::minecraft_max_biome_id) {
+                        return false;
+                    }
+                }
+            }
+        }
+        vector<biomes::BiomeId> palette;
+        vector<uint16_t> index(64);
+        int8_t lookup[biomes::minecraft::minecraft_max_biome_id];
+        fill_n(lookup, biomes::minecraft::minecraft_max_biome_id, -1);
+        int k = 0;
+        for (int y = 0; y < 4; y++) {
+            for (int z = 0; z < 4; z++) {
+                for (int x = 0; x < 4; x++, k++) {
+                    biomes::BiomeId id = biomesXYZ[x][y][z];
+                    int8_t i = lookup[id];
+                    if (i < 0) {
+                        i = (int8_t)palette.size();
+                        lookup[id] = i;
+                        palette.push_back(id);
+                    }
+                    index[k] = i;
+                }
+            }
+        }
+        return fBiomes.reset(palette, index);
+    }
+
     void fill(biomes::BiomeId biome) override {
         fBiomes.fill(biome);
     }
