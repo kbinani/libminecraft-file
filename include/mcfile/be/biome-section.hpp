@@ -51,33 +51,36 @@ public:
         fIndex[*index] = idx;
     }
 
-    void set2D(biomes::BiomeId biomesXZ[16][16]) {
+    bool set2D(biomes::BiomeId biomesXZ[16][16]) {
         using namespace std;
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                if (biomesXZ[x][z] >= biomes::minecraft::minecraft_max_biome_id) {
-                    return;
-                }
-            }
-        }
         fPalette.clear();
         int8_t lookup[biomes::minecraft::minecraft_max_biome_id];
         fill_n(lookup, biomes::minecraft::minecraft_max_biome_id, -1);
-        int k = 0;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 auto id = biomesXZ[x][z];
+                if (id >= biomes::minecraft::minecraft_max_biome_id) {
+                    return false;
+                }
                 int8_t i = lookup[id];
                 if (i < 0) {
                     i = fPalette.size();
                     lookup[id] = i;
                     fPalette.push_back(id);
                 }
+            }
+        }
+        int k = 0;
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                auto id = biomesXZ[x][z];
+                int8_t i = lookup[id];
                 for (int y = 0; y < 16; y++, k++) {
                     fIndex[k] = i;
                 }
             }
         }
+        return true;
     }
 
     [[nodiscard]] bool encode(std::string *d) const {
