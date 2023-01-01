@@ -26,10 +26,7 @@ public:
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
 
-        vector<uint8_t> buffer;
-        copy(data.begin(), data.end(), back_inserter(buffer));
-
-        auto bs = make_shared<ByteStream>(buffer);
+        auto bs = make_shared<ByteInputStream>(data);
         InputStreamReader sr(bs, endian);
 
         uint8_t version;
@@ -144,7 +141,7 @@ private:
 
         uint32_t const mask = ~((~((uint32_t)0)) << bitsPerBlock);
         index.reserve(4096);
-        auto indexBufferStream = make_shared<ByteStream>(indexBuffer);
+        auto indexBufferStream = make_shared<ByteInputStream>((char *)indexBuffer.data(), indexBuffer.size());
         InputStreamReader sr2(indexBufferStream, sr.fEndian);
         for (int i = 0; i < numWords; i++) {
             uint32_t word;

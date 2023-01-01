@@ -143,9 +143,7 @@ public:
             }
         }
 
-        vector<uint8_t> tmp;
-        s->drain(tmp);
-        copy(tmp.begin(), tmp.end(), back_inserter(*d));
+        s->drain(*d);
         return true;
     }
 

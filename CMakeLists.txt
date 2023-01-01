@@ -93,6 +93,7 @@ set(mcfile_files
   include/mcfile/pos2.hpp
   include/mcfile/pos3.hpp
   include/mcfile/scoped-file.hpp
+  include/mcfile/stream/byte-input-stream.hpp
   include/mcfile/stream/byte-stream.hpp
   include/mcfile/stream/defer-opening-output-stream.hpp
   include/mcfile/stream/file-input-stream.hpp

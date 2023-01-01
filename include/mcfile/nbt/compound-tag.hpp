@@ -575,13 +575,13 @@ public:
     }
 
     static void ReadUntilEos(std::string const &data, Endian endian, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
-        auto s = std::make_shared<mcfile::stream::ByteStream>(data);
+        auto s = std::make_shared<mcfile::stream::ByteInputStream>(data);
         mcfile::stream::InputStreamReader reader(s, endian);
         ReadUntilEosImpl(reader, callback);
     }
 
     static void ReadUntilEos(std::string const &data, Endian endian, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
-        auto s = std::make_shared<mcfile::stream::ByteStream>(data);
+        auto s = std::make_shared<mcfile::stream::ByteInputStream>(data);
         mcfile::stream::InputStreamReader reader(s, endian);
         ReadUntilEosImpl(reader, [callback](std::shared_ptr<CompoundTag> const &value) {
             callback(value);
@@ -595,7 +595,7 @@ public:
     }
 
     static std::shared_ptr<CompoundTag> Read(std::string const &data, Endian endian) {
-        auto s = std::make_shared<mcfile::stream::ByteStream>(data);
+        auto s = std::make_shared<mcfile::stream::ByteInputStream>(data);
         return Read(s, endian);
     }
 

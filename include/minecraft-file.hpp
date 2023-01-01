@@ -51,6 +51,7 @@
 #include <mcfile/stream/gz-file-output-stream.hpp>
 #include <mcfile/stream/gz-file-input-stream.hpp>
 #include <mcfile/stream/byte-stream.hpp>
+#include <mcfile/stream/byte-input-stream.hpp>
 #include <mcfile/stream/input-stream-reader.hpp>
 #include <mcfile/stream/output-stream-writer.hpp>
 #include <mcfile/stream/defer-opening-output-stream.hpp>

@@ -189,9 +189,7 @@ private:
         if (!value) {
             return;
         }
-        vector<uint8_t> buffer;
-        copy(value->begin(), value->end(), back_inserter(buffer));
-        auto stream = make_shared<ByteStream>(buffer);
+        auto stream = make_shared<ByteStream>(*value);
         InputStreamReader sr(stream, endian);
         CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
             auto bx = tag->int32("x");
@@ -285,9 +283,7 @@ private:
             return nullptr;
         }
         auto ret = make_shared<BiomeMap>(0, 15);
-        vector<uint8_t> buffer;
-        buffer.reserve(256);
-        copy_n(data2D->begin() + 512, 256, back_inserter(buffer));
+        string_view buffer(data2D->data() + 512, 256);
         mcfile::biomes::BiomeId biomesXZ[16][16];
         int idx = 0;
         for (int z = 0; z < 16; z++) {
