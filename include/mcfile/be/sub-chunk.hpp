@@ -133,25 +133,23 @@ private:
         } else {
             numWords = (int)ceilf(4096.0 / blocksPerWord);
         }
-        int numBytes = numWords * 4;
-        vector<uint8_t> indexBuffer(numBytes);
-        if (!sr.read(indexBuffer)) {
-            return false;
+        vector<uint32_t> indexBuffer(numWords);
+        for (int i = 0; i < numWords; i++) {
+            uint32_t v;
+            if (!sr.read(&v)) {
+                return false;
+            }
+            indexBuffer[i] = v;
         }
 
         uint32_t const mask = ~((~((uint32_t)0)) << bitsPerBlock);
-        index.reserve(4096);
-        auto indexBufferStream = make_shared<ByteInputStream>((char *)indexBuffer.data(), indexBuffer.size());
-        InputStreamReader sr2(indexBufferStream, sr.fEndian);
+        index.resize(4096);
+        int k = 0;
         for (int i = 0; i < numWords; i++) {
-            uint32_t word;
-            if (!sr2.read(&word)) {
-                return false;
-            }
-            for (int j = 0; j < blocksPerWord && index.size() < 4096; j++) {
-                uint16_t v = word & mask;
-                index.push_back(v);
-                word = word >> bitsPerBlock;
+            uint32_t word = indexBuffer[i];
+            for (int j = 0; j < blocksPerWord && k < 4096; j++, k++) {
+                uint16_t v = (word >> (bitsPerBlock * j)) & mask;
+                index[k] = v;
             }
         }
         assert(index.size() == 4096);
