@@ -39,7 +39,7 @@ public:
         return nbt::CompoundTag::WriteCompressed(*compound, s, Endian::Big);
     }
 
-    bool writeEntities(stream::OutputStream &s) const {
+    std::shared_ptr<nbt::CompoundTag> toEntitiesCompoundTag() const {
         using namespace mcfile::nbt;
         auto c = std::make_shared<CompoundTag>();
         auto entities = std::make_shared<ListTag>(Tag::Type::Compound);
@@ -47,6 +47,15 @@ public:
             entities->push_back(it);
         }
         c->set("Entities", entities);
+        return c;
+    }
+
+    bool writeEntities(stream::OutputStream &s) const {
+        using namespace mcfile::nbt;
+        auto c = toEntitiesCompoundTag();
+        if (!c) {
+            return false;
+        }
         return CompoundTag::WriteCompressed(*c, s, Endian::Big);
     }
 
