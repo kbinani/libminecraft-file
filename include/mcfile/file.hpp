@@ -72,6 +72,14 @@ public:
         return fread(buffer, elementSize, elementCount, stream) == elementCount;
     }
 
+    [[nodiscard]] static bool Ftruncate(FILE *stream, uint64_t size) {
+#if defined(_MSC_VER)
+        return _chsize_s(_fileno(stream), size) == 0;
+#else
+        return ftruncate(fileno(stream), size) == 0;
+#endif
+    }
+
     [[nodiscard]] static bool Copy(FILE *in, FILE *out, size_t length) {
         if (!in || !out) {
             return false;

@@ -61,11 +61,7 @@ public:
     }
 
     bool truncate() override {
-#if defined(_MSC_VER)
-        return _chsize_s(_fileno(fFile), fPos) == 0;
-#else
-        return ftruncate(fileno(fFile), fPos) == 0;
-#endif
+        return File::Ftruncate(fFile, fPos);
     }
 
 private:
