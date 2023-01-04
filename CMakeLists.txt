@@ -63,7 +63,6 @@ set(mcfile_files
   include/mcfile/je/chunksection/chunk-section-118.hpp
   include/mcfile/je/chunksection/chunk-section-generator.hpp
   include/mcfile/je/flatten.hpp
-  include/mcfile/je/mca-builder.hpp
   include/mcfile/je/mca-chunk-locator.hpp
   include/mcfile/je/mca-editor.hpp
   include/mcfile/je/region.hpp

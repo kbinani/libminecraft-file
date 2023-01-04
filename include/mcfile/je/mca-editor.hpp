@@ -10,29 +10,33 @@ class McaEditor {
 public:
     explicit McaEditor(std::filesystem::path const &path) {
         using namespace std;
+        namespace fs = std::filesystem;
         fIndex.resize(1024, 0);
         fUsedSectors.push_back(true);
         fUsedSectors.push_back(true);
 
-        fStream = File::Open(path, File::Mode::ReadWrite);
+        if (fs::is_regular_file(path)) {
+            fStream = File::Open(path, File::Mode::ReadWrite);
+        } else {
+            fStream = File::Open(path, File::Mode::Write);
+        }
         if (!fStream) {
             return;
         }
-        if (fread(fIndex.data(), 4096, 1, fStream) != 1) {
-            return;
-        }
-        for (int i = 0; i < fIndex.size(); i++) {
-            fIndex[i] = U32FromBE(fIndex[i]);
-        }
-        for (uint32_t loc : fIndex) {
-            uint32_t pos = SectorOffset(loc);
-            uint32_t sectors = NumSectors(loc);
-            if (fUsedSectors.size() < pos + sectors) {
-                fUsedSectors.resize(pos + sectors, false);
+        if (fread(fIndex.data(), 4096, 1, fStream) == 1) {
+            for (int i = 0; i < fIndex.size(); i++) {
+                fIndex[i] = U32FromBE(fIndex[i]);
             }
-            for (int j = 0; j < sectors; j++) {
-                assert(fUsedSectors[pos + j] == false);
-                fUsedSectors[pos + j] = true;
+            for (uint32_t loc : fIndex) {
+                uint32_t pos = SectorOffset(loc);
+                uint32_t sectors = NumSectors(loc);
+                if (fUsedSectors.size() < pos + sectors) {
+                    fUsedSectors.resize(pos + sectors, false);
+                }
+                for (int j = 0; j < sectors; j++) {
+                    assert(fUsedSectors[pos + j] == false);
+                    fUsedSectors[pos + j] = true;
+                }
             }
         }
     }
