@@ -188,7 +188,7 @@ public:
                 break;
             }
         }
-        return File::Ftruncate(fStream, lastTrue * 4096);
+        return File::Ftruncate(fStream, (lastTrue + 1) * 4096);
     }
 
     static bool Load(std::filesystem::path const &path, int localX, int localZ, std::string &out) {
