@@ -9,31 +9,25 @@ public:
     Db(std::string const &) = delete;
     Db(std::wstring const &) = delete;
     explicit Db(std::filesystem::path const &dir)
-        : fDb(nullptr)
-        , fValid(false) {
+        : fDb(nullptr) {
         using namespace leveldb;
-
-        DB *db;
+        DB *db = nullptr;
         Options options;
         options.compression = kZlibRawCompression;
-        Status status = DB::Open(options, dir, &db);
-        if (!status.ok()) {
+        if (!DB::Open(options, dir, &db).ok()) {
             return;
         }
-        fDb = db;
-        fValid = true;
+        fDb.reset(db);
     }
 
-    ~Db() {
-        if (fValid) {
-            delete fDb;
-        }
-    }
+    ~Db() {}
 
     std::optional<std::string> get(std::string const &key) override {
-        assert(fValid);
+        assert(fDb);
         std::string v;
-        leveldb::Status st = fDb->Get({}, key, &v);
+        leveldb::ReadOptions ro;
+        ro.fill_cache = false;
+        leveldb::Status st = fDb->Get(ro, key, &v);
         if (st.ok()) {
             return v;
         } else {
@@ -42,8 +36,7 @@ public:
     }
 
 private:
-    leveldb::DB *fDb;
-    bool fValid;
+    std::unique_ptr<leveldb::DB> fDb;
 };
 
 } // namespace mcfile::be
