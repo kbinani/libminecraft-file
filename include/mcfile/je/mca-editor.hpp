@@ -215,10 +215,10 @@ public:
         if (!s.read(&size, sizeof(size))) {
             return false;
         }
+        size = U32FromBE(size);
         if (size < 2) {
             return false;
         }
-        size = U32FromBE(size);
         uint8_t comp;
         if (!s.read(&comp, sizeof(comp))) {
             return false;
