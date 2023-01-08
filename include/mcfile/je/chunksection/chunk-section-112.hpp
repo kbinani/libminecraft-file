@@ -22,7 +22,7 @@ public:
             }
         }
 
-        ChunkSection112::Migrate(rawSections, chunkX, chunkZ, tileEntities, out);
+        Migrate(rawSections, chunkX, chunkZ, tileEntities, out);
     }
 
     static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
@@ -90,11 +90,11 @@ public:
 private:
     ChunkSection112(int y,
                     std::vector<std::shared_ptr<Block const>> const &palette, std::vector<uint16_t> const &paletteIndices,
-                    std::vector<uint8_t> const &blockLight,
-                    std::vector<uint8_t> const &skyLight)
-        : fY(y)
-        , fBlockLight(blockLight)
-        , fSkyLight(skyLight) {
+                    std::vector<uint8_t> &blockLight,
+                    std::vector<uint8_t> &skyLight)
+        : fY(y) {
+        fBlockLight.swap(blockLight);
+        fSkyLight.swap(skyLight);
         fBlocks.reset(palette, paletteIndices);
     }
 
@@ -406,8 +406,6 @@ private:
     int const fY;
 
     BlockPalette fBlocks;
-    std::vector<uint8_t> fBlockLight;
-    std::vector<uint8_t> fSkyLight;
 };
 
 } // namespace mcfile::je::chunksection

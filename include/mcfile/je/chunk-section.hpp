@@ -4,6 +4,10 @@ namespace mcfile::je {
 
 class ChunkSection {
 public:
+    std::vector<uint8_t> fSkyLight;
+    std::vector<uint8_t> fBlockLight;
+
+public:
     virtual ~ChunkSection() {}
     virtual std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual std::shared_ptr<Block const> blockAtUnchecked(int offsetX, int offsetY, int offsetZ) const = 0;

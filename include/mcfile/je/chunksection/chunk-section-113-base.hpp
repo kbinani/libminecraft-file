@@ -94,6 +94,18 @@ public:
             root->set("Palette", paletteTag);
         }
 
+        if (fBlockLight.size() == 2048) {
+            auto blockLight = make_shared<ByteArrayTag>();
+            copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(blockLight->fValue));
+            root->set("BlockLight", blockLight);
+        }
+
+        if (fSkyLight.size() == 2048) {
+            auto skyLight = make_shared<ByteArrayTag>();
+            copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(skyLight->fValue));
+            root->set("SkyLight", skyLight);
+        }
+
         return root;
     }
 
@@ -112,6 +124,8 @@ public:
             "Y",
             "Palette",
             "BlockStates",
+            "BlockLight",
+            "SkyLight",
         };
         auto yTag = section->query("Y")->asByte();
         if (!yTag) {
@@ -158,6 +172,18 @@ public:
             BlockStatesParser::PaletteIndicesFromBlockStates(blockStatesTag->value(), paletteIndices);
         }
 
+        std::vector<uint8_t> blockLight;
+        auto blockLightTag = section->byteArrayTag("BlockLight");
+        if (blockLightTag && blockLightTag->fValue.size() == 2048) {
+            blockLightTag->fValue.swap(blockLight);
+        }
+
+        std::vector<uint8_t> skyLight;
+        auto skyLightTag = section->byteArrayTag("SkyLight");
+        if (skyLightTag && skyLightTag->fValue.size() == 2048) {
+            skyLightTag->fValue.swap(skyLight);
+        }
+
         auto extra = std::make_shared<nbt::CompoundTag>();
         for (auto it : *section) {
             if (sExclude.find(it.first) == sExclude.end()) {
@@ -168,6 +194,8 @@ public:
         return std::shared_ptr<ChunkSection>(new ChunkSection113Base((int)yTag->fValue,
                                                                      palette,
                                                                      paletteIndices,
+                                                                     blockLight,
+                                                                     skyLight,
                                                                      extra));
     }
 
@@ -175,10 +203,14 @@ protected:
     ChunkSection113Base(int y,
                         std::vector<std::shared_ptr<Block const>> const &palette,
                         std::vector<uint16_t> const &paletteIndices,
+                        std::vector<uint8_t> &blockLight,
+                        std::vector<uint8_t> &skyLight,
                         std::shared_ptr<nbt::CompoundTag> const &extra)
         : fY(y)
         , fExtra(extra) {
         fBlocks.reset(palette, paletteIndices);
+        fBlockLight.swap(blockLight);
+        fSkyLight.swap(skyLight);
     }
 
 private:

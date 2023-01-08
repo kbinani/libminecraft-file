@@ -11,6 +11,8 @@ public:
         vector<uint16_t> blockPaletteIndices(4096, 0);
         vector<biomes::BiomeId> biomePalette;
         vector<uint16_t> biomePaletteIndices;
+        vector<uint8_t> blockLight;
+        vector<uint8_t> skyLight;
         auto extra = make_shared<nbt::CompoundTag>();
         return shared_ptr<ChunkSection118>(new ChunkSection118(
             sectionY,
@@ -19,6 +21,8 @@ public:
             biomePalette,
             biomePaletteIndices,
             2858,
+            blockLight,
+            skyLight,
             extra));
     }
 
@@ -32,6 +36,8 @@ public:
             "Y",
             "block_states",
             "biomes",
+            "BlockLight",
+            "SkyLight",
         };
 
         auto yTag = section->byte("Y");
@@ -123,6 +129,18 @@ public:
             }
         }
 
+        std::vector<uint8_t> blockLight;
+        auto blockLightTag = section->byteArrayTag("BlockLight");
+        if (blockLightTag && blockLightTag->fValue.size() == 2048) {
+            blockLightTag->fValue.swap(blockLight);
+        }
+
+        std::vector<uint8_t> skyLight;
+        auto skyLightTag = section->byteArrayTag("SkyLight");
+        if (skyLightTag && skyLightTag->fValue.size() == 2048) {
+            skyLightTag->fValue.swap(skyLight);
+        }
+
         auto extra = std::make_shared<nbt::CompoundTag>();
         for (auto it : *section) {
             if (sExclude.find(it.first) == sExclude.end()) {
@@ -137,6 +155,8 @@ public:
             biomePalette,
             biomePaletteIndices,
             dataVersion,
+            blockLight,
+            skyLight,
             extra));
     }
 
@@ -272,6 +292,18 @@ public:
             root->set("block_states", blockStates);
         }
 
+        if (fBlockLight.size() == 2048) {
+            auto blockLight = make_shared<ByteArrayTag>();
+            copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(blockLight->fValue));
+            root->set("BlockLight", blockLight);
+        }
+
+        if (fSkyLight.size() == 2048) {
+            auto skyLight = make_shared<ByteArrayTag>();
+            copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(skyLight->fValue));
+            root->set("SkyLight", skyLight);
+        }
+
         return root;
     }
 
@@ -364,10 +396,14 @@ private:
                     std::vector<mcfile::biomes::BiomeId> const &biomePalette,
                     std::vector<uint16_t> const &biomePaletteIndices,
                     int dataVersion,
+                    std::vector<uint8_t> &blockLight,
+                    std::vector<uint8_t> &skyLight,
                     std::shared_ptr<nbt::CompoundTag> extra)
         : fY(y)
         , fDataVersion(dataVersion)
         , fExtra(extra) {
+        fBlockLight.swap(blockLight);
+        fSkyLight.swap(skyLight);
         fBlocks.reset(blockPalette, blockPaletteIndices);
         fBiomes.reset(biomePalette, biomePaletteIndices);
     }

@@ -9,11 +9,15 @@ public:
         vector<shared_ptr<Block const>> palette;
         palette.push_back(make_shared<Block const>("minecraft:air"));
         vector<uint16_t> paletteIndices(4096, 0);
+        vector<uint8_t> blockLight;
+        vector<uint8_t> skyLight;
         auto extra = make_shared<nbt::CompoundTag>();
         return shared_ptr<ChunkSection116>(
             new ChunkSection116(sectionY,
                                 palette,
                                 paletteIndices,
+                                blockLight,
+                                skyLight,
                                 extra));
     }
 
@@ -68,8 +72,10 @@ private:
     ChunkSection116(int y,
                     std::vector<std::shared_ptr<Block const>> const &palette,
                     std::vector<uint16_t> const &paletteIndices,
+                    std::vector<uint8_t> &blockLight,
+                    std::vector<uint8_t> &skyLight,
                     std::shared_ptr<nbt::CompoundTag> const &extra)
-        : ChunkSection113Base<BlockStatesParser116>(y, palette, paletteIndices, extra) {
+        : ChunkSection113Base<BlockStatesParser116>(y, palette, paletteIndices, blockLight, skyLight, extra) {
     }
 
     static size_t BiomeIndex(int offsetX, int offsetY, int offsetZ) {
