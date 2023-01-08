@@ -9,6 +9,10 @@ public:
     explicit ShortTag(int16_t v)
         : ScalarTag(v) {}
 
+    std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
     std::shared_ptr<ShortTag> copy() const {
         return std::make_shared<ShortTag>(fValue);
     }

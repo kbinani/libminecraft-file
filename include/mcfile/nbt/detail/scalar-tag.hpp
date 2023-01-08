@@ -6,17 +6,14 @@ template<typename T, Tag::Type ID>
 class ScalarTag : public Tag {
 public:
     ScalarTag()
-        : Tag() {}
+        : Tag()
+        , fValue(0) {}
 
     explicit ScalarTag(T v) {
         fValue = v;
     }
 
     Tag::Type type() const override { return ID; }
-
-    std::shared_ptr<Tag> clone() const override {
-        return std::make_shared<ScalarTag>(fValue);
-    }
 
     bool equals(ScalarTag<T, ID> const &o) const {
         return fValue == o.fValue;

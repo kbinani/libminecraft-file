@@ -9,6 +9,10 @@ public:
     explicit IntTag(int32_t v)
         : ScalarTag(v) {}
 
+    std::shared_ptr<Tag> clone() const override {
+        return copy();
+    }
+
     std::shared_ptr<IntTag> copy() const {
         return std::make_shared<IntTag>(fValue);
     }
