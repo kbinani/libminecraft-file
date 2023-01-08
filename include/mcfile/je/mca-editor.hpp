@@ -42,10 +42,7 @@ public:
     }
 
     ~McaEditor() {
-        flush();
-        if (fStream) {
-            fclose(fStream);
-        }
+        close();
     }
 
     std::shared_ptr<nbt::CompoundTag> extract(int localX, int localZ) {
@@ -189,6 +186,15 @@ public:
             }
         }
         return File::Ftruncate(fStream, (lastTrue + 1) * 4096);
+    }
+
+    bool close() {
+        if (!fStream) {
+            return true;
+        }
+        bool ok = flush();
+        fclose(fStream);
+        return ok;
     }
 
     static bool Load(std::filesystem::path const &path, int localX, int localZ, std::string &out) {
