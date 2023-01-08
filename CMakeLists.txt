@@ -46,6 +46,7 @@ set(mcfile_files
   include/mcfile/blocks/name.hpp
   include/mcfile/compression.hpp
   include/mcfile/coordinate.hpp
+  include/mcfile/data4b3d.hpp
   include/mcfile/dimension.hpp
   include/mcfile/endianness.hpp
   include/mcfile/file.hpp

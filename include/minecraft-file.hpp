@@ -76,11 +76,14 @@
 #include <mcfile/nbt/list-tag.hpp>
 #include <mcfile/nbt/compound-tag.hpp>
 #include <mcfile/nbt/tag-factory-impl.hpp>
+#include <mcfile/pos2.hpp>
+#include <mcfile/pos3.hpp>
 #include <mcfile/coordinate.hpp>
 #include <mcfile/blocks/block-id.hpp>
 #include <mcfile/blocks/minecraft.hpp>
 #include <mcfile/blocks/from-name.hpp>
 #include <mcfile/blocks/name.hpp>
+#include <mcfile/data4b3d.hpp>
 
 #include <mcfile/je/block.hpp>
 #include <mcfile/biomes/biome-id.hpp>
@@ -103,8 +106,6 @@
 #include <mcfile/je/chunksection/chunk-section-118.hpp>
 #include <mcfile/je/chunksection/chunk-section-generator.hpp>
 #include <mcfile/je/set-block-options.hpp>
-#include <mcfile/pos2.hpp>
-#include <mcfile/pos3.hpp>
 #include <mcfile/je/ticking-block.hpp>
 #include <mcfile/je/chunk.hpp>
 #include <mcfile/je/writable-chunk.hpp>
