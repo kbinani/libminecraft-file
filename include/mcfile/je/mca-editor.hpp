@@ -45,7 +45,7 @@ public:
         close();
     }
 
-    std::shared_ptr<nbt::CompoundTag> extract(int localX, int localZ) {
+    std::shared_ptr<nbt::CompoundTag> get(int localX, int localZ) {
         if (localX < 0 || 32 <= localX || localZ < 0 || 32 <= localZ) {
             return nullptr;
         }
@@ -85,10 +85,18 @@ public:
         if (fread(tmp.data(), tmp.size(), 1, fStream) != 1) {
             return nullptr;
         }
-        auto ret = nbt::CompoundTag::ReadCompressed(tmp, Endian::Big);
-        if (!ret) {
+        return nbt::CompoundTag::ReadCompressed(tmp, Endian::Big);
+    }
+
+    std::shared_ptr<nbt::CompoundTag> extract(int localX, int localZ) {
+        auto tag = get(localX, localZ);
+        if (!tag) {
             return nullptr;
         }
+        int index = localZ * 32 + localX;
+        uint32_t loc = fIndex[index];
+        uint32_t sectorOffset = SectorOffset(loc);
+        uint32_t numSectors = NumSectors(loc);
         fIndex[index] = 0;
         if (fUsedSectors.size() < sectorOffset + numSectors) {
             fUsedSectors.resize(sectorOffset + numSectors);
@@ -96,7 +104,7 @@ public:
         for (int i = 0; i < numSectors; i++) {
             fUsedSectors[sectorOffset + i] = false;
         }
-        return ret;
+        return tag;
     }
 
     bool insert(int localX, int localZ, nbt::CompoundTag const &tag) {
