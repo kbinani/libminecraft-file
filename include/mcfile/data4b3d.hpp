@@ -45,15 +45,15 @@ public:
         (*fRef)[i] = (current & (uint8_t(0xf) << (4 - shift)) | ((v & 0xf) << shift));
     }
 
-    template <class Container>
-    void copy(Container &out) const {
+    template<class Container>
+    void copyTo(Container &out) const {
         out.clear();
         out.reserve(fRef->size());
         std::copy(fRef->begin(), fRef->end(), std::back_inserter(out));
     }
 
-    template <class Container>
-    bool reset(Container const &data) {
+    template<class Container>
+    bool copyFrom(Container const &data) {
         auto size = std::distance(data.begin(), data.end());
         if (size != fRef->size()) {
             return false;
