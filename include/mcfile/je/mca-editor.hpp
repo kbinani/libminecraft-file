@@ -202,6 +202,7 @@ public:
         }
         bool ok = flush();
         fclose(fStream);
+        fStream = nullptr;
         return ok;
     }
 
