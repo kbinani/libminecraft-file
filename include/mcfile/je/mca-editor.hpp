@@ -4,88 +4,84 @@ namespace mcfile::je {
 
 class McaEditor {
     std::vector<bool> fUsedSectors;
-    FILE *fStream = nullptr;
     std::vector<uint32_t> fIndex;
+    std::vector<std::string> fCompressedChunks;
 
 public:
-    explicit McaEditor(std::filesystem::path const &path) {
-        using namespace std;
-        namespace fs = std::filesystem;
-        fIndex.resize(1024, 0);
-        fUsedSectors.push_back(true);
-        fUsedSectors.push_back(true);
+    static std::unique_ptr<McaEditor> Open(std::filesystem::path const &path) {
+        std::vector<bool> usedSectors;
+        usedSectors.resize(1024, false);
+        usedSectors[0] = true;
+        usedSectors[1] = true;
 
-        if (fs::is_regular_file(path)) {
-            fStream = File::Open(path, File::Mode::ReadWrite);
-        } else {
-            fStream = File::Open(path, File::Mode::Write);
-        }
-        if (!fStream) {
-            return;
-        }
-        if (fread(fIndex.data(), 4096, 1, fStream) == 1) {
-            for (int i = 0; i < fIndex.size(); i++) {
-                fIndex[i] = U32FromBE(fIndex[i]);
-            }
-            for (uint32_t loc : fIndex) {
-                uint32_t pos = SectorOffset(loc);
-                uint32_t sectors = NumSectors(loc);
-                if (fUsedSectors.size() < pos + sectors) {
-                    fUsedSectors.resize(pos + sectors, false);
-                }
-                for (int j = 0; j < sectors; j++) {
-                    assert(fUsedSectors[pos + j] == false);
-                    fUsedSectors[pos + j] = true;
-                }
-            }
-        }
-    }
+        std::vector<uint32_t> index(1024, 0);
+        std::vector<std::string> compressedChunks(1024);
 
-    ~McaEditor() {
-        close();
+        ScopedFile file(File::Open(path, File::Mode::Read));
+        if (!file) {
+            return std::unique_ptr<McaEditor>(new McaEditor(usedSectors, index, compressedChunks));
+        }
+        if (fread(index.data(), 4096, 1, file.get()) != 1) {
+            return nullptr;
+        }
+        for (int i = 0; i < index.size(); i++) {
+            index[i] = U32FromBE(index[i]);
+        }
+        for (int i = 0; i < index.size(); i++) {
+            uint32_t loc = index[i];
+            uint32_t offset = SectorOffset(loc);
+            uint32_t sectors = NumSectors(loc);
+            if (usedSectors.size() < offset + sectors) {
+                usedSectors.resize(offset + sectors, false);
+            }
+            for (int j = 0; j < sectors; j++) {
+                assert(usedSectors[pos + j] == false);
+                usedSectors[offset + j] = true;
+            }
+            if (sectors == 0) {
+                continue;
+            }
+            if (offset < 2) {
+                continue;
+            }
+            if (!File::Fseek(file.get(), offset * 4096, SEEK_SET)) {
+                return nullptr;
+            }
+            uint32_t size;
+            if (fread(&size, sizeof(size), 1, file.get()) != 1) {
+                return nullptr;
+            }
+            size = U32FromBE(size);
+            if (size < 2) {
+                return nullptr;
+            }
+            uint8_t comp;
+            if (fread(&comp, sizeof(comp), 1, file.get()) != 1) {
+                return nullptr;
+            }
+            if (comp != 2) {
+                return nullptr;
+            }
+            std::string tmp;
+            tmp.resize(size - 1);
+            if (fread(tmp.data(), tmp.size(), 1, file.get()) != 1) {
+                return nullptr;
+            }
+            compressedChunks[i] = tmp;
+        }
+        return std::unique_ptr<McaEditor>(new McaEditor(usedSectors, index, compressedChunks));
     }
 
     std::shared_ptr<nbt::CompoundTag> get(int localX, int localZ) {
         if (localX < 0 || 32 <= localX || localZ < 0 || 32 <= localZ) {
             return nullptr;
         }
-        if (!fStream) {
-            return nullptr;
-        }
         int index = localZ * 32 + localX;
-        uint32_t loc = fIndex[index];
-        uint32_t sectorOffset = SectorOffset(loc);
-        uint32_t numSectors = NumSectors(loc);
-        if (numSectors == 0) {
+        std::string const &data = fCompressedChunks[index];
+        if (data.empty()) {
             return nullptr;
         }
-        if (sectorOffset < 2) {
-            return nullptr;
-        }
-        if (!File::Fseek(fStream, sectorOffset * 4096, SEEK_SET)) {
-            return nullptr;
-        }
-        uint32_t size;
-        if (fread(&size, sizeof(size), 1, fStream) != 1) {
-            return nullptr;
-        }
-        size = U32FromBE(size);
-        if (size < 2) {
-            return nullptr;
-        }
-        uint8_t comp;
-        if (fread(&comp, sizeof(comp), 1, fStream) != 1) {
-            return nullptr;
-        }
-        if (comp != 2) {
-            return nullptr;
-        }
-        std::string tmp;
-        tmp.resize(size - 1);
-        if (fread(tmp.data(), tmp.size(), 1, fStream) != 1) {
-            return nullptr;
-        }
-        return nbt::CompoundTag::ReadCompressed(tmp, Endian::Big);
+        return nbt::CompoundTag::ReadCompressed(data, Endian::Big);
     }
 
     std::shared_ptr<nbt::CompoundTag> extract(int localX, int localZ) {
@@ -98,6 +94,7 @@ public:
         uint32_t sectorOffset = SectorOffset(loc);
         uint32_t numSectors = NumSectors(loc);
         fIndex[index] = 0;
+        std::string().swap(fCompressedChunks[index]);
         if (fUsedSectors.size() < sectorOffset + numSectors) {
             fUsedSectors.resize(sectorOffset + numSectors);
         }
@@ -111,9 +108,8 @@ public:
         if (localX < 0 || 32 <= localX || localZ < 0 || 32 <= localZ) {
             return false;
         }
-        if (!fStream) {
-            return false;
-        }
+        int index = localZ * 32 + localX;
+
         auto data = nbt::CompoundTag::WriteCompressed(tag, Endian::Big);
         if (!data) {
             return false;
@@ -121,6 +117,7 @@ public:
         if (data->empty()) {
             return false;
         }
+
         uint32_t numSectors = Ceil<uint32_t>(data->size() + 1 + 4, (uint32_t)4096) / 4096;
         int offset = -1;
         for (int i = 2; i + numSectors < fUsedSectors.size(); i++) {
@@ -150,39 +147,51 @@ public:
                 fUsedSectors.push_back(false);
             }
         }
-        if (!File::Fseek(fStream, offset * 4096, SEEK_SET)) {
-            return false;
-        }
-        uint32_t size = U32BEFromNative(data->size() + 1);
-        if (fwrite(&size, sizeof(size), 1, fStream) != 1) {
-            return false;
-        }
-        uint8_t comp = 2;
-        if (fwrite(&comp, sizeof(comp), 1, fStream) != 1) {
-            return false;
-        }
-        if (fwrite(data->data(), data->size(), 1, fStream) != 1) {
-            return false;
-        }
+        fCompressedChunks[index].swap(*data);
         for (int i = 0; i < numSectors; i++) {
             fUsedSectors[offset + i] = true;
         }
         uint32_t loc = (0xFFFFFF00 & (offset << 8)) | (0xFF & numSectors);
-        int index = localZ * 32 + localX;
         fIndex[index] = loc;
         return true;
     }
 
-    bool flush() {
-        if (!fStream) {
-            return false;
-        }
-        if (!File::Fseek(fStream, 0, SEEK_SET)) {
+    bool write(std::filesystem::path const &path) {
+        ScopedFile file(File::Open(path, File::Mode::Write));
+        if (!file) {
             return false;
         }
         for (uint32_t loc : fIndex) {
             loc = U32BEFromNative(loc);
-            if (fwrite(&loc, sizeof(loc), 1, fStream) != 1) {
+            if (fwrite(&loc, sizeof(loc), 1, file.get()) != 1) {
+                return false;
+            }
+        }
+        for (int i = 0; i < fIndex.size(); i++) {
+            uint32_t loc = fIndex[i];
+            auto offset = SectorOffset(loc);
+            auto numSectors = NumSectors(loc);
+            if (offset < 2 || numSectors == 0) {
+                continue;
+            }
+
+            std::string const &data = fCompressedChunks[i];
+            if (data.empty()) {
+                continue;
+            }
+
+            if (!File::Fseek(file.get(), offset * 4096, SEEK_SET)) {
+                return false;
+            }
+            uint32_t size = U32BEFromNative(data.size() + 1);
+            if (fwrite(&size, sizeof(size), 1, file.get()) != 1) {
+                return false;
+            }
+            uint8_t comp = 2;
+            if (fwrite(&comp, sizeof(comp), 1, file.get()) != 1) {
+                return false;
+            }
+            if (fwrite(data.data(), data.size(), 1, file.get()) != 1) {
                 return false;
             }
         }
@@ -193,17 +202,7 @@ public:
                 break;
             }
         }
-        return File::Ftruncate(fStream, (lastTrue + 1) * 4096);
-    }
-
-    bool close() {
-        if (!fStream) {
-            return true;
-        }
-        bool ok = flush();
-        fclose(fStream);
-        fStream = nullptr;
-        return ok;
+        return File::Ftruncate(file.get(), (lastTrue + 1) * 4096);
     }
 
     static bool Load(std::filesystem::path const &path, int localX, int localZ, std::string &out) {
@@ -264,6 +263,12 @@ public:
     }
 
 private:
+    McaEditor(std::vector<bool> &usedSectors, std::vector<uint32_t> &index, std::vector<std::string> &compressedChunks) {
+        fUsedSectors.swap(usedSectors);
+        fIndex.swap(index);
+        fCompressedChunks.swap(compressedChunks);
+    }
+
     static uint32_t SectorOffset(uint32_t loc) {
         return 0xFFFFFF & (loc >> 8);
     }
