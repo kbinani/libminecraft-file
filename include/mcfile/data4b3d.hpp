@@ -42,7 +42,7 @@ public:
         uint32_t i = index / 2;
         uint32_t shift = (index - i * 2) * 4;
         uint8_t current = (*fRef)[i];
-        (*fRef)[i] = (current & (uint8_t(0xf) << (4 - shift)) | ((v & 0xf) << shift));
+        (*fRef)[i] = (current & (uint8_t(0xf) << (4 - shift))) | ((v & 0xf) << shift);
     }
 
     template<class Container>
