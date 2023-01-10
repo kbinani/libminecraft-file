@@ -20,12 +20,14 @@ public:
         : Block(id, blocks::Name(id), PackProperties(props)) {
     }
 
-    static std::shared_ptr<Block const> FromBlockData(std::string const &data, int dataVersion) {
+    static std::shared_ptr<Block const> FromBlockData(std::string const &blockData, int dataVersion) {
         using namespace std;
-        size_t bra = data.find('[');
-        string name = data;
+        size_t bra = blockData.find('[');
+        string name = blockData;
+        string data;
         if (bra != string::npos) {
-            name = data.substr(0, bra);
+            name = blockData.substr(0, bra);
+            data = blockData.substr(bra);
         }
         auto id = blocks::FromNameWithMigration(name, dataVersion);
         if (id == blocks::unknown) {
