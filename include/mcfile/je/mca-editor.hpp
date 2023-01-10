@@ -35,7 +35,7 @@ public:
                 usedSectors.resize(offset + sectors, false);
             }
             for (int j = 0; j < sectors; j++) {
-                assert(usedSectors[pos + j] == false);
+                assert(usedSectors[offset + j] == false);
                 usedSectors[offset + j] = true;
             }
             if (sectors == 0) {
