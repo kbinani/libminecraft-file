@@ -45,6 +45,11 @@ public:
         (*fRef)[i] = (current & (uint8_t(0xf) << (4 - shift))) | ((v & 0xf) << shift);
     }
 
+    void fill(uint8_t v) {
+        uint8_t a = 0xf & v;
+        std::fill(fRef->begin(), fRef->end(), a << 4 | a);
+    }
+
     template<class Container>
     void copyTo(Container &out) const {
         out.clear();
@@ -71,11 +76,13 @@ protected:
         , fRef(ref) {
     }
 
-protected:
+public:
     Pos3i const fOrigin;
     uint32_t const fWidthX;
     uint32_t const fHeight;
     uint32_t const fWidthZ;
+
+protected:
     std::vector<uint8_t> *fRef;
 };
 
