@@ -4,9 +4,12 @@ namespace mcfile {
 
 class Data4b3dView {
 public:
-    static std::optional<Data4b3dView> Make(Pos3i const &origin, uint32_t widthX, uint32_t height, uint32_t widthZ, std::vector<uint8_t> *ref) {
+    static std::optional<Data4b3dView> Make(Pos3i const &origin, int widthX, int height, int widthZ, std::vector<uint8_t> *ref) {
         using namespace std;
         if (!ref) {
+            return nullopt;
+        }
+        if (widthX < 1 || height < 1 || widthZ < 1) {
             return nullopt;
         }
         auto size = widthX * height * widthZ;
@@ -68,7 +71,7 @@ public:
     }
 
 protected:
-    Data4b3dView(Pos3i origin, uint32_t widthX, uint32_t height, uint32_t widthZ, std::vector<uint8_t> *ref)
+    Data4b3dView(Pos3i origin, int widthX, int height, int widthZ, std::vector<uint8_t> *ref)
         : fOrigin(origin)
         , fWidthX(widthX)
         , fHeight(height)
@@ -78,9 +81,9 @@ protected:
 
 public:
     Pos3i const fOrigin;
-    uint32_t const fWidthX;
-    uint32_t const fHeight;
-    uint32_t const fWidthZ;
+    int const fWidthX;
+    int const fHeight;
+    int const fWidthZ;
 
 protected:
     std::vector<uint8_t> *fRef;
@@ -88,7 +91,7 @@ protected:
 
 class Data4b3d : public Data4b3dView {
 public:
-    Data4b3d(Pos3i origin, uint32_t widthX, uint32_t height, uint32_t widthZ)
+    Data4b3d(Pos3i origin, int widthX, int height, int widthZ)
         : Data4b3dView(origin, widthX, height, widthZ, nullptr) {
         auto size = widthX * height * widthZ;
         size = size / 2 + size % 2;
