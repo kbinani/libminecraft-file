@@ -108,6 +108,7 @@
 #include <mcfile/je/set-block-options.hpp>
 #include <mcfile/je/ticking-block.hpp>
 #include <mcfile/je/chunk.hpp>
+#include <mcfile/je/heightmaps.hpp>
 #include <mcfile/je/writable-chunk.hpp>
 #include <mcfile/je/mca-chunk-locator.hpp>
 #include <mcfile/je/mca-editor.hpp>
