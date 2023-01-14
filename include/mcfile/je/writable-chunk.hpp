@@ -323,40 +323,24 @@ private:
 
         auto tag = make_shared<nbt::CompoundTag>();
 
-        for (int z = 0; z < 16; z++) {
-            for (int x = 0; x < 16; x++) {
-                map->setUnchecked(x, z, motionBlocking[z * 16 + x]);
-            }
-        }
+        map->copyFrom(motionBlocking);
         auto motionBlockingTag = make_shared<nbt::LongArrayTag>();
-        map->copy(motionBlockingTag->fValue);
+        map->copyTo(motionBlockingTag->fValue);
         tag->set("MOTION_BLOCKING", motionBlockingTag);
 
-        for (int z = 0; z < 16; z++) {
-            for (int x = 0; x < 16; x++) {
-                map->setUnchecked(x, z, motionBlockingNoLeaves[z * 16 + x]);
-            }
-        }
+        map->copyFrom(motionBlockingNoLeaves);
         auto motionBlockingNoLeavesTag = make_shared<nbt::LongArrayTag>();
-        map->copy(motionBlockingNoLeavesTag->fValue);
+        map->copyTo(motionBlockingNoLeavesTag->fValue);
         tag->set("MOTION_BLOCKING_NO_LEAVES", motionBlockingNoLeavesTag);
 
-        for (int z = 0; z < 16; z++) {
-            for (int x = 0; x < 16; x++) {
-                map->setUnchecked(x, z, oceanFloor[z * 16 + x]);
-            }
-        }
+        map->copyFrom(oceanFloor);
         auto oceanFloorTag = make_shared<nbt::LongArrayTag>();
-        map->copy(oceanFloorTag->fValue);
+        map->copyTo(oceanFloorTag->fValue);
         tag->set("OCEAN_FLOOR", oceanFloorTag);
 
-        for (int z = 0; z < 16; z++) {
-            for (int x = 0; x < 16; x++) {
-                map->setUnchecked(x, z, worldSurface[z * 16 + x]);
-            }
-        }
+        map->copyFrom(worldSurface);
         auto worldSurfaceTag = make_shared<nbt::LongArrayTag>(37);
-        map->copy(worldSurfaceTag->fValue);
+        map->copyTo(worldSurfaceTag->fValue);
         tag->set("WORLD_SURFACE", worldSurfaceTag);
 
         return tag;

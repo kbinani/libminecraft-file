@@ -7,7 +7,16 @@ public:
     virtual ~Heightmap() {}
     virtual uint16_t getUnchecked(int x, int z) const = 0;
     virtual void setUnchecked(int x, int z, uint16_t v) = 0;
-    virtual void copy(std::vector<int64_t> &out) const = 0;
+    virtual void copyTo(std::vector<int64_t> &out) const = 0;
+    virtual void copyFrom(uint16_t in[256]) = 0;
+
+    void copyFrom(uint16_t in[256]) {
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
+                setUnchecked(x, z, in[z * 16 + x]);
+            }
+        }
+    }
 
     static bool IsMotionBlocking(mcfile::blocks::BlockId id) {
         using namespace mcfile::blocks::minecraft;
@@ -3356,7 +3365,7 @@ public:
         }
     }
 
-    void copy(std::vector<int64_t> &out) const override {
+    void copyTo(std::vector<int64_t> &out) const override {
         out.resize(fStorage.size());
         std::copy(fStorage.begin(), fStorage.end(), out.begin());
     }
@@ -3392,7 +3401,7 @@ public:
         fStorage[i] = v;
     }
 
-    void copy(std::vector<int64_t> &out) const override {
+    void copyTo(std::vector<int64_t> &out) const override {
         out.resize(fStorage.size());
         std::copy(fStorage.begin(), fStorage.end(), out.begin());
     }
