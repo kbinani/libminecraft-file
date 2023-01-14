@@ -84,6 +84,7 @@ private:
             "structures",
             "sections",
             "Heightmaps",
+            "isLightOn",
         };
         auto level = make_shared<CompoundTag>();
         if (fRoot) {
@@ -134,6 +135,7 @@ private:
                 sections.push_back(section);
             }
         }
+        bool isLightOn = false;
         if (!sections.empty()) {
             sort(sections.begin(), sections.end(), [](auto const &a, auto const &b) {
                 return a->rawY() < b->rawY();
@@ -145,9 +147,13 @@ private:
                     return nullptr;
                 }
                 sectionsList->push_back(s);
+                if (!section->fSkyLight.empty() || !section->fBlockLight.empty()) {
+                    isLightOn = true;
+                }
             }
             level->set("sections", sectionsList);
         }
+        level->set("isLightOn", make_shared<ByteTag>(isLightOn ? 1 : 0));
 
         if (auto heightMaps = packHeightMap(); heightMaps) {
             level->set("Heightmaps", heightMaps);
