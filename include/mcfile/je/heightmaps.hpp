@@ -3309,6 +3309,55 @@ public:
     }
 };
 
+class HeightmapV1 : public Heightmap {
+public:
+    HeightmapV1() {
+        fStorage.resize(36, 0);
+    }
+
+    uint16_t getUnchecked(int x, int z) const override {
+        assert(0 <= x && x < 16 && 0 <= z && z < 16);
+        int index = z * 16 + x;
+        int bitsFrom = index * 9;
+        int i = bitsFrom / 64;
+        int iShift = bitsFrom % 64;
+        int iBits = 64 - iShift;
+        uint64_t iMask = (~uint64_t(0)) << iShift;
+        uint64_t v0 = *(uint64_t *)&fStorage[i];
+        if (iBits < 9) {
+            int jBits = 9 - iBits;
+            uint64_t jMask = ((~uint64_t(0)) << (64 - jBits)) >> (64 - jBits);
+            uint64_t v1 = (*(uint64_t *)&fStorage[i + 1]);
+            return (uint16_t)(0x1ff & (((iMask & v0) >> iShift) | ((jMask & v1) << iBits)));
+        } else {
+            return (uint16_t)(0x1ff & (v0 >> iShift));
+        }
+    }
+
+    void setUnchecked(int x, int z, uint16_t v) override {
+        assert(0 <= x && x < 16 && 0 <= z && z < 16);
+        int index = z * 16 + x;
+        int bitsFrom = index * 9;
+        int i = bitsFrom / 64;
+        int iShift = bitsFrom % 64;
+        int iBits = 64 - iShift;
+        uint64_t v0 = *(uint64_t *)&fStorage[i];
+        if (iBits < 9) {
+            int jBits = 9 - iBits;
+            uint64_t v1 = *(uint64_t *)&fStorage[i + 1];
+            uint64_t iMask = uint64_t(0x1ff) << iShift;
+            uint64_t jMask = ((~uint64_t(0)) << (64 - jBits)) >> (64 - jBits);
+            fStorage[i] = (~iMask & v0) | (iMask & (uint64_t(v) << iShift));
+            fStorage[i + 1] = (~jMask & v1) | (jMask & (uint64_t(v) >> iBits));
+        } else {
+            uint64_t mask = uint64_t(0x1ff) << iShift;
+            fStorage[i] = (~mask & v0) | (mask & (uint64_t(v) << iShift));
+        }
+    }
+
+    std::vector<int64_t> fStorage;
+};
+
 class HeightmapV2 : public Heightmap {
 public:
     HeightmapV2() {
@@ -3329,9 +3378,10 @@ public:
         int index = z * 16 + x;
         int i = index / 7;
         int j = index % 7;
-        uint64_t v = (*(uint64_t *)&fStorage[i]) >> (j * 9);
+        uint64_t raw = *(uint64_t *)&fStorage[i];
+        uint64_t v = raw >> (j * 9);
         uint64_t mask = uint64_t(0x1ff) << (j * 9);
-        v = (v & ~mask) | ((uint64_t(value) << (j * 9)) & mask);
+        v = (raw & ~mask) | ((uint64_t(value) << (j * 9)) & mask);
         fStorage[i] = v;
     }
 
