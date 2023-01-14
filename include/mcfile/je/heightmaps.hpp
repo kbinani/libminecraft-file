@@ -18,7 +18,35 @@ public:
         }
     }
 
-    static bool IsMotionBlocking(mcfile::blocks::BlockId id) {
+    static inline std::shared_ptr<Heightmap> Load(nbt::LongArrayTag const &data);
+
+    static bool IsMotionBlocking(mcfile::je::Block const &block) {
+        using namespace mcfile::blocks::minecraft;
+        switch (block.fId) {
+        case sea_pickle:
+            return block.property("waterlogged") == "true";
+        }
+        return IsMotionBlockingById(block.fId);
+    }
+
+    static bool IsMotionBlockingNoLeaves(mcfile::je::Block const &block) {
+        using namespace mcfile::blocks::minecraft;
+        switch (block.fId) {
+        case sea_pickle:
+            return block.property("waterlogged") == "true";
+        }
+        return IsMotionBlockingNoLeavesById(block.fId);
+    }
+
+    static bool IsOceanFloor(mcfile::je::Block const &block) {
+        return IsOceanFloorById(block.fId);
+    }
+
+    static bool IsWorldSurface(mcfile::je::Block const &block) {
+        return IsWorldSurfaceById(block.fId);
+    }
+
+    static bool IsMotionBlockingById(mcfile::blocks::BlockId id) {
         using namespace mcfile::blocks::minecraft;
         switch (id) {
         case acacia_door:
@@ -805,7 +833,7 @@ public:
         }
     }
 
-    static bool IsMotionBlockingNoLeaves(mcfile::blocks::BlockId id) {
+    static bool IsMotionBlockingNoLeavesById(mcfile::blocks::BlockId id) {
         using namespace mcfile::blocks::minecraft;
         switch (id) {
         case acacia_door:
@@ -1583,7 +1611,7 @@ public:
         }
     }
 
-    static bool IsOceanFloor(mcfile::blocks::BlockId id) {
+    static bool IsOceanFloorById(mcfile::blocks::BlockId id) {
         using namespace mcfile::blocks::minecraft;
         switch (id) {
         case acacia_door:
@@ -2348,7 +2376,7 @@ public:
         }
     }
 
-    static bool IsWorldSurface(mcfile::blocks::BlockId id) {
+    static bool IsWorldSurfaceById(mcfile::blocks::BlockId id) {
         using namespace mcfile::blocks::minecraft;
         switch (id) {
         case acacia_button:
@@ -3423,5 +3451,19 @@ public:
 private:
     std::vector<int64_t> fStorage;
 };
+
+std::shared_ptr<Heightmap> Heightmap::Load(nbt::LongArrayTag const &data) {
+    if (data.fValue.size() == 36) {
+        auto ret = std::make_shared<HeightmapV1>();
+        ret->copyFrom(data.fValue);
+        return ret;
+    } else if (data.fValue.size() == 37) {
+        auto ret = std::make_shared<HeightmapV2>();
+        ret->copyFrom(data.fValue);
+        return ret;
+    } else {
+        return nullptr;
+    }
+}
 
 } // namespace mcfile

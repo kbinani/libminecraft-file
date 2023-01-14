@@ -253,56 +253,69 @@ private:
 
     std::shared_ptr<nbt::CompoundTag> packHeightMap() const {
         using namespace std;
+
+        uint16_t const undefined = 0xffff;
+
         uint16_t motionBlocking[256];
         uint16_t motionBlockingNoLeaves[256];
         uint16_t oceanFloor[256];
         uint16_t worldSurface[256];
-        fill_n(motionBlocking, 256, 0xffff);
-        fill_n(motionBlockingNoLeaves, 256, 0xffff);
-        fill_n(oceanFloor, 256, 0xffff);
-        fill_n(worldSurface, 256, 0xffff);
+        fill_n(motionBlocking, 256, undefined);
+        fill_n(motionBlockingNoLeaves, 256, undefined);
+        fill_n(oceanFloor, 256, undefined);
+        fill_n(worldSurface, 256, undefined);
 
         int x0 = minBlockX();
         int y0 = minBlockY();
         int z0 = minBlockZ();
 
-        int i = 0;
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
                 int i = z * 16 + x;
                 int count = 0;
-                for (int y = maxBlockX(); y >= y0 && count < 4; y--) {
-                    auto block = blockAt(x + x0, y + y0, z + z0);
+                for (int y = maxBlockY(); y >= y0; y--) {
+                    auto block = blockAt(x + x0, y, z + z0);
                     if (!block) {
                         continue;
                     }
-                    if (motionBlocking[i] == 0xffff && Heightmap::IsMotionBlocking(block->fId)) {
-                        motionBlocking[i] = y - y0;
-                        count++;
+                    if (motionBlocking[i] == undefined) {
+                        if (Heightmap::IsMotionBlocking(*block)) {
+                            motionBlocking[i] = y - y0 + 1;
+                            count++;
+                        }
                     }
-                    if (motionBlockingNoLeaves[i] == 0xffff && Heightmap::IsMotionBlockingNoLeaves(block->fId)) {
-                        motionBlockingNoLeaves[i] = y - y0;
-                        count++;
+                    if (motionBlockingNoLeaves[i] == undefined) {
+                        if (Heightmap::IsMotionBlockingNoLeaves(*block)) {
+                            motionBlockingNoLeaves[i] = y - y0 + 1;
+                            count++;
+                        }
                     }
-                    if (oceanFloor[i] == 0xffff && Heightmap::IsOceanFloor(block->fId)) {
-                        oceanFloor[i] = y - y0;
-                        count++;
+                    if (oceanFloor[i] == undefined) {
+                        if (Heightmap::IsOceanFloor(*block)) {
+                            oceanFloor[i] = y - y0 + 1;
+                            count++;
+                        }
                     }
-                    if (worldSurface[i] == 0xffff && Heightmap::IsWorldSurface(block->fId)) {
-                        worldSurface[i] = y - y0;
-                        count++;
+                    if (worldSurface[i] == undefined) {
+                        if (Heightmap::IsWorldSurface(*block)) {
+                            worldSurface[i] = y - y0 + 1;
+                            count++;
+                        }
+                    }
+                    if (count >= 4) {
+                        break;
                     }
                 }
-                if (motionBlocking[i] == 0xffff) {
+                if (motionBlocking[i] == undefined) {
                     motionBlocking[i] = 0;
                 }
-                if (motionBlockingNoLeaves[i] == 0xffff) {
+                if (motionBlockingNoLeaves[i] == undefined) {
                     motionBlockingNoLeaves[i] = 0;
                 }
-                if (oceanFloor[i] == 0xffff) {
+                if (oceanFloor[i] == undefined) {
                     oceanFloor[i] = 0;
                 }
-                if (worldSurface[i] == 0xffff) {
+                if (worldSurface[i] == undefined) {
                     worldSurface[i] = 0;
                 }
             }
