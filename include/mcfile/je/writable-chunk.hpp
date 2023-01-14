@@ -308,57 +308,58 @@ private:
             }
         }
 
+        shared_ptr<Heightmap> map;
         if (fDataVersion < 2529) {
             // 2504 20w06a
             // 2524 20w14a
             // 2526 20w16a
-            // TODO:
-            return nullptr;
+            map = make_shared<HeightmapV1>();
         } else {
             // 2529 20w17a
             // 2532 20w18a
             // 2555 20w22a
-            auto tag = make_shared<nbt::CompoundTag>();
-            HeightmapV2 map;
-
-            for (int z = 0; z < 16; z++) {
-                for (int x = 0; x < 16; x++) {
-                    map.setUnchecked(x, z, motionBlocking[z * 16 + x]);
-                }
-            }
-            auto motionBlockingTag = make_shared<nbt::LongArrayTag>(37);
-            copy(map.fStorage.begin(), map.fStorage.end(), motionBlockingTag->fValue.begin());
-            tag->set("MOTION_BLOCKING", motionBlockingTag);
-
-            for (int z = 0; z < 16; z++) {
-                for (int x = 0; x < 16; x++) {
-                    map.setUnchecked(x, z, motionBlockingNoLeaves[z * 16 + x]);
-                }
-            }
-            auto motionBlockingNoLeavesTag = make_shared<nbt::LongArrayTag>(37);
-            copy(map.fStorage.begin(), map.fStorage.end(), motionBlockingNoLeavesTag->fValue.begin());
-            tag->set("MOTION_BLOCKING_NO_LEAVES", motionBlockingNoLeavesTag);
-
-            for (int z = 0; z < 16; z++) {
-                for (int x = 0; x < 16; x++) {
-                    map.setUnchecked(x, z, oceanFloor[z * 16 + x]);
-                }
-            }
-            auto oceanFloorTag = make_shared<nbt::LongArrayTag>(37);
-            copy(map.fStorage.begin(), map.fStorage.end(), oceanFloorTag->fValue.begin());
-            tag->set("OCEAN_FLOOR", oceanFloorTag);
-
-            for (int z = 0; z < 16; z++) {
-                for (int x = 0; x < 16; x++) {
-                    map.setUnchecked(x, z, worldSurface[z * 16 + x]);
-                }
-            }
-            auto worldSurfaceTag = make_shared<nbt::LongArrayTag>(37);
-            copy(map.fStorage.begin(), map.fStorage.end(), worldSurfaceTag->fValue.begin());
-            tag->set("WORLD_SURFACE", worldSurfaceTag);
-
-            return tag;
+            map = make_shared<HeightmapV2>();
         }
+
+        auto tag = make_shared<nbt::CompoundTag>();
+
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
+                map->setUnchecked(x, z, motionBlocking[z * 16 + x]);
+            }
+        }
+        auto motionBlockingTag = make_shared<nbt::LongArrayTag>();
+        map->copy(motionBlockingTag->fValue);
+        tag->set("MOTION_BLOCKING", motionBlockingTag);
+
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
+                map->setUnchecked(x, z, motionBlockingNoLeaves[z * 16 + x]);
+            }
+        }
+        auto motionBlockingNoLeavesTag = make_shared<nbt::LongArrayTag>();
+        map->copy(motionBlockingNoLeavesTag->fValue);
+        tag->set("MOTION_BLOCKING_NO_LEAVES", motionBlockingNoLeavesTag);
+
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
+                map->setUnchecked(x, z, oceanFloor[z * 16 + x]);
+            }
+        }
+        auto oceanFloorTag = make_shared<nbt::LongArrayTag>();
+        map->copy(oceanFloorTag->fValue);
+        tag->set("OCEAN_FLOOR", oceanFloorTag);
+
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
+                map->setUnchecked(x, z, worldSurface[z * 16 + x]);
+            }
+        }
+        auto worldSurfaceTag = make_shared<nbt::LongArrayTag>(37);
+        map->copy(worldSurfaceTag->fValue);
+        tag->set("WORLD_SURFACE", worldSurfaceTag);
+
+        return tag;
     }
 
 public:
