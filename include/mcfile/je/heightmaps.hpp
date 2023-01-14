@@ -8,6 +8,7 @@ public:
     virtual uint16_t getUnchecked(int x, int z) const = 0;
     virtual void setUnchecked(int x, int z, uint16_t v) = 0;
     virtual void copyTo(std::vector<int64_t> &out) const = 0;
+    virtual void copyFrom(std::vector<int64_t> const &out) = 0;
 
     void copyFrom(uint16_t in[256]) {
         for (int z = 0; z < 16; z++) {
@@ -3369,6 +3370,13 @@ public:
         std::copy(fStorage.begin(), fStorage.end(), out.begin());
     }
 
+    void copyFrom(std::vector<int64_t> const &out) override {
+        if (out.size() != 36) {
+            return;
+        }
+        std::copy(out.begin(), out.end(), fStorage.begin());
+    }
+
 private:
     std::vector<int64_t> fStorage;
 };
@@ -3403,6 +3411,13 @@ public:
     void copyTo(std::vector<int64_t> &out) const override {
         out.resize(fStorage.size());
         std::copy(fStorage.begin(), fStorage.end(), out.begin());
+    }
+
+    void copyFrom(std::vector<int64_t> const &out) override {
+        if (out.size() != 37) {
+            return;
+        }
+        std::copy(out.begin(), out.end(), fStorage.begin());
     }
 
 private:
