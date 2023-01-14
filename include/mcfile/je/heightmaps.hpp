@@ -8,7 +8,6 @@ public:
     virtual uint16_t getUnchecked(int x, int z) const = 0;
     virtual void setUnchecked(int x, int z, uint16_t v) = 0;
     virtual void copyTo(std::vector<int64_t> &out) const = 0;
-    virtual void copyFrom(uint16_t in[256]) = 0;
 
     void copyFrom(uint16_t in[256]) {
         for (int z = 0; z < 16; z++) {
