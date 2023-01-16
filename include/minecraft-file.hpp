@@ -104,6 +104,7 @@
 #include <mcfile/je/chunksection/chunk-section-113.hpp>
 #include <mcfile/je/chunksection/chunk-section-116.hpp>
 #include <mcfile/je/chunksection/chunk-section-118.hpp>
+#include <mcfile/je/chunksection/chunk-section-empty.hpp>
 #include <mcfile/je/chunksection/chunk-section-generator.hpp>
 #include <mcfile/je/set-block-options.hpp>
 #include <mcfile/je/ticking-block.hpp>

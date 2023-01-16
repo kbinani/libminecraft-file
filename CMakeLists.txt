@@ -62,6 +62,7 @@ set(mcfile_files
   include/mcfile/je/chunksection/chunk-section-113.hpp
   include/mcfile/je/chunksection/chunk-section-116.hpp
   include/mcfile/je/chunksection/chunk-section-118.hpp
+  include/mcfile/je/chunksection/chunk-section-empty.hpp
   include/mcfile/je/chunksection/chunk-section-generator.hpp
   include/mcfile/je/flatten.hpp
   include/mcfile/je/heightmaps.hpp
