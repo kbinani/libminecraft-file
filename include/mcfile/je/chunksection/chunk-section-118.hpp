@@ -187,10 +187,6 @@ public:
         return fY;
     }
 
-    int rawY() const override {
-        return fY;
-    }
-
     bool setBlockAt(int offsetX, int offsetY, int offsetZ, std::shared_ptr<Block const> const &block) override {
         if (!block) {
             return false;

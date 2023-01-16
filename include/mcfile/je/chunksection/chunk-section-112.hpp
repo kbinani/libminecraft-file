@@ -62,10 +62,6 @@ public:
         return fY;
     }
 
-    int rawY() const override {
-        return fY;
-    }
-
     std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const override {
         return std::nullopt;
     }

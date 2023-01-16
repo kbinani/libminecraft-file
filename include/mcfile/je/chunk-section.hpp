@@ -12,7 +12,6 @@ public:
     virtual std::shared_ptr<Block const> blockAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual std::shared_ptr<Block const> blockAtUnchecked(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual int y() const = 0;
-    virtual int rawY() const = 0;
     virtual std::optional<biomes::BiomeId> biomeAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) = 0;
     virtual bool setBiomes(biomes::BiomeId biomesXYZ[4][4][4]) = 0;

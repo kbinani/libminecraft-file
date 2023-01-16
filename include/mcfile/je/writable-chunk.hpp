@@ -138,7 +138,7 @@ private:
         bool isLightOn = false;
         if (!sections.empty()) {
             sort(sections.begin(), sections.end(), [](auto const &a, auto const &b) {
-                return a->rawY() < b->rawY();
+                return a->y() < b->y();
             });
             auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
             for (auto const &section : sections) {
@@ -181,7 +181,7 @@ private:
         }
         if (!sections.empty()) {
             sort(sections.begin(), sections.end(), [](auto const &a, auto const &b) {
-                return a->rawY() < b->rawY();
+                return a->y() < b->y();
             });
             auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
             for (auto const &section : sections) {
