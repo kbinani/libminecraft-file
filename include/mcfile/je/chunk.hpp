@@ -430,11 +430,11 @@ private:
         }
 
         vector<shared_ptr<ChunkSection>> sections;
-        //NOTE: blockEntities argument for MakeChunkSections is only used for ChunkSection112.
+        // NOTE: blockEntities argument for MakeChunkSections is only used for ChunkSection112.
         vector<shared_ptr<nbt::CompoundTag>> emptyBlockEntities;
         auto createEmptySection = chunksection::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, emptyBlockEntities, sections);
 
-        //NOTE: Always empty
+        // NOTE: Always empty
         vector<shared_ptr<nbt::CompoundTag>> entities;
 
         auto structures = tag.compoundTag("structures");
@@ -666,6 +666,21 @@ public:
     int const fChunkY;
     int const fChunkZ;
     std::vector<std::shared_ptr<ChunkSection>> fSections;
+
+    /*
+    Empty section added below bottom section if bottom section has SkyLight when dataVersion is:
+    3218
+    2230
+    1921
+    1910
+    1907
+    1901
+    ---
+    Empty section NOT added below bottom section even if bottom section has SkyLight when dataVersion is:
+    1631
+    */
+    std::shared_ptr<ChunkSectionEmpty> fBottomSection;
+
     std::vector<std::shared_ptr<nbt::CompoundTag>> fEntities;
     std::unordered_map<Pos3i, std::shared_ptr<nbt::CompoundTag>, Pos3iHasher> fTileEntities;
     std::shared_ptr<mcfile::nbt::CompoundTag> fStructures;

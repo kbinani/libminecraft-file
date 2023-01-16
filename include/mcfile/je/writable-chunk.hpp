@@ -141,6 +141,14 @@ private:
                 return a->y() < b->y();
             });
             auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
+            if (sections[0]->fSkyLight.size() == 2048 && fBottomSection && fBottomSection->fSkyLight.size() == 2048 && fDataVersion >= 1901) {
+                auto s = fBottomSection->toCompoundTag();
+                if (!s) {
+                    return nullptr;
+                }
+                sectionsList->push_back(s);
+                isLightOn = true;
+            }
             for (auto const &section : sections) {
                 auto s = section->toCompoundTag();
                 if (!s) {
