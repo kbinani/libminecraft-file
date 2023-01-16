@@ -45,7 +45,7 @@ public:
         return true;
     }
 
-    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const {
+    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
         auto ret = std::make_shared<nbt::CompoundTag>();
 
         int8_t h = fY;
