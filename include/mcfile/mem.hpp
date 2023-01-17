@@ -77,6 +77,29 @@ public:
         *(T *)(buffer.data() + off) = v;
 #endif
     }
+
+    template<size_t Align>
+    static void *AllocAligned(size_t bytes) {
+        static_assert(Align > 0 && (Align & (Align - 1)) == 0);
+#if defined(_WIN32)
+        return std::assume_aligned<Align>(_aligned_malloc(bytes, Align));
+#else
+        void *ptr;
+        if (posix_memalign(&ptr, Align, bytes) == 0) {
+            return std::assume_aligned<Align>(ptr);
+        } else {
+            return nullptr;
+        }
+#endif
+    }
+
+    static void FreeAligned(void *ptr) {
+#if defined(_WIN32)
+        _aligned_free(ptr);
+#else
+        free(ptr);
+#endif
+    }
 };
 
 } // namespace mcfile
