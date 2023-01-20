@@ -86,7 +86,7 @@ public:
 #else
         void *ptr;
         if (posix_memalign(&ptr, Align, bytes) == 0) {
-            return std::assume_aligned<Align>(ptr);
+            return __builtin_assume_aligned(ptr, Align);
         } else {
             return nullptr;
         }
