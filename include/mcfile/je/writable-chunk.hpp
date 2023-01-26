@@ -85,6 +85,8 @@ private:
             "sections",
             "Heightmaps",
             "isLightOn",
+            "block_ticks",
+            "fluid_ticks",
         };
         auto level = make_shared<CompoundTag>();
         if (fRoot) {
@@ -113,21 +115,17 @@ private:
             level->set("structures", fStructures->clone());
         }
 
-        if (!fLiquidTicks.empty()) {
-            auto lt = make_shared<ListTag>(Tag::Type::Compound);
-            for (TickingBlock const &tb : fLiquidTicks) {
-                lt->push_back(tb.toCompoundTag());
-            }
-            level->set("fluid_ticks", lt);
+        auto lt = make_shared<ListTag>(Tag::Type::Compound);
+        for (TickingBlock const &tb : fLiquidTicks) {
+            lt->push_back(tb.toCompoundTag());
         }
+        level->set("fluid_ticks", lt);
 
-        if (!fTileTicks.empty()) {
-            auto tt = make_shared<ListTag>(Tag::Type::Compound);
-            for (TickingBlock const &tb : fTileTicks) {
-                tt->push_back(tb.toCompoundTag());
-            }
-            level->set("block_ticks", tt);
+        auto tt = make_shared<ListTag>(Tag::Type::Compound);
+        for (TickingBlock const &tb : fTileTicks) {
+            tt->push_back(tb.toCompoundTag());
         }
+        level->set("block_ticks", tt);
 
         vector<shared_ptr<ChunkSection>> sections;
         for (auto const &section : fSections) {
