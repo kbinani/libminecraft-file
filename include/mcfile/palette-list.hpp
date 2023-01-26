@@ -134,9 +134,40 @@ public:
 
 private:
     static bool ShrinkToFitImpl(std::vector<Value> &inoutPalette, std::vector<Index> &inoutIndex, std::unordered_map<Value, Index, Hasher, Pred> *inoutLut = nullptr) {
-        std::vector<Value> palette;
-        std::unordered_map<Value, Index, Hasher, Pred> lut;
-        std::vector<Index> index;
+        using namespace std;
+        if (inoutIndex.empty()) {
+            if (inoutLut) {
+                inoutLut->clear();
+            }
+            inoutPalette.clear();
+            return true;
+        }
+        if (inoutIndex.size() != size) {
+            return false;
+        }
+        if (inoutPalette.empty()) {
+            return false;
+        }
+        if (inoutPalette.size() == 1) {
+            return true;
+        }
+        vector<bool> used;
+        used.resize(inoutPalette.size(), false);
+        size_t count = 0;
+        for (size_t i = 0; i < inoutIndex.size() && count < inoutPalette.size(); i++) {
+            Index idx = inoutIndex[i];
+            if (!used[idx]) {
+                used[idx] = true;
+                count++;
+            }
+        }
+        if (count == inoutPalette.size()) {
+            return true;
+        }
+
+        vector<Value> palette;
+        unordered_map<Value, Index, Hasher, Pred> lut;
+        vector<Index> index;
         index.resize(inoutIndex.size());
         for (size_t idx = 0; idx < inoutIndex.size(); idx++) {
             Index i = inoutIndex[idx];
