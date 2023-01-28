@@ -6,18 +6,18 @@ namespace mcfile::be {
 
 class Db : public DbInterface {
 public:
-    Db(std::string const &) = delete;
-    Db(std::wstring const &) = delete;
-    explicit Db(std::filesystem::path const &dir)
-        : fDb(nullptr) {
+    static std::shared_ptr<Db> Open(std::string const &) = delete;
+    static std::shared_ptr<Db> Open(std::wstring const &) = delete;
+
+    static std::shared_ptr<Db> Open(std::filesystem::path const &dir) {
         using namespace leveldb;
         DB *db = nullptr;
         Options options;
         options.compression = kZlibRawCompression;
         if (!DB::Open(options, dir, &db).ok()) {
-            return;
+            return nullptr;
         }
-        fDb.reset(db);
+        return std::shared_ptr<Db>(new Db(db));
     }
 
     ~Db() {}
@@ -33,6 +33,11 @@ public:
         } else {
             return std::nullopt;
         }
+    }
+
+private:
+    explicit Db(leveldb::DB *db)
+        : fDb(db) {
     }
 
 private:
