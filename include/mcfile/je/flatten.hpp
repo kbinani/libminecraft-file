@@ -134,7 +134,7 @@ public:
         case 24:
             switch (data) {
             case 1: id = blocks::minecraft::chiseled_sandstone; break;
-            case 2: id = blocks::minecraft::smooth_sandstone; break;
+            case 2: id = blocks::minecraft::cut_sandstone; break;
             case 0:
             default:
                 id = blocks::minecraft::sandstone;
