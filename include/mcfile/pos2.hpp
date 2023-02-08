@@ -56,6 +56,11 @@ inline Pos2<T> operator-(Pos2<T> const &lhs, Pos2<T> const &rhs) {
     return Pos2<T>(lhs.fX - rhs.fX, lhs.fZ - rhs.fZ);
 }
 
+template<class T>
+inline Pos2<T> operator*(Pos2<T> const &v, T scalar) {
+    return Pos2(v.fX * scalar, v.fZ * scalar);
+}
+
 } // namespace detail
 
 using Pos2i = detail::Pos2<int32_t>;

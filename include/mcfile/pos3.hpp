@@ -53,6 +53,11 @@ inline Pos3<T> operator-(Pos3<T> const &lhs, Pos3<T> const &rhs) {
     return Pos3<T>(lhs.fX - rhs.fX, lhs.fY - rhs.fY, lhs.fZ - rhs.fZ);
 }
 
+template<class T>
+inline Pos3<T> operator*(Pos3<T> const &v, T scalar) {
+    return Pos3(v.fX * scalar, v.fY * scalar, v.fZ * scalar);
+}
+
 } // namespace detail
 
 using Pos3i = detail::Pos3<int32_t>;
