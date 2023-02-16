@@ -997,6 +997,34 @@ static inline std::unordered_map<std::string_view, BlockId> *CreateTable() {
     t["minecraft:warped_hanging_sign"] = warped_hanging_sign;
     t["minecraft:warped_wall_hanging_sign"] = warped_wall_hanging_sign;
 
+    // 23w07a
+    t["minecraft:cherry_button"] = cherry_button;
+    t["minecraft:cherry_door"] = cherry_door;
+    t["minecraft:cherry_fence"] = cherry_fence;
+    t["minecraft:cherry_fence_gate"] = cherry_fence_gate;
+    t["minecraft:cherry_hanging_sign"] = cherry_hanging_sign;
+    t["minecraft:cherry_leaves"] = cherry_leaves;
+    t["minecraft:cherry_log"] = cherry_log;
+    t["minecraft:cherry_planks"] = cherry_planks;
+    t["minecraft:cherry_pressure_plate"] = cherry_pressure_plate;
+    t["minecraft:cherry_sapling"] = cherry_sapling;
+    t["minecraft:cherry_sign"] = cherry_sign;
+    t["minecraft:cherry_slab"] = cherry_slab;
+    t["minecraft:cherry_stairs"] = cherry_stairs;
+    t["minecraft:cherry_trapdoor"] = cherry_trapdoor;
+    t["minecraft:cherry_wall_hanging_sign"] = cherry_wall_hanging_sign;
+    t["minecraft:cherry_wall_sign"] = cherry_wall_sign;
+    t["minecraft:cherry_wood"] = cherry_wood;
+    t["minecraft:decorated_pot"] = decorated_pot;
+    t["minecraft:pink_petals"] = pink_petals;
+    t["minecraft:potted_cherry_sapling"] = potted_cherry_sapling;
+    t["minecraft:potted_torchflower"] = potted_torchflower;
+    t["minecraft:stripped_cherry_log"] = stripped_cherry_log;
+    t["minecraft:stripped_cherry_wood"] = stripped_cherry_wood;
+    t["minecraft:suspicious_sand"] = suspicious_sand;
+    t["minecraft:torchflower"] = torchflower;
+    t["minecraft:torchflower_crop"] = torchflower_crop;
+
     return ret;
 }
 

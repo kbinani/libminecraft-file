@@ -999,6 +999,34 @@ static inline std::vector<Characteristics> CreateTable() {
     m[warped_hanging_sign] = {.name = "minecraft:warped_hanging_sign", .opaque = false};
     m[warped_wall_hanging_sign] = {.name = "minecraft:warped_wall_hanging_sign", .opaque = false};
 
+    // 23w07a
+    m[cherry_button] = {.name = "minecraft:cherry_button", .opaque = false};
+    m[cherry_door] = {.name = "minecraft:cherry_door", .opaque = false};
+    m[cherry_fence] = {.name = "minecraft:cherry_fence", .opaque = false};
+    m[cherry_fence_gate] = {.name = "minecraft:cherry_fence_gate", .opaque = false};
+    m[cherry_hanging_sign] = {.name = "minecraft:cherry_hanging_sign", .opaque = false};
+    m[cherry_leaves] = {.name = "minecraft:cherry_leaves", .opaque = false};
+    m[cherry_log] = {.name = "minecraft:cherry_log", .opaque = true};
+    m[cherry_planks] = {.name = "minecraft:cherry_planks", .opaque = true};
+    m[cherry_pressure_plate] = {.name = "minecraft:cherry_pressure_plate", .opaque = false};
+    m[cherry_sapling] = {.name = "minecraft:cherry_sapling", .opaque = false};
+    m[cherry_sign] = {.name = "minecraft:cherry_sign", .opaque = false};
+    m[cherry_slab] = {.name = "minecraft:cherry_slab", .opaque = false};
+    m[cherry_stairs] = {.name = "minecraft:cherry_stairs", .opaque = false};
+    m[cherry_trapdoor] = {.name = "minecraft:cherry_trapdoor", .opaque = false};
+    m[cherry_wall_hanging_sign] = {.name = "minecraft:cherry_wall_hanging_sign", .opaque = false};
+    m[cherry_wall_sign] = {.name = "minecraft:cherry_wall_sign", .opaque = false};
+    m[cherry_wood] = {.name = "minecraft:cherry_wood", .opaque = true};
+    m[decorated_pot] = {.name = "minecraft:decorated_pot", .opaque = false};
+    m[pink_petals] = {.name = "minecraft:pink_petals", .opaque = false};
+    m[potted_cherry_sapling] = {.name = "minecraft:potted_cherry_sapling", .opaque = false};
+    m[potted_torchflower] = {.name = "minecraft:potted_torchflower", .opaque = false};
+    m[stripped_cherry_log] = {.name = "minecraft:stripped_cherry_log", .opaque = true};
+    m[stripped_cherry_wood] = {.name = "minecraft:stripped_cherry_wood", .opaque = true};
+    m[suspicious_sand] = {.name = "minecraft:suspicious_sand", .opaque = true};
+    m[torchflower] = {.name = "minecraft:torchflower", .opaque = false};
+    m[torchflower_crop] = {.name = "minecraft:torchflower_crop", .opaque = false};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);

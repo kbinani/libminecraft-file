@@ -773,7 +773,6 @@ enum : BlockId {
     soul_wall_torch,
 
     // 1.17
-
     deepslate,
     cobbled_deepslate,
     polished_deepslate,
@@ -932,7 +931,6 @@ enum : BlockId {
     sculk_sensor,
 
     // 1.19
-
     reinforced_deepslate,
     sculk,
     sculk_catalyst,
@@ -970,7 +968,6 @@ enum : BlockId {
     mud_brick_stairs,
 
     // 1.19.3 (rc1)
-
     acacia_hanging_sign,
     acacia_wall_hanging_sign,
     bamboo_block,
@@ -1010,6 +1007,34 @@ enum : BlockId {
     stripped_bamboo_block,
     warped_hanging_sign,
     warped_wall_hanging_sign,
+
+    // 23w07a
+    cherry_button,
+    cherry_door,
+    cherry_fence,
+    cherry_fence_gate,
+    cherry_hanging_sign,
+    cherry_leaves,
+    cherry_log,
+    cherry_planks,
+    cherry_pressure_plate,
+    cherry_sapling,
+    cherry_sign,
+    cherry_slab,
+    cherry_stairs,
+    cherry_trapdoor,
+    cherry_wall_hanging_sign,
+    cherry_wall_sign,
+    cherry_wood,
+    decorated_pot,
+    pink_petals,
+    potted_cherry_sapling,
+    potted_torchflower,
+    stripped_cherry_log,
+    stripped_cherry_wood,
+    suspicious_sand,
+    torchflower,
+    torchflower_crop,
 
     minecraft_max_block_id,
 };
