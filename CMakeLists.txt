@@ -142,13 +142,14 @@ endif()
 CPMAddPackage("gh:ebiggers/libdeflate@1.17")
 list(APPEND mcfile_test_link_libraries libdeflate::libdeflate_static)
 
+CPMAddPackage("gh:doctest/doctest@2.4.9")
+
 add_library(mcfile INTERFACE ${mcfile_files})
 target_include_directories(mcfile INTERFACE include)
 target_link_libraries(mcfile INTERFACE ${mcfile_test_link_libraries})
 
 add_executable(mcfile-test ${mcfile_test_files})
-target_link_libraries(mcfile-test mcfile)
-target_include_directories(mcfile-test PRIVATE test/deps/doctest)
+target_link_libraries(mcfile-test mcfile doctest)
 
 add_executable(mcfile-example example/main.cpp)
 target_link_libraries(mcfile-example mcfile)
