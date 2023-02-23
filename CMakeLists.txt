@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(mcfile)
 
 include(CheckCCompilerFlag)
+include(cmake/CPM.cmake)
 
 if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
   set(BUILD_SHARED_LIBS OFF)
@@ -133,21 +134,22 @@ find_package(ZLIB QUIET)
 if (ZLIB_FOUND)
   list(APPEND mcfile_test_link_libraries ZLIB::ZLIB)
 else()
-  add_subdirectory(deps/zlib EXCLUDE_FROM_ALL)
-  target_include_directories(zlibstatic INTERFACE deps/zlib $<TARGET_PROPERTY:zlibstatic,BINARY_DIR>)
+  CPMAddPackage("gh:madler/zlib@1.2.13")
+  target_include_directories(zlibstatic INTERFACE ${zlib_SOURCE_DIR} $<TARGET_PROPERTY:zlibstatic,BINARY_DIR>)
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
 
-add_subdirectory(deps/libdeflate EXCLUDE_FROM_ALL)
+CPMAddPackage("gh:ebiggers/libdeflate@1.17")
 list(APPEND mcfile_test_link_libraries libdeflate::libdeflate_static)
+
+CPMAddPackage("gh:doctest/doctest@2.4.9")
 
 add_library(mcfile INTERFACE ${mcfile_files})
 target_include_directories(mcfile INTERFACE include)
 target_link_libraries(mcfile INTERFACE ${mcfile_test_link_libraries})
 
 add_executable(mcfile-test ${mcfile_test_files})
-target_link_libraries(mcfile-test mcfile)
-target_include_directories(mcfile-test PRIVATE test/deps/doctest)
+target_link_libraries(mcfile-test mcfile doctest)
 
 add_executable(mcfile-example example/main.cpp)
 target_link_libraries(mcfile-example mcfile)
