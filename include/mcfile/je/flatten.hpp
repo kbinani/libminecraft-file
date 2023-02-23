@@ -22,78 +22,199 @@ public:
 #define ns "minecraft:"
 #define egg "_spawn_egg";
         switch (id) {
-        case 321:
-            return ns "painting";
-        case 323:
-            return ns "sign";
-        case 355:
-            return ns "red_bed";
-        case 389:
-            return ns "item_frame";
-        case 390:
-            return ns "flower_pot";
-        case 397:
+        case 256: return ns "iron_shovel";
+        case 257: return ns "iron_pickaxe";
+        case 258: return ns "iron_axe";
+        case 259: return ns "flint_and_steel";
+        case 260: return ns "apple";
+        case 261: return ns "bow";
+        case 262: return ns "arrow";
+        case 263:
             switch (DrainDamage(damage)) {
             case 1:
-                return ns "wither_skeleton_skull";
-            case 2:
-                return ns "zombie_head";
-            case 3:
-                return ns "player_head";
-            case 4:
-                return ns "creeper_head";
+                return ns "charcoal";
             case 0:
             default:
-                return ns "skeleton_skull";
+                return ns "coal";
             }
-        case 324:
-            return ns "oak_door";
-        case 330:
-            return ns "iron_door";
-        case 331:
-            return ns "redstone";
-        case 356:
-            return ns "repeater";
-        case 404:
-            return ns "comparator";
-        case 328:
-            return ns "minecart";
-        case 329:
-            return ns "saddle";
-        case 333:
-            return ns "oak_boat";
-        case 342:
-            return ns "chest_minecart";
-        case 343:
-            return ns "furnace_minecart";
-        case 398:
-            return ns "carrot_on_a_stick";
-        case 407:
-            return ns "tnt_minecart";
-        case 408:
-            return ns "hopper_minecart";
-        case 325:
-            return ns "bucket";
-        case 326:
-            return ns "water_bucket";
-        case 327:
-            return ns "lava_bucket";
-        case 332:
-            return ns "snowball";
-        case 335:
-            return ns "milk_bucket";
-        case 339:
-            return ns "paper";
-        case 340:
-            return ns "book";
-        case 341:
-            return ns "slime_ball";
-        case 352:
-            return ns "bone";
-        case 368:
-            return ns "ender_pearl";
-        case 381:
-            return ns "ender_eye";
+        case 264: return ns "diamond";
+        case 265: return ns "iron_ingot";
+        case 266: return ns "gold_ingot";
+        case 267: return ns "iron_sword";
+        case 268: return ns "wooden_sword";
+        case 269: return ns "wooden_shovel";
+        case 270: return ns "wooden_pickaxe";
+        case 271: return ns "wooden_axe";
+        case 272: return ns "stone_sword";
+        case 273: return ns "stone_shovel";
+        case 274: return ns "stone_pickaxe";
+        case 275: return ns "stone_axe";
+        case 276: return ns "diamond_sword";
+        case 277: return ns "diamond_shovel";
+        case 278: return ns "diamond_pickaxe";
+        case 279: return ns "diamond_axe";
+        case 280: return ns "stick";
+        case 281: return ns "bowl";
+        case 282: return ns "mushroom_stew";
+        case 283: return ns "golden_sword";
+        case 284: return ns "golden_shovel";
+        case 285: return ns "golden_pickaxe";
+        case 286: return ns "golden_axe";
+        case 287: return ns "string";
+        case 288: return ns "feather";
+        case 289: return ns "gunpowder";
+        case 290: return ns "wooden_hoe";
+        case 291: return ns "stone_hoe";
+        case 292: return ns "iron_hoe";
+        case 293: return ns "diamond_hoe";
+        case 294: return ns "golden_hoe";
+        case 295: return ns "wheat_seeds";
+        case 296: return ns "wheat";
+        case 297: return ns "bread";
+        case 298: return ns "leather_helmet";
+        case 299: return ns "leather_chestplate";
+        case 300: return ns "leather_leggings";
+        case 301: return ns "leather_boots";
+        case 302: return ns "chainmail_helmet";
+        case 303: return ns "chainmail_chestplate";
+        case 304: return ns "chainmail_leggings";
+        case 305: return ns "chainmail_boots";
+        case 306: return ns "iron_helmet";
+        case 307: return ns "iron_chestplate";
+        case 308: return ns "iron_leggings";
+        case 309: return ns "iron_boots";
+        case 310: return ns "diamond_helmet";
+        case 311: return ns "diamond_chestplate";
+        case 312: return ns "diamond_leggings";
+        case 313: return ns "diamond_boots";
+        case 314: return ns "golden_helmet";
+        case 315: return ns "golden_chestplate";
+        case 316: return ns "golden_leggings";
+        case 317: return ns "golden_boots";
+        case 318: return ns "flint";
+        case 319: return ns "porkchop";
+        case 320: return ns "cooked_porkchop";
+        case 321: return ns "painting";
+        case 322:
+            switch (DrainDamage(damage)) {
+            case 1:
+                return ns "enchanted_golden_apple";
+            case 0:
+            default:
+                return ns "golden_apple";
+            }
+        case 323: return ns "sign";
+        case 324: return ns "oak_door";
+        case 325: return ns "bucket";
+        case 326: return ns "water_bucket";
+        case 327: return ns "lava_bucket";
+        case 328: return ns "minecart";
+        case 329: return ns "saddle";
+        case 330: return ns "iron_door";
+        case 331: return ns "redstone";
+        case 332: return ns "snowball";
+        case 333: return ns "oak_boat";
+        case 334: return ns "leather";
+        case 335: return ns "milk_bucket";
+        case 336: return ns "brick";
+        case 337: return ns "clay_ball";
+        case 338: return ns "sugar_cane";
+        case 339: return ns "paper";
+        case 340: return ns "book";
+        case 341: return ns "slime_ball";
+        case 342: return ns "chest_minecart";
+        case 343: return ns "furnace_minecart";
+        case 344: return ns "egg";
+        case 345: return ns "compass";
+        case 346: return ns "fishing_rod";
+        case 347: return ns "clock";
+        case 348: return ns "glowstone_dust";
+        case 349:
+            switch (DrainDamage(damage)) {
+            case 1:
+                return ns "salmon";
+            case 2:
+                return ns "tropical_fish";
+            case 3:
+                return ns "pufferfish";
+            case 0:
+            default:
+                return ns "cod";
+            }
+        case 350:
+            switch (DrainDamage(damage)) {
+            case 1:
+                return ns "cooked_salmon";
+            case 0:
+            default:
+                return ns "cooked_fish";
+            }
+        case 351:
+            switch (DrainDamage(damage)) {
+            case 1:
+                return ns "red_dye";
+            case 2:
+                return ns "green_dye";
+            case 3:
+                return ns "cocoa_beans";
+            case 4:
+                return ns "lapis_lazuli";
+            case 5:
+                return ns "purple_dye";
+            case 6:
+                return ns "cyan_dye";
+            case 7:
+                return ns "light_gray_dye";
+            case 8:
+                return ns "gray_dye";
+            case 9:
+                return ns "pink_dye";
+            case 10:
+                return ns "lime_dye";
+            case 11:
+                return ns "yellow_dye";
+            case 12:
+                return ns "light_blue_dye";
+            case 13:
+                return ns "magenta_dye";
+            case 14:
+                return ns "orange_dye";
+            case 15:
+                return ns "bone_meal";
+            case 0:
+            default:
+                return ns "ink_sac";
+            }
+        case 352: return ns "bone";
+        case 353: return ns "sugar";
+        case 354: return ns "cake";
+        case 355: return ns "red_bed";
+        case 356: return ns "repeater";
+        case 357: return ns "cookie";
+        case 359: return ns "shears";
+        case 360: return ns "melon_slice";
+        case 361: return ns "pumpkin_seeds";
+        case 362: return ns "melon_seeds";
+        case 363: return ns "beef";
+        case 364: return ns "cooked_beef";
+        case 365: return ns "chicken";
+        case 366: return ns "cooked_chicken";
+        case 367: return ns "rotten_flesh";
+        case 368: return ns "ender_pearl";
+        case 369: return ns "blaze_rod";
+        case 370: return ns "ghast_tear";
+        case 371: return ns "gold_nugget";
+        case 372: return ns "nether_wart";
+        case 373: return ns "potion";
+        case 374: return ns "glass_bottle";
+        case 375: return ns "spider_eye";
+        case 376: return ns "fermented_spider_eye";
+        case 377: return ns "blaze_powder";
+        case 378: return ns "magma_cream";
+        case 379: return ns "brewing_stand";
+        case 380: return ns "cauldron";
+        case 381: return ns "ender_eye";
+        case 382: return ns "glistering_melon_slice";
         case 383:
             switch (DrainDamage(damage)) {
             case 50:
@@ -147,340 +268,59 @@ public:
             default:
                 return nullopt;
             }
-        case 384:
-            return ns "experience_bottle";
-        case 385:
-            return ns "fire_charge";
-        case 386:
-            return ns "writable_book";
-        case 395:
-            return ns "map";
-        case 402:
-            return ns "firework_star";
-        case 417:
-            return ns "iron_horse_armor";
-        case 418:
-            return ns "golden_horse_armor";
-        case 419:
-            return ns "diamond_horse_armor";
-        case 2256:
-            return ns "music_disc_13";
-        case 2257:
-            return ns "music_disc_cat";
-        case 2258:
-            return ns "music_disc_blocks";
-        case 2259:
-            return ns "music_disc_chirp";
-        case 2260:
-            return ns "music_disc_far";
-        case 2261:
-            return ns "music_disc_mall";
-        case 2262:
-            return ns "music_disc_mellohi";
-        case 2267:
-            return ns "music_disc_wait";
-        case 2263:
-            return ns "music_disc_stal";
-        case 2264:
-            return ns "music_disc_strad";
-        case 2265:
-            return ns "music_disc_ward";
-        case 2266:
-            return ns "music_disc_11";
-        case 260:
-            return ns "apple";
-        case 282:
-            return ns "mushroom_stew";
-        case 297:
-            return ns "bread";
-        case 319:
-            return ns "porkchop";
-        case 320:
-            return ns "cooked_porkchop";
-        case 322:
+        case 384: return ns "experience_bottle";
+        case 385: return ns "fire_charge";
+        case 386: return ns "writable_book";
+        case 388: return ns "emerald";
+        case 389: return ns "item_frame";
+        case 390: return ns "flower_pot";
+        case 391: return ns "carrot";
+        case 392: return ns "potato";
+        case 393: return ns "baked_potato";
+        case 394: return ns "poisonous_potato";
+        case 395: return ns "map";
+        case 396: return ns "golden_carrot";
+        case 397:
             switch (DrainDamage(damage)) {
             case 1:
-                return ns "enchanted_golden_apple";
-            case 0:
-            default:
-                return ns "golden_apple";
-            }
-        case 349:
-            switch (DrainDamage(damage)) {
-            case 1:
-                return ns "salmon";
+                return ns "wither_skeleton_skull";
             case 2:
-                return ns "tropical_fish";
+                return ns "zombie_head";
             case 3:
-                return ns "pufferfish";
-            case 0:
-            default:
-                return ns "cod";
-            }
-        case 350:
-            switch (DrainDamage(damage)) {
-            case 1:
-                return ns "cooked_salmon";
-            case 0:
-            default:
-                return ns "cooked_fish";
-            }
-        case 354:
-            return ns "cake";
-        case 357:
-            return ns "cookie";
-        case 360:
-            return ns "melon_slice";
-        case 363:
-            return ns "beef";
-        case 364:
-            return ns "cooked_beef";
-        case 365:
-            return ns "chicken";
-        case 366:
-            return ns "cooked_chicken";
-        case 367:
-            return ns "rotten_flesh";
-        case 375:
-            return ns "spider_eye";
-        case 391:
-            return ns "carrot";
-        case 392:
-            return ns "potato";
-        case 393:
-            return ns "baked_potato";
-        case 394:
-            return ns "poisonous_potato";
-        case 396:
-            return ns "golden_carrot";
-        case 400:
-            return ns "pumpkin_pie";
-        case 256:
-            return ns "iron_shovel";
-        case 257:
-            return ns "iron_pickaxe";
-        case 258:
-            return ns "iron_axe";
-        case 259:
-            return ns "flint_and_steel";
-        case 269:
-            return ns "wooden_shovel";
-        case 270:
-            return ns "wooden_pickaxe";
-        case 271:
-            return ns "wooden_axe";
-        case 273:
-            return ns "stone_shovel";
-        case 274:
-            return ns "stone_pickaxe";
-        case 275:
-            return ns "stone_axe";
-        case 277:
-            return ns "diamond_shovel";
-        case 278:
-            return ns "diamond_pickaxe";
-        case 279:
-            return ns "diamond_axe";
-        case 284:
-            return ns "golden_shovel";
-        case 285:
-            return ns "golden_pickaxe";
-        case 286:
-            return ns "golden_axe";
-        case 290:
-            return ns "wooden_hoe";
-        case 291:
-            return ns "stone_hoe";
-        case 292:
-            return ns "iron_hoe";
-        case 293:
-            return ns "diamond_hoe";
-        case 294:
-            return ns "golden_hoe";
-        case 345:
-            return ns "compass";
-        case 346:
-            return ns "fishing_rod";
-        case 347:
-            return ns "clock";
-        case 359:
-            return ns "shears";
-        case 420:
-            return ns "lead";
-        case 421:
-            return ns "name_tag";
-        case 403:
-            return ns "enchanted_book";
-        case 261:
-            return ns "bow";
-        case 262:
-            return ns "arrow";
-        case 267:
-            return ns "iron_sword";
-        case 268:
-            return ns "wooden_sword";
-        case 272:
-            return ns "stone_sword";
-        case 276:
-            return ns "diamond_sword";
-        case 283:
-            return ns "golden_sword";
-        case 298:
-            return ns "leather_helmet";
-        case 299:
-            return ns "leather_chestplate";
-        case 300:
-            return ns "leather_leggings";
-        case 301:
-            return ns "leather_boots";
-        case 302:
-            return ns "chainmail_helmet";
-        case 303:
-            return ns "chainmail_chestplate";
-        case 304:
-            return ns "chainmail_leggings";
-        case 305:
-            return ns "chainmail_boots";
-        case 306:
-            return ns "iron_helmet";
-        case 307:
-            return ns "iron_chestplate";
-        case 308:
-            return ns "iron_leggings";
-        case 309:
-            return ns "iron_boots";
-        case 310:
-            return ns "diamond_helmet";
-        case 311:
-            return ns "diamond_chestplate";
-        case 312:
-            return ns "diamond_leggings";
-        case 313:
-            return ns "diamond_boots";
-        case 314:
-            return ns "golden_helmet";
-        case 315:
-            return ns "golden_chestplate";
-        case 316:
-            return ns "golden_leggings";
-        case 317:
-            return ns "golden_boots";
-        case 370:
-            return ns "ghast_tear";
-        case 373:
-            return ns "potion";
-        case 374:
-            return ns "glass_bottle";
-        case 376:
-            return ns "fermented_spider_eye";
-        case 377:
-            return ns "blaze_powder";
-        case 378:
-            return ns "magma_cream";
-        case 379:
-            return ns "brewing_stand";
-        case 380:
-            return ns "cauldron";
-        case 382:
-            return ns "glistering_melon_slice";
-        case 263:
-            switch (DrainDamage(damage)) {
-            case 1:
-                return ns "charcoal";
-            case 0:
-            default:
-                return ns "coal";
-            }
-        case 264:
-            return ns "diamond";
-        case 265:
-            return ns "iron_ingot";
-        case 266:
-            return ns "gold_ingot";
-        case 280:
-            return ns "stick";
-        case 281:
-            return ns "bowl";
-        case 287:
-            return ns "string";
-        case 288:
-            return ns "feather";
-        case 289:
-            return ns "gunpowder";
-        case 295:
-            return ns "wheat_seeds";
-        case 296:
-            return ns "wheat";
-        case 318:
-            return ns "flint";
-        case 334:
-            return ns "leather";
-        case 336:
-            return ns "brick";
-        case 337:
-            return ns "clay_ball";
-        case 338:
-            return ns "sugar_cane";
-        case 344:
-            return ns "egg";
-        case 348:
-            return ns "glowstone_dust";
-        case 351:
-            switch (DrainDamage(damage)) {
-            case 1:
-                return ns "red_dye";
-            case 2:
-                return ns "green_dye";
-            case 3:
-                return ns "cocoa_beans";
+                return ns "player_head";
             case 4:
-                return ns "lapis_lazuli";
-            case 5:
-                return ns "purple_dye";
-            case 6:
-                return ns "cyan_dye";
-            case 7:
-                return ns "light_gray_dye";
-            case 8:
-                return ns "gray_dye";
-            case 9:
-                return ns "pink_dye";
-            case 10:
-                return ns "lime_dye";
-            case 11:
-                return ns "yellow_dye";
-            case 12:
-                return ns "light_blue_dye";
-            case 13:
-                return ns "magenta_dye";
-            case 14:
-                return ns "orange_dye";
-            case 15:
-                return ns "bone_meal";
+                return ns "creeper_head";
             case 0:
             default:
-                return ns "ink_sac";
+                return ns "skeleton_skull";
             }
-        case 353:
-            return ns "sugar";
-        case 361:
-            return ns "pumpkin_seeds";
-        case 362:
-            return ns "melon_seeds";
-        case 369:
-            return ns "blaze_rod";
-        case 371:
-            return ns "gold_nugget";
-        case 372:
-            return ns "nether_wart";
-        case 388:
-            return ns "emerald";
-        case 399:
-            return ns "nether_star";
-        case 405:
-            return ns "nether_brick";
-        case 406:
-            return ns "quartz";
+        case 398: return ns "carrot_on_a_stick";
+        case 399: return ns "nether_star";
+        case 400: return ns "pumpkin_pie";
+        case 402: return ns "firework_star";
+        case 403: return ns "enchanted_book";
+        case 404: return ns "comparator";
+        case 405: return ns "nether_brick";
+        case 406: return ns "quartz";
+        case 407: return ns "tnt_minecart";
+        case 408: return ns "hopper_minecart";
+        case 417: return ns "iron_horse_armor";
+        case 418: return ns "golden_horse_armor";
+        case 419: return ns "diamond_horse_armor";
+        case 420: return ns "lead";
+        case 421: return ns "name_tag";
+        case 2256: return ns "music_disc_13";
+        case 2257: return ns "music_disc_cat";
+        case 2258: return ns "music_disc_blocks";
+        case 2259: return ns "music_disc_chirp";
+        case 2260: return ns "music_disc_far";
+        case 2261: return ns "music_disc_mall";
+        case 2262: return ns "music_disc_mellohi";
+        case 2267: return ns "music_disc_wait";
+        case 2263: return ns "music_disc_stal";
+        case 2264: return ns "music_disc_strad";
+        case 2265: return ns "music_disc_ward";
+        case 2266: return ns "music_disc_11";
         }
         return nullopt;
 #undef ns
