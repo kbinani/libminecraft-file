@@ -146,7 +146,7 @@ private:
                     uint8_t const idHi = Flatten::Nibble4(add, index);
                     uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
                     uint8_t const blockData = Flatten::Nibble4(data, index);
-                    std::shared_ptr<Block const> block = Flatten::DoFlatten(id, blockData);
+                    std::shared_ptr<Block const> block = Flatten::Block(id, blockData);
                     int paletteIndex = -1;
                     for (int i = 0; i < (int)palette.size(); i++) {
                         if (palette[i]->equals(*block)) {
