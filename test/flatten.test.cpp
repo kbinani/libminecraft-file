@@ -63,7 +63,7 @@ TEST_CASE("flatten") {
                                     uint8_t const idHi = Flatten::Nibble4(add, index);
                                     uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
                                     uint8_t const blockData = Flatten::Nibble4(data, index);
-                                    auto block = Flatten::DoFlatten(id, blockData);
+                                    auto block = Flatten::Block(id, blockData);
                                     CHECK(block != nullptr);
                                 }
                             }

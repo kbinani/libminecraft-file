@@ -487,7 +487,7 @@ public:
 #undef egg
     }
 
-    static std::shared_ptr<Block const> Block(uint16_t blockId, uint8_t data) {
+    static std::shared_ptr<mcfile::je::Block const> Block(uint16_t blockId, uint8_t data) {
         blocks::BlockId id = blocks::minecraft::air;
         std::map<std::string, std::string> props;
         switch (blockId) {
