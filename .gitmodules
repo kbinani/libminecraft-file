@@ -1,6 +1,3 @@
 [submodule "test/ext/doctest"]
 	path = test/deps/doctest
 	url = https://github.com/doctest/doctest.git
-[submodule "deps/libdeflate"]
-	path = deps/libdeflate
-	url = https://github.com/ebiggers/libdeflate.git

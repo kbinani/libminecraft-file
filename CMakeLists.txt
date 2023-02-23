@@ -139,7 +139,7 @@ else()
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
 
-add_subdirectory(deps/libdeflate EXCLUDE_FROM_ALL)
+CPMAddPackage("gh:ebiggers/libdeflate@1.17")
 list(APPEND mcfile_test_link_libraries libdeflate::libdeflate_static)
 
 add_library(mcfile INTERFACE ${mcfile_files})
