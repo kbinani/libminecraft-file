@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(mcfile)
 
 include(CheckCCompilerFlag)
+include(cmake/CPM.cmake)
 
 if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
   set(BUILD_SHARED_LIBS OFF)
@@ -133,8 +134,8 @@ find_package(ZLIB QUIET)
 if (ZLIB_FOUND)
   list(APPEND mcfile_test_link_libraries ZLIB::ZLIB)
 else()
-  add_subdirectory(deps/zlib EXCLUDE_FROM_ALL)
-  target_include_directories(zlibstatic INTERFACE deps/zlib $<TARGET_PROPERTY:zlibstatic,BINARY_DIR>)
+  CPMAddPackage("gh:madler/zlib@1.2.13")
+  target_include_directories(zlibstatic INTERFACE ${zlib_SOURCE_DIR} $<TARGET_PROPERTY:zlibstatic,BINARY_DIR>)
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
 
