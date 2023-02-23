@@ -5,6 +5,652 @@ class Flatten {
     Flatten() = delete;
 
 public:
+    static std::optional<std::string> Item(std::string const &id, int16_t *damage) {
+        using namespace std;
+        int16_t safety = 0;
+        assert(damage);
+        if (!damage) {
+            damage = &safety;
+        }
+        std::string_view i(id);
+        if (i.starts_with("minecraft:")) {
+            i = i.substr(10);
+        }
+
+#if defined(ns)
+#error "ns" macro already defined
+#endif
+#define ns "minecraft:"
+
+        if (i == "stone") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "granite";
+            case 2: return ns "polished_granite";
+            case 3: return ns "diorite";
+            case 4: return ns "polished_diorite";
+            case 5: return ns "andesite";
+            case 6: return ns "polished_andesite";
+            case 0:
+            default:
+                return ns "stone";
+            }
+        }
+        if (i == "grass") {
+            return ns "grass_block";
+        }
+        if (i == "dirt") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "coarse_dirt";
+            case 2: return ns "podzol";
+            case 0:
+            default:
+                return ns "dirt";
+            }
+        }
+        if (i == "planks") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "spruce_planks";
+            case 2: return ns "birch_planks";
+            case 3: return ns "jungle_planks";
+            case 4: return ns "acacia_planks";
+            case 5: return ns "dark_oak_planks";
+            case 0:
+            default:
+                return ns "oak_planks";
+            }
+        }
+        if (i == "sand") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "red_sand";
+            case 0:
+            default:
+                return ns "sand";
+            }
+        }
+        if (i == "log") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "spruce_log";
+            case 2: return ns "birch_log";
+            case 3: return ns "jungle_log";
+            case 0:
+            default:
+                return ns "oak_log";
+            }
+        }
+        if (i == "sponge") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "wet_sponge";
+            case 0:
+            default:
+                return ns "sponge";
+            }
+        }
+        if (i == "sandstone") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "chiseled_sandstone";
+            case 2: return ns "cut_sandstone";
+            case 0:
+            default:
+                return ns "sandstone";
+            }
+        }
+        if (i == "wool") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_wool";
+            case 2: return ns "magenta_wool";
+            case 3: return ns "light_blue_wool";
+            case 4: return ns "yellow_wool";
+            case 5: return ns "lime_wool";
+            case 6: return ns "pink_wool";
+            case 7: return ns "gray_wool";
+            case 8: return ns "light_gray_wool";
+            case 9: return ns "cyan_wool";
+            case 10: return ns "purple_wool";
+            case 11: return ns "blue_wool";
+            case 12: return ns "brown_wool";
+            case 13: return ns "green_wool";
+            case 14: return ns "red_wool";
+            case 15: return ns "black_wool";
+            case 0:
+            default:
+                return ns "white_wool";
+            }
+        }
+        if (i == "stone_slab") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "sandstone_slab";
+            case 3: return ns "cobblestone_slab";
+            case 4: return ns "brick_slab";
+            case 5: return ns "stone_brick_slab";
+            case 6: return ns "nether_brick_slab";
+            case 7: return ns "quartz_slab";
+            case 0:
+            default:
+                return ns "smooth_stone_slab";
+            }
+        }
+        if (i == "brick_block") {
+            return ns "bricks";
+        }
+        if (i == "stone_stairs") {
+            return ns "cobblestone_stairs";
+        }
+        if (i == "snow") {
+            return ns "snow_block";
+        }
+        if (i == "pumpkin") {
+            return ns "carved_pumpkin";
+        }
+        if (i == "lit_pumpkin") {
+            return ns "jack_o_lantern";
+        }
+        if (i == "stained_glass") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_stained_glass";
+            case 2: return ns "magenta_stained_glass";
+            case 3: return ns "light_blue_stained_glass";
+            case 4: return ns "yellow_stained_glass";
+            case 5: return ns "lime_stained_glass";
+            case 6: return ns "pink_stained_glass";
+            case 7: return ns "gray_stained_glass";
+            case 8: return ns "light_gray_stained_glass";
+            case 9: return ns "cyan_stained_glass";
+            case 10: return ns "purple_stained_glass";
+            case 11: return ns "blue_stained_glass";
+            case 12: return ns "brown_stained_glass";
+            case 13: return ns "green_stained_glass";
+            case 14: return ns "red_stained_glass";
+            case 15: return ns "black_stained_glass";
+            case 0:
+            default:
+                return ns "white_stained_glass";
+            }
+        }
+        if (i == "stonebrick") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "mossy_stone_bricks";
+            case 2: return ns "cracked_stone_bricks";
+            case 3: return ns "chiseled_stone_bricks";
+            case 0:
+            default:
+                return ns "stone_bricks";
+            }
+        }
+        if (i == "melon_block") {
+            return ns "melon";
+        }
+        if (i == "nether_brick") {
+            return ns "nether_bricks";
+        }
+        if (i == "wooden_slab") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "spruce_slab";
+            case 2: return ns "birch_slab";
+            case 3: return ns "jungle_slab";
+            case 4: return ns "acacia_slab";
+            case 5: return ns "dark_oak_slab";
+            case 0:
+            default:
+                return ns "oak_slab";
+            }
+        }
+        if (i == "quartz_block") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "chiseled_quartz_block";
+            case 2: return ns "quartz_pillar";
+            case 0:
+            default:
+                return ns "quartz_block";
+            }
+        }
+        if (i == "stained_hardened_clay") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_terracotta";
+            case 2: return ns "magenta_terracotta";
+            case 3: return ns "light_blue_terracotta";
+            case 4: return ns "yellow_terracotta";
+            case 5: return ns "lime_terracotta";
+            case 6: return ns "pink_terracotta";
+            case 7: return ns "gray_terracotta";
+            case 8: return ns "light_gray_terracotta";
+            case 9: return ns "cyan_terracotta";
+            case 10: return ns "purple_terracotta";
+            case 11: return ns "blue_terracotta";
+            case 12: return ns "brown_terracotta";
+            case 13: return ns "green_terracotta";
+            case 14: return ns "red_terracotta";
+            case 15: return ns "black_terracotta";
+            case 0:
+            default:
+                return ns "white_terracotta";
+            }
+        }
+        if (i == "log2") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "dark_oak_log";
+            case 0:
+            default:
+                return ns "acacia_log";
+            }
+        }
+        if (i == "prismarine") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "prismarine_bricks";
+            case 2: return ns "dark_prismarine";
+            case 0:
+            default:
+                return ns "prismarine";
+            }
+        }
+        if (i == "hardened_clay") {
+            return ns "terracotta";
+        }
+        if (i == "red_sandstone") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "chiseled_red_sandstone";
+            case 2: return ns "cut_red_sandstone";
+            case 0:
+            default:
+                return ns "red_sandstone";
+            }
+        }
+        if (i == "stone_slab2") {
+            return ns "red_sandstone_slab";
+        }
+        if (i == "magma") {
+            return ns "magma_block";
+        }
+        if (i == "red_nether_brick") {
+            return ns "red_nether_bricks";
+        }
+        if (i == "concrete") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_concrete";
+            case 2: return ns "magenta_concrete";
+            case 3: return ns "light_blue_concrete";
+            case 4: return ns "yellow_concrete";
+            case 5: return ns "lime_concrete";
+            case 6: return ns "pink_concrete";
+            case 7: return ns "gray_concrete";
+            case 8: return ns "light_gray_concrete";
+            case 9: return ns "cyan_concrete";
+            case 10: return ns "purple_concrete";
+            case 11: return ns "blue_concrete";
+            case 12: return ns "brown_concrete";
+            case 13: return ns "green_concrete";
+            case 14: return ns "red_concrete";
+            case 15: return ns "black_concrete";
+            case 0:
+            default:
+                return ns "white_concrete";
+            }
+        }
+        if (i == "concrete_powder") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_concrete_powder";
+            case 2: return ns "magenta_concrete_powder";
+            case 3: return ns "light_blue_concrete_powder";
+            case 4: return ns "yellow_concrete_powder";
+            case 5: return ns "lime_concrete_powder";
+            case 6: return ns "pink_concrete_powder";
+            case 7: return ns "gray_concrete_powder";
+            case 8: return ns "light_gray_concrete_powder";
+            case 9: return ns "cyan_concrete_powder";
+            case 10: return ns "purple_concrete_powder";
+            case 11: return ns "blue_concrete_powder";
+            case 12: return ns "brown_concrete_powder";
+            case 13: return ns "green_concrete_powder";
+            case 14: return ns "red_concrete_powder";
+            case 15: return ns "black_concrete_powder";
+            case 0:
+            default:
+                return ns "white_concrete_powder";
+            }
+        }
+        if (i == "sapling") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "spruce_sapling";
+            case 2: return ns "birch_sapling";
+            case 3: return ns "jungle_sapling";
+            case 4: return ns "acacia_sapling";
+            case 5: return ns "dark_oak_sapling";
+            case 0:
+            default:
+                return ns "oak_sapling";
+            }
+        }
+        if (i == "leaves") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "spruce_leaves";
+            case 2: return ns "birch_leaves";
+            case 3: return ns "jungle_leaves";
+            case 0:
+            default:
+                return ns "oak_leaves";
+            }
+        }
+        if (i == "web") {
+            return ns "cobweb";
+        }
+        if (i == "tallgrass") {
+            switch (DrainDamage(damage)) {
+            case 2: return ns "fern";
+            case 1:
+            default:
+                return ns "grass";
+            }
+        }
+        if (i == "deadbush") {
+            return ns "dead_bush";
+        }
+        if (i == "yellow_flower") {
+            return ns "dandelion";
+        }
+        if (i == "red_flower") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "blue_orchid";
+            case 2: return ns "allium";
+            case 3: return ns "azure_bluet";
+            case 4: return ns "red_tulip";
+            case 5: return ns "orange_tulip";
+            case 6: return ns "white_tulip";
+            case 7: return ns "pink_tulip";
+            case 8: return ns "oxeye_daisy";
+            case 0:
+            default:
+                return ns "poppy";
+            }
+        }
+        if (i == "monster_egg") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "infested_cobblestone";
+            case 2: return ns "infested_stone_bricks";
+            case 3: return ns "infested_mossy_stone_bricks";
+            case 4: return ns "infested_cracked_stone_bricks";
+            case 5: return ns "infested_chiseled_stone_bricks";
+            case 0:
+            default:
+                return ns "infested_stone";
+            }
+        }
+        if (i == "cobblestone_wall") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "mossy_cobblestone_wall";
+            case 0:
+            default:
+                return ns "cobblestone_wall";
+            }
+        }
+        if (i == "anvil") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "chipped_anvil";
+            case 2: return ns "damaged_anvil";
+            case 0:
+            default:
+                return ns "anvil";
+            }
+        }
+        if (i == "stained_glass_pane") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_stained_glass_pane";
+            case 2: return ns "magenta_stained_glass_pane";
+            case 3: return ns "light_blue_stained_glass_pane";
+            case 4: return ns "yellow_stained_glass_pane";
+            case 5: return ns "lime_stained_glass_pane";
+            case 6: return ns "pink_stained_glass_pane";
+            case 7: return ns "gray_stained_glass_pane";
+            case 8: return ns "light_gray_stained_glass_pane";
+            case 9: return ns "cyan_stained_glass_pane";
+            case 10: return ns "purple_stained_glass_pane";
+            case 11: return ns "blue_stained_glass_pane";
+            case 12: return ns "brown_stained_glass_pane";
+            case 13: return ns "green_stained_glass_pane";
+            case 14: return ns "red_stained_glass_pane";
+            case 15: return ns "black_stained_glass_pane";
+            case 0:
+            default:
+                return ns "white_stained_glass_pane";
+            }
+        }
+        if (i == "leaves2") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "dark_oak_leaves";
+            case 0:
+            default:
+                return ns "acacia_leaves";
+            }
+        }
+        if (i == "slime") {
+            return ns "slime_block";
+        }
+        if (i == "carpet") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_carpet";
+            case 2: return ns "magenta_carpet";
+            case 3: return ns "light_blue_carpet";
+            case 4: return ns "yellow_carpet";
+            case 5: return ns "lime_carpet";
+            case 6: return ns "pink_carpet";
+            case 7: return ns "gray_carpet";
+            case 8: return ns "light_gray_carpet";
+            case 9: return ns "cyan_carpet";
+            case 10: return ns "purple_carpet";
+            case 11: return ns "blue_carpet";
+            case 12: return ns "brown_carpet";
+            case 13: return ns "green_carpet";
+            case 14: return ns "red_carpet";
+            case 15: return ns "black_carpet";
+            case 0:
+            default:
+                return ns "white_carpet";
+            }
+        }
+        if (i == "double_plant") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "lilac";
+            case 2: return ns "tall_grass";
+            case 3: return ns "large_fern";
+            case 4: return ns "rose_bush";
+            case 5: return ns "peony";
+            case 0:
+            default:
+                return ns "sunflower";
+            }
+        }
+        if (i == "silver_shulker_box") {
+            return ns "light_gray_shulker_box";
+        }
+        if (i == "silver_glazed_terracotta") {
+            return ns "light_gray_glazed_terracotta";
+        }
+        if (i == "bed") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_bed";
+            case 2: return ns "magenta_bed";
+            case 3: return ns "light_blue_bed";
+            case 4: return ns "yellow_bed";
+            case 5: return ns "lime_bed";
+            case 6: return ns "pink_bed";
+            case 7: return ns "gray_bed";
+            case 8: return ns "light_gray_bed";
+            case 9: return ns "cyan_bed";
+            case 10: return ns "purple_bed";
+            case 11: return ns "blue_bed";
+            case 12: return ns "brown_bed";
+            case 13: return ns "green_bed";
+            case 14: return ns "red_bed";
+            case 15: return ns "black_bed";
+            case 0:
+            default:
+                return ns "white_bed";
+            }
+        }
+        if (i == "skull") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "wither_skeleton_skull";
+            case 2: return ns "zombie_head";
+            case 3: return ns "player_head";
+            case 4: return ns "creeper_head";
+            case 5: return ns "dragon_head";
+            case 0:
+            default:
+                return ns "skeleton_skull";
+            }
+        }
+        if (i == "banner") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "orange_banner";
+            case 2: return ns "magenta_banner";
+            case 3: return ns "light_blue_banner";
+            case 4: return ns "yellow_banner";
+            case 5: return ns "lime_banner";
+            case 6: return ns "pink_banner";
+            case 7: return ns "gray_banner";
+            case 8: return ns "light_gray_banner";
+            case 9: return ns "cyan_banner";
+            case 10: return ns "purple_banner";
+            case 11: return ns "blue_banner";
+            case 12: return ns "brown_banner";
+            case 13: return ns "green_banner";
+            case 14: return ns "red_banner";
+            case 15: return ns "black_banner";
+            case 0:
+            default:
+                return ns "white_banner";
+            }
+        }
+        if (i == "noteblock") {
+            return ns "note_block";
+        }
+        if (i == "wooden_pressure_plate") {
+            return ns "oak_pressure_plate";
+        }
+        if (i == "trapdoor") {
+            return ns "oak_trapdoor";
+        }
+        if (i == "fence_gate") {
+            return ns "oak_fence_gate";
+        }
+        if (i == "wooden_button") {
+            return ns "oak_button";
+        }
+        if (i == "wooden_door") {
+            return ns "oak_door";
+        }
+        if (i == "golden_rail") {
+            return ns "powered_rail";
+        }
+        if (i == "boat") {
+            return ns "oak_boat";
+        }
+        if (i == "coal") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "charcoal";
+            case 0:
+            default:
+                return ns "coal";
+            }
+        }
+        if (i == "dye") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "red_dye";
+            case 2: return ns "green_dye";
+            case 3: return ns "cocoa_beans";
+            case 4: return ns "lapis_lazuli";
+            case 5: return ns "purple_dye";
+            case 6: return ns "cyan_dye";
+            case 7: return ns "light_gray_dye";
+            case 8: return ns "gray_dye";
+            case 9: return ns "pink_dye";
+            case 10: return ns "lime_dye";
+            case 11: return ns "yellow_dye";
+            case 12: return ns "light_blue_dye";
+            case 13: return ns "magenta_dye";
+            case 14: return ns "orange_dye";
+            case 15: return ns "bone_meal";
+            case 0:
+            default:
+                return ns "ink_sac";
+            }
+        }
+        if (i == "firework_charge") {
+            return ns "firework_star";
+        }
+        if (i == "netherbrick") {
+            return ns "nether_brick";
+        }
+        if (i == "chorus_fruit_popped") {
+            return ns "popped_chorus_fruit";
+        }
+        if (i == "record_13") {
+            return ns "music_disc_13";
+        }
+        if (i == "record_cat") {
+            return ns "music_disc_cat";
+        }
+        if (i == "record_blocks") {
+            return ns "music_disc_blocks";
+        }
+        if (i == "record_chirp") {
+            return ns "music_disc_chirp";
+        }
+        if (i == "record_far") {
+            return ns "music_disc_far";
+        }
+        if (i == "record_mall") {
+            return ns "music_disc_mall";
+        }
+        if (i == "record_mellohi") {
+            return ns "music_disc_mellohi";
+        }
+        if (i == "record_stal") {
+            return ns "music_disc_stal";
+        }
+        if (i == "record_strad") {
+            return ns "music_disc_strad";
+        }
+        if (i == "record_ward") {
+            return ns "music_disc_ward";
+        }
+        if (i == "record_11") {
+            return ns "music_disc_11";
+        }
+        if (i == "record_wait") {
+            return ns "music_disc_wait";
+        }
+        if (i == "golden_apple") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "enchanted_golden_apple";
+            case 0:
+            default:
+                return ns "golden_apple";
+            }
+        }
+        if (i == "fish") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "salmon";
+            case 2: return ns "tropical_fish";
+            case 3: return ns "pufferfish";
+            case 0:
+            default:
+                return ns "cod";
+            }
+        } else if (i == "cooked_fish") {
+            switch (DrainDamage(damage)) {
+            case 1: return ns "cooked_salmon";
+            case 0:
+            default:
+                return ns "cooked_cod";
+            }
+        }
+        if (i == "melon") {
+            return ns "melon_slice";
+        }
+#undef ns
+
+        return "minecraft:" + string(i);
+    }
+
     static std::optional<std::string> Item(int16_t id, int16_t *damage) {
         using namespace std;
         int16_t safety = 0;
