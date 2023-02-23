@@ -134,7 +134,10 @@ find_package(ZLIB QUIET)
 if (ZLIB_FOUND)
   list(APPEND mcfile_test_link_libraries ZLIB::ZLIB)
 else()
-  CPMAddPackage("gh:madler/zlib@1.2.13")
+  CPMAddPackage(
+    NAME ZLIB
+    GITHUB_REPOSITORY madler/zlib
+    GIT_TAG v1.2.13)
   target_include_directories(zlibstatic INTERFACE ${zlib_SOURCE_DIR} $<TARGET_PROPERTY:zlibstatic,BINARY_DIR>)
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
