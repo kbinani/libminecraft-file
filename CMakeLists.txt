@@ -138,7 +138,7 @@ else()
     NAME ZLIB
     GITHUB_REPOSITORY madler/zlib
     GIT_TAG v1.2.13)
-  target_include_directories(zlibstatic INTERFACE ${zlib_SOURCE_DIR} $<TARGET_PROPERTY:zlibstatic,BINARY_DIR>)
+  target_include_directories(zlibstatic INTERFACE ${ZLIB_SOURCE_DIR} $<TARGET_PROPERTY:zlibstatic,BINARY_DIR>)
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
 
