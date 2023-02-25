@@ -677,8 +677,7 @@ public:
         case 262: return ns "arrow";
         case 263:
             switch (DrainDamage(damage)) {
-            case 1:
-                return ns "charcoal";
+            case 1: return ns "charcoal";
             case 0:
             default:
                 return ns "coal";
@@ -743,8 +742,7 @@ public:
         case 321: return ns "painting";
         case 322:
             switch (DrainDamage(damage)) {
-            case 1:
-                return ns "enchanted_golden_apple";
+            case 1: return ns "enchanted_golden_apple";
             case 0:
             default:
                 return ns "golden_apple";
@@ -777,56 +775,37 @@ public:
         case 348: return ns "glowstone_dust";
         case 349:
             switch (DrainDamage(damage)) {
-            case 1:
-                return ns "salmon";
-            case 2:
-                return ns "tropical_fish";
-            case 3:
-                return ns "pufferfish";
+            case 1: return ns "salmon";
+            case 2: return ns "tropical_fish";
+            case 3: return ns "pufferfish";
             case 0:
             default:
                 return ns "cod";
             }
         case 350:
             switch (DrainDamage(damage)) {
-            case 1:
-                return ns "cooked_salmon";
+            case 1: return ns "cooked_salmon";
             case 0:
             default:
                 return ns "cooked_fish";
             }
         case 351:
             switch (DrainDamage(damage)) {
-            case 1:
-                return ns "red_dye";
-            case 2:
-                return ns "green_dye";
-            case 3:
-                return ns "cocoa_beans";
-            case 4:
-                return ns "lapis_lazuli";
-            case 5:
-                return ns "purple_dye";
-            case 6:
-                return ns "cyan_dye";
-            case 7:
-                return ns "light_gray_dye";
-            case 8:
-                return ns "gray_dye";
-            case 9:
-                return ns "pink_dye";
-            case 10:
-                return ns "lime_dye";
-            case 11:
-                return ns "yellow_dye";
-            case 12:
-                return ns "light_blue_dye";
-            case 13:
-                return ns "magenta_dye";
-            case 14:
-                return ns "orange_dye";
-            case 15:
-                return ns "bone_meal";
+            case 1: return ns "red_dye";
+            case 2: return ns "green_dye";
+            case 3: return ns "cocoa_beans";
+            case 4: return ns "lapis_lazuli";
+            case 5: return ns "purple_dye";
+            case 6: return ns "cyan_dye";
+            case 7: return ns "light_gray_dye";
+            case 8: return ns "gray_dye";
+            case 9: return ns "pink_dye";
+            case 10: return ns "lime_dye";
+            case 11: return ns "yellow_dye";
+            case 12: return ns "light_blue_dye";
+            case 13: return ns "magenta_dye";
+            case 14: return ns "orange_dye";
+            case 15: return ns "bone_meal";
             case 0:
             default:
                 return ns "ink_sac";
@@ -863,54 +842,30 @@ public:
         case 382: return ns "glistering_melon_slice";
         case 383:
             switch (DrainDamage(damage)) {
-            case 50:
-                return ns "creeper" egg;
-            case 51:
-                return ns "skeleton" egg;
-            case 52:
-                return ns "spider" egg;
-            case 54:
-                return ns "zombie" egg;
-            case 55:
-                return ns "slime" egg;
-            case 56:
-                return ns "ghast" egg;
-            case 57:
-                return ns "zombified_piglin" egg;
-            case 58:
-                return ns "enderman" egg;
-            case 59:
-                return ns "cave_spider" egg;
-            case 60:
-                return ns "silverfish" egg;
-            case 61:
-                return ns "blaze" egg;
-            case 62:
-                return ns "magma_cube" egg;
-            case 65:
-                return ns "bat" egg;
-            case 66:
-                return ns "witch" egg;
-            case 90:
-                return ns "pig" egg;
-            case 91:
-                return ns "sheep" egg;
-            case 92:
-                return ns "cow" egg;
-            case 93:
-                return ns "chicken" egg;
-            case 94:
-                return ns "squid" egg;
-            case 95:
-                return ns "wolf" egg;
-            case 96:
-                return ns "mooshroom" egg;
-            case 98:
-                return ns "ocelot" egg;
-            case 100:
-                return ns "horse" egg;
-            case 120:
-                return ns "villager" egg;
+            case 50: return ns "creeper" egg;
+            case 51: return ns "skeleton" egg;
+            case 52: return ns "spider" egg;
+            case 54: return ns "zombie" egg;
+            case 55: return ns "slime" egg;
+            case 56: return ns "ghast" egg;
+            case 57: return ns "zombified_piglin" egg;
+            case 58: return ns "enderman" egg;
+            case 59: return ns "cave_spider" egg;
+            case 60: return ns "silverfish" egg;
+            case 61: return ns "blaze" egg;
+            case 62: return ns "magma_cube" egg;
+            case 65: return ns "bat" egg;
+            case 66: return ns "witch" egg;
+            case 90: return ns "pig" egg;
+            case 91: return ns "sheep" egg;
+            case 92: return ns "cow" egg;
+            case 93: return ns "chicken" egg;
+            case 94: return ns "squid" egg;
+            case 95: return ns "wolf" egg;
+            case 96: return ns "mooshroom" egg;
+            case 98: return ns "ocelot" egg;
+            case 100: return ns "horse" egg;
+            case 120: return ns "villager" egg;
             default:
                 return nullopt;
             }
@@ -928,14 +883,10 @@ public:
         case 396: return ns "golden_carrot";
         case 397:
             switch (DrainDamage(damage)) {
-            case 1:
-                return ns "wither_skeleton_skull";
-            case 2:
-                return ns "zombie_head";
-            case 3:
-                return ns "player_head";
-            case 4:
-                return ns "creeper_head";
+            case 1: return ns "wither_skeleton_skull";
+            case 2: return ns "zombie_head";
+            case 3: return ns "player_head";
+            case 4: return ns "creeper_head";
             case 0:
             default:
                 return ns "skeleton_skull";
@@ -1067,15 +1018,9 @@ public:
             break;
         case 18:
             switch (data & 0x3) {
-            case 1:
-                id = blocks::minecraft::spruce_leaves;
-                break;
-            case 2:
-                id = blocks::minecraft::birch_leaves;
-                break;
-            case 3:
-                id = blocks::minecraft::jungle_leaves;
-                break;
+            case 1: id = blocks::minecraft::spruce_leaves; break;
+            case 2: id = blocks::minecraft::birch_leaves; break;
+            case 3: id = blocks::minecraft::jungle_leaves; break;
             case 0:
             default:
                 id = blocks::minecraft::oak_leaves;
@@ -1173,33 +1118,15 @@ public:
         case 37: id = blocks::minecraft::dandelion; break;
         case 38:
             switch (data) {
-            case 0:
-                id = blocks::minecraft::poppy;
-                break;
-            case 1:
-                id = blocks::minecraft::blue_orchid;
-                break;
-            case 2:
-                id = blocks::minecraft::allium;
-                break;
-            case 3:
-                id = blocks::minecraft::azure_bluet;
-                break;
-            case 4:
-                id = blocks::minecraft::red_tulip;
-                break;
-            case 5:
-                id = blocks::minecraft::orange_tulip;
-                break;
-            case 6:
-                id = blocks::minecraft::white_tulip;
-                break;
-            case 7:
-                id = blocks::minecraft::pink_tulip;
-                break;
-            case 8:
-                id = blocks::minecraft::oxeye_daisy;
-                break;
+            case 0: id = blocks::minecraft::poppy; break;
+            case 1: id = blocks::minecraft::blue_orchid; break;
+            case 2: id = blocks::minecraft::allium; break;
+            case 3: id = blocks::minecraft::azure_bluet; break;
+            case 4: id = blocks::minecraft::red_tulip; break;
+            case 5: id = blocks::minecraft::orange_tulip; break;
+            case 6: id = blocks::minecraft::white_tulip; break;
+            case 7: id = blocks::minecraft::pink_tulip; break;
+            case 8: id = blocks::minecraft::oxeye_daisy; break;
             }
             break;
         case 39: id = blocks::minecraft::brown_mushroom; break;
@@ -1224,27 +1151,13 @@ public:
             break;
         case 44:
             switch (data & 0x7) {
-            case 1:
-                id = blocks::minecraft::sandstone_slab;
-                break;
-            case 2:
-                id = blocks::minecraft::oak_slab;
-                break;
-            case 3:
-                id = blocks::minecraft::cobblestone_slab;
-                break;
-            case 4:
-                id = blocks::minecraft::brick_slab;
-                break;
-            case 5:
-                id = blocks::minecraft::stone_brick_slab;
-                break;
-            case 6:
-                id = blocks::minecraft::nether_brick_slab;
-                break;
-            case 7:
-                id = blocks::minecraft::quartz_slab;
-                break;
+            case 1: id = blocks::minecraft::sandstone_slab; break;
+            case 2: id = blocks::minecraft::oak_slab; break;
+            case 3: id = blocks::minecraft::cobblestone_slab; break;
+            case 4: id = blocks::minecraft::brick_slab; break;
+            case 5: id = blocks::minecraft::stone_brick_slab; break;
+            case 6: id = blocks::minecraft::nether_brick_slab; break;
+            case 7: id = blocks::minecraft::quartz_slab; break;
             case 0:
             default:
                 id = id = blocks::minecraft::smooth_stone_slab;
@@ -1834,9 +1747,7 @@ public:
             break;
         case 161:
             switch (data & 0x3) {
-            case 1:
-                id = blocks::minecraft::dark_oak_leaves;
-                break;
+            case 1: id = blocks::minecraft::dark_oak_leaves; break;
             case 0:
             default:
                 id = blocks::minecraft::acacia_leaves;
