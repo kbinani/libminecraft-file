@@ -21,6 +21,9 @@ TEST_CASE("be/biome") {
             break;
         case the_void:
             break;
+        case cherry_grove:
+            // TODO: Remove this when cherry_grove released in BE
+            break;
         default:
             CHECK(iv > 0);
             break;
