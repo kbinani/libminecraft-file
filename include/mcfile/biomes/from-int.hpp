@@ -92,6 +92,8 @@ static inline BiomeId FromInt(int v) {
         // 1.18
         {174, minecraft::dripstone_caves},
         {175, minecraft::lush_caves},
+
+        // Need not to update here for 1.18 or later releases, as FromInt is used for numeric biome ids used in 1.17 or older.
     };
     auto mappingIt = mapping.find(v);
     if (mappingIt == mapping.end()) {

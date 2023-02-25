@@ -159,7 +159,6 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
         {minecraft::basalt_deltas, "minecraft:basalt_deltas"},
 
         // 1.18
-
         {minecraft::dripstone_caves, "minecraft:dripstone_caves"},
         {minecraft::lush_caves, "minecraft:lush_caves"},
         {minecraft::snowy_slopes, "minecraft:snowy_slopes"},
@@ -170,9 +169,11 @@ static inline std::string Name(BiomeId id, int chunkDataVersion) {
         {minecraft::stony_peaks, "minecraft:stony_peaks"},
 
         // 1.19
-
         {minecraft::deep_dark, "minecraft:deep_dark"},
         {minecraft::mangrove_swamp, "minecraft:mangrove_swamp"},
+
+        // 1.20
+        {minecraft::cherry_grove, "minecraft:cherry_grove"},
     };
     auto mappingIt = mapping.find(id);
     if (mappingIt == mapping.end()) {

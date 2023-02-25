@@ -103,7 +103,16 @@ enum : BiomeId {
     deep_dark,
     mangrove_swamp,
 
+    // 1.20
+    cherry_grove,
+
     minecraft_max_biome_id
+
+    // Functions need to update when new biomes will be released:
+    // - mcfile::biomes::FromName
+    // - mcfile::biomes::Name
+    // - mcfile::be::Biome::FromUint32
+    // - mcfile::be::Biome::ToUint32
 };
 
 }

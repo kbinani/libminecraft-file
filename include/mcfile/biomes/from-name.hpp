@@ -115,6 +115,9 @@ static inline std::optional<mcfile::biomes::BiomeId> FromName(std::string const 
         // 1.19
         {"minecraft:deep_dark", minecraft::deep_dark},
         {"minecraft:mangrove_swamp", minecraft::mangrove_swamp},
+
+        // 1.20
+        {"minecraft:cherry_grove", minecraft::cherry_grove},
     };
     auto found = sMapping.find(name);
     if (found == sMapping.end()) {
