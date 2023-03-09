@@ -92,6 +92,7 @@ public:
         case 9: return the_end;
         case 190: return deep_dark;
         case 191: return mangrove_swamp;
+        case 192: return cherry_grove;
         default:
             return ocean;
         }
@@ -101,7 +102,7 @@ public:
         using namespace mcfile::biomes::minecraft;
         switch (biome) {
         case ocean: return 0;
-        //case legacy_frozen_ocean: return 47;
+        // case legacy_frozen_ocean: return 47;
         case deep_ocean: return 24;
         case frozen_ocean: return 10;
         case deep_frozen_ocean: return 46;
@@ -166,8 +167,8 @@ public:
         case windswept_gravelly_hills:
         case modified_gravelly_mountains:
             return 131; // extreme_hills_mutated
-        //case extreme_hills_plus_trees_mutated: return 162;
-        //case extreme_hills_edge: return 20;
+        // case extreme_hills_plus_trees_mutated: return 162;
+        // case extreme_hills_edge: return 20;
         case badlands: return 37;                          // mesa
         case badlands_plateau: return 38;                  // mesa_plateau
         case modified_badlands_plateau: return 166;        // mesa_plateau_mutated
@@ -195,6 +196,7 @@ public:
             return 9;
         case deep_dark: return 190;
         case mangrove_swamp: return 191;
+        case cherry_grove: return 192;
         default:
             return 0;
         }
