@@ -191,7 +191,7 @@ private:
         }
         auto stream = make_shared<ByteStream>(*value);
         InputStreamReader sr(stream, endian);
-        CompoundTag::ReadUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
+        CompoundTag::ReadSequentialUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
             auto bx = tag->int32("x");
             auto by = tag->int32("y");
             auto bz = tag->int32("z");
@@ -209,7 +209,7 @@ private:
         using namespace mcfile::stream;
 
         if (auto entities = db.get(DbKey::Entity(chunkX, chunkZ, d)); entities) {
-            CompoundTag::ReadUntilEos(*entities, endian, [&result](shared_ptr<CompoundTag> const &tag) {
+            CompoundTag::ReadSequentialUntilEos(*entities, endian, [&result](shared_ptr<CompoundTag> const &tag) {
                 result.push_back(tag);
             });
         }

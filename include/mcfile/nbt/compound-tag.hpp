@@ -563,24 +563,24 @@ public:
         return true;
     }
 
-    static void ReadUntilEos(stream::InputStreamReader &reader, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
+    static void ReadSequential(stream::InputStreamReader &reader, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
         ReadUntilEosImpl(reader, callback);
     }
 
-    static void ReadUntilEos(stream::InputStreamReader &reader, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
+    static void ReadSequentialUntilEos(stream::InputStreamReader &reader, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
         ReadUntilEosImpl(reader, [callback](std::shared_ptr<CompoundTag> const &value) {
             callback(value);
             return true;
         });
     }
 
-    static void ReadUntilEos(std::string const &data, Endian endian, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
+    static void ReadSequential(std::string const &data, Endian endian, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
         auto s = std::make_shared<mcfile::stream::ByteInputStream>(data);
         mcfile::stream::InputStreamReader reader(s, endian);
         ReadUntilEosImpl(reader, callback);
     }
 
-    static void ReadUntilEos(std::string const &data, Endian endian, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
+    static void ReadSequentialUntilEos(std::string const &data, Endian endian, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
         auto s = std::make_shared<mcfile::stream::ByteInputStream>(data);
         mcfile::stream::InputStreamReader reader(s, endian);
         ReadUntilEosImpl(reader, [callback](std::shared_ptr<CompoundTag> const &value) {
