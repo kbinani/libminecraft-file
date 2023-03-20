@@ -7,20 +7,20 @@ public:
     Compression() = delete;
 
     template<class Out>
-    static bool CompressDeflate(void *in, size_t inSize, Out &out, int level = Z_BEST_SPEED) {
+    static bool CompressDeflate(void *in, size_t inSize, Out &out, int level = Z_BEST_COMPRESSION) {
         return CompressImpl(in, inSize, out, libdeflate_deflate_compress_bound, libdeflate_deflate_compress, level);
     }
 
-    static bool CompressDeflate(std::vector<uint8_t> &inout, int level = Z_BEST_SPEED) {
+    static bool CompressDeflate(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
         return CompressImpl(inout, libdeflate_deflate_compress_bound, libdeflate_deflate_compress, level);
     }
 
     template<class Out>
-    static bool CompressZlib(void *in, size_t inSize, Out &out, int level = Z_BEST_SPEED) {
+    static bool CompressZlib(void *in, size_t inSize, Out &out, int level = Z_BEST_COMPRESSION) {
         return CompressImpl(in, inSize, out, libdeflate_zlib_compress_bound, libdeflate_zlib_compress, level);
     }
 
-    static bool CompressZlib(std::vector<uint8_t> &inout, int level = Z_BEST_SPEED) {
+    static bool CompressZlib(std::vector<uint8_t> &inout, int level = Z_BEST_COMPRESSION) {
         return CompressImpl(inout, libdeflate_zlib_compress_bound, libdeflate_zlib_compress, level);
     }
 
