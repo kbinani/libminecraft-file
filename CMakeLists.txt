@@ -12,6 +12,14 @@ if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
   endif()
+  if (MSVC)
+    add_compile_options(
+      /source-charset:utf-8
+      /MP
+      /Zc:__cplusplus # Enable updated __cplusplus macro
+      /Zc:preprocessor # Enable preprocessor conformance mode
+    )
+  endif()
 endif()
 
 set(mcfile_files
