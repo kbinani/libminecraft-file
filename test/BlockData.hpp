@@ -16,15 +16,17 @@ public:
 
     static void ReadAll(std::string const &file, std::map<Point3D, BlockData> &buffer) {
         buffer.clear();
-        std::basic_ifstream<char8_t> stream(file);
-        for (std::u8string line; std::getline(stream, line, u8'\n');) {
-            if (line.size() > 0 && line[0] == u8'#') {
+        std::ifstream stream(file);
+        for (std::string line; std::getline(stream, line, '\n');) {
+            if (line.size() > 0 && line[0] == '#') {
                 continue;
             }
-            std::basic_istringstream<char8_t> ss(line);
+            std::istringstream ss(line);
             std::vector<std::u8string> tokens;
-            for (std::u8string token; std::getline(ss, token, u8',');) {
-                tokens.push_back(token);
+            for (std::string token; std::getline(ss, token, ',');) {
+                std::u8string u8token;
+                u8token.assign((char8_t const *)token.data(), token.size());
+                tokens.push_back(u8token);
             }
             if (tokens.size() < 4) {
                 continue;

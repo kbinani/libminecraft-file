@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <charconv>
 #include <cmath>
 #include <cstdint>
 #include <filesystem>
@@ -42,7 +43,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <charconv>
 
 #if __has_include(<leveldb/db.h>)
 #include <leveldb/db.h>
