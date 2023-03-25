@@ -5,11 +5,11 @@ namespace mcfile::je {
 class BlockHasher {
 public:
     size_t operator()(std::shared_ptr<Block const> const &k) const {
-        std::string key;
+        std::u8string key;
         if (k) {
             key = k->toString();
         }
-        return std::hash<std::string>()(key);
+        return std::hash<std::u8string>()(key);
     }
 };
 

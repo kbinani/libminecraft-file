@@ -97,7 +97,7 @@ public:
         if (!root) {
             return false;
         }
-        auto entities = root->listTag("Entities");
+        auto entities = root->listTag(u8"Entities");
         if (!entities) {
             return false;
         }

@@ -49,12 +49,12 @@ public:
         auto ret = std::make_shared<nbt::CompoundTag>();
 
         int8_t h = fY;
-        ret->set("Y", std::make_shared<nbt::ByteTag>(*(uint8_t *)&h));
+        ret->set(u8"Y", std::make_shared<nbt::ByteTag>(*(uint8_t *)&h));
 
         if (fSkyLight.size() == 2048) {
             auto skyLight = std::make_shared<nbt::ByteArrayTag>();
             copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(skyLight->fValue));
-            ret->set("SkyLight", skyLight);
+            ret->set(u8"SkyLight", skyLight);
         }
 
         return ret;

@@ -12,18 +12,18 @@ public:
 
     BlockFace facing() const override {
         if (fJava) {
-            auto f = fJava->property("facing");
-            if (f == "north") {
+            auto f = fJava->property(u8"facing");
+            if (f == u8"north") {
                 return BlockFace::North;
-            } else if (f == "east") {
+            } else if (f == u8"east") {
                 return BlockFace::East;
-            } else if (f == "west") {
+            } else if (f == u8"west") {
                 return BlockFace::West;
             } else {
                 return BlockFace::South;
             }
         } else {
-            auto d = fBedrock->fStates->int32("weirdo_direction", 0);
+            auto d = fBedrock->fStates->int32(u8"weirdo_direction", 0);
             switch (d) {
             case 3: // north
                 return BlockFace::North;
@@ -40,9 +40,9 @@ public:
 
     Half half() const override {
         if (fJava) {
-            return fJava->property("half") == "top" ? Half::Top : Half::Bottom;
+            return fJava->property(u8"half") == u8"top" ? Half::Top : Half::Bottom;
         } else {
-            return fBedrock->fStates->boolean("upside_down_bit", false) ? Half::Top : Half::Bottom;
+            return fBedrock->fStates->boolean(u8"upside_down_bit", false) ? Half::Top : Half::Bottom;
         }
     }
 };

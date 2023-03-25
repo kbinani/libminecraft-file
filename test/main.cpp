@@ -7,6 +7,7 @@
 #include "Point3D.hpp"
 
 using namespace mcfile;
+using namespace mcfile::u8stream;
 namespace fs = std::filesystem;
 
 TEST_CASE("1.13.2") {
@@ -40,7 +41,7 @@ TEST_CASE("1.13.2") {
                     if (block) {
                         CHECK(block->fName == e.fName);
                     } else {
-                        CHECK(e.fName == "NULL");
+                        CHECK(e.fName == u8"NULL");
                     }
                 }
             }
@@ -61,7 +62,7 @@ TEST_CASE("1.13.2") {
                     auto const &e = expectedIt->second;
 
                     auto blockId = chunk->blockIdAt(x, y, z);
-                    if (e.fName == "NULL") {
+                    if (e.fName == u8"NULL") {
                         CHECK(blockId == blocks::unknown);
                     } else {
                         auto ex = blocks::FromName(e.fName);
@@ -81,7 +82,7 @@ TEST_CASE("1.13.2") {
             if (block) {
                 CHECK(block->fName == e.fName);
             } else {
-                CHECK(e.fName == "NULL");
+                CHECK(e.fName == u8"NULL");
             }
             return true;
         });
@@ -123,9 +124,9 @@ TEST_CASE("block-id") {
 }
 
 TEST_CASE("biome_id") {
-    CHECK(biomes::Name(biomes::minecraft::mushroom_field_shore, mcfile::je::Chunk::kDataVersion) == "minecraft:mushroom_fields");
-    CHECK(biomes::Name(biomes::minecraft::mushroom_field_shore, 2838 - 1) == "minecraft:mushroom_field_shore");
-    CHECK(biomes::FromName("minecraft:mushroom_field_shore") == biomes::minecraft::mushroom_field_shore);
+    CHECK(biomes::Name(biomes::minecraft::mushroom_field_shore, mcfile::je::Chunk::kDataVersion) == u8"minecraft:mushroom_fields");
+    CHECK(biomes::Name(biomes::minecraft::mushroom_field_shore, 2838 - 1) == u8"minecraft:mushroom_field_shore");
+    CHECK(biomes::FromName(u8"minecraft:mushroom_field_shore") == biomes::minecraft::mushroom_field_shore);
 
     for (mcfile::biomes::BiomeId id = 1; id < biomes::minecraft::minecraft_max_biome_id; id++) {
         if (id == biomes::minecraft::mushroom_field_shore) {
@@ -163,10 +164,10 @@ TEST_CASE("1.18") {
         CHECK(chunk);
         auto bricks = chunk->blockAt(14, -52, 9);
         CHECK(bricks);
-        CHECK(bricks->fName == "minecraft:bricks");
+        CHECK(bricks->fName == u8"minecraft:bricks");
         auto stoneBricks = chunk->blockAt(11, 316, 7);
         CHECK(stoneBricks);
-        CHECK(stoneBricks->fName == "minecraft:stone_bricks");
+        CHECK(stoneBricks->fName == u8"minecraft:stone_bricks");
     }
     SUBCASE("biomeAt") {
         {

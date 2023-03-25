@@ -12,6 +12,15 @@
 #if __has_include(<io.h>)
 #include <io.h>
 #endif
+#if __has_include(<windows.h>)
+#if !defined(NOMINMAX)
+#define NOMINMAX
+#endif
+#if !defined(WIN32_LEAN_AND_MEAN)
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#endif
 
 #include <algorithm>
 #include <cassert>
@@ -24,6 +33,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <ostream>
 #include <random>
 #include <set>
 #include <sstream>
@@ -55,6 +65,7 @@
 #include <mcfile/stream/input-stream-reader.hpp>
 #include <mcfile/stream/output-stream-writer.hpp>
 #include <mcfile/stream/defer-opening-output-stream.hpp>
+#include <mcfile/u8stream.hpp>
 #include <mcfile/compression.hpp>
 #include <mcfile/mem.hpp>
 #include <mcfile/string.hpp>

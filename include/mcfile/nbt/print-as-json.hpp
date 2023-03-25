@@ -15,6 +15,7 @@ static inline std::string Indent(int level) {
 
 template<class Stream>
 static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, JsonPrintOptions options, bool comma = false, int depth = 0) {
+    using namespace mcfile::u8stream;
     std::string hint = "";
     switch (value.type()) {
     case Tag::Type::Byte: {
@@ -54,7 +55,7 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
         } else {
             out << "{" << std::endl;
             for (auto it = compound->begin(); it != compound->end();) {
-                std::string name = it->first;
+                std::u8string name = it->first;
                 out << Indent(depth + 1) << "\"" << name << "\": ";
                 std::shared_ptr<Tag> value = it->second;
                 it++;

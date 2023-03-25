@@ -5,6 +5,7 @@
 int main() {
     using namespace mcfile;
     using namespace mcfile::je;
+    using namespace mcfile::u8stream; // for std::ostream &operator<<(std::ostream&, std::u8string_view const&)
     namespace fs = std::filesystem;
 
     // accessing game data of the nether dimension

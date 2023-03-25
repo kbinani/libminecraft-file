@@ -28,7 +28,7 @@ public:
     static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
         using namespace std;
         vector<shared_ptr<Block const>> palette;
-        palette.push_back(make_shared<Block const>("minecraft:air"));
+        palette.push_back(make_shared<Block const>(u8"minecraft:air"));
         vector<uint16_t> indices(4096, 0);
         vector<uint8_t> blockLight;
         vector<uint8_t> skyLight(2048, 0xff);
@@ -98,26 +98,26 @@ private:
         if (!section) {
             return nullptr;
         }
-        auto yTag = section->query("Y")->asByte();
+        auto yTag = section->query(u8"Y")->asByte();
         if (!yTag) {
             return nullptr;
         }
 
-        auto blocksTag = section->query("Blocks")->asByteArray();
+        auto blocksTag = section->query(u8"Blocks")->asByteArray();
         if (!blocksTag) {
             return nullptr;
         }
         std::vector<uint8_t> blocks = blocksTag->value();
         blocks.resize(4096);
 
-        auto dataTag = section->query("Data")->asByteArray();
+        auto dataTag = section->query(u8"Data")->asByteArray();
         if (!dataTag) {
             return nullptr;
         }
         std::vector<uint8_t> data = dataTag->value();
         data.resize(2048);
 
-        auto addTag = section->query("Add")->asByteArray();
+        auto addTag = section->query(u8"Add")->asByteArray();
         std::vector<uint8_t> add;
         if (addTag) {
             add = addTag->value();
@@ -125,13 +125,13 @@ private:
         add.resize(2048);
 
         std::vector<uint8_t> blockLight;
-        auto blockLightTag = section->query("BlockLight")->asByteArray();
+        auto blockLightTag = section->query(u8"BlockLight")->asByteArray();
         if (blockLightTag) {
             blockLight = blockLightTag->value();
         }
 
         std::vector<uint8_t> skyLight;
-        auto skyLightTag = section->query("SkyLight")->asByteArray();
+        auto skyLightTag = section->query(u8"SkyLight")->asByteArray();
         if (skyLightTag) {
             skyLight = skyLightTag->value();
         }
@@ -175,9 +175,9 @@ private:
 
         map<tuple<int, int, int>, std::shared_ptr<nbt::CompoundTag>> tileEntities;
         for (auto const &it : inTileEntities) {
-            auto x = it->int32("x");
-            auto y = it->int32("y");
-            auto z = it->int32("z");
+            auto x = it->int32(u8"x");
+            auto y = it->int32(u8"y");
+            auto z = it->int32(u8"z");
             if (!x || !y || !z) {
                 continue;
             }
@@ -211,108 +211,108 @@ private:
                         assert(block);
                         shared_ptr<Block const> converted;
                         auto name = block->fName;
-                        if (name.size() > 10 && name.substr(0, 10) == "minecraft:") {
+                        if (name.size() > 10 && name.substr(0, 10) == u8"minecraft:") {
                             name = name.substr(10);
                         }
-                        if (String::EndsWith(name, "_door")) {
-                            auto half = block->property("half", "lower");
-                            string hinge = "left";
-                            string powered = "false";
-                            string facing = "east";
-                            string open = "false";
-                            if (half == "lower") {
-                                facing = block->property("facing", "east");
-                                open = block->property("open", "false");
+                        if (name.ends_with(u8"_door")) {
+                            auto half = block->property(u8"half", u8"lower");
+                            u8string hinge = u8"left";
+                            u8string powered = u8"false";
+                            u8string facing = u8"east";
+                            u8string open = u8"false";
+                            if (half == u8"lower") {
+                                facing = block->property(u8"facing", u8"east");
+                                open = block->property(u8"open", u8"false");
 
                                 auto upper = GetBlockAt(x, by + 1, z, raw);
                                 if (upper) {
-                                    hinge = upper->property("hinge", "left");
-                                    powered = upper->property("powered", "false");
+                                    hinge = upper->property(u8"hinge", u8"left");
+                                    powered = upper->property(u8"powered", u8"false");
                                 }
                             } else {
-                                hinge = block->property("hinge", "left");
-                                powered = block->property("powered", "false");
+                                hinge = block->property(u8"hinge", u8"left");
+                                powered = block->property(u8"powered", u8"false");
 
                                 auto lower = GetBlockAt(x, by - 1, z, raw);
                                 if (lower) {
-                                    facing = lower->property("facing", "east");
-                                    open = lower->property("open", "false");
+                                    facing = lower->property(u8"facing", u8"east");
+                                    open = lower->property(u8"open", u8"false");
                                 }
                             }
                             converted = block->applying({
-                                {"hinge", hinge},
-                                {"powered", powered},
-                                {"facing", facing},
-                                {"open", open},
+                                {u8"hinge", hinge},
+                                {u8"powered", powered},
+                                {u8"facing", facing},
+                                {u8"open", open},
                             });
-                        } else if (name == "red_bed") {
+                        } else if (name == u8"red_bed") {
                             auto tile = tileAt(x, by, z);
-                            if (tile && tile->string("id", "") == "minecraft:bed") {
-                                auto colorCode = tile->int32("color", 0);
+                            if (tile && tile->string(u8"id", u8"") == u8"minecraft:bed") {
+                                auto colorCode = tile->int32(u8"color", 0);
                                 auto color = ColorNameFromCode(colorCode);
-                                converted = block->renamed("minecraft:" + color + "_bed");
+                                converted = block->renamed(u8"minecraft:" + color + u8"_bed");
                             }
-                        } else if (name == "note_block") {
+                        } else if (name == u8"note_block") {
                             auto tile = tileAt(x, by, z);
-                            if (tile && tile->string("id", "") == "minecraft:noteblock") {
-                                auto note = tile->byte("note", 0);
-                                auto powered = tile->boolean("powered", false);
+                            if (tile && tile->string(u8"id", u8"") == u8"minecraft:noteblock") {
+                                auto note = tile->byte(u8"note", 0);
+                                auto powered = tile->boolean(u8"powered", false);
                                 converted = block->applying({
-                                    {"note", to_string(note)},
-                                    {"powered", powered ? "true" : "false"},
+                                    {u8"note", String::ToString(note)},
+                                    {u8"powered", powered ? u8"true" : u8"false"},
                                 });
                             }
-                        } else if (name == "sunflower") {
+                        } else if (name == u8"sunflower") {
                             auto lower = GetBlockAt(x, by - 1, z, raw);
                             if (lower) {
-                                if (lower->fName == "minecraft:lilac" || lower->fName == "minecraft:tall_grass" || lower->fName == "minecraft:large_fern" || lower->fName == "minecraft:rose_bush" || lower->fName == "minecraft:peony") {
-                                    converted = block->applying({{"half", "upper"}});
+                                if (lower->fName == u8"minecraft:lilac" || lower->fName == u8"minecraft:tall_grass" || lower->fName == u8"minecraft:large_fern" || lower->fName == u8"minecraft:rose_bush" || lower->fName == u8"minecraft:peony") {
+                                    converted = block->applying({{u8"half", u8"upper"}});
                                 } else {
-                                    converted = block->applying({{"half", lower->fName == "minecraft:sunflower" ? "upper" : "lower"}});
+                                    converted = block->applying({{u8"half", lower->fName == u8"minecraft:sunflower" ? u8"upper" : u8"lower"}});
                                 }
                             } else {
                                 converted = block->applying({
-                                    {"half", "lower"}, // sunflower on y = 0?
+                                    {u8"half", u8"lower"}, // sunflower on y = 0?
                                 });
                             }
-                        } else if (name == "skeleton_skull" || name == "skeleton_wall_skull") {
+                        } else if (name == u8"skeleton_skull" || name == u8"skeleton_wall_skull") {
                             auto tile = tileAt(x, by, z);
                             if (tile) {
-                                auto rot = tile->byte("Rot");
-                                auto type = tile->byte("SkullType");
+                                auto rot = tile->byte(u8"Rot");
+                                auto type = tile->byte(u8"SkullType");
                                 if (rot && type) {
-                                    string n = "skeleton";
-                                    string p = "skull";
+                                    u8string n = u8"skeleton";
+                                    u8string p = u8"skull";
                                     switch (*type) {
                                     case 0:
-                                        n = "skeleton";
-                                        p = "skull";
+                                        n = u8"skeleton";
+                                        p = u8"skull";
                                         break;
                                     case 1:
-                                        n = "wither_skeleton";
-                                        p = "skull";
+                                        n = u8"wither_skeleton";
+                                        p = u8"skull";
                                         break;
                                     case 2:
-                                        n = "zombie";
-                                        p = "head";
+                                        n = u8"zombie";
+                                        p = u8"head";
                                         break;
                                     case 3:
-                                        n = "player";
-                                        p = "head";
+                                        n = u8"player";
+                                        p = u8"head";
                                         break;
                                     case 4:
-                                        n = "creeper";
-                                        p = "head";
+                                        n = u8"creeper";
+                                        p = u8"head";
                                         break;
                                     case 5:
-                                        n = "dragon";
-                                        p = "head";
+                                        n = u8"dragon";
+                                        p = u8"head";
                                         break;
                                     }
-                                    if (name == "skeleton_skull") {
-                                        converted = block->renamed("minecraft:" + n + "_" + p)->applying({{"rotation", std::to_string(*rot)}});
+                                    if (name == u8"skeleton_skull") {
+                                        converted = block->renamed(u8"minecraft:" + n + u8"_" + p)->applying({{u8"rotation", String::ToString(*rot)}});
                                     } else {
-                                        converted = block->renamed("minecraft:" + n + "_wall_" + p);
+                                        converted = block->renamed(u8"minecraft:" + n + u8"_wall_" + p);
                                     }
                                 }
                             }
@@ -341,43 +341,43 @@ private:
         }
     }
 
-    static std::string ColorNameFromCode(int32_t code) {
+    static std::u8string ColorNameFromCode(int32_t code) {
         switch (code % 16) {
         case 0:
-            return "white";
+            return u8"white";
         case 1:
-            return "orange";
+            return u8"orange";
         case 2:
-            return "magenta";
+            return u8"magenta";
         case 3:
-            return "light_blue";
+            return u8"light_blue";
         case 4:
-            return "yellow";
+            return u8"yellow";
         case 5:
-            return "lime";
+            return u8"lime";
         case 6:
-            return "pink";
+            return u8"pink";
         case 7:
-            return "gray";
+            return u8"gray";
         case 8:
-            return "light_gray";
+            return u8"light_gray";
         case 9:
-            return "cyan";
+            return u8"cyan";
         case 10:
-            return "purple";
+            return u8"purple";
         case 11:
-            return "blue";
+            return u8"blue";
         case 12:
-            return "brown";
+            return u8"brown";
         case 13:
-            return "green";
+            return u8"green";
         case 14:
-            return "red";
+            return u8"red";
         case 15:
-            return "black";
+            return u8"black";
         }
         assert(false);
-        return "";
+        return u8"";
     }
 
     static std::shared_ptr<Block const> GetBlockAt(int offsetX, int blockY, int offsetZ, std::vector<std::shared_ptr<ChunkSection112>> const &raw) {

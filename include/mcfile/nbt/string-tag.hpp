@@ -6,7 +6,7 @@ class StringTag : public Tag {
 public:
     StringTag()
         : Tag() {}
-    explicit StringTag(std::string v)
+    explicit StringTag(std::u8string v)
         : fValue(v) {
     }
 
@@ -26,7 +26,7 @@ public:
 
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
-        std::string tmp;
+        std::u8string tmp;
         if (!r.read(tmp)) {
             return false;
         }
@@ -39,7 +39,7 @@ protected:
     }
 
 public:
-    std::string fValue;
+    std::u8string fValue;
 };
 
 } // namespace mcfile::nbt

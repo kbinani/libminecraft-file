@@ -34,7 +34,7 @@ public:
         }
         auto index = BlockIndex(offsetX, offsetY, offsetZ);
         if (fBlocks.empty()) {
-            auto air = std::make_shared<Block>("minecraft:air");
+            auto air = std::make_shared<Block>(u8"minecraft:air");
             fBlocks.set(0, air);
         }
         return fBlocks.set(index, block);
@@ -70,7 +70,7 @@ public:
 
         int8_t i8 = Clamp<int8_t>(fY);
         uint8_t u8 = *(uint8_t *)&i8;
-        root->set("Y", make_shared<ByteTag>(u8));
+        root->set(u8"Y", make_shared<ByteTag>(u8));
 
         vector<uint16_t> index;
         vector<shared_ptr<Block const>> palette;
@@ -79,7 +79,7 @@ public:
         if (!index.empty()) {
             vector<int64_t> blockStates;
             BlockStatesParser::BlockStatesFromPaletteIndices(palette.size(), index, blockStates);
-            root->set("BlockStates", make_shared<LongArrayTag>(blockStates));
+            root->set(u8"BlockStates", make_shared<LongArrayTag>(blockStates));
         }
 
         if (!palette.empty()) {
@@ -87,19 +87,19 @@ public:
             for (auto p : palette) {
                 paletteTag->push_back(p->toCompoundTag());
             }
-            root->set("Palette", paletteTag);
+            root->set(u8"Palette", paletteTag);
         }
 
         if (fBlockLight.size() == 2048) {
             auto blockLight = make_shared<ByteArrayTag>();
             copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(blockLight->fValue));
-            root->set("BlockLight", blockLight);
+            root->set(u8"BlockLight", blockLight);
         }
 
         if (fSkyLight.size() == 2048) {
             auto skyLight = make_shared<ByteArrayTag>();
             copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(skyLight->fValue));
-            root->set("SkyLight", skyLight);
+            root->set(u8"SkyLight", skyLight);
         }
 
         return root;
@@ -116,14 +116,14 @@ public:
             return nullptr;
         }
 
-        static std::unordered_set<std::string> const sExclude = {
-            "Y",
-            "Palette",
-            "BlockStates",
-            "BlockLight",
-            "SkyLight",
+        static std::unordered_set<std::u8string> const sExclude = {
+            u8"Y",
+            u8"Palette",
+            u8"BlockStates",
+            u8"BlockLight",
+            u8"SkyLight",
         };
-        auto yTag = section->query("Y")->asByte();
+        auto yTag = section->query(u8"Y")->asByte();
         if (!yTag) {
             return nullptr;
         }
@@ -131,7 +131,7 @@ public:
             return nullptr;
         }
 
-        auto paletteTag = section->query("Palette")->asList();
+        auto paletteTag = section->query(u8"Palette")->asList();
         std::vector<std::shared_ptr<Block const>> palette;
         if (paletteTag) {
             for (auto entry : *paletteTag) {
@@ -139,15 +139,15 @@ public:
                 if (!tag) {
                     return nullptr;
                 }
-                auto nameTag = tag->query("Name")->asString();
+                auto nameTag = tag->query(u8"Name")->asString();
                 if (!nameTag) {
                     return nullptr;
                 }
-                std::map<std::string, std::string> properties;
-                auto propertiesTag = tag->query("Properties")->asCompound();
+                std::map<std::u8string, std::u8string> properties;
+                auto propertiesTag = tag->query(u8"Properties")->asCompound();
                 if (propertiesTag) {
                     for (auto p : *propertiesTag) {
-                        std::string n = p.first;
+                        std::u8string n = p.first;
                         if (n.empty()) {
                             continue;
                         }
@@ -162,20 +162,20 @@ public:
             }
         }
 
-        auto blockStatesTag = section->query("BlockStates")->asLongArray();
+        auto blockStatesTag = section->query(u8"BlockStates")->asLongArray();
         std::vector<uint16_t> paletteIndices;
         if (blockStatesTag) {
             BlockStatesParser::PaletteIndicesFromBlockStates(blockStatesTag->value(), paletteIndices);
         }
 
         std::vector<uint8_t> blockLight;
-        auto blockLightTag = section->byteArrayTag("BlockLight");
+        auto blockLightTag = section->byteArrayTag(u8"BlockLight");
         if (blockLightTag && blockLightTag->fValue.size() == 2048) {
             blockLightTag->fValue.swap(blockLight);
         }
 
         std::vector<uint8_t> skyLight;
-        auto skyLightTag = section->byteArrayTag("SkyLight");
+        auto skyLightTag = section->byteArrayTag(u8"SkyLight");
         if (skyLightTag && skyLightTag->fValue.size() == 2048) {
             skyLightTag->fValue.swap(skyLight);
         }

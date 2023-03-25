@@ -31,15 +31,15 @@ TEST_CASE("flatten") {
                     InputStreamReader ios(s);
                     CHECK(tag->read(ios));
 
-                    auto root = tag->compoundTag("");
+                    auto root = tag->compoundTag(u8"");
                     if (!root) {
                         continue;
                     }
-                    auto level = root->compoundTag("Level");
+                    auto level = root->compoundTag(u8"Level");
                     if (!level) {
                         continue;
                     }
-                    auto sections = level->listTag("Sections");
+                    auto sections = level->listTag(u8"Sections");
                     if (!sections) {
                         continue;
                     }
@@ -48,8 +48,8 @@ TEST_CASE("flatten") {
                         if (!c) {
                             continue;
                         }
-                        auto blocksTag = c->byteArrayTag("Blocks");
-                        auto dataTag = c->byteArrayTag("Data");
+                        auto blocksTag = c->byteArrayTag(u8"Blocks");
+                        auto dataTag = c->byteArrayTag(u8"Data");
                         if (!blocksTag || !dataTag) {
                             continue;
                         }

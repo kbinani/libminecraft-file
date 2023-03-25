@@ -67,7 +67,15 @@ public:
         return fStream->write(data, size);
     }
 
-    [[nodiscard]] bool write(std::string const &s) {
+    [[nodiscard]] [[deprecated]] bool write(std::string const &s) {
+        uint16_t length = (uint16_t)std::min(s.size(), (size_t)std::numeric_limits<uint16_t>::max());
+        if (!write(length)) {
+            return false;
+        }
+        return fStream->write((void *)s.data(), length);
+    }
+
+    [[nodiscard]] bool write(std::u8string const &s) {
         uint16_t length = (uint16_t)std::min(s.size(), (size_t)std::numeric_limits<uint16_t>::max());
         if (!write(length)) {
             return false;

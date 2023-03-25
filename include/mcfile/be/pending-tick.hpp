@@ -5,11 +5,11 @@ namespace mcfile::be {
 class PendingTick {
 public:
     static std::optional<PendingTick> FromCompound(nbt::CompoundTag const &tag) {
-        auto blockState = tag.compoundTag("blockState");
-        auto time = tag.int64("time");
-        auto x = tag.int32("x");
-        auto y = tag.int32("y");
-        auto z = tag.int32("z");
+        auto blockState = tag.compoundTag(u8"blockState");
+        auto time = tag.int64(u8"time");
+        auto x = tag.int32(u8"x");
+        auto y = tag.int32(u8"y");
+        auto z = tag.int32(u8"z");
         if (!blockState || !time || !x || !y || !z) {
             return std::nullopt;
         }

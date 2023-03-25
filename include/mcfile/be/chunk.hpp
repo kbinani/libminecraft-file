@@ -192,9 +192,9 @@ private:
         auto stream = make_shared<ByteStream>(*value);
         InputStreamReader sr(stream, endian);
         CompoundTag::ReadSequentialUntilEos(sr, [&result](shared_ptr<CompoundTag> const &tag) {
-            auto bx = tag->int32("x");
-            auto by = tag->int32("y");
-            auto bz = tag->int32("z");
+            auto bx = tag->int32(u8"x");
+            auto by = tag->int32(u8"y");
+            auto bz = tag->int32(u8"z");
             if (!bx || !by || !bz) {
                 return;
             }
@@ -246,8 +246,8 @@ private:
         if (!pendingTicks) {
             return;
         }
-        auto currentTick = pendingTicks->int32("currentTick");
-        auto tickList = pendingTicks->listTag("tickList");
+        auto currentTick = pendingTicks->int32(u8"currentTick");
+        auto tickList = pendingTicks->listTag(u8"tickList");
         if (!currentTick || !tickList) {
             return;
         }

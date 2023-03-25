@@ -5,653 +5,653 @@ class Flatten {
     Flatten() = delete;
 
 public:
-    static std::optional<std::string> Item(std::string const &id, int16_t *damage) {
+    static std::optional<std::u8string> Item(std::u8string const &id, int16_t *damage) {
         using namespace std;
         int16_t safety = 0;
         assert(damage);
         if (!damage) {
             damage = &safety;
         }
-        std::string_view i(id);
-        if (i.starts_with("minecraft:")) {
+        std::u8string_view i(id);
+        if (i.starts_with(u8"minecraft:")) {
             i = i.substr(10);
         }
 
 #if defined(ns)
 #error "ns" macro already defined
 #endif
-#define ns "minecraft:"
+#define ns u8"minecraft:"
 
-        if (i == "stone") {
+        if (i == u8"stone") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "granite";
-            case 2: return ns "polished_granite";
-            case 3: return ns "diorite";
-            case 4: return ns "polished_diorite";
-            case 5: return ns "andesite";
-            case 6: return ns "polished_andesite";
+            case 1: return ns u8"granite";
+            case 2: return ns u8"polished_granite";
+            case 3: return ns u8"diorite";
+            case 4: return ns u8"polished_diorite";
+            case 5: return ns u8"andesite";
+            case 6: return ns u8"polished_andesite";
             case 0:
             default:
-                return ns "stone";
+                return ns u8"stone";
             }
         }
-        if (i == "grass") {
-            return ns "grass_block";
+        if (i == u8"grass") {
+            return ns u8"grass_block";
         }
-        if (i == "dirt") {
+        if (i == u8"dirt") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "coarse_dirt";
-            case 2: return ns "podzol";
+            case 1: return ns u8"coarse_dirt";
+            case 2: return ns u8"podzol";
             case 0:
             default:
-                return ns "dirt";
+                return ns u8"dirt";
             }
         }
-        if (i == "planks") {
+        if (i == u8"planks") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "spruce_planks";
-            case 2: return ns "birch_planks";
-            case 3: return ns "jungle_planks";
-            case 4: return ns "acacia_planks";
-            case 5: return ns "dark_oak_planks";
+            case 1: return ns u8"spruce_planks";
+            case 2: return ns u8"birch_planks";
+            case 3: return ns u8"jungle_planks";
+            case 4: return ns u8"acacia_planks";
+            case 5: return ns u8"dark_oak_planks";
             case 0:
             default:
-                return ns "oak_planks";
+                return ns u8"oak_planks";
             }
         }
-        if (i == "sand") {
+        if (i == u8"sand") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "red_sand";
+            case 1: return ns u8"red_sand";
             case 0:
             default:
-                return ns "sand";
+                return ns u8"sand";
             }
         }
-        if (i == "log") {
+        if (i == u8"log") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "spruce_log";
-            case 2: return ns "birch_log";
-            case 3: return ns "jungle_log";
+            case 1: return ns u8"spruce_log";
+            case 2: return ns u8"birch_log";
+            case 3: return ns u8"jungle_log";
             case 0:
             default:
-                return ns "oak_log";
+                return ns u8"oak_log";
             }
         }
-        if (i == "sponge") {
+        if (i == u8"sponge") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "wet_sponge";
+            case 1: return ns u8"wet_sponge";
             case 0:
             default:
-                return ns "sponge";
+                return ns u8"sponge";
             }
         }
-        if (i == "sandstone") {
+        if (i == u8"sandstone") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "chiseled_sandstone";
-            case 2: return ns "cut_sandstone";
+            case 1: return ns u8"chiseled_sandstone";
+            case 2: return ns u8"cut_sandstone";
             case 0:
             default:
-                return ns "sandstone";
+                return ns u8"sandstone";
             }
         }
-        if (i == "wool") {
+        if (i == u8"wool") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_wool";
-            case 2: return ns "magenta_wool";
-            case 3: return ns "light_blue_wool";
-            case 4: return ns "yellow_wool";
-            case 5: return ns "lime_wool";
-            case 6: return ns "pink_wool";
-            case 7: return ns "gray_wool";
-            case 8: return ns "light_gray_wool";
-            case 9: return ns "cyan_wool";
-            case 10: return ns "purple_wool";
-            case 11: return ns "blue_wool";
-            case 12: return ns "brown_wool";
-            case 13: return ns "green_wool";
-            case 14: return ns "red_wool";
-            case 15: return ns "black_wool";
+            case 1: return ns u8"orange_wool";
+            case 2: return ns u8"magenta_wool";
+            case 3: return ns u8"light_blue_wool";
+            case 4: return ns u8"yellow_wool";
+            case 5: return ns u8"lime_wool";
+            case 6: return ns u8"pink_wool";
+            case 7: return ns u8"gray_wool";
+            case 8: return ns u8"light_gray_wool";
+            case 9: return ns u8"cyan_wool";
+            case 10: return ns u8"purple_wool";
+            case 11: return ns u8"blue_wool";
+            case 12: return ns u8"brown_wool";
+            case 13: return ns u8"green_wool";
+            case 14: return ns u8"red_wool";
+            case 15: return ns u8"black_wool";
             case 0:
             default:
-                return ns "white_wool";
+                return ns u8"white_wool";
             }
         }
-        if (i == "stone_slab") {
+        if (i == u8"stone_slab") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "sandstone_slab";
-            case 3: return ns "cobblestone_slab";
-            case 4: return ns "brick_slab";
-            case 5: return ns "stone_brick_slab";
-            case 6: return ns "nether_brick_slab";
-            case 7: return ns "quartz_slab";
+            case 1: return ns u8"sandstone_slab";
+            case 3: return ns u8"cobblestone_slab";
+            case 4: return ns u8"brick_slab";
+            case 5: return ns u8"stone_brick_slab";
+            case 6: return ns u8"nether_brick_slab";
+            case 7: return ns u8"quartz_slab";
             case 0:
             default:
-                return ns "smooth_stone_slab";
+                return ns u8"smooth_stone_slab";
             }
         }
-        if (i == "brick_block") {
-            return ns "bricks";
+        if (i == u8"brick_block") {
+            return ns u8"bricks";
         }
-        if (i == "stone_stairs") {
-            return ns "cobblestone_stairs";
+        if (i == u8"stone_stairs") {
+            return ns u8"cobblestone_stairs";
         }
-        if (i == "snow") {
-            return ns "snow_block";
+        if (i == u8"snow") {
+            return ns u8"snow_block";
         }
-        if (i == "pumpkin") {
-            return ns "carved_pumpkin";
+        if (i == u8"pumpkin") {
+            return ns u8"carved_pumpkin";
         }
-        if (i == "lit_pumpkin") {
-            return ns "jack_o_lantern";
+        if (i == u8"lit_pumpkin") {
+            return ns u8"jack_o_lantern";
         }
-        if (i == "stained_glass") {
+        if (i == u8"stained_glass") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_stained_glass";
-            case 2: return ns "magenta_stained_glass";
-            case 3: return ns "light_blue_stained_glass";
-            case 4: return ns "yellow_stained_glass";
-            case 5: return ns "lime_stained_glass";
-            case 6: return ns "pink_stained_glass";
-            case 7: return ns "gray_stained_glass";
-            case 8: return ns "light_gray_stained_glass";
-            case 9: return ns "cyan_stained_glass";
-            case 10: return ns "purple_stained_glass";
-            case 11: return ns "blue_stained_glass";
-            case 12: return ns "brown_stained_glass";
-            case 13: return ns "green_stained_glass";
-            case 14: return ns "red_stained_glass";
-            case 15: return ns "black_stained_glass";
+            case 1: return ns u8"orange_stained_glass";
+            case 2: return ns u8"magenta_stained_glass";
+            case 3: return ns u8"light_blue_stained_glass";
+            case 4: return ns u8"yellow_stained_glass";
+            case 5: return ns u8"lime_stained_glass";
+            case 6: return ns u8"pink_stained_glass";
+            case 7: return ns u8"gray_stained_glass";
+            case 8: return ns u8"light_gray_stained_glass";
+            case 9: return ns u8"cyan_stained_glass";
+            case 10: return ns u8"purple_stained_glass";
+            case 11: return ns u8"blue_stained_glass";
+            case 12: return ns u8"brown_stained_glass";
+            case 13: return ns u8"green_stained_glass";
+            case 14: return ns u8"red_stained_glass";
+            case 15: return ns u8"black_stained_glass";
             case 0:
             default:
-                return ns "white_stained_glass";
+                return ns u8"white_stained_glass";
             }
         }
-        if (i == "stonebrick") {
+        if (i == u8"stonebrick") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "mossy_stone_bricks";
-            case 2: return ns "cracked_stone_bricks";
-            case 3: return ns "chiseled_stone_bricks";
+            case 1: return ns u8"mossy_stone_bricks";
+            case 2: return ns u8"cracked_stone_bricks";
+            case 3: return ns u8"chiseled_stone_bricks";
             case 0:
             default:
-                return ns "stone_bricks";
+                return ns u8"stone_bricks";
             }
         }
-        if (i == "melon_block") {
-            return ns "melon";
+        if (i == u8"melon_block") {
+            return ns u8"melon";
         }
-        if (i == "nether_brick") {
-            return ns "nether_bricks";
+        if (i == u8"nether_brick") {
+            return ns u8"nether_bricks";
         }
-        if (i == "wooden_slab") {
+        if (i == u8"wooden_slab") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "spruce_slab";
-            case 2: return ns "birch_slab";
-            case 3: return ns "jungle_slab";
-            case 4: return ns "acacia_slab";
-            case 5: return ns "dark_oak_slab";
+            case 1: return ns u8"spruce_slab";
+            case 2: return ns u8"birch_slab";
+            case 3: return ns u8"jungle_slab";
+            case 4: return ns u8"acacia_slab";
+            case 5: return ns u8"dark_oak_slab";
             case 0:
             default:
-                return ns "oak_slab";
+                return ns u8"oak_slab";
             }
         }
-        if (i == "quartz_block") {
+        if (i == u8"quartz_block") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "chiseled_quartz_block";
-            case 2: return ns "quartz_pillar";
+            case 1: return ns u8"chiseled_quartz_block";
+            case 2: return ns u8"quartz_pillar";
             case 0:
             default:
-                return ns "quartz_block";
+                return ns u8"quartz_block";
             }
         }
-        if (i == "stained_hardened_clay") {
+        if (i == u8"stained_hardened_clay") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_terracotta";
-            case 2: return ns "magenta_terracotta";
-            case 3: return ns "light_blue_terracotta";
-            case 4: return ns "yellow_terracotta";
-            case 5: return ns "lime_terracotta";
-            case 6: return ns "pink_terracotta";
-            case 7: return ns "gray_terracotta";
-            case 8: return ns "light_gray_terracotta";
-            case 9: return ns "cyan_terracotta";
-            case 10: return ns "purple_terracotta";
-            case 11: return ns "blue_terracotta";
-            case 12: return ns "brown_terracotta";
-            case 13: return ns "green_terracotta";
-            case 14: return ns "red_terracotta";
-            case 15: return ns "black_terracotta";
+            case 1: return ns u8"orange_terracotta";
+            case 2: return ns u8"magenta_terracotta";
+            case 3: return ns u8"light_blue_terracotta";
+            case 4: return ns u8"yellow_terracotta";
+            case 5: return ns u8"lime_terracotta";
+            case 6: return ns u8"pink_terracotta";
+            case 7: return ns u8"gray_terracotta";
+            case 8: return ns u8"light_gray_terracotta";
+            case 9: return ns u8"cyan_terracotta";
+            case 10: return ns u8"purple_terracotta";
+            case 11: return ns u8"blue_terracotta";
+            case 12: return ns u8"brown_terracotta";
+            case 13: return ns u8"green_terracotta";
+            case 14: return ns u8"red_terracotta";
+            case 15: return ns u8"black_terracotta";
             case 0:
             default:
-                return ns "white_terracotta";
+                return ns u8"white_terracotta";
             }
         }
-        if (i == "log2") {
+        if (i == u8"log2") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "dark_oak_log";
+            case 1: return ns u8"dark_oak_log";
             case 0:
             default:
-                return ns "acacia_log";
+                return ns u8"acacia_log";
             }
         }
-        if (i == "prismarine") {
+        if (i == u8"prismarine") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "prismarine_bricks";
-            case 2: return ns "dark_prismarine";
+            case 1: return ns u8"prismarine_bricks";
+            case 2: return ns u8"dark_prismarine";
             case 0:
             default:
-                return ns "prismarine";
+                return ns u8"prismarine";
             }
         }
-        if (i == "hardened_clay") {
-            return ns "terracotta";
+        if (i == u8"hardened_clay") {
+            return ns u8"terracotta";
         }
-        if (i == "red_sandstone") {
+        if (i == u8"red_sandstone") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "chiseled_red_sandstone";
-            case 2: return ns "cut_red_sandstone";
+            case 1: return ns u8"chiseled_red_sandstone";
+            case 2: return ns u8"cut_red_sandstone";
             case 0:
             default:
-                return ns "red_sandstone";
+                return ns u8"red_sandstone";
             }
         }
-        if (i == "stone_slab2") {
-            return ns "red_sandstone_slab";
+        if (i == u8"stone_slab2") {
+            return ns u8"red_sandstone_slab";
         }
-        if (i == "magma") {
-            return ns "magma_block";
+        if (i == u8"magma") {
+            return ns u8"magma_block";
         }
-        if (i == "red_nether_brick") {
-            return ns "red_nether_bricks";
+        if (i == u8"red_nether_brick") {
+            return ns u8"red_nether_bricks";
         }
-        if (i == "concrete") {
+        if (i == u8"concrete") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_concrete";
-            case 2: return ns "magenta_concrete";
-            case 3: return ns "light_blue_concrete";
-            case 4: return ns "yellow_concrete";
-            case 5: return ns "lime_concrete";
-            case 6: return ns "pink_concrete";
-            case 7: return ns "gray_concrete";
-            case 8: return ns "light_gray_concrete";
-            case 9: return ns "cyan_concrete";
-            case 10: return ns "purple_concrete";
-            case 11: return ns "blue_concrete";
-            case 12: return ns "brown_concrete";
-            case 13: return ns "green_concrete";
-            case 14: return ns "red_concrete";
-            case 15: return ns "black_concrete";
+            case 1: return ns u8"orange_concrete";
+            case 2: return ns u8"magenta_concrete";
+            case 3: return ns u8"light_blue_concrete";
+            case 4: return ns u8"yellow_concrete";
+            case 5: return ns u8"lime_concrete";
+            case 6: return ns u8"pink_concrete";
+            case 7: return ns u8"gray_concrete";
+            case 8: return ns u8"light_gray_concrete";
+            case 9: return ns u8"cyan_concrete";
+            case 10: return ns u8"purple_concrete";
+            case 11: return ns u8"blue_concrete";
+            case 12: return ns u8"brown_concrete";
+            case 13: return ns u8"green_concrete";
+            case 14: return ns u8"red_concrete";
+            case 15: return ns u8"black_concrete";
             case 0:
             default:
-                return ns "white_concrete";
+                return ns u8"white_concrete";
             }
         }
-        if (i == "concrete_powder") {
+        if (i == u8"concrete_powder") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_concrete_powder";
-            case 2: return ns "magenta_concrete_powder";
-            case 3: return ns "light_blue_concrete_powder";
-            case 4: return ns "yellow_concrete_powder";
-            case 5: return ns "lime_concrete_powder";
-            case 6: return ns "pink_concrete_powder";
-            case 7: return ns "gray_concrete_powder";
-            case 8: return ns "light_gray_concrete_powder";
-            case 9: return ns "cyan_concrete_powder";
-            case 10: return ns "purple_concrete_powder";
-            case 11: return ns "blue_concrete_powder";
-            case 12: return ns "brown_concrete_powder";
-            case 13: return ns "green_concrete_powder";
-            case 14: return ns "red_concrete_powder";
-            case 15: return ns "black_concrete_powder";
+            case 1: return ns u8"orange_concrete_powder";
+            case 2: return ns u8"magenta_concrete_powder";
+            case 3: return ns u8"light_blue_concrete_powder";
+            case 4: return ns u8"yellow_concrete_powder";
+            case 5: return ns u8"lime_concrete_powder";
+            case 6: return ns u8"pink_concrete_powder";
+            case 7: return ns u8"gray_concrete_powder";
+            case 8: return ns u8"light_gray_concrete_powder";
+            case 9: return ns u8"cyan_concrete_powder";
+            case 10: return ns u8"purple_concrete_powder";
+            case 11: return ns u8"blue_concrete_powder";
+            case 12: return ns u8"brown_concrete_powder";
+            case 13: return ns u8"green_concrete_powder";
+            case 14: return ns u8"red_concrete_powder";
+            case 15: return ns u8"black_concrete_powder";
             case 0:
             default:
-                return ns "white_concrete_powder";
+                return ns u8"white_concrete_powder";
             }
         }
-        if (i == "sapling") {
+        if (i == u8"sapling") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "spruce_sapling";
-            case 2: return ns "birch_sapling";
-            case 3: return ns "jungle_sapling";
-            case 4: return ns "acacia_sapling";
-            case 5: return ns "dark_oak_sapling";
+            case 1: return ns u8"spruce_sapling";
+            case 2: return ns u8"birch_sapling";
+            case 3: return ns u8"jungle_sapling";
+            case 4: return ns u8"acacia_sapling";
+            case 5: return ns u8"dark_oak_sapling";
             case 0:
             default:
-                return ns "oak_sapling";
+                return ns u8"oak_sapling";
             }
         }
-        if (i == "leaves") {
+        if (i == u8"leaves") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "spruce_leaves";
-            case 2: return ns "birch_leaves";
-            case 3: return ns "jungle_leaves";
+            case 1: return ns u8"spruce_leaves";
+            case 2: return ns u8"birch_leaves";
+            case 3: return ns u8"jungle_leaves";
             case 0:
             default:
-                return ns "oak_leaves";
+                return ns u8"oak_leaves";
             }
         }
-        if (i == "web") {
-            return ns "cobweb";
+        if (i == u8"web") {
+            return ns u8"cobweb";
         }
-        if (i == "tallgrass") {
+        if (i == u8"tallgrass") {
             switch (DrainDamage(damage)) {
-            case 2: return ns "fern";
+            case 2: return ns u8"fern";
             case 1:
             default:
-                return ns "grass";
+                return ns u8"grass";
             }
         }
-        if (i == "deadbush") {
-            return ns "dead_bush";
+        if (i == u8"deadbush") {
+            return ns u8"dead_bush";
         }
-        if (i == "yellow_flower") {
-            return ns "dandelion";
+        if (i == u8"yellow_flower") {
+            return ns u8"dandelion";
         }
-        if (i == "red_flower") {
+        if (i == u8"red_flower") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "blue_orchid";
-            case 2: return ns "allium";
-            case 3: return ns "azure_bluet";
-            case 4: return ns "red_tulip";
-            case 5: return ns "orange_tulip";
-            case 6: return ns "white_tulip";
-            case 7: return ns "pink_tulip";
-            case 8: return ns "oxeye_daisy";
+            case 1: return ns u8"blue_orchid";
+            case 2: return ns u8"allium";
+            case 3: return ns u8"azure_bluet";
+            case 4: return ns u8"red_tulip";
+            case 5: return ns u8"orange_tulip";
+            case 6: return ns u8"white_tulip";
+            case 7: return ns u8"pink_tulip";
+            case 8: return ns u8"oxeye_daisy";
             case 0:
             default:
-                return ns "poppy";
+                return ns u8"poppy";
             }
         }
-        if (i == "monster_egg") {
+        if (i == u8"monster_egg") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "infested_cobblestone";
-            case 2: return ns "infested_stone_bricks";
-            case 3: return ns "infested_mossy_stone_bricks";
-            case 4: return ns "infested_cracked_stone_bricks";
-            case 5: return ns "infested_chiseled_stone_bricks";
+            case 1: return ns u8"infested_cobblestone";
+            case 2: return ns u8"infested_stone_bricks";
+            case 3: return ns u8"infested_mossy_stone_bricks";
+            case 4: return ns u8"infested_cracked_stone_bricks";
+            case 5: return ns u8"infested_chiseled_stone_bricks";
             case 0:
             default:
-                return ns "infested_stone";
+                return ns u8"infested_stone";
             }
         }
-        if (i == "cobblestone_wall") {
+        if (i == u8"cobblestone_wall") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "mossy_cobblestone_wall";
+            case 1: return ns u8"mossy_cobblestone_wall";
             case 0:
             default:
-                return ns "cobblestone_wall";
+                return ns u8"cobblestone_wall";
             }
         }
-        if (i == "anvil") {
+        if (i == u8"anvil") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "chipped_anvil";
-            case 2: return ns "damaged_anvil";
+            case 1: return ns u8"chipped_anvil";
+            case 2: return ns u8"damaged_anvil";
             case 0:
             default:
-                return ns "anvil";
+                return ns u8"anvil";
             }
         }
-        if (i == "stained_glass_pane") {
+        if (i == u8"stained_glass_pane") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_stained_glass_pane";
-            case 2: return ns "magenta_stained_glass_pane";
-            case 3: return ns "light_blue_stained_glass_pane";
-            case 4: return ns "yellow_stained_glass_pane";
-            case 5: return ns "lime_stained_glass_pane";
-            case 6: return ns "pink_stained_glass_pane";
-            case 7: return ns "gray_stained_glass_pane";
-            case 8: return ns "light_gray_stained_glass_pane";
-            case 9: return ns "cyan_stained_glass_pane";
-            case 10: return ns "purple_stained_glass_pane";
-            case 11: return ns "blue_stained_glass_pane";
-            case 12: return ns "brown_stained_glass_pane";
-            case 13: return ns "green_stained_glass_pane";
-            case 14: return ns "red_stained_glass_pane";
-            case 15: return ns "black_stained_glass_pane";
+            case 1: return ns u8"orange_stained_glass_pane";
+            case 2: return ns u8"magenta_stained_glass_pane";
+            case 3: return ns u8"light_blue_stained_glass_pane";
+            case 4: return ns u8"yellow_stained_glass_pane";
+            case 5: return ns u8"lime_stained_glass_pane";
+            case 6: return ns u8"pink_stained_glass_pane";
+            case 7: return ns u8"gray_stained_glass_pane";
+            case 8: return ns u8"light_gray_stained_glass_pane";
+            case 9: return ns u8"cyan_stained_glass_pane";
+            case 10: return ns u8"purple_stained_glass_pane";
+            case 11: return ns u8"blue_stained_glass_pane";
+            case 12: return ns u8"brown_stained_glass_pane";
+            case 13: return ns u8"green_stained_glass_pane";
+            case 14: return ns u8"red_stained_glass_pane";
+            case 15: return ns u8"black_stained_glass_pane";
             case 0:
             default:
-                return ns "white_stained_glass_pane";
+                return ns u8"white_stained_glass_pane";
             }
         }
-        if (i == "leaves2") {
+        if (i == u8"leaves2") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "dark_oak_leaves";
+            case 1: return ns u8"dark_oak_leaves";
             case 0:
             default:
-                return ns "acacia_leaves";
+                return ns u8"acacia_leaves";
             }
         }
-        if (i == "slime") {
-            return ns "slime_block";
+        if (i == u8"slime") {
+            return ns u8"slime_block";
         }
-        if (i == "carpet") {
+        if (i == u8"carpet") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_carpet";
-            case 2: return ns "magenta_carpet";
-            case 3: return ns "light_blue_carpet";
-            case 4: return ns "yellow_carpet";
-            case 5: return ns "lime_carpet";
-            case 6: return ns "pink_carpet";
-            case 7: return ns "gray_carpet";
-            case 8: return ns "light_gray_carpet";
-            case 9: return ns "cyan_carpet";
-            case 10: return ns "purple_carpet";
-            case 11: return ns "blue_carpet";
-            case 12: return ns "brown_carpet";
-            case 13: return ns "green_carpet";
-            case 14: return ns "red_carpet";
-            case 15: return ns "black_carpet";
+            case 1: return ns u8"orange_carpet";
+            case 2: return ns u8"magenta_carpet";
+            case 3: return ns u8"light_blue_carpet";
+            case 4: return ns u8"yellow_carpet";
+            case 5: return ns u8"lime_carpet";
+            case 6: return ns u8"pink_carpet";
+            case 7: return ns u8"gray_carpet";
+            case 8: return ns u8"light_gray_carpet";
+            case 9: return ns u8"cyan_carpet";
+            case 10: return ns u8"purple_carpet";
+            case 11: return ns u8"blue_carpet";
+            case 12: return ns u8"brown_carpet";
+            case 13: return ns u8"green_carpet";
+            case 14: return ns u8"red_carpet";
+            case 15: return ns u8"black_carpet";
             case 0:
             default:
-                return ns "white_carpet";
+                return ns u8"white_carpet";
             }
         }
-        if (i == "double_plant") {
+        if (i == u8"double_plant") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "lilac";
-            case 2: return ns "tall_grass";
-            case 3: return ns "large_fern";
-            case 4: return ns "rose_bush";
-            case 5: return ns "peony";
+            case 1: return ns u8"lilac";
+            case 2: return ns u8"tall_grass";
+            case 3: return ns u8"large_fern";
+            case 4: return ns u8"rose_bush";
+            case 5: return ns u8"peony";
             case 0:
             default:
-                return ns "sunflower";
+                return ns u8"sunflower";
             }
         }
-        if (i == "silver_shulker_box") {
-            return ns "light_gray_shulker_box";
+        if (i == u8"silver_shulker_box") {
+            return ns u8"light_gray_shulker_box";
         }
-        if (i == "silver_glazed_terracotta") {
-            return ns "light_gray_glazed_terracotta";
+        if (i == u8"silver_glazed_terracotta") {
+            return ns u8"light_gray_glazed_terracotta";
         }
-        if (i == "bed") {
+        if (i == u8"bed") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_bed";
-            case 2: return ns "magenta_bed";
-            case 3: return ns "light_blue_bed";
-            case 4: return ns "yellow_bed";
-            case 5: return ns "lime_bed";
-            case 6: return ns "pink_bed";
-            case 7: return ns "gray_bed";
-            case 8: return ns "light_gray_bed";
-            case 9: return ns "cyan_bed";
-            case 10: return ns "purple_bed";
-            case 11: return ns "blue_bed";
-            case 12: return ns "brown_bed";
-            case 13: return ns "green_bed";
-            case 14: return ns "red_bed";
-            case 15: return ns "black_bed";
+            case 1: return ns u8"orange_bed";
+            case 2: return ns u8"magenta_bed";
+            case 3: return ns u8"light_blue_bed";
+            case 4: return ns u8"yellow_bed";
+            case 5: return ns u8"lime_bed";
+            case 6: return ns u8"pink_bed";
+            case 7: return ns u8"gray_bed";
+            case 8: return ns u8"light_gray_bed";
+            case 9: return ns u8"cyan_bed";
+            case 10: return ns u8"purple_bed";
+            case 11: return ns u8"blue_bed";
+            case 12: return ns u8"brown_bed";
+            case 13: return ns u8"green_bed";
+            case 14: return ns u8"red_bed";
+            case 15: return ns u8"black_bed";
             case 0:
             default:
-                return ns "white_bed";
+                return ns u8"white_bed";
             }
         }
-        if (i == "skull") {
+        if (i == u8"skull") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "wither_skeleton_skull";
-            case 2: return ns "zombie_head";
-            case 3: return ns "player_head";
-            case 4: return ns "creeper_head";
-            case 5: return ns "dragon_head";
+            case 1: return ns u8"wither_skeleton_skull";
+            case 2: return ns u8"zombie_head";
+            case 3: return ns u8"player_head";
+            case 4: return ns u8"creeper_head";
+            case 5: return ns u8"dragon_head";
             case 0:
             default:
-                return ns "skeleton_skull";
+                return ns u8"skeleton_skull";
             }
         }
-        if (i == "banner") {
+        if (i == u8"banner") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "orange_banner";
-            case 2: return ns "magenta_banner";
-            case 3: return ns "light_blue_banner";
-            case 4: return ns "yellow_banner";
-            case 5: return ns "lime_banner";
-            case 6: return ns "pink_banner";
-            case 7: return ns "gray_banner";
-            case 8: return ns "light_gray_banner";
-            case 9: return ns "cyan_banner";
-            case 10: return ns "purple_banner";
-            case 11: return ns "blue_banner";
-            case 12: return ns "brown_banner";
-            case 13: return ns "green_banner";
-            case 14: return ns "red_banner";
-            case 15: return ns "black_banner";
+            case 1: return ns u8"orange_banner";
+            case 2: return ns u8"magenta_banner";
+            case 3: return ns u8"light_blue_banner";
+            case 4: return ns u8"yellow_banner";
+            case 5: return ns u8"lime_banner";
+            case 6: return ns u8"pink_banner";
+            case 7: return ns u8"gray_banner";
+            case 8: return ns u8"light_gray_banner";
+            case 9: return ns u8"cyan_banner";
+            case 10: return ns u8"purple_banner";
+            case 11: return ns u8"blue_banner";
+            case 12: return ns u8"brown_banner";
+            case 13: return ns u8"green_banner";
+            case 14: return ns u8"red_banner";
+            case 15: return ns u8"black_banner";
             case 0:
             default:
-                return ns "white_banner";
+                return ns u8"white_banner";
             }
         }
-        if (i == "noteblock") {
-            return ns "note_block";
+        if (i == u8"noteblock") {
+            return ns u8"note_block";
         }
-        if (i == "wooden_pressure_plate") {
-            return ns "oak_pressure_plate";
+        if (i == u8"wooden_pressure_plate") {
+            return ns u8"oak_pressure_plate";
         }
-        if (i == "trapdoor") {
-            return ns "oak_trapdoor";
+        if (i == u8"trapdoor") {
+            return ns u8"oak_trapdoor";
         }
-        if (i == "fence_gate") {
-            return ns "oak_fence_gate";
+        if (i == u8"fence_gate") {
+            return ns u8"oak_fence_gate";
         }
-        if (i == "wooden_button") {
-            return ns "oak_button";
+        if (i == u8"wooden_button") {
+            return ns u8"oak_button";
         }
-        if (i == "wooden_door") {
-            return ns "oak_door";
+        if (i == u8"wooden_door") {
+            return ns u8"oak_door";
         }
-        if (i == "golden_rail") {
-            return ns "powered_rail";
+        if (i == u8"golden_rail") {
+            return ns u8"powered_rail";
         }
-        if (i == "boat") {
-            return ns "oak_boat";
+        if (i == u8"boat") {
+            return ns u8"oak_boat";
         }
-        if (i == "coal") {
+        if (i == u8"coal") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "charcoal";
+            case 1: return ns u8"charcoal";
             case 0:
             default:
-                return ns "coal";
+                return ns u8"coal";
             }
         }
-        if (i == "dye") {
+        if (i == u8"dye") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "red_dye";
-            case 2: return ns "green_dye";
-            case 3: return ns "cocoa_beans";
-            case 4: return ns "lapis_lazuli";
-            case 5: return ns "purple_dye";
-            case 6: return ns "cyan_dye";
-            case 7: return ns "light_gray_dye";
-            case 8: return ns "gray_dye";
-            case 9: return ns "pink_dye";
-            case 10: return ns "lime_dye";
-            case 11: return ns "yellow_dye";
-            case 12: return ns "light_blue_dye";
-            case 13: return ns "magenta_dye";
-            case 14: return ns "orange_dye";
-            case 15: return ns "bone_meal";
+            case 1: return ns u8"red_dye";
+            case 2: return ns u8"green_dye";
+            case 3: return ns u8"cocoa_beans";
+            case 4: return ns u8"lapis_lazuli";
+            case 5: return ns u8"purple_dye";
+            case 6: return ns u8"cyan_dye";
+            case 7: return ns u8"light_gray_dye";
+            case 8: return ns u8"gray_dye";
+            case 9: return ns u8"pink_dye";
+            case 10: return ns u8"lime_dye";
+            case 11: return ns u8"yellow_dye";
+            case 12: return ns u8"light_blue_dye";
+            case 13: return ns u8"magenta_dye";
+            case 14: return ns u8"orange_dye";
+            case 15: return ns u8"bone_meal";
             case 0:
             default:
-                return ns "ink_sac";
+                return ns u8"ink_sac";
             }
         }
-        if (i == "firework_charge") {
-            return ns "firework_star";
+        if (i == u8"firework_charge") {
+            return ns u8"firework_star";
         }
-        if (i == "netherbrick") {
-            return ns "nether_brick";
+        if (i == u8"netherbrick") {
+            return ns u8"nether_brick";
         }
-        if (i == "chorus_fruit_popped") {
-            return ns "popped_chorus_fruit";
+        if (i == u8"chorus_fruit_popped") {
+            return ns u8"popped_chorus_fruit";
         }
-        if (i == "record_13") {
-            return ns "music_disc_13";
+        if (i == u8"record_13") {
+            return ns u8"music_disc_13";
         }
-        if (i == "record_cat") {
-            return ns "music_disc_cat";
+        if (i == u8"record_cat") {
+            return ns u8"music_disc_cat";
         }
-        if (i == "record_blocks") {
-            return ns "music_disc_blocks";
+        if (i == u8"record_blocks") {
+            return ns u8"music_disc_blocks";
         }
-        if (i == "record_chirp") {
-            return ns "music_disc_chirp";
+        if (i == u8"record_chirp") {
+            return ns u8"music_disc_chirp";
         }
-        if (i == "record_far") {
-            return ns "music_disc_far";
+        if (i == u8"record_far") {
+            return ns u8"music_disc_far";
         }
-        if (i == "record_mall") {
-            return ns "music_disc_mall";
+        if (i == u8"record_mall") {
+            return ns u8"music_disc_mall";
         }
-        if (i == "record_mellohi") {
-            return ns "music_disc_mellohi";
+        if (i == u8"record_mellohi") {
+            return ns u8"music_disc_mellohi";
         }
-        if (i == "record_stal") {
-            return ns "music_disc_stal";
+        if (i == u8"record_stal") {
+            return ns u8"music_disc_stal";
         }
-        if (i == "record_strad") {
-            return ns "music_disc_strad";
+        if (i == u8"record_strad") {
+            return ns u8"music_disc_strad";
         }
-        if (i == "record_ward") {
-            return ns "music_disc_ward";
+        if (i == u8"record_ward") {
+            return ns u8"music_disc_ward";
         }
-        if (i == "record_11") {
-            return ns "music_disc_11";
+        if (i == u8"record_11") {
+            return ns u8"music_disc_11";
         }
-        if (i == "record_wait") {
-            return ns "music_disc_wait";
+        if (i == u8"record_wait") {
+            return ns u8"music_disc_wait";
         }
-        if (i == "golden_apple") {
+        if (i == u8"golden_apple") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "enchanted_golden_apple";
+            case 1: return ns u8"enchanted_golden_apple";
             case 0:
             default:
-                return ns "golden_apple";
+                return ns u8"golden_apple";
             }
         }
-        if (i == "fish") {
+        if (i == u8"fish") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "salmon";
-            case 2: return ns "tropical_fish";
-            case 3: return ns "pufferfish";
+            case 1: return ns u8"salmon";
+            case 2: return ns u8"tropical_fish";
+            case 3: return ns u8"pufferfish";
             case 0:
             default:
-                return ns "cod";
+                return ns u8"cod";
             }
-        } else if (i == "cooked_fish") {
+        } else if (i == u8"cooked_fish") {
             switch (DrainDamage(damage)) {
-            case 1: return ns "cooked_salmon";
+            case 1: return ns u8"cooked_salmon";
             case 0:
             default:
-                return ns "cooked_cod";
+                return ns u8"cooked_cod";
             }
         }
-        if (i == "melon") {
-            return ns "melon_slice";
+        if (i == u8"melon") {
+            return ns u8"melon_slice";
         }
 #undef ns
 
-        return "minecraft:" + string(i);
+        return u8"minecraft:" + u8string(i);
     }
 
-    static std::optional<std::string> Item(int16_t id, int16_t *damage) {
+    static std::optional<std::u8string> Item(int16_t id, int16_t *damage) {
         using namespace std;
         int16_t safety = 0;
         assert(damage);
@@ -662,262 +662,262 @@ public:
             auto block = Block(id, *damage);
             if (block) {
                 *damage = 0;
-                return string(block->fName);
+                return u8string(block->fName);
             }
         }
-#define ns "minecraft:"
-#define egg "_spawn_egg";
+#define ns u8"minecraft:"
+#define egg u8"_spawn_egg";
         switch (id) {
-        case 256: return ns "iron_shovel";
-        case 257: return ns "iron_pickaxe";
-        case 258: return ns "iron_axe";
-        case 259: return ns "flint_and_steel";
-        case 260: return ns "apple";
-        case 261: return ns "bow";
-        case 262: return ns "arrow";
+        case 256: return ns u8"iron_shovel";
+        case 257: return ns u8"iron_pickaxe";
+        case 258: return ns u8"iron_axe";
+        case 259: return ns u8"flint_and_steel";
+        case 260: return ns u8"apple";
+        case 261: return ns u8"bow";
+        case 262: return ns u8"arrow";
         case 263:
             switch (DrainDamage(damage)) {
-            case 1: return ns "charcoal";
+            case 1: return ns u8"charcoal";
             case 0:
             default:
-                return ns "coal";
+                return ns u8"coal";
             }
-        case 264: return ns "diamond";
-        case 265: return ns "iron_ingot";
-        case 266: return ns "gold_ingot";
-        case 267: return ns "iron_sword";
-        case 268: return ns "wooden_sword";
-        case 269: return ns "wooden_shovel";
-        case 270: return ns "wooden_pickaxe";
-        case 271: return ns "wooden_axe";
-        case 272: return ns "stone_sword";
-        case 273: return ns "stone_shovel";
-        case 274: return ns "stone_pickaxe";
-        case 275: return ns "stone_axe";
-        case 276: return ns "diamond_sword";
-        case 277: return ns "diamond_shovel";
-        case 278: return ns "diamond_pickaxe";
-        case 279: return ns "diamond_axe";
-        case 280: return ns "stick";
-        case 281: return ns "bowl";
-        case 282: return ns "mushroom_stew";
-        case 283: return ns "golden_sword";
-        case 284: return ns "golden_shovel";
-        case 285: return ns "golden_pickaxe";
-        case 286: return ns "golden_axe";
-        case 287: return ns "string";
-        case 288: return ns "feather";
-        case 289: return ns "gunpowder";
-        case 290: return ns "wooden_hoe";
-        case 291: return ns "stone_hoe";
-        case 292: return ns "iron_hoe";
-        case 293: return ns "diamond_hoe";
-        case 294: return ns "golden_hoe";
-        case 295: return ns "wheat_seeds";
-        case 296: return ns "wheat";
-        case 297: return ns "bread";
-        case 298: return ns "leather_helmet";
-        case 299: return ns "leather_chestplate";
-        case 300: return ns "leather_leggings";
-        case 301: return ns "leather_boots";
-        case 302: return ns "chainmail_helmet";
-        case 303: return ns "chainmail_chestplate";
-        case 304: return ns "chainmail_leggings";
-        case 305: return ns "chainmail_boots";
-        case 306: return ns "iron_helmet";
-        case 307: return ns "iron_chestplate";
-        case 308: return ns "iron_leggings";
-        case 309: return ns "iron_boots";
-        case 310: return ns "diamond_helmet";
-        case 311: return ns "diamond_chestplate";
-        case 312: return ns "diamond_leggings";
-        case 313: return ns "diamond_boots";
-        case 314: return ns "golden_helmet";
-        case 315: return ns "golden_chestplate";
-        case 316: return ns "golden_leggings";
-        case 317: return ns "golden_boots";
-        case 318: return ns "flint";
-        case 319: return ns "porkchop";
-        case 320: return ns "cooked_porkchop";
-        case 321: return ns "painting";
+        case 264: return ns u8"diamond";
+        case 265: return ns u8"iron_ingot";
+        case 266: return ns u8"gold_ingot";
+        case 267: return ns u8"iron_sword";
+        case 268: return ns u8"wooden_sword";
+        case 269: return ns u8"wooden_shovel";
+        case 270: return ns u8"wooden_pickaxe";
+        case 271: return ns u8"wooden_axe";
+        case 272: return ns u8"stone_sword";
+        case 273: return ns u8"stone_shovel";
+        case 274: return ns u8"stone_pickaxe";
+        case 275: return ns u8"stone_axe";
+        case 276: return ns u8"diamond_sword";
+        case 277: return ns u8"diamond_shovel";
+        case 278: return ns u8"diamond_pickaxe";
+        case 279: return ns u8"diamond_axe";
+        case 280: return ns u8"stick";
+        case 281: return ns u8"bowl";
+        case 282: return ns u8"mushroom_stew";
+        case 283: return ns u8"golden_sword";
+        case 284: return ns u8"golden_shovel";
+        case 285: return ns u8"golden_pickaxe";
+        case 286: return ns u8"golden_axe";
+        case 287: return ns u8"string";
+        case 288: return ns u8"feather";
+        case 289: return ns u8"gunpowder";
+        case 290: return ns u8"wooden_hoe";
+        case 291: return ns u8"stone_hoe";
+        case 292: return ns u8"iron_hoe";
+        case 293: return ns u8"diamond_hoe";
+        case 294: return ns u8"golden_hoe";
+        case 295: return ns u8"wheat_seeds";
+        case 296: return ns u8"wheat";
+        case 297: return ns u8"bread";
+        case 298: return ns u8"leather_helmet";
+        case 299: return ns u8"leather_chestplate";
+        case 300: return ns u8"leather_leggings";
+        case 301: return ns u8"leather_boots";
+        case 302: return ns u8"chainmail_helmet";
+        case 303: return ns u8"chainmail_chestplate";
+        case 304: return ns u8"chainmail_leggings";
+        case 305: return ns u8"chainmail_boots";
+        case 306: return ns u8"iron_helmet";
+        case 307: return ns u8"iron_chestplate";
+        case 308: return ns u8"iron_leggings";
+        case 309: return ns u8"iron_boots";
+        case 310: return ns u8"diamond_helmet";
+        case 311: return ns u8"diamond_chestplate";
+        case 312: return ns u8"diamond_leggings";
+        case 313: return ns u8"diamond_boots";
+        case 314: return ns u8"golden_helmet";
+        case 315: return ns u8"golden_chestplate";
+        case 316: return ns u8"golden_leggings";
+        case 317: return ns u8"golden_boots";
+        case 318: return ns u8"flint";
+        case 319: return ns u8"porkchop";
+        case 320: return ns u8"cooked_porkchop";
+        case 321: return ns u8"painting";
         case 322:
             switch (DrainDamage(damage)) {
-            case 1: return ns "enchanted_golden_apple";
+            case 1: return ns u8"enchanted_golden_apple";
             case 0:
             default:
-                return ns "golden_apple";
+                return ns u8"golden_apple";
             }
-        case 323: return ns "sign";
-        case 324: return ns "oak_door";
-        case 325: return ns "bucket";
-        case 326: return ns "water_bucket";
-        case 327: return ns "lava_bucket";
-        case 328: return ns "minecart";
-        case 329: return ns "saddle";
-        case 330: return ns "iron_door";
-        case 331: return ns "redstone";
-        case 332: return ns "snowball";
-        case 333: return ns "oak_boat";
-        case 334: return ns "leather";
-        case 335: return ns "milk_bucket";
-        case 336: return ns "brick";
-        case 337: return ns "clay_ball";
-        case 338: return ns "sugar_cane";
-        case 339: return ns "paper";
-        case 340: return ns "book";
-        case 341: return ns "slime_ball";
-        case 342: return ns "chest_minecart";
-        case 343: return ns "furnace_minecart";
-        case 344: return ns "egg";
-        case 345: return ns "compass";
-        case 346: return ns "fishing_rod";
-        case 347: return ns "clock";
-        case 348: return ns "glowstone_dust";
+        case 323: return ns u8"sign";
+        case 324: return ns u8"oak_door";
+        case 325: return ns u8"bucket";
+        case 326: return ns u8"water_bucket";
+        case 327: return ns u8"lava_bucket";
+        case 328: return ns u8"minecart";
+        case 329: return ns u8"saddle";
+        case 330: return ns u8"iron_door";
+        case 331: return ns u8"redstone";
+        case 332: return ns u8"snowball";
+        case 333: return ns u8"oak_boat";
+        case 334: return ns u8"leather";
+        case 335: return ns u8"milk_bucket";
+        case 336: return ns u8"brick";
+        case 337: return ns u8"clay_ball";
+        case 338: return ns u8"sugar_cane";
+        case 339: return ns u8"paper";
+        case 340: return ns u8"book";
+        case 341: return ns u8"slime_ball";
+        case 342: return ns u8"chest_minecart";
+        case 343: return ns u8"furnace_minecart";
+        case 344: return ns u8"egg";
+        case 345: return ns u8"compass";
+        case 346: return ns u8"fishing_rod";
+        case 347: return ns u8"clock";
+        case 348: return ns u8"glowstone_dust";
         case 349:
             switch (DrainDamage(damage)) {
-            case 1: return ns "salmon";
-            case 2: return ns "tropical_fish";
-            case 3: return ns "pufferfish";
+            case 1: return ns u8"salmon";
+            case 2: return ns u8"tropical_fish";
+            case 3: return ns u8"pufferfish";
             case 0:
             default:
-                return ns "cod";
+                return ns u8"cod";
             }
         case 350:
             switch (DrainDamage(damage)) {
-            case 1: return ns "cooked_salmon";
+            case 1: return ns u8"cooked_salmon";
             case 0:
             default:
-                return ns "cooked_fish";
+                return ns u8"cooked_fish";
             }
         case 351:
             switch (DrainDamage(damage)) {
-            case 1: return ns "red_dye";
-            case 2: return ns "green_dye";
-            case 3: return ns "cocoa_beans";
-            case 4: return ns "lapis_lazuli";
-            case 5: return ns "purple_dye";
-            case 6: return ns "cyan_dye";
-            case 7: return ns "light_gray_dye";
-            case 8: return ns "gray_dye";
-            case 9: return ns "pink_dye";
-            case 10: return ns "lime_dye";
-            case 11: return ns "yellow_dye";
-            case 12: return ns "light_blue_dye";
-            case 13: return ns "magenta_dye";
-            case 14: return ns "orange_dye";
-            case 15: return ns "bone_meal";
+            case 1: return ns u8"red_dye";
+            case 2: return ns u8"green_dye";
+            case 3: return ns u8"cocoa_beans";
+            case 4: return ns u8"lapis_lazuli";
+            case 5: return ns u8"purple_dye";
+            case 6: return ns u8"cyan_dye";
+            case 7: return ns u8"light_gray_dye";
+            case 8: return ns u8"gray_dye";
+            case 9: return ns u8"pink_dye";
+            case 10: return ns u8"lime_dye";
+            case 11: return ns u8"yellow_dye";
+            case 12: return ns u8"light_blue_dye";
+            case 13: return ns u8"magenta_dye";
+            case 14: return ns u8"orange_dye";
+            case 15: return ns u8"bone_meal";
             case 0:
             default:
-                return ns "ink_sac";
+                return ns u8"ink_sac";
             }
-        case 352: return ns "bone";
-        case 353: return ns "sugar";
-        case 354: return ns "cake";
-        case 355: return ns "red_bed";
-        case 356: return ns "repeater";
-        case 357: return ns "cookie";
-        case 359: return ns "shears";
-        case 360: return ns "melon_slice";
-        case 361: return ns "pumpkin_seeds";
-        case 362: return ns "melon_seeds";
-        case 363: return ns "beef";
-        case 364: return ns "cooked_beef";
-        case 365: return ns "chicken";
-        case 366: return ns "cooked_chicken";
-        case 367: return ns "rotten_flesh";
-        case 368: return ns "ender_pearl";
-        case 369: return ns "blaze_rod";
-        case 370: return ns "ghast_tear";
-        case 371: return ns "gold_nugget";
-        case 372: return ns "nether_wart";
-        case 373: return ns "potion";
-        case 374: return ns "glass_bottle";
-        case 375: return ns "spider_eye";
-        case 376: return ns "fermented_spider_eye";
-        case 377: return ns "blaze_powder";
-        case 378: return ns "magma_cream";
-        case 379: return ns "brewing_stand";
-        case 380: return ns "cauldron";
-        case 381: return ns "ender_eye";
-        case 382: return ns "glistering_melon_slice";
+        case 352: return ns u8"bone";
+        case 353: return ns u8"sugar";
+        case 354: return ns u8"cake";
+        case 355: return ns u8"red_bed";
+        case 356: return ns u8"repeater";
+        case 357: return ns u8"cookie";
+        case 359: return ns u8"shears";
+        case 360: return ns u8"melon_slice";
+        case 361: return ns u8"pumpkin_seeds";
+        case 362: return ns u8"melon_seeds";
+        case 363: return ns u8"beef";
+        case 364: return ns u8"cooked_beef";
+        case 365: return ns u8"chicken";
+        case 366: return ns u8"cooked_chicken";
+        case 367: return ns u8"rotten_flesh";
+        case 368: return ns u8"ender_pearl";
+        case 369: return ns u8"blaze_rod";
+        case 370: return ns u8"ghast_tear";
+        case 371: return ns u8"gold_nugget";
+        case 372: return ns u8"nether_wart";
+        case 373: return ns u8"potion";
+        case 374: return ns u8"glass_bottle";
+        case 375: return ns u8"spider_eye";
+        case 376: return ns u8"fermented_spider_eye";
+        case 377: return ns u8"blaze_powder";
+        case 378: return ns u8"magma_cream";
+        case 379: return ns u8"brewing_stand";
+        case 380: return ns u8"cauldron";
+        case 381: return ns u8"ender_eye";
+        case 382: return ns u8"glistering_melon_slice";
         case 383:
             switch (DrainDamage(damage)) {
-            case 50: return ns "creeper" egg;
-            case 51: return ns "skeleton" egg;
-            case 52: return ns "spider" egg;
-            case 54: return ns "zombie" egg;
-            case 55: return ns "slime" egg;
-            case 56: return ns "ghast" egg;
-            case 57: return ns "zombified_piglin" egg;
-            case 58: return ns "enderman" egg;
-            case 59: return ns "cave_spider" egg;
-            case 60: return ns "silverfish" egg;
-            case 61: return ns "blaze" egg;
-            case 62: return ns "magma_cube" egg;
-            case 65: return ns "bat" egg;
-            case 66: return ns "witch" egg;
-            case 90: return ns "pig" egg;
-            case 91: return ns "sheep" egg;
-            case 92: return ns "cow" egg;
-            case 93: return ns "chicken" egg;
-            case 94: return ns "squid" egg;
-            case 95: return ns "wolf" egg;
-            case 96: return ns "mooshroom" egg;
-            case 98: return ns "ocelot" egg;
-            case 100: return ns "horse" egg;
-            case 120: return ns "villager" egg;
+            case 50: return ns u8"creeper" egg;
+            case 51: return ns u8"skeleton" egg;
+            case 52: return ns u8"spider" egg;
+            case 54: return ns u8"zombie" egg;
+            case 55: return ns u8"slime" egg;
+            case 56: return ns u8"ghast" egg;
+            case 57: return ns u8"zombified_piglin" egg;
+            case 58: return ns u8"enderman" egg;
+            case 59: return ns u8"cave_spider" egg;
+            case 60: return ns u8"silverfish" egg;
+            case 61: return ns u8"blaze" egg;
+            case 62: return ns u8"magma_cube" egg;
+            case 65: return ns u8"bat" egg;
+            case 66: return ns u8"witch" egg;
+            case 90: return ns u8"pig" egg;
+            case 91: return ns u8"sheep" egg;
+            case 92: return ns u8"cow" egg;
+            case 93: return ns u8"chicken" egg;
+            case 94: return ns u8"squid" egg;
+            case 95: return ns u8"wolf" egg;
+            case 96: return ns u8"mooshroom" egg;
+            case 98: return ns u8"ocelot" egg;
+            case 100: return ns u8"horse" egg;
+            case 120: return ns u8"villager" egg;
             default:
                 return nullopt;
             }
-        case 384: return ns "experience_bottle";
-        case 385: return ns "fire_charge";
-        case 386: return ns "writable_book";
-        case 388: return ns "emerald";
-        case 389: return ns "item_frame";
-        case 390: return ns "flower_pot";
-        case 391: return ns "carrot";
-        case 392: return ns "potato";
-        case 393: return ns "baked_potato";
-        case 394: return ns "poisonous_potato";
-        case 395: return ns "map";
-        case 396: return ns "golden_carrot";
+        case 384: return ns u8"experience_bottle";
+        case 385: return ns u8"fire_charge";
+        case 386: return ns u8"writable_book";
+        case 388: return ns u8"emerald";
+        case 389: return ns u8"item_frame";
+        case 390: return ns u8"flower_pot";
+        case 391: return ns u8"carrot";
+        case 392: return ns u8"potato";
+        case 393: return ns u8"baked_potato";
+        case 394: return ns u8"poisonous_potato";
+        case 395: return ns u8"map";
+        case 396: return ns u8"golden_carrot";
         case 397:
             switch (DrainDamage(damage)) {
-            case 1: return ns "wither_skeleton_skull";
-            case 2: return ns "zombie_head";
-            case 3: return ns "player_head";
-            case 4: return ns "creeper_head";
+            case 1: return ns u8"wither_skeleton_skull";
+            case 2: return ns u8"zombie_head";
+            case 3: return ns u8"player_head";
+            case 4: return ns u8"creeper_head";
             case 0:
             default:
-                return ns "skeleton_skull";
+                return ns u8"skeleton_skull";
             }
-        case 398: return ns "carrot_on_a_stick";
-        case 399: return ns "nether_star";
-        case 400: return ns "pumpkin_pie";
-        case 402: return ns "firework_star";
-        case 403: return ns "enchanted_book";
-        case 404: return ns "comparator";
-        case 405: return ns "nether_brick";
-        case 406: return ns "quartz";
-        case 407: return ns "tnt_minecart";
-        case 408: return ns "hopper_minecart";
-        case 417: return ns "iron_horse_armor";
-        case 418: return ns "golden_horse_armor";
-        case 419: return ns "diamond_horse_armor";
-        case 420: return ns "lead";
-        case 421: return ns "name_tag";
-        case 2256: return ns "music_disc_13";
-        case 2257: return ns "music_disc_cat";
-        case 2258: return ns "music_disc_blocks";
-        case 2259: return ns "music_disc_chirp";
-        case 2260: return ns "music_disc_far";
-        case 2261: return ns "music_disc_mall";
-        case 2262: return ns "music_disc_mellohi";
-        case 2267: return ns "music_disc_wait";
-        case 2263: return ns "music_disc_stal";
-        case 2264: return ns "music_disc_strad";
-        case 2265: return ns "music_disc_ward";
-        case 2266: return ns "music_disc_11";
+        case 398: return ns u8"carrot_on_a_stick";
+        case 399: return ns u8"nether_star";
+        case 400: return ns u8"pumpkin_pie";
+        case 402: return ns u8"firework_star";
+        case 403: return ns u8"enchanted_book";
+        case 404: return ns u8"comparator";
+        case 405: return ns u8"nether_brick";
+        case 406: return ns u8"quartz";
+        case 407: return ns u8"tnt_minecart";
+        case 408: return ns u8"hopper_minecart";
+        case 417: return ns u8"iron_horse_armor";
+        case 418: return ns u8"golden_horse_armor";
+        case 419: return ns u8"diamond_horse_armor";
+        case 420: return ns u8"lead";
+        case 421: return ns u8"name_tag";
+        case 2256: return ns u8"music_disc_13";
+        case 2257: return ns u8"music_disc_cat";
+        case 2258: return ns u8"music_disc_blocks";
+        case 2259: return ns u8"music_disc_chirp";
+        case 2260: return ns u8"music_disc_far";
+        case 2261: return ns u8"music_disc_mall";
+        case 2262: return ns u8"music_disc_mellohi";
+        case 2267: return ns u8"music_disc_wait";
+        case 2263: return ns u8"music_disc_stal";
+        case 2264: return ns u8"music_disc_strad";
+        case 2265: return ns u8"music_disc_ward";
+        case 2266: return ns u8"music_disc_11";
         }
         return nullopt;
 #undef ns
@@ -926,7 +926,7 @@ public:
 
     static std::shared_ptr<mcfile::je::Block const> Block(uint16_t blockId, uint8_t data) {
         blocks::BlockId id = blocks::minecraft::air;
-        std::map<std::string, std::string> props;
+        std::map<std::u8string, std::u8string> props;
         switch (blockId) {
         case 0: id = blocks::minecraft::air; break;
         case 1:
@@ -985,12 +985,12 @@ public:
         case 8: id = blocks::minecraft::water; break; //TODO: flowing_water
         case 9:
             id = blocks::minecraft::water;
-            props["level"] = std::to_string(data);
+            props[u8"level"] = String::ToString(data);
             break;
         case 10: id = blocks::minecraft::lava; break; //TODO: flowing_lava
         case 11:
             id = blocks::minecraft::lava;
-            props["level"] = std::to_string(data);
+            props[u8"level"] = String::ToString(data);
             break;
         case 12:
             switch (data) {
@@ -1042,7 +1042,7 @@ public:
         case 22: id = blocks::minecraft::lapis_block; break;
         case 23:
             id = blocks::minecraft::dispenser;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 24:
             switch (data) {
@@ -1089,8 +1089,8 @@ public:
             break;
         case 34:
             id = blocks::minecraft::piston_head;
-            props["facing"] = FacingA(data & 7);
-            props["type"] = (data & 0x8) == 0x8 ? "sticky" : "normal";
+            props[u8"facing"] = FacingA(data & 7);
+            props[u8"type"] = (data & 0x8) == 0x8 ? u8"sticky" : u8"normal";
             break;
         case 35:
             switch (data) {
@@ -1147,7 +1147,7 @@ public:
                 id = blocks::minecraft::smooth_stone_slab;
                 break;
             }
-            props["type"] = "double";
+            props[u8"type"] = u8"double";
             break;
         case 44:
             switch (data & 0x7) {
@@ -1163,7 +1163,7 @@ public:
                 id = id = blocks::minecraft::smooth_stone_slab;
                 break;
             }
-            props["type"] = ((data >> 3) & 0x1) == 0x1 ? "top" : "bottom";
+            props[u8"type"] = ((data >> 3) & 0x1) == 0x1 ? u8"top" : u8"bottom";
             break;
         case 45: id = blocks::minecraft::bricks; break;
         case 46: id = blocks::minecraft::tnt; break;
@@ -1172,8 +1172,8 @@ public:
         case 49: id = blocks::minecraft::obsidian; break;
         case 50:
             if (data < 5) {
-                static std::string const facing[4] = {"east", "west", "south", "north"};
-                props["facing"] = facing[std::clamp<uint8_t>(data, 1, 4) - 1];
+                static std::u8string const facing[4] = {u8"east", u8"west", u8"south", u8"north"};
+                props[u8"facing"] = facing[std::clamp<uint8_t>(data, 1, 4) - 1];
                 id = blocks::minecraft::wall_torch;
             } else {
                 id = blocks::minecraft::torch;
@@ -1191,32 +1191,32 @@ public:
             break;
         case 55:
             id = blocks::minecraft::redstone_wire;
-            props["power"] = std::to_string(data);
+            props[u8"power"] = String::ToString(data);
             break;
         case 56: id = blocks::minecraft::diamond_ore; break;
         case 57: id = blocks::minecraft::diamond_block; break;
         case 58: id = blocks::minecraft::crafting_table; break;
         case 59:
             id = blocks::minecraft::wheat;
-            props["age"] = std::to_string(data);
+            props[u8"age"] = String::ToString(data);
             break;
         case 60: id = blocks::minecraft::farmland; break;
         case 61:
         case 62: // lit
             id = blocks::minecraft::furnace;
             switch (data) {
-            case 3: props["facing"] = "south"; break;
-            case 4: props["facing"] = "west"; break;
-            case 5: props["facing"] = "east"; break;
+            case 3: props[u8"facing"] = u8"south"; break;
+            case 4: props[u8"facing"] = u8"west"; break;
+            case 5: props[u8"facing"] = u8"east"; break;
             case 2:
             default:
-                props["facing"] = "north";
+                props[u8"facing"] = u8"north";
                 break;
             }
             break;
         case 63:
             id = blocks::minecraft::oak_sign;
-            props["rotation"] = std::to_string(data);
+            props[u8"rotation"] = String::ToString(data);
             break;
         case 64:
             id = blocks::minecraft::oak_door;
@@ -1225,12 +1225,12 @@ public:
         case 65:
             id = blocks::minecraft::ladder;
             switch (data) {
-            case 5: props["facing"] = "east"; break;
-            case 3: props["facing"] = "south"; break;
-            case 4: props["facing"] = "west"; break;
+            case 5: props[u8"facing"] = u8"east"; break;
+            case 3: props[u8"facing"] = u8"south"; break;
+            case 4: props[u8"facing"] = u8"west"; break;
             case 2:
             default:
-                props["facing"] = "north";
+                props[u8"facing"] = u8"north";
                 break;
             }
             break;
@@ -1246,17 +1246,17 @@ public:
             id = blocks::minecraft::oak_wall_sign;
             switch (data) {
             case 3:
-                props["facing"] = "south";
+                props[u8"facing"] = u8"south";
                 break;
             case 4:
-                props["facing"] = "west";
+                props[u8"facing"] = u8"west";
                 break;
             case 5:
-                props["facing"] = "east";
+                props[u8"facing"] = u8"east";
                 break;
             case 2:
             default:
-                props["facing"] = "north";
+                props[u8"facing"] = u8"north";
             }
             break;
         case 69:
@@ -1279,20 +1279,20 @@ public:
                 id = blocks::minecraft::redstone_wall_torch;
                 switch (data) {
                 case 1:
-                    props["facing"] = "east";
+                    props[u8"facing"] = u8"east";
                     break;
                 case 2:
-                    props["facing"] = "west";
+                    props[u8"facing"] = u8"west";
                     break;
                 case 3:
-                    props["facing"] = "south";
+                    props[u8"facing"] = u8"south";
                     break;
                 case 4:
-                    props["facing"] = "north";
+                    props[u8"facing"] = u8"north";
                     break;
                 }
             }
-            props["lit"] = blockId == 76 ? "true" : "false";
+            props[u8"lit"] = blockId == 76 ? u8"true" : u8"false";
             break;
         case 77:
             id = blocks::minecraft::stone_button;
@@ -1300,7 +1300,7 @@ public:
             break;
         case 78:
             id = blocks::minecraft::snow;
-            props["layers"] = std::to_string(std::clamp(data + 1, 1, 8));
+            props[u8"layers"] = String::ToString(std::clamp(data + 1, 1, 8));
             break;
         case 79: id = blocks::minecraft::ice; break;
         case 80: id = blocks::minecraft::snow_block; break;
@@ -1311,7 +1311,7 @@ public:
         case 85: id = blocks::minecraft::oak_fence; break;
         case 86:
             id = blocks::minecraft::carved_pumpkin;
-            props["facing"] = FacingB(data);
+            props[u8"facing"] = FacingB(data);
             break;
         case 87: id = blocks::minecraft::netherrack; break;
         case 88: id = blocks::minecraft::soul_sand; break;
@@ -1320,17 +1320,17 @@ public:
             id = blocks::minecraft::nether_portal;
             switch (data) {
             case 2:
-                props["axis"] = "z";
+                props[u8"axis"] = u8"z";
                 break;
             case 1:
             default:
-                props["axis"] = "x";
+                props[u8"axis"] = u8"x";
                 break;
             }
             break;
         case 91:
             id = blocks::minecraft::jack_o_lantern;
-            props["facing"] = FacingB(data);
+            props[u8"facing"] = FacingB(data);
             break;
         case 92: id = blocks::minecraft::cake; break;
         case 93:
@@ -1338,21 +1338,21 @@ public:
             id = blocks::minecraft::repeater;
             switch (data & 0x3) {
             case 1:
-                props["facing"] = "west";
+                props[u8"facing"] = u8"west";
                 break;
             case 2:
-                props["facing"] = "north";
+                props[u8"facing"] = u8"north";
                 break;
             case 3:
-                props["facing"] = "east";
+                props[u8"facing"] = u8"east";
                 break;
             case 0:
             default:
-                props["facing"] = "south";
+                props[u8"facing"] = u8"south";
                 break;
             }
-            props["delay"] = std::to_string(((data & 0xc) >> 2) + 1);
-            props["powered"] = blockId == 94 ? "true" : "false";
+            props[u8"delay"] = String::ToString(((data & 0xc) >> 2) + 1);
+            props[u8"powered"] = blockId == 94 ? u8"true" : u8"false";
             break;
         case 95:
             switch (data) {
@@ -1416,18 +1416,18 @@ public:
         case 103: id = blocks::minecraft::melon; break;
         case 104:
             id = blocks::minecraft::pumpkin_stem;
-            props["age"] = std::to_string(data);
+            props[u8"age"] = String::ToString(data);
             break;
         case 105:
             id = blocks::minecraft::melon_stem;
-            props["age"] = std::to_string(data);
+            props[u8"age"] = String::ToString(data);
             break;
         case 106:
             id = blocks::minecraft::vine;
-            props["south"] = (data & 0x1) == 0x1 ? "true" : "false";
-            props["west"] = (data & 0x2) == 0x2 ? "true" : "false";
-            props["north"] = (data & 0x4) == 0x4 ? "true" : "false";
-            props["east"] = (data & 0x8) == 0x8 ? "true" : "false";
+            props[u8"south"] = (data & 0x1) == 0x1 ? u8"true" : u8"false";
+            props[u8"west"] = (data & 0x2) == 0x2 ? u8"true" : u8"false";
+            props[u8"north"] = (data & 0x4) == 0x4 ? u8"true" : u8"false";
+            props[u8"east"] = (data & 0x8) == 0x8 ? u8"true" : u8"false";
             break;
         case 107: id = blocks::minecraft::oak_fence_gate; break;
         case 108:
@@ -1448,7 +1448,7 @@ public:
             break;
         case 115:
             id = blocks::minecraft::nether_wart;
-            props["age"] = std::to_string(data);
+            props[u8"age"] = String::ToString(data);
             break;
         case 116: id = blocks::minecraft::enchanting_table; break;
         case 117: id = blocks::minecraft::brewing_stand; break;
@@ -1457,32 +1457,32 @@ public:
                 id = blocks::minecraft::cauldron;
             } else {
                 id = blocks::minecraft::water_cauldron;
-                props["level"] = std::to_string(data / 2);
+                props[u8"level"] = String::ToString(data / 2);
             }
             break;
         case 119: id = blocks::minecraft::end_portal; break;
         case 120:
             id = blocks::minecraft::end_portal_frame;
             switch (data & 0x3) {
-            case 1: props["facing"] = "west"; break;
-            case 2: props["facing"] = "north"; break;
-            case 3: props["facing"] = "east"; break;
+            case 1: props[u8"facing"] = u8"west"; break;
+            case 2: props[u8"facing"] = u8"north"; break;
+            case 3: props[u8"facing"] = u8"east"; break;
             case 0:
             default:
-                props["facing"] = "south";
+                props[u8"facing"] = u8"south";
                 break;
             }
-            props["eye"] = data > 3 ? "true" : "false";
+            props[u8"eye"] = data > 3 ? u8"true" : u8"false";
             break;
         case 121: id = blocks::minecraft::end_stone; break;
         case 122: id = blocks::minecraft::dragon_egg; break;
         case 123:
             id = blocks::minecraft::redstone_lamp;
-            props["lit"] = "false";
+            props[u8"lit"] = u8"false";
             break;
         case 124:
             id = blocks::minecraft::redstone_lamp;
-            props["lit"] = "true";
+            props[u8"lit"] = u8"true";
             break;
         case 125:
             switch (data) {
@@ -1496,7 +1496,7 @@ public:
                 id = blocks::minecraft::oak_slab;
                 break;
             }
-            props["type"] = "double";
+            props[u8"type"] = u8"double";
             break;
         case 126:
             switch (data & 0x7) {
@@ -1510,12 +1510,12 @@ public:
                 id = blocks::minecraft::oak_slab;
                 break;
             }
-            props["type"] = data < 8 ? "bottom" : "top";
+            props[u8"type"] = data < 8 ? u8"bottom" : u8"top";
             break;
         case 127:
             id = blocks::minecraft::cocoa;
-            props["facing"] = FacingN2E3S0W1(data & 0x3);
-            props["age"] = std::to_string(data >> 2);
+            props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
+            props[u8"age"] = String::ToString(data >> 2);
             break;
         case 128:
             id = blocks::minecraft::sandstone_stairs;
@@ -1530,21 +1530,21 @@ public:
             id = blocks::minecraft::tripwire_hook;
             switch (data & 0x3) {
             case 1:
-                props["facing"] = "west";
+                props[u8"facing"] = u8"west";
                 break;
             case 2:
-                props["facing"] = "north";
+                props[u8"facing"] = u8"north";
                 break;
             case 3:
-                props["facing"] = "east";
+                props[u8"facing"] = u8"east";
                 break;
             case 0:
             default:
-                props["facing"] = "south";
+                props[u8"facing"] = u8"south";
                 break;
             }
-            props["attached"] = (data & 0x4) == 0x4 ? "true" : "false";
-            props["powered"] = (data & 0x8) == 0x8 ? "true" : "false";
+            props[u8"attached"] = (data & 0x4) == 0x4 ? u8"true" : u8"false";
+            props[u8"powered"] = (data & 0x8) == 0x8 ? u8"true" : u8"false";
             break;
         case 132: id = blocks::minecraft::tripwire; break;
         case 133: id = blocks::minecraft::emerald_block; break;
@@ -1573,11 +1573,11 @@ public:
         case 140: id = blocks::minecraft::flower_pot; break;
         case 141:
             id = blocks::minecraft::carrots;
-            props["age"] = std::to_string(data);
+            props[u8"age"] = String::ToString(data);
             break;
         case 142:
             id = blocks::minecraft::potatoes;
-            props["age"] = std::to_string(data);
+            props[u8"age"] = String::ToString(data);
             break;
         case 143:
             id = blocks::minecraft::oak_button;
@@ -1588,30 +1588,30 @@ public:
             case 1: id = blocks::minecraft::skeleton_skull; break;
             case 3:
                 id = blocks::minecraft::skeleton_wall_skull;
-                props["facing"] = "south";
+                props[u8"facing"] = u8"south";
                 break;
             case 4:
                 id = blocks::minecraft::skeleton_wall_skull;
-                props["facing"] = "west";
+                props[u8"facing"] = u8"west";
                 break;
             case 2:
                 id = blocks::minecraft::skeleton_wall_skull;
-                props["facing"] = "north";
+                props[u8"facing"] = u8"north";
                 break;
             case 5:
                 id = blocks::minecraft::skeleton_wall_skull;
-                props["facing"] = "east";
+                props[u8"facing"] = u8"east";
                 break;
             }
             break;
         case 145:
             switch (data & 0x3) {
-            case 3: props["facing"] = "east"; break;
-            case 1: props["facing"] = "west"; break;
-            case 2: props["facing"] = "north"; break;
+            case 3: props[u8"facing"] = u8"east"; break;
+            case 1: props[u8"facing"] = u8"west"; break;
+            case 2: props[u8"facing"] = u8"north"; break;
             case 0:
             default:
-                props["facing"] = "south";
+                props[u8"facing"] = u8"south";
                 break;
             }
             switch (data >> 2) {
@@ -1632,13 +1632,13 @@ public:
         case 149:
         case 150:
             id = blocks::minecraft::comparator;
-            props["facing"] = FacingN2E3S0W1(data & 0x3);
-            props["powered"] = blockId == 150 ? "true" : "false";
-            props["mode"] = (data & 0x4) == 0x4 ? "subtract" : "compare";
+            props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
+            props[u8"powered"] = blockId == 150 ? u8"true" : u8"false";
+            props[u8"mode"] = (data & 0x4) == 0x4 ? u8"subtract" : u8"compare";
             break;
         case 151:
             id = blocks::minecraft::daylight_detector;
-            props["inverted"] = "false";
+            props[u8"inverted"] = u8"false";
             break;
         case 152: id = blocks::minecraft::redstone_block; break;
         case 153: id = blocks::minecraft::nether_quartz_ore; break;
@@ -1646,23 +1646,23 @@ public:
             id = blocks::minecraft::hopper;
             switch (data & 0x7) {
             case 2:
-                props["facing"] = "north";
+                props[u8"facing"] = u8"north";
                 break;
             case 3:
-                props["facing"] = "south";
+                props[u8"facing"] = u8"south";
                 break;
             case 4:
-                props["facing"] = "west";
+                props[u8"facing"] = u8"west";
                 break;
             case 5:
-                props["facing"] = "east";
+                props[u8"facing"] = u8"east";
                 break;
             case 0:
             default:
-                props["facing"] = "down";
+                props[u8"facing"] = u8"down";
                 break;
             }
-            props["enabled"] = (data & 0x8) == 0x8 ? "false" : "true";
+            props[u8"enabled"] = (data & 0x8) == 0x8 ? u8"false" : u8"true";
             break;
         case 155:
             switch (data) {
@@ -1671,15 +1671,15 @@ public:
                 break;
             case 3:
                 id = blocks::minecraft::quartz_pillar;
-                props["axis"] = "x";
+                props[u8"axis"] = u8"x";
                 break;
             case 4:
                 id = blocks::minecraft::quartz_pillar;
-                props["axis"] = "z";
+                props[u8"axis"] = u8"z";
                 break;
             case 2:
                 id = blocks::minecraft::quartz_pillar;
-                props["axis"] = "y";
+                props[u8"axis"] = u8"y";
                 break;
             case 0:
             default:
@@ -1697,7 +1697,7 @@ public:
             break;
         case 158:
             id = blocks::minecraft::dropper;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 159:
             switch (data) {
@@ -1791,7 +1791,7 @@ public:
         case 169: id = blocks::minecraft::sea_lantern; break;
         case 170:
             id = blocks::minecraft::hay_block;
-            props["axis"] = Axis(data >> 2);
+            props[u8"axis"] = Axis(data >> 2);
             break;
         case 171:
             switch (data) {
@@ -1834,29 +1834,29 @@ public:
             break;
         case 176:
             id = blocks::minecraft::white_banner;
-            props["rotation"] = std::to_string(data);
+            props[u8"rotation"] = String::ToString(data);
             break;
         case 177:
             id = blocks::minecraft::white_wall_banner;
             switch (data) {
             case 3:
-                props["facing"] = "south";
+                props[u8"facing"] = u8"south";
                 break;
             case 4:
-                props["facing"] = "west";
+                props[u8"facing"] = u8"west";
                 break;
             case 5:
-                props["facing"] = "east";
+                props[u8"facing"] = u8"east";
                 break;
             case 2:
             default:
-                props["facing"] = "north";
+                props[u8"facing"] = u8"north";
                 break;
             }
             break;
         case 178:
             id = blocks::minecraft::daylight_detector;
-            props["inverted"] = "true";
+            props[u8"inverted"] = u8"true";
             break;
         case 179:
             id = blocks::minecraft::red_sandstone;
@@ -1875,18 +1875,18 @@ public:
             break;
         case 181:
             id = blocks::minecraft::red_sandstone_slab;
-            props["type"] = "double";
+            props[u8"type"] = u8"double";
             break;
         case 182:
             switch (data) {
             case 8:
                 id = blocks::minecraft::red_sandstone_slab;
-                props["type"] = "top";
+                props[u8"type"] = u8"top";
                 break;
             case 0:
             default:
                 id = blocks::minecraft::red_sandstone_slab;
-                props["type"] = "bottom";
+                props[u8"type"] = u8"bottom";
                 break;
             }
             break;
@@ -1922,17 +1922,17 @@ public:
             break;
         case 198:
             id = blocks::minecraft::end_rod;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 199: id = blocks::minecraft::chorus_plant; break;
         case 200:
             id = blocks::minecraft::chorus_flower;
-            props["age"] = std::to_string(data);
+            props[u8"age"] = String::ToString(data);
             break;
         case 201: id = blocks::minecraft::purpur_block; break;
         case 202:
             id = blocks::minecraft::purpur_pillar;
-            props["axis"] = Axis(data >> 2);
+            props[u8"axis"] = Axis(data >> 2);
             break;
         case 203:
             id = blocks::minecraft::purpur_stairs;
@@ -1940,20 +1940,20 @@ public:
             break;
         case 204:
             id = blocks::minecraft::purpur_slab;
-            props["type"] = "double";
+            props[u8"type"] = u8"double";
             break;
         case 205:
             id = blocks::minecraft::purpur_slab;
             if (data == 8) {
-                props["type"] = "top";
+                props[u8"type"] = u8"top";
             } else {
-                props["type"] = "bottom";
+                props[u8"type"] = u8"bottom";
             }
             break;
         case 206: id = blocks::minecraft::end_stone_bricks; break;
         case 207:
             id = blocks::minecraft::beetroots;
-            props["age"] = std::to_string(data);
+            props[u8"age"] = String::ToString(data);
             break;
         case 208: id = blocks::minecraft::dirt_path; break;
         case 209: id = blocks::minecraft::end_gateway; break;
@@ -1965,76 +1965,76 @@ public:
         case 215: id = blocks::minecraft::red_nether_bricks; break;
         case 216:
             id = blocks::minecraft::bone_block;
-            props["axis"] = Axis(data >> 2);
+            props[u8"axis"] = Axis(data >> 2);
             break;
         case 217: id = blocks::minecraft::structure_void; break;
         case 218:
             id = blocks::minecraft::observer;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 219:
             id = blocks::minecraft::white_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 220:
             id = blocks::minecraft::orange_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 221:
             id = blocks::minecraft::magenta_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 222:
             id = blocks::minecraft::light_blue_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 223:
             id = blocks::minecraft::yellow_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 224:
             id = blocks::minecraft::lime_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 225:
             id = blocks::minecraft::pink_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 226:
             id = blocks::minecraft::gray_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 227:
             id = blocks::minecraft::light_gray_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 228:
             id = blocks::minecraft::cyan_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 229:
             id = blocks::minecraft::shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 230:
             id = blocks::minecraft::blue_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 231:
             id = blocks::minecraft::brown_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 232:
             id = blocks::minecraft::green_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 233:
             id = blocks::minecraft::red_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 234:
             id = blocks::minecraft::black_shulker_box;
-            props["facing"] = FacingA(data);
+            props[u8"facing"] = FacingA(data);
             break;
         case 235:
             id = blocks::minecraft::white_glazed_terracotta;
@@ -2156,321 +2156,321 @@ public:
         return index % 2 == 0 ? arr[index / 2] & 0x0F : (arr[index / 2] >> 4) & 0x0F;
     }
 
-    static void Stairs(uint8_t data, std::map<std::string, std::string> &props) {
-        static std::string const facing[4] = {"east", "west", "south", "north"};
-        props["facing"] = facing[std::clamp(data & 0x3, 0, 3)];
-        static std::string const half[2] = {"bottm", "top"};
-        props["half"] = half[std::clamp(data & 0x4, 0, 1)];
+    static void Stairs(uint8_t data, std::map<std::u8string, std::u8string> &props) {
+        static std::u8string const facing[4] = {u8"east", u8"west", u8"south", u8"north"};
+        props[u8"facing"] = facing[std::clamp(data & 0x3, 0, 3)];
+        static std::u8string const half[2] = {u8"bottm", u8"top"};
+        props[u8"half"] = half[std::clamp(data & 0x4, 0, 1)];
     }
 
-    static void Door(uint8_t data, std::map<std::string, std::string> &props) {
-        static std::string const facing[4] = {"east", "south", "west", "north"};
-        static std::string const hinge[2] = {"left", "right"};
-        static std::string const open[2] = {"false", "true"};
-        static std::string const powered[2] = {"false", "true"};
+    static void Door(uint8_t data, std::map<std::u8string, std::u8string> &props) {
+        static std::u8string const facing[4] = {u8"east", u8"south", u8"west", u8"north"};
+        static std::u8string const hinge[2] = {u8"left", u8"right"};
+        static std::u8string const open[2] = {u8"false", u8"true"};
+        static std::u8string const powered[2] = {u8"false", u8"true"};
         if (data < 8) {
-            props["half"] = "lower";
-            props["facing"] = facing[std::clamp(data & 0x3, 0, 3)];
-            props["open"] = open[std::clamp((data >> 2) & 0x1, 0, 1)];
+            props[u8"half"] = u8"lower";
+            props[u8"facing"] = facing[std::clamp(data & 0x3, 0, 3)];
+            props[u8"open"] = open[std::clamp((data >> 2) & 0x1, 0, 1)];
         } else {
-            props["half"] = "upper";
-            props["hinge"] = hinge[std::clamp(data & 0x1, 0, 1)];
-            props["powered"] = powered[std::clamp((data >> 1) & 0x1, 0, 1)];
+            props[u8"half"] = u8"upper";
+            props[u8"hinge"] = hinge[std::clamp(data & 0x1, 0, 1)];
+            props[u8"powered"] = powered[std::clamp((data >> 1) & 0x1, 0, 1)];
         }
     }
 
-    static std::string Axis(uint8_t v) {
-        static std::string const axis[3] = {"y", "x", "z"};
+    static std::u8string Axis(uint8_t v) {
+        static std::u8string const axis[3] = {u8"y", u8"x", u8"z"};
         return axis[std::clamp<uint8_t>(v, 0, 2)];
     }
 
-    static void Log(uint8_t data, std::map<std::string, std::string> &props) {
-        props["axis"] = Axis((data >> 2) & 0x3);
+    static void Log(uint8_t data, std::map<std::u8string, std::u8string> &props) {
+        props[u8"axis"] = Axis((data >> 2) & 0x3);
     }
 
-    static void Leaves(uint8_t data, std::map<std::string, std::string> &props) {
+    static void Leaves(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         if (((data >> 2) & 0x1) == 0x1) {
-            props["persistent"] = "true";
+            props[u8"persistent"] = u8"true";
         } else {
-            props["persistent"] = "false";
+            props[u8"persistent"] = u8"false";
         }
     }
 
-    static void Bed(uint8_t data, std::map<std::string, std::string> &props) {
+    static void Bed(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         switch (data & 0x3) {
         case 2:
-            props["facing"] = "north";
+            props[u8"facing"] = u8"north";
             break;
         case 3:
-            props["facing"] = "east";
+            props[u8"facing"] = u8"east";
             break;
         case 1:
-            props["facing"] = "west";
+            props[u8"facing"] = u8"west";
             break;
         case 0:
         default:
-            props["facing"] = "south";
+            props[u8"facing"] = u8"south";
             break;
         }
-        props["occupied"] = ((data >> 2) & 0x1) == 0x1 ? "true" : "false";
-        props["part"] = ((data >> 3) & 0x1) == 0x1 ? "head" : "foot";
+        props[u8"occupied"] = ((data >> 2) & 0x1) == 0x1 ? u8"true" : u8"false";
+        props[u8"part"] = ((data >> 3) & 0x1) == 0x1 ? u8"head" : u8"foot";
     }
 
-    static void Rail(uint8_t data, std::map<std::string, std::string> &props) {
-        static std::string const shape[10] = {
-            "north_south",     // 0
-            "east_west",       // 1
-            "ascending_east",  // 2
-            "ascending_west",  // 3
-            "ascending_north", // 4
-            "ascending_south", // 5
-            "south_east",      // 6
-            "south_west",      // 7
-            "north_west",      // 8
-            "north_east",      // 9
+    static void Rail(uint8_t data, std::map<std::u8string, std::u8string> &props) {
+        static std::u8string const shape[10] = {
+            u8"north_south",     // 0
+            u8"east_west",       // 1
+            u8"ascending_east",  // 2
+            u8"ascending_west",  // 3
+            u8"ascending_north", // 4
+            u8"ascending_south", // 5
+            u8"south_east",      // 6
+            u8"south_west",      // 7
+            u8"north_west",      // 8
+            u8"north_east",      // 9
         };
-        props["shape"] = shape[std::clamp<uint8_t>(data, 0, 9)];
+        props[u8"shape"] = shape[std::clamp<uint8_t>(data, 0, 9)];
     }
 
-    static void PoweredRail(uint8_t data, std::map<std::string, std::string> &props) {
-        static std::string const shape[6] = {
-            "north_south",     // 0
-            "east_west",       // 1
-            "ascending_east",  // 2
-            "ascending_west",  // 3
-            "ascending_north", // 4
-            "ascending_south"  // 5
+    static void PoweredRail(uint8_t data, std::map<std::u8string, std::u8string> &props) {
+        static std::u8string const shape[6] = {
+            u8"north_south",     // 0
+            u8"east_west",       // 1
+            u8"ascending_east",  // 2
+            u8"ascending_west",  // 3
+            u8"ascending_north", // 4
+            u8"ascending_south"  // 5
         };
-        props["shape"] = shape[std::clamp(data & 0x7, 0, 5)];
-        props["powered"] = ((data >> 3) & 0x1) == 0x1 ? "true" : "false";
+        props[u8"shape"] = shape[std::clamp(data & 0x7, 0, 5)];
+        props[u8"powered"] = ((data >> 3) & 0x1) == 0x1 ? u8"true" : u8"false";
     }
 
-    static std::string FacingA(uint8_t data) {
-        static std::string const facing[6] = {"down", "up", "north", "south", "west", "east"};
+    static std::u8string FacingA(uint8_t data) {
+        static std::u8string const facing[6] = {u8"down", u8"up", u8"north", u8"south", u8"west", u8"east"};
         return facing[std::clamp<uint8_t>(data, 0, 5)];
     }
 
-    static void Piston(uint8_t data, std::map<std::string, std::string> &props) {
+    static void Piston(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         auto facing = FacingA(data & 0x7);
-        props["facing"] = facing;
-        props["extended"] = ((data >> 3) & 0x1) == 0x1 ? "true" : "false";
+        props[u8"facing"] = facing;
+        props[u8"extended"] = ((data >> 3) & 0x1) == 0x1 ? u8"true" : u8"false";
     }
 
-    static std::string FacingB(uint8_t data) {
-        static std::string const facing[4] = {"south", "west", "north", "east"};
+    static std::u8string FacingB(uint8_t data) {
+        static std::u8string const facing[4] = {u8"south", u8"west", u8"north", u8"east"};
         return facing[std::clamp<uint8_t>(data, 0, 3)];
     }
 
-    static void Chest(uint8_t data, std::map<std::string, std::string> &props) {
+    static void Chest(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         switch (data) {
-        case 3: props["facing"] = "south"; break;
-        case 4: props["facing"] = "west"; break;
-        case 5: props["facing"] = "east"; break;
+        case 3: props[u8"facing"] = u8"south"; break;
+        case 4: props[u8"facing"] = u8"west"; break;
+        case 5: props[u8"facing"] = u8"east"; break;
         case 2:
         default:
-            props["facing"] = "north";
+            props[u8"facing"] = u8"north";
             break;
         }
     }
 
-    static void GlazedTerracotta(uint8_t data, std::map<std::string, std::string> &props) {
+    static void GlazedTerracotta(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         switch (data) {
-        case 0: props["facing"] = "south"; break;
-        case 1: props["facing"] = "west"; break;
-        case 2: props["facing"] = "north"; break;
-        case 3: props["facing"] = "east"; break;
+        case 0: props[u8"facing"] = u8"south"; break;
+        case 1: props[u8"facing"] = u8"west"; break;
+        case 2: props[u8"facing"] = u8"north"; break;
+        case 3: props[u8"facing"] = u8"east"; break;
         }
     }
 
-    static void Trapdoor(uint8_t data, std::map<std::string, std::string> &props) {
+    static void Trapdoor(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         switch (data & 0x3) {
-        case 1: props["facing"] = "south"; break;
-        case 2: props["facing"] = "west"; break;
-        case 3: props["facing"] = "east"; break;
+        case 1: props[u8"facing"] = u8"south"; break;
+        case 2: props[u8"facing"] = u8"west"; break;
+        case 3: props[u8"facing"] = u8"east"; break;
         default:
         case 0:
-            props["facing"] = "north";
+            props[u8"facing"] = u8"north";
             break;
         }
-        props["half"] = (data & 0x8) == 0x8 ? "top" : "bottom";
-        props["open"] = (data & 0x4) == 0x4 ? "true" : "fasle";
+        props[u8"half"] = (data & 0x8) == 0x8 ? u8"top" : u8"bottom";
+        props[u8"open"] = (data & 0x4) == 0x4 ? u8"true" : u8"fasle";
     }
 
-    static void Button(uint8_t data, std::map<std::string, std::string> &props) {
+    static void Button(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         switch (data & 0x7) {
         case 0:
-            props["face"] = "ceiling";
+            props[u8"face"] = u8"ceiling";
             break;
         case 1:
-            props["face"] = "wall";
-            props["facing"] = "east";
+            props[u8"face"] = u8"wall";
+            props[u8"facing"] = u8"east";
             break;
         case 2:
-            props["face"] = "wall";
-            props["facing"] = "west";
+            props[u8"face"] = u8"wall";
+            props[u8"facing"] = u8"west";
             break;
         case 3:
-            props["face"] = "wall";
-            props["facing"] = "south";
+            props[u8"face"] = u8"wall";
+            props[u8"facing"] = u8"south";
             break;
         case 4:
-            props["face"] = "wall";
-            props["facing"] = "north";
+            props[u8"face"] = u8"wall";
+            props[u8"facing"] = u8"north";
             break;
         case 5:
-            props["face"] = "floor";
+            props[u8"face"] = u8"floor";
             break;
         }
-        props["powered"] = (data & 0x8) == 0x8 ? "true" : "false";
+        props[u8"powered"] = (data & 0x8) == 0x8 ? u8"true" : u8"false";
     }
 
-    static void Lever(uint8_t data, std::map<std::string, std::string> &props) {
+    static void Lever(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         switch (data & 0x7) {
         case 0:
-            props["face"] = "ceiling";
-            props["facing"] = "west";
+            props[u8"face"] = u8"ceiling";
+            props[u8"facing"] = u8"west";
             break;
         case 1:
-            props["face"] = "wall";
-            props["facing"] = "east";
+            props[u8"face"] = u8"wall";
+            props[u8"facing"] = u8"east";
             break;
         case 2:
-            props["face"] = "wall";
-            props["facing"] = "west";
+            props[u8"face"] = u8"wall";
+            props[u8"facing"] = u8"west";
             break;
         case 3:
-            props["face"] = "wall";
-            props["facing"] = "south";
+            props[u8"face"] = u8"wall";
+            props[u8"facing"] = u8"south";
             break;
         case 4:
-            props["face"] = "wall";
-            props["facing"] = "north";
+            props[u8"face"] = u8"wall";
+            props[u8"facing"] = u8"north";
             break;
         case 5:
-            props["face"] = "floor";
-            props["facing"] = "north";
+            props[u8"face"] = u8"floor";
+            props[u8"facing"] = u8"north";
             break;
         case 6:
-            props["face"] = "floor";
-            props["facing"] = "west";
+            props[u8"face"] = u8"floor";
+            props[u8"facing"] = u8"west";
             break;
         case 7:
-            props["face"] = "ceiling";
-            props["facing"] = "north";
+            props[u8"face"] = u8"ceiling";
+            props[u8"facing"] = u8"north";
             break;
         }
-        props["powered"] = (data & 0x8) == 0x8 ? "true" : "false";
+        props[u8"powered"] = (data & 0x8) == 0x8 ? u8"true" : u8"false";
     }
 
-    static std::string FacingN2E3S0W1(uint8_t data) {
+    static std::u8string FacingN2E3S0W1(uint8_t data) {
         switch (data) {
-        case 1: return "west";
-        case 2: return "north";
-        case 3: return "east";
+        case 1: return u8"west";
+        case 2: return u8"north";
+        case 3: return u8"east";
         case 0:
         default:
-            return "south";
+            return u8"south";
         }
     }
 
-    static mcfile::blocks::BlockId MushroomBlock(mcfile::blocks::BlockId id, uint8_t data, std::map<std::string, std::string> &props) {
+    static mcfile::blocks::BlockId MushroomBlock(mcfile::blocks::BlockId id, uint8_t data, std::map<std::u8string, std::u8string> &props) {
         switch (data) {
         case 1:
-            props["down"] = "false";
-            props["east"] = "false";
-            props["north"] = "true";
-            props["south"] = "false";
-            props["up"] = "true";
-            props["west"] = "true";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"false";
+            props[u8"north"] = u8"true";
+            props[u8"south"] = u8"false";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"true";
             return id;
         case 2:
-            props["down"] = "false";
-            props["east"] = "false";
-            props["north"] = "true";
-            props["south"] = "false";
-            props["up"] = "true";
-            props["west"] = "false";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"false";
+            props[u8"north"] = u8"true";
+            props[u8"south"] = u8"false";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"false";
             return id;
         case 3:
-            props["down"] = "false";
-            props["east"] = "true";
-            props["north"] = "true";
-            props["south"] = "false";
-            props["up"] = "true";
-            props["west"] = "false";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"true";
+            props[u8"north"] = u8"true";
+            props[u8"south"] = u8"false";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"false";
             return id;
         case 4:
-            props["down"] = "false";
-            props["east"] = "false";
-            props["north"] = "false";
-            props["south"] = "false";
-            props["up"] = "true";
-            props["west"] = "true";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"false";
+            props[u8"north"] = u8"false";
+            props[u8"south"] = u8"false";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"true";
             return id;
         case 5:
-            props["down"] = "false";
-            props["east"] = "false";
-            props["north"] = "false";
-            props["south"] = "false";
-            props["up"] = "true";
-            props["west"] = "false";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"false";
+            props[u8"north"] = u8"false";
+            props[u8"south"] = u8"false";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"false";
             return id;
         case 6:
-            props["down"] = "false";
-            props["east"] = "true";
-            props["north"] = "false";
-            props["south"] = "false";
-            props["up"] = "true";
-            props["west"] = "false";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"true";
+            props[u8"north"] = u8"false";
+            props[u8"south"] = u8"false";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"false";
             return id;
         case 7:
-            props["down"] = "false";
-            props["east"] = "false";
-            props["north"] = "false";
-            props["south"] = "true";
-            props["up"] = "true";
-            props["west"] = "true";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"false";
+            props[u8"north"] = u8"false";
+            props[u8"south"] = u8"true";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"true";
             return id;
         case 8:
-            props["down"] = "false";
-            props["east"] = "false";
-            props["north"] = "false";
-            props["south"] = "true";
-            props["up"] = "true";
-            props["west"] = "false";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"false";
+            props[u8"north"] = u8"false";
+            props[u8"south"] = u8"true";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"false";
             return id;
         case 9:
-            props["down"] = "false";
-            props["east"] = "true";
-            props["north"] = "false";
-            props["south"] = "true";
-            props["up"] = "true";
-            props["west"] = "false";
+            props[u8"down"] = u8"false";
+            props[u8"east"] = u8"true";
+            props[u8"north"] = u8"false";
+            props[u8"south"] = u8"true";
+            props[u8"up"] = u8"true";
+            props[u8"west"] = u8"false";
             return id;
         case 10:
-            props["down"] = "false";
-            props["up"] = "false";
-            props["east"] = "true";
-            props["south"] = "true";
-            props["west"] = "true";
-            props["north"] = "true";
+            props[u8"down"] = u8"false";
+            props[u8"up"] = u8"false";
+            props[u8"east"] = u8"true";
+            props[u8"south"] = u8"true";
+            props[u8"west"] = u8"true";
+            props[u8"north"] = u8"true";
             return blocks::minecraft::mushroom_stem;
         case 11:
-            props["down"] = "true";
-            props["up"] = "true";
-            props["east"] = "true";
-            props["south"] = "true";
-            props["west"] = "true";
-            props["north"] = "true";
+            props[u8"down"] = u8"true";
+            props[u8"up"] = u8"true";
+            props[u8"east"] = u8"true";
+            props[u8"south"] = u8"true";
+            props[u8"west"] = u8"true";
+            props[u8"north"] = u8"true";
             return id;
         case 0:
         default:
-            props["down"] = "false";
-            props["up"] = "false";
-            props["east"] = "false";
-            props["south"] = "false";
-            props["west"] = "false";
-            props["north"] = "false";
+            props[u8"down"] = u8"false";
+            props[u8"up"] = u8"false";
+            props[u8"east"] = u8"false";
+            props[u8"south"] = u8"false";
+            props[u8"west"] = u8"false";
+            props[u8"north"] = u8"false";
             return id;
         }
     }

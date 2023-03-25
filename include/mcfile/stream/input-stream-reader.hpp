@@ -107,7 +107,7 @@ public:
         return true;
     }
 
-    [[nodiscard]] bool read(std::string &s) {
+    [[nodiscard]] [[deprecated]] bool read(std::string &s) {
         uint16_t length;
         if (!read(&length)) {
             return false;
@@ -119,6 +119,20 @@ public:
         buffer.push_back(0);
         std::string tmp((char const *)buffer.data());
         s.swap(tmp);
+        return true;
+    }
+
+    [[nodiscard]] bool read(std::u8string &s) {
+        uint16_t length;
+        if (!read(&length)) {
+            return false;
+        }
+        s.resize(length);
+        if (length > 0) {
+            if (fStream->read(s.data(), s.size()) != s.size()) {
+                return false;
+            }
+        }
         return true;
     }
 

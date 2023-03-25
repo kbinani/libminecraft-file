@@ -7,7 +7,7 @@ public:
     static std::shared_ptr<ChunkSection118> MakeEmpty(int sectionY) {
         using namespace std;
         vector<shared_ptr<Block const>> blockPalette;
-        blockPalette.push_back(make_shared<Block const>("minecraft:air"));
+        blockPalette.push_back(make_shared<Block const>(u8"minecraft:air"));
         vector<uint16_t> blockPaletteIndices(4096, 0);
         vector<biomes::BiomeId> biomePalette;
         vector<uint16_t> biomePaletteIndices;
@@ -32,25 +32,25 @@ public:
             return nullptr;
         }
 
-        static std::unordered_set<std::string> const sExclude = {
-            "Y",
-            "block_states",
-            "biomes",
-            "BlockLight",
-            "SkyLight",
+        static std::unordered_set<std::u8string> const sExclude = {
+            u8"Y",
+            u8"block_states",
+            u8"biomes",
+            u8"BlockLight",
+            u8"SkyLight",
         };
 
-        auto yTag = section->byte("Y");
+        auto yTag = section->byte(u8"Y");
         if (!yTag) {
             return nullptr;
         }
         int y = *yTag;
 
-        auto blockStates = section->compoundTag("block_states");
+        auto blockStates = section->compoundTag(u8"block_states");
         vector<shared_ptr<Block const>> blockPalette;
         vector<uint16_t> blockPaletteIndices;
         if (blockStates) {
-            auto blockPaletteTag = blockStates->listTag("palette");
+            auto blockPaletteTag = blockStates->listTag(u8"palette");
             if (!blockPaletteTag) {
                 return nullptr;
             }
@@ -59,15 +59,15 @@ public:
                 if (!tag) {
                     return nullptr;
                 }
-                auto name = tag->string("Name");
+                auto name = tag->string(u8"Name");
                 if (!name) {
                     return nullptr;
                 }
-                map<string, string> properties;
-                auto propertiesTag = tag->compoundTag("Properties");
+                map<u8string, u8string> properties;
+                auto propertiesTag = tag->compoundTag(u8"Properties");
                 if (propertiesTag) {
                     for (auto p : *propertiesTag) {
-                        string n = p.first;
+                        u8string n = p.first;
                         if (n.empty()) {
                             continue;
                         }
@@ -87,7 +87,7 @@ public:
             if (blockPalette.size() == 1) {
                 blockPaletteIndices.resize(4096, 0);
             } else {
-                auto blockData = blockStates->longArrayTag("data");
+                auto blockData = blockStates->longArrayTag(u8"data");
                 if (!blockData) {
                     return nullptr;
                 }
@@ -95,11 +95,11 @@ public:
             }
         }
 
-        auto biomes = section->compoundTag("biomes");
+        auto biomes = section->compoundTag(u8"biomes");
         vector<mcfile::biomes::BiomeId> biomePalette;
         vector<uint16_t> biomePaletteIndices;
         if (biomes) {
-            auto biomePaletteTag = biomes->listTag("palette");
+            auto biomePaletteTag = biomes->listTag(u8"palette");
             if (!biomePaletteTag) {
                 return nullptr;
             }
@@ -121,7 +121,7 @@ public:
             if (biomePalette.size() == 1) {
                 biomePaletteIndices.resize(4 * 4 * 4, 0);
             } else {
-                auto biomeData = biomes->longArrayTag("data");
+                auto biomeData = biomes->longArrayTag(u8"data");
                 if (!biomeData) {
                     return nullptr;
                 }
@@ -130,13 +130,13 @@ public:
         }
 
         std::vector<uint8_t> blockLight;
-        auto blockLightTag = section->byteArrayTag("BlockLight");
+        auto blockLightTag = section->byteArrayTag(u8"BlockLight");
         if (blockLightTag && blockLightTag->fValue.size() == 2048) {
             blockLightTag->fValue.swap(blockLight);
         }
 
         std::vector<uint8_t> skyLight;
-        auto skyLightTag = section->byteArrayTag("SkyLight");
+        auto skyLightTag = section->byteArrayTag(u8"SkyLight");
         if (skyLightTag && skyLightTag->fValue.size() == 2048) {
             skyLightTag->fValue.swap(skyLight);
         }
@@ -254,7 +254,7 @@ public:
 
         int8_t i8 = Clamp<int8_t>(fY);
         uint8_t u8 = *(uint8_t *)&i8;
-        root->set("Y", make_shared<ByteTag>(u8));
+        root->set(u8"Y", make_shared<ByteTag>(u8));
 
         if (!fBiomes.empty()) {
             auto biomes = make_shared<CompoundTag>();
@@ -265,11 +265,11 @@ public:
             fBiomes.copy(palette, index);
             BiomePalette::ShrinkToFit(palette, index);
             PackBiomePalette(palette, index, biomePalette, biomePaletteData, fDataVersion);
-            biomes->set("palette", biomePalette);
+            biomes->set(u8"palette", biomePalette);
             if (biomePaletteData) {
-                biomes->set("data", biomePaletteData);
+                biomes->set(u8"data", biomePaletteData);
             }
-            root->set("biomes", biomes);
+            root->set(u8"biomes", biomes);
         }
 
         if (!fBlocks.empty()) {
@@ -281,23 +281,23 @@ public:
             fBlocks.copy(palette, index);
             BlockPalette::ShrinkToFit(palette, index);
             PackBlockPalette(palette, index, blockPalette, blockPaletteData);
-            blockStates->set("palette", blockPalette);
+            blockStates->set(u8"palette", blockPalette);
             if (blockPaletteData) {
-                blockStates->set("data", blockPaletteData);
+                blockStates->set(u8"data", blockPaletteData);
             }
-            root->set("block_states", blockStates);
+            root->set(u8"block_states", blockStates);
         }
 
         if (fBlockLight.size() == 2048) {
             auto blockLight = make_shared<ByteArrayTag>();
             copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(blockLight->fValue));
-            root->set("BlockLight", blockLight);
+            root->set(u8"BlockLight", blockLight);
         }
 
         if (fSkyLight.size() == 2048) {
             auto skyLight = make_shared<ByteArrayTag>();
             copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(skyLight->fValue));
-            root->set("SkyLight", skyLight);
+            root->set(u8"SkyLight", skyLight);
         }
 
         return root;

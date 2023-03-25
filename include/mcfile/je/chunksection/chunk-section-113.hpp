@@ -7,7 +7,7 @@ public:
     static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
         using namespace std;
         vector<shared_ptr<Block const>> palette;
-        palette.push_back(make_shared<Block const>("minecraft:air"));
+        palette.push_back(make_shared<Block const>(u8"minecraft:air"));
         vector<uint16_t> paletteIndices(4096, 0);
         vector<uint8_t> blockLight;
         vector<uint8_t> skyLight;

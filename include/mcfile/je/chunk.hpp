@@ -252,13 +252,13 @@ public:
         // ...
         // Java Edition 17w47a 1451 TerrainPopulated 1
         if (fDataVersion >= 1912) {
-            if (fStatus == "full") {
+            if (fStatus == u8"full") {
                 return Status::FULL;
             } else {
                 return Status::UNKNOWN;
             }
         } else if (fDataVersion >= 1466) {
-            if (fStatus == "postprocessed" || fStatus == "finalized" || fStatus == "fullchunk") {
+            if (fStatus == u8"postprocessed" || fStatus == u8"finalized" || fStatus == u8"fullchunk") {
                 return Status::FULL;
             } else {
                 return Status::UNKNOWN;
@@ -282,7 +282,7 @@ public:
         }
 
         int dataVersion = 0;
-        auto dataVersionTag = root->int32("DataVersion");
+        auto dataVersionTag = root->int32(u8"DataVersion");
         if (dataVersionTag) {
             // *.mca created by Minecraft 1.2.1 does not have /DataVersion tag
             dataVersion = *dataVersionTag;
@@ -340,7 +340,7 @@ public:
         , fChunkY(cy)
         , fChunkZ(cz)
         , fLastUpdate(0)
-        , fStatus("full")
+        , fStatus(u8"full")
         , fCreateEmptySection(chunksection::ChunkSectionGenerator::GetEmptySectionCreatorFromDataVersion(dataVersion))
         , fDataVersion(dataVersion) {
     }
@@ -373,7 +373,7 @@ private:
           int64_t lastUpdate,
           std::vector<TickingBlock> tileTicks,
           std::vector<TickingBlock> liquidTicks,
-          std::string const &status,
+          std::u8string const &status,
           std::optional<bool> terrainPopulated,
           std::function<std::shared_ptr<ChunkSection>(int sectionY)> createEmptySection)
         : fChunkX(chunkX)
@@ -404,9 +404,9 @@ private:
         fEntities.swap(entities);
         for (auto const &item : tileEntities) {
             assert(item);
-            auto x = item->int32("x");
-            auto y = item->int32("y");
-            auto z = item->int32("z");
+            auto x = item->int32(u8"x");
+            auto y = item->int32(u8"y");
+            auto z = item->int32(u8"z");
             if (!x || !y || !z) {
                 continue;
             }
@@ -419,12 +419,12 @@ private:
     static std::shared_ptr<Chunk> MakeChunk118(int chunkX, int chunkZ, nbt::CompoundTag const &tag, int dataVersion) {
         using namespace std;
 
-        auto sectionsTag = tag.listTag("sections");
+        auto sectionsTag = tag.listTag(u8"sections");
         if (!sectionsTag) {
             return nullptr;
         }
 
-        auto chunkY = tag.int32("yPos");
+        auto chunkY = tag.int32(u8"yPos");
         if (!chunkY) {
             return nullptr;
         }
@@ -437,16 +437,16 @@ private:
         // NOTE: Always empty
         vector<shared_ptr<nbt::CompoundTag>> entities;
 
-        auto structures = tag.compoundTag("structures");
+        auto structures = tag.compoundTag(u8"structures");
 
-        auto lastUpdateTag = tag.int64("LastUpdate");
+        auto lastUpdateTag = tag.int64(u8"LastUpdate");
         int64_t lastUpdate = 0;
         if (lastUpdateTag) {
             lastUpdate = *lastUpdateTag;
         }
 
         vector<shared_ptr<nbt::CompoundTag>> blockEntities;
-        auto blockEntitiesList = tag.listTag("block_entities");
+        auto blockEntitiesList = tag.listTag(u8"block_entities");
         if (blockEntitiesList && blockEntitiesList->fType == nbt::Tag::Type::Compound) {
             for (auto it : *blockEntitiesList) {
                 auto comp = it->asCompound();
@@ -459,7 +459,7 @@ private:
             }
         }
 
-        auto blockTicksTag = tag.listTag("block_ticks");
+        auto blockTicksTag = tag.listTag(u8"block_ticks");
         vector<TickingBlock> blockTicks;
         if (blockTicksTag) {
             for (auto it : *blockTicksTag) {
@@ -475,7 +475,7 @@ private:
             }
         }
 
-        auto fluidTicksTag = tag.listTag("fluid_ticks");
+        auto fluidTicksTag = tag.listTag(u8"fluid_ticks");
         vector<TickingBlock> fluidTicks;
         if (fluidTicksTag) {
             for (auto it : *fluidTicksTag) {
@@ -491,8 +491,8 @@ private:
             }
         }
 
-        string s;
-        auto status = tag.stringTag("Status");
+        u8string s;
+        auto status = tag.stringTag(u8"Status");
         if (status) {
             s = status->fValue;
         }
@@ -505,13 +505,13 @@ private:
     static std::shared_ptr<Chunk> MakeChunk112(int chunkX, int chunkZ, nbt::CompoundTag &tag, int dataVersion) {
         using namespace std;
 
-        auto level = tag.compoundTag("Level");
+        auto level = tag.compoundTag(u8"Level");
         if (!level) {
             return nullptr;
         }
 
         vector<shared_ptr<nbt::CompoundTag>> tileEntities;
-        auto tileEntitiesList = level->listTag("TileEntities");
+        auto tileEntitiesList = level->listTag(u8"TileEntities");
         if (tileEntitiesList && tileEntitiesList->fType == nbt::Tag::Type::Compound) {
             for (auto it : *tileEntitiesList) {
                 auto comp = it->asCompound();
@@ -524,19 +524,19 @@ private:
             }
         }
 
-        auto sectionsTag = level->listTag("Sections");
+        auto sectionsTag = level->listTag(u8"Sections");
         if (!sectionsTag) {
             return nullptr;
         }
         vector<shared_ptr<ChunkSection>> sections;
         auto createEmptySection = chunksection::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, tileEntities, sections);
 
-        auto biomesTag = level->query("Biomes");
+        auto biomesTag = level->query(u8"Biomes");
         vector<biomes::BiomeId> biomes;
         ParseBiomes(biomesTag, dataVersion, biomes);
 
         vector<shared_ptr<nbt::CompoundTag>> entities;
-        auto entitiesTag = level->listTag("Entities");
+        auto entitiesTag = level->listTag(u8"Entities");
         if (entitiesTag && entitiesTag->fType == nbt::Tag::Type::Compound) {
             auto entitiesList = entitiesTag->asList();
             for (auto it : *entitiesList) {
@@ -550,22 +550,22 @@ private:
             }
         }
 
-        string s;
-        auto status = level->stringTag("Status");
+        u8string s;
+        auto status = level->stringTag(u8"Status");
         if (status) {
             s = status->fValue;
         }
-        std::optional<bool> terrainPopulated = level->boolean("TerrainPopulated");
+        std::optional<bool> terrainPopulated = level->boolean(u8"TerrainPopulated");
 
-        auto structures = level->compoundTag("Structures");
+        auto structures = level->compoundTag(u8"Structures");
 
-        auto lastUpdateTag = level->int64("LastUpdate");
+        auto lastUpdateTag = level->int64(u8"LastUpdate");
         int64_t lastUpdate = 0;
         if (lastUpdateTag) {
             lastUpdate = *lastUpdateTag;
         }
 
-        auto tileTicksTag = level->listTag("TileTicks");
+        auto tileTicksTag = level->listTag(u8"TileTicks");
         std::vector<TickingBlock> tileTicks;
         if (tileTicksTag) {
             for (auto it : *tileTicksTag) {
@@ -581,7 +581,7 @@ private:
             }
         }
 
-        auto liquidTicksTag = level->listTag("LiquidTicks");
+        auto liquidTicksTag = level->listTag(u8"LiquidTicks");
         std::vector<TickingBlock> liquidTicks;
         if (liquidTicksTag) {
             for (auto it : *liquidTicksTag) {
@@ -694,7 +694,7 @@ public:
     std::vector<biomes::BiomeId> fLegacyBiomes;
 
 protected:
-    std::string const fStatus;
+    std::u8string const fStatus;
     std::optional<bool> fTerrainPopulated;
     std::function<std::shared_ptr<ChunkSection>(int sectionY)> const fCreateEmptySection;
     int fDataVersion;

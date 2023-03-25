@@ -67,9 +67,9 @@ inline std::shared_ptr<mcfile::nbt::Tag> Pos3iToNbt(Pos3i const &pos) {
     using namespace std;
     using namespace mcfile::nbt;
     auto c = make_shared<CompoundTag>();
-    (*c)["x"] = make_shared<IntTag>(pos.fX);
-    (*c)["y"] = make_shared<IntTag>(pos.fY);
-    (*c)["z"] = make_shared<IntTag>(pos.fZ);
+    (*c)[u8"x"] = make_shared<IntTag>(pos.fX);
+    (*c)[u8"y"] = make_shared<IntTag>(pos.fY);
+    (*c)[u8"z"] = make_shared<IntTag>(pos.fZ);
     return c;
 }
 
@@ -79,9 +79,9 @@ inline std::optional<Pos3i> Pos3iFromNbt(mcfile::nbt::Tag const &tag) {
     if (!c) {
         return nullopt;
     }
-    auto x = c->int32("x");
-    auto y = c->int32("y");
-    auto z = c->int32("z");
+    auto x = c->int32(u8"x");
+    auto y = c->int32(u8"y");
+    auto z = c->int32(u8"z");
     if (!x || !y || !z) {
         return nullopt;
     }

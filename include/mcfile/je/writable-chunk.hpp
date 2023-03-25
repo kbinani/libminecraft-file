@@ -46,7 +46,7 @@ public:
         for (auto const &it : fEntities) {
             entities->push_back(it);
         }
-        c->set("Entities", entities);
+        c->set(u8"Entities", entities);
         return c;
     }
 
@@ -73,20 +73,20 @@ private:
         using namespace std;
         using namespace mcfile::nbt;
 
-        static unordered_set<string> const sExclude = {
-            "DataVersion",
-            "Status",
-            "xPos",
-            "yPos",
-            "zPos",
-            "LastUpdate",
-            "block_entities",
-            "structures",
-            "sections",
-            "Heightmaps",
-            "isLightOn",
-            "block_ticks",
-            "fluid_ticks",
+        static unordered_set<u8string> const sExclude = {
+            u8"DataVersion",
+            u8"Status",
+            u8"xPos",
+            u8"yPos",
+            u8"zPos",
+            u8"LastUpdate",
+            u8"block_entities",
+            u8"structures",
+            u8"sections",
+            u8"Heightmaps",
+            u8"isLightOn",
+            u8"block_ticks",
+            u8"fluid_ticks",
         };
         auto level = make_shared<CompoundTag>();
         if (fRoot) {
@@ -98,34 +98,34 @@ private:
             }
         }
 
-        level->set("DataVersion", make_shared<IntTag>(fDataVersion));
-        level->set("Status", make_shared<StringTag>(fStatus));
-        level->set("xPos", make_shared<IntTag>(fChunkX));
-        level->set("zPos", make_shared<IntTag>(fChunkZ));
-        level->set("yPos", make_shared<IntTag>(fChunkY));
-        level->set("LastUpdate", make_shared<LongTag>(fLastUpdate));
+        level->set(u8"DataVersion", make_shared<IntTag>(fDataVersion));
+        level->set(u8"Status", make_shared<StringTag>(fStatus));
+        level->set(u8"xPos", make_shared<IntTag>(fChunkX));
+        level->set(u8"zPos", make_shared<IntTag>(fChunkZ));
+        level->set(u8"yPos", make_shared<IntTag>(fChunkY));
+        level->set(u8"LastUpdate", make_shared<LongTag>(fLastUpdate));
 
         auto blockEntities = make_shared<ListTag>(Tag::Type::Compound);
         for (auto const &it : fTileEntities) {
             blockEntities->push_back(it.second->clone());
         }
-        level->set("block_entities", blockEntities);
+        level->set(u8"block_entities", blockEntities);
 
         if (fStructures) {
-            level->set("structures", fStructures->clone());
+            level->set(u8"structures", fStructures->clone());
         }
 
         auto lt = make_shared<ListTag>(Tag::Type::Compound);
         for (TickingBlock const &tb : fLiquidTicks) {
             lt->push_back(tb.toCompoundTag());
         }
-        level->set("fluid_ticks", lt);
+        level->set(u8"fluid_ticks", lt);
 
         auto tt = make_shared<ListTag>(Tag::Type::Compound);
         for (TickingBlock const &tb : fTileTicks) {
             tt->push_back(tb.toCompoundTag());
         }
-        level->set("block_ticks", tt);
+        level->set(u8"block_ticks", tt);
 
         vector<shared_ptr<ChunkSection>> sections;
         for (auto const &section : fSections) {
@@ -157,12 +157,12 @@ private:
                     isLightOn = true;
                 }
             }
-            level->set("sections", sectionsList);
+            level->set(u8"sections", sectionsList);
         }
-        level->set("isLightOn", make_shared<ByteTag>(isLightOn ? 1 : 0));
+        level->set(u8"isLightOn", make_shared<ByteTag>(isLightOn ? 1 : 0));
 
         if (auto heightMaps = packHeightMap(); heightMaps) {
-            level->set("Heightmaps", heightMaps);
+            level->set(u8"Heightmaps", heightMaps);
         }
 
         return level;
@@ -172,12 +172,12 @@ private:
         using namespace std;
         using namespace mcfile::nbt;
         auto root = make_shared<CompoundTag>();
-        root->set("DataVersion", make_shared<IntTag>(fDataVersion));
+        root->set(u8"DataVersion", make_shared<IntTag>(fDataVersion));
 
         auto level = make_shared<CompoundTag>();
 
-        level->set("xPos", make_shared<IntTag>(fChunkX));
-        level->set("zPos", make_shared<IntTag>(fChunkZ));
+        level->set(u8"xPos", make_shared<IntTag>(fChunkX));
+        level->set(u8"zPos", make_shared<IntTag>(fChunkZ));
 
         vector<shared_ptr<ChunkSection>> sections;
         for (auto const &section : fSections) {
@@ -197,7 +197,7 @@ private:
                 }
                 sectionsList->push_back(s);
             }
-            level->set("Sections", sectionsList);
+            level->set(u8"Sections", sectionsList);
         }
 
         if (fDataVersion >= 2203) { // 19w36a
@@ -207,7 +207,7 @@ private:
                 for (uint16_t b : fLegacyBiomes) {
                     biomes.push_back((uint8_t)(0xff & b));
                 }
-                level->set("Biomes", make_shared<IntArrayTag>(biomes));
+                level->set(u8"Biomes", make_shared<IntArrayTag>(biomes));
             }
         } else {
             if (fLegacyBiomes.size() == 256) {
@@ -216,7 +216,7 @@ private:
                 for (uint16_t b : fLegacyBiomes) {
                     biomes.push_back((uint8_t)(0xff & b));
                 }
-                level->set("Biomes", make_shared<ByteArrayTag>(biomes));
+                level->set(u8"Biomes", make_shared<ByteArrayTag>(biomes));
             }
         }
 
@@ -224,32 +224,32 @@ private:
         for (auto const &entity : fEntities) {
             entities->push_back(entity->clone());
         }
-        level->set("Entities", entities);
+        level->set(u8"Entities", entities);
 
         auto tileEntities = make_shared<ListTag>(Tag::Type::Compound);
         for (auto const &it : fTileEntities) {
             tileEntities->push_back(it.second->clone());
         }
-        level->set("TileEntities", tileEntities);
+        level->set(u8"TileEntities", tileEntities);
 
         if (fStructures) {
-            level->set("Structures", fStructures->clone());
+            level->set(u8"Structures", fStructures->clone());
         }
 
-        level->set("Status", make_shared<StringTag>(fStatus));
+        level->set(u8"Status", make_shared<StringTag>(fStatus));
 
-        static set<string> const whitelist = {
-            "DataVersion",
-            "xPos",
-            "zPos",
-            "Sections",
-            "Biomes",
-            "Entities",
-            "TileEntities",
-            "Structures",
-            "Status",
+        static set<u8string> const whitelist = {
+            u8"DataVersion",
+            u8"xPos",
+            u8"zPos",
+            u8"Sections",
+            u8"Biomes",
+            u8"Entities",
+            u8"TileEntities",
+            u8"Structures",
+            u8"Status",
         };
-        CompoundTag const *existingLevel = fRoot->query("/Level")->asCompound();
+        CompoundTag const *existingLevel = fRoot->query(u8"/Level")->asCompound();
         if (existingLevel) {
             for (auto it : *existingLevel) {
                 if (whitelist.find(it.first) != whitelist.end()) {
@@ -259,7 +259,7 @@ private:
             }
         }
 
-        root->set("Level", level);
+        root->set(u8"Level", level);
         return root;
     }
 
@@ -351,22 +351,22 @@ private:
         map->copyFrom(motionBlocking);
         auto motionBlockingTag = make_shared<nbt::LongArrayTag>();
         map->copyTo(motionBlockingTag->fValue);
-        tag->set("MOTION_BLOCKING", motionBlockingTag);
+        tag->set(u8"MOTION_BLOCKING", motionBlockingTag);
 
         map->copyFrom(motionBlockingNoLeaves);
         auto motionBlockingNoLeavesTag = make_shared<nbt::LongArrayTag>();
         map->copyTo(motionBlockingNoLeavesTag->fValue);
-        tag->set("MOTION_BLOCKING_NO_LEAVES", motionBlockingNoLeavesTag);
+        tag->set(u8"MOTION_BLOCKING_NO_LEAVES", motionBlockingNoLeavesTag);
 
         map->copyFrom(oceanFloor);
         auto oceanFloorTag = make_shared<nbt::LongArrayTag>();
         map->copyTo(oceanFloorTag->fValue);
-        tag->set("OCEAN_FLOOR", oceanFloorTag);
+        tag->set(u8"OCEAN_FLOOR", oceanFloorTag);
 
         map->copyFrom(worldSurface);
         auto worldSurfaceTag = make_shared<nbt::LongArrayTag>(37);
         map->copyTo(worldSurfaceTag->fValue);
-        tag->set("WORLD_SURFACE", worldSurfaceTag);
+        tag->set(u8"WORLD_SURFACE", worldSurfaceTag);
 
         return tag;
     }

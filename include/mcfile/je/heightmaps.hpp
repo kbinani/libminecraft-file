@@ -24,7 +24,7 @@ public:
         using namespace mcfile::blocks::minecraft;
         switch (block.fId) {
         case sea_pickle:
-            return block.property("waterlogged") == "true";
+            return block.property(u8"waterlogged") == u8"true";
         }
         return IsMotionBlockingById(block.fId);
     }
@@ -33,7 +33,7 @@ public:
         using namespace mcfile::blocks::minecraft;
         switch (block.fId) {
         case sea_pickle:
-            return block.property("waterlogged") == "true";
+            return block.property(u8"waterlogged") == u8"true";
         }
         return IsMotionBlockingNoLeavesById(block.fId);
     }

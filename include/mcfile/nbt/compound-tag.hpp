@@ -5,7 +5,7 @@ namespace mcfile::nbt {
 class CompoundTag : public Tag {
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
-        std::map<std::string, std::shared_ptr<Tag>> tmp;
+        std::map<std::u8string, std::shared_ptr<Tag>> tmp;
         while (r.valid()) {
             uint8_t type;
             if (!r.read(&type)) {
@@ -15,7 +15,7 @@ protected:
                 break;
             }
 
-            std::string name;
+            std::u8string name;
             if (!r.read(name)) {
                 return false;
             }
@@ -62,7 +62,7 @@ public:
         if (!w.write(static_cast<uint8_t>(Tag::Type::Compound))) {
             return false;
         }
-        if (!w.write(std::string())) {
+        if (!w.write(std::u8string())) {
             return false;
         }
         return tag.writeImpl(w);
@@ -90,15 +90,15 @@ public:
 
     Tag::Type type() const override { return Tag::Type::Compound; }
 
-    Tag const *query(std::string const &path) const {
+    Tag const *query(std::u8string const &path) const {
         // path: /Level/Sections
         if (path.empty()) {
             return EndTag::Instance();
         }
-        std::string p = path;
+        std::u8string p = path;
         Tag const *pivot = this;
         while (!p.empty()) {
-            if (p[0] == '/') {
+            if (p[0] == u8'/') {
                 if (fValue.size() != 1) {
                     return EndTag::Instance();
                 }
@@ -112,9 +112,9 @@ public:
                 pivot = child->asCompound();
                 p = p.substr(1);
             } else {
-                auto pos = p.find_first_of('/');
-                std::string name;
-                if (pos == std::string::npos) {
+                auto pos = p.find_first_of(u8'/');
+                std::u8string name;
+                if (pos == std::u8string::npos) {
                     name = p;
                 } else {
                     name = p.substr(0, pos);
@@ -125,12 +125,12 @@ public:
                         return EndTag::Instance();
                     int index;
                     try {
-                        index = std::stoi(name);
+                        index = String::Toi<int>(name);
                         if (index < 0 || list->size() <= index) {
                             return EndTag::Instance();
                         }
                         auto const &child = list->at(index);
-                        if (pos == std::string::npos) {
+                        if (pos == std::u8string::npos) {
                             return child.get();
                         }
                         auto id = child->type();
@@ -151,7 +151,7 @@ public:
                     if (child == comp->fValue.end()) {
                         return EndTag::Instance();
                     }
-                    if (pos == std::string::npos) {
+                    if (pos == std::u8string::npos) {
                         return child->second.get();
                     }
                     auto id = child->second->type();
@@ -166,29 +166,29 @@ public:
         return EndTag::Instance();
     }
 
-    std::shared_ptr<Tag> &operator[](std::string const &name) {
+    std::shared_ptr<Tag> &operator[](std::u8string const &name) {
         return fValue[name];
     }
 
-    void insert(std::pair<std::string, std::shared_ptr<Tag>> const &item) {
+    void insert(std::pair<std::u8string, std::shared_ptr<Tag>> const &item) {
         fValue.insert(item);
     }
 
-    void insert(std::initializer_list<std::pair<std::string const, std::shared_ptr<Tag>>> l) {
+    void insert(std::initializer_list<std::pair<std::u8string const, std::shared_ptr<Tag>>> l) {
         for (auto const &it : l) {
             fValue.insert(it);
         }
     }
 
-    decltype(auto) find(std::string const &name) const { return fValue.find(name); }
+    decltype(auto) find(std::u8string const &name) const { return fValue.find(name); }
     decltype(auto) begin() const { return fValue.begin(); }
     decltype(auto) end() const { return fValue.end(); }
     size_t size() const { return fValue.size(); }
     bool empty() const { return fValue.empty(); }
 
-    void erase(std::string const &name) { fValue.erase(name); }
+    void erase(std::u8string const &name) { fValue.erase(name); }
 
-    std::shared_ptr<Tag> tag(std::string const &name) const {
+    std::shared_ptr<Tag> tag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end()) {
             return nullptr;
@@ -196,7 +196,7 @@ public:
         return found->second;
     }
 
-    std::shared_ptr<StringTag> stringTag(std::string const &name) const {
+    std::shared_ptr<StringTag> stringTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -207,7 +207,7 @@ public:
         return std::dynamic_pointer_cast<StringTag>(found->second);
     }
 
-    std::shared_ptr<ByteTag> byteTag(std::string const &name) const {
+    std::shared_ptr<ByteTag> byteTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -218,7 +218,7 @@ public:
         return std::dynamic_pointer_cast<ByteTag>(found->second);
     }
 
-    std::shared_ptr<CompoundTag> compoundTag(std::string const &name) const {
+    std::shared_ptr<CompoundTag> compoundTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -229,7 +229,7 @@ public:
         return std::dynamic_pointer_cast<CompoundTag>(found->second);
     }
 
-    std::shared_ptr<ListTag> listTag(std::string const &name) const {
+    std::shared_ptr<ListTag> listTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -240,7 +240,7 @@ public:
         return std::dynamic_pointer_cast<ListTag>(found->second);
     }
 
-    std::shared_ptr<IntTag> intTag(std::string const &name) const {
+    std::shared_ptr<IntTag> intTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -251,7 +251,7 @@ public:
         return std::dynamic_pointer_cast<IntTag>(found->second);
     }
 
-    std::shared_ptr<LongTag> longTag(std::string const &name) const {
+    std::shared_ptr<LongTag> longTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -262,7 +262,7 @@ public:
         return std::dynamic_pointer_cast<LongTag>(found->second);
     }
 
-    std::shared_ptr<ShortTag> shortTag(std::string const &name) const {
+    std::shared_ptr<ShortTag> shortTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -273,7 +273,7 @@ public:
         return std::dynamic_pointer_cast<ShortTag>(found->second);
     }
 
-    std::shared_ptr<FloatTag> floatTag(std::string const &name) const {
+    std::shared_ptr<FloatTag> floatTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -284,7 +284,7 @@ public:
         return std::dynamic_pointer_cast<FloatTag>(found->second);
     }
 
-    std::shared_ptr<DoubleTag> doubleTag(std::string const &name) const {
+    std::shared_ptr<DoubleTag> doubleTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -295,7 +295,7 @@ public:
         return std::dynamic_pointer_cast<DoubleTag>(found->second);
     }
 
-    std::shared_ptr<IntArrayTag> intArrayTag(std::string const &name) const {
+    std::shared_ptr<IntArrayTag> intArrayTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -306,7 +306,7 @@ public:
         return std::dynamic_pointer_cast<IntArrayTag>(found->second);
     }
 
-    std::shared_ptr<ByteArrayTag> byteArrayTag(std::string const &name) const {
+    std::shared_ptr<ByteArrayTag> byteArrayTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -317,7 +317,7 @@ public:
         return std::dynamic_pointer_cast<ByteArrayTag>(found->second);
     }
 
-    std::shared_ptr<LongArrayTag> longArrayTag(std::string const &name) const {
+    std::shared_ptr<LongArrayTag> longArrayTag(std::u8string const &name) const {
         auto found = fValue.find(name);
         if (found == fValue.end())
             return nullptr;
@@ -328,7 +328,7 @@ public:
         return std::dynamic_pointer_cast<LongArrayTag>(found->second);
     }
 
-    std::optional<int8_t> byte(std::string const &name) const {
+    std::optional<int8_t> byte(std::u8string const &name) const {
         auto v = byteTag(name);
         if (v) {
             return v->fValue;
@@ -337,7 +337,7 @@ public:
         }
     }
 
-    std::optional<bool> boolean(std::string const &name) const {
+    std::optional<bool> boolean(std::u8string const &name) const {
         auto v = byteTag(name);
         if (v) {
             return v->fValue != 0;
@@ -346,7 +346,7 @@ public:
         }
     }
 
-    std::optional<int16_t> int16(std::string const &name) const {
+    std::optional<int16_t> int16(std::u8string const &name) const {
         auto v = shortTag(name);
         if (v) {
             return v->fValue;
@@ -355,7 +355,7 @@ public:
         }
     }
 
-    std::optional<int32_t> int32(std::string const &name) const {
+    std::optional<int32_t> int32(std::u8string const &name) const {
         auto v = intTag(name);
         if (v) {
             return v->fValue;
@@ -364,7 +364,7 @@ public:
         }
     }
 
-    std::optional<int64_t> int64(std::string const &name) const {
+    std::optional<int64_t> int64(std::u8string const &name) const {
         auto v = longTag(name);
         if (v) {
             return v->fValue;
@@ -373,7 +373,7 @@ public:
         }
     }
 
-    std::optional<std::string> string(std::string const &name) const {
+    std::optional<std::u8string> string(std::u8string const &name) const {
         auto v = stringTag(name);
         if (v) {
             return v->fValue;
@@ -382,7 +382,7 @@ public:
         }
     }
 
-    std::optional<float> float32(std::string const &name) const {
+    std::optional<float> float32(std::u8string const &name) const {
         auto v = floatTag(name);
         if (v) {
             return v->fValue;
@@ -391,7 +391,7 @@ public:
         }
     }
 
-    std::optional<double> float64(std::string const &name) const {
+    std::optional<double> float64(std::u8string const &name) const {
         auto v = doubleTag(name);
         if (v) {
             return v->fValue;
@@ -400,47 +400,47 @@ public:
         }
     }
 
-    int8_t byte(std::string const &name, int8_t fallback) const {
+    int8_t byte(std::u8string const &name, int8_t fallback) const {
         auto v = byteTag(name);
         return v ? v->fValue : fallback;
     }
 
-    bool boolean(std::string const &name, bool fallback) const {
+    bool boolean(std::u8string const &name, bool fallback) const {
         auto v = byteTag(name);
         return v ? v->fValue != 0 : fallback;
     }
 
-    int16_t int16(std::string const &name, int16_t fallback) const {
+    int16_t int16(std::u8string const &name, int16_t fallback) const {
         auto v = shortTag(name);
         return v ? v->fValue : fallback;
     }
 
-    int32_t int32(std::string const &name, int32_t fallback) const {
+    int32_t int32(std::u8string const &name, int32_t fallback) const {
         auto v = intTag(name);
         return v ? v->fValue : fallback;
     }
 
-    int64_t int64(std::string const &name, int64_t fallback) const {
+    int64_t int64(std::u8string const &name, int64_t fallback) const {
         auto v = longTag(name);
         return v ? v->fValue : fallback;
     }
 
-    std::string string(std::string const &name, std::string fallback) const {
+    std::u8string string(std::u8string const &name, std::u8string fallback) const {
         auto v = stringTag(name);
         return v ? v->fValue : fallback;
     }
 
-    float float32(std::string const &name, float fallback) const {
+    float float32(std::u8string const &name, float fallback) const {
         auto v = floatTag(name);
         return v ? v->fValue : fallback;
     }
 
-    double float64(std::string const &name, double fallback) const {
+    double float64(std::u8string const &name, double fallback) const {
         auto v = doubleTag(name);
         return v ? v->fValue : fallback;
     }
 
-    void set(std::string const &name, std::shared_ptr<Tag> const &value) {
+    void set(std::u8string const &name, std::shared_ptr<Tag> const &value) {
         fValue[name] = value;
     }
 
@@ -617,7 +617,7 @@ public:
         if (type != static_cast<uint8_t>(Tag::Type::Compound)) {
             return nullptr;
         }
-        std::string n;
+        std::u8string n;
         if (!isr.read(n)) {
             return nullptr;
         }
@@ -690,7 +690,7 @@ private:
             if (!reader.read(&type)) {
                 break;
             }
-            std::string name;
+            std::u8string name;
             if (!reader.read(name)) {
                 break;
             }
@@ -705,7 +705,7 @@ private:
     }
 
 public:
-    std::map<std::string, std::shared_ptr<Tag>> fValue;
+    std::map<std::u8string, std::shared_ptr<Tag>> fValue;
 };
 
 } // namespace mcfile::nbt
