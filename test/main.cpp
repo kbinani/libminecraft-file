@@ -6,6 +6,8 @@
 #include "BlockData.hpp"
 #include "Point3D.hpp"
 
+#include "string.test.hpp"
+
 using namespace mcfile;
 using namespace mcfile::u8stream;
 namespace fs = std::filesystem;

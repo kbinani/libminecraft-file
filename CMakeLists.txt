@@ -123,7 +123,8 @@ set(mcfile_test_files
   test/flatten.test.cpp
   test/nbt.test.cpp
   test/data4b3d.test.cpp
-  test/heightmap.test.cpp)
+  test/heightmap.test.cpp
+  test/string.test.hpp)
 
 set(CMAKE_REQUIRED_FLAGS "-lstdc++fs")
 check_c_compiler_flag("" TEST_RESULT_STDCXXFS)

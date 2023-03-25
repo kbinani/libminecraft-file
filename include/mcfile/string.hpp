@@ -6,20 +6,22 @@ class String {
 public:
     String() = delete;
 
-    static std::vector<std::u8string> Split(std::u8string const &sentence, char8_t delimiter) {
-        std::basic_istringstream<char8_t> input(sentence);
-        std::vector<std::u8string> tokens;
-        for (std::u8string line; std::getline(input, line, delimiter);) {
-            tokens.push_back(line);
+    template<class Char>
+    static std::vector<std::basic_string<Char>> Split(std::basic_string<Char> const &sentence, Char delimiter) {
+        std::vector<std::basic_string<Char>> tokens;
+        typename std::basic_string<Char>::size_type off = 0;
+        while (off < std::basic_string<Char>::npos) {
+            auto found = sentence.find_first_of(delimiter, off);
+            if (found == std::basic_string<Char>::npos) {
+                break;
+            }
+            auto sub = sentence.substr(off, found - off);
+            tokens.push_back(sub);
+            off = found + 1;
         }
-        return tokens;
-    }
-
-    static std::vector<std::string> Split(std::string const &sentence, char delimiter) {
-        std::istringstream input(sentence);
-        std::vector<std::string> tokens;
-        for (std::string line; std::getline(input, line, delimiter);) {
-            tokens.push_back(line);
+        if (off != std::basic_string<Char>::npos) {
+            auto sub = sentence.substr(off);
+            tokens.push_back(sub);
         }
         return tokens;
     }
