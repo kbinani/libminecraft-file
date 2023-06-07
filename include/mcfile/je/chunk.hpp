@@ -252,7 +252,11 @@ public:
         // ...
         // Java Edition 17w47a 1451 TerrainPopulated 1
         if (fDataVersion >= 1912) {
-            if (fStatus == u8"full") {
+            if (fStatus == u8"minecraft:full") {
+                // >= 1.20
+                return Status::FULL;
+            } else if (fStatus == u8"full") {
+                // < 1.20
                 return Status::FULL;
             } else {
                 return Status::UNKNOWN;
