@@ -1025,6 +1025,13 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:torchflower"] = torchflower;
     t[u8"minecraft:torchflower_crop"] = torchflower_crop;
 
+    //1.20
+    t[u8"minecraft:calibrated_sculk_sensor"] = calibrated_sculk_sensor;
+    t[u8"minecraft:pitcher_crop"] = pitcher_crop;
+    t[u8"minecraft:pitcher_plant"] = pitcher_plant;
+    t[u8"minecraft:sniffer_egg"] = sniffer_egg;
+    t[u8"minecraft:suspicious_gravel"] = suspicious_gravel;
+
     return ret;
 }
 

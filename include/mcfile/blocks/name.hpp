@@ -1027,6 +1027,13 @@ static inline std::vector<Characteristics> CreateTable() {
     m[torchflower] = {.name = u8"minecraft:torchflower", .opaque = false};
     m[torchflower_crop] = {.name = u8"minecraft:torchflower_crop", .opaque = false};
 
+    // 1.20
+    m[calibrated_sculk_sensor] = {.name = u8"minecraft:calibrated_sculk_sensor", .opaque = false};
+    m[pitcher_crop] = {.name = u8"minecraft:pitcher_crop", .opaque = false};
+    m[pitcher_plant] = {.name = u8"minecraft:pitcher_plant", .opaque = false};
+    m[sniffer_egg] = {.name = u8"minecraft:sniffer_egg", .opaque = false};
+    m[suspicious_gravel] = {.name = u8"minecraft:suspicious_gravel", .opaque = true};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);

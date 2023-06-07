@@ -1036,6 +1036,13 @@ enum : BlockId {
     torchflower,
     torchflower_crop,
 
+    // 1.20
+    calibrated_sculk_sensor,
+    pitcher_crop,
+    pitcher_plant,
+    sniffer_egg,
+    suspicious_gravel,
+
     minecraft_max_block_id,
 };
 
