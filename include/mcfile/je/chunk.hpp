@@ -5,7 +5,7 @@ namespace mcfile::je {
 class Chunk {
 public:
     enum : int {
-        kDataVersion = 3337, // 1.19.4
+        kDataVersion = 3463, // 1.20
     };
 
     std::shared_ptr<Block const> blockAt(int x, int y, int z) const {
