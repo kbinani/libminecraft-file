@@ -846,6 +846,9 @@ public:
         case stripped_cherry_log:
         case stripped_cherry_wood:
         case suspicious_sand:
+        case calibrated_sculk_sensor:
+        case sniffer_egg:
+        case suspicious_gravel:
             return true;
         default:
             return false;
@@ -1642,6 +1645,9 @@ public:
         case stripped_cherry_log:
         case stripped_cherry_wood:
         case suspicious_sand:
+        case calibrated_sculk_sensor:
+        case sniffer_egg:
+        case suspicious_gravel:
             return true;
         default:
             return false;
@@ -2426,6 +2432,9 @@ public:
         case stripped_cherry_log:
         case stripped_cherry_wood:
         case suspicious_sand:
+        case calibrated_sculk_sensor:
+        case sniffer_egg:
+        case suspicious_gravel:
             return true;
         default:
             return false;
@@ -3423,6 +3432,11 @@ public:
         case suspicious_sand:
         case torchflower:
         case torchflower_crop:
+        case calibrated_sculk_sensor:
+        case pitcher_crop:
+        case pitcher_plant:
+        case sniffer_egg:
+        case suspicious_gravel:
             return true;
         default:
             return false;
