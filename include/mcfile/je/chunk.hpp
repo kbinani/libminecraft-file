@@ -41,7 +41,7 @@ public:
         int const offsetX = x - chunkX * 16;
         int const offsetZ = z - chunkZ * 16;
         int const offsetY = y - section->y() * 16;
-        auto block = section->blockAt(offsetX, offsetY, offsetZ);
+        auto block = section->blockAtUnchecked(offsetX, offsetY, offsetZ);
         if (block) {
             return block->fId;
         } else {
