@@ -89,6 +89,20 @@ public:
     static bool ForAll(leveldb::DB *db, Dimension dim, std::function<bool(int cx, int cz)> cb) {
         return ForAllImpl(db, dim, cb);
     }
+
+    static bool Exists(leveldb::DB *db, int cx, int cz, Dimension dim) {
+        if (!db) {
+            return false;
+        }
+        std::string v;
+        if (auto st = db->Get({}, DbKey::Version(cx, cz, dim), &v); st.ok()) {
+            return true;
+        }
+        if (auto st = db->Get({}, DbKey::VersionLegacy(cx, cz, dim), &v); st.ok()) {
+            return true;
+        }
+        return false;
+    }
 #endif
 
     int minBlockX() const { return fChunkX * 16; }
