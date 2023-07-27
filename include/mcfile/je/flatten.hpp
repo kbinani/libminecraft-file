@@ -926,7 +926,8 @@ public:
 
     static std::shared_ptr<mcfile::je::Block const> Block(uint16_t blockId, uint8_t data) {
         blocks::BlockId id = blocks::minecraft::air;
-        std::map<std::u8string, std::u8string> props;
+        thread_local std::map<std::u8string, std::u8string> props;
+        props.clear();
         switch (blockId) {
         case 0: id = blocks::minecraft::air; break;
         case 1:
