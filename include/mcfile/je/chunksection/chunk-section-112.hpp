@@ -137,6 +137,7 @@ private:
         }
 
         std::vector<std::shared_ptr<Block const>> palette;
+        std::vector<std::pair<uint8_t, uint16_t>> numericPalette;
         std::vector<uint16_t> paletteIndices(16 * 16 * 16);
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
@@ -146,17 +147,19 @@ private:
                     uint8_t const idHi = Flatten::Nibble4(add, index);
                     uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
                     uint8_t const blockData = Flatten::Nibble4(data, index);
-                    std::shared_ptr<Block const> block = Flatten::Block(id, blockData);
+                    std::pair<uint8_t, uint16_t> key = std::make_pair(id, blockData);
                     int paletteIndex = -1;
-                    for (int i = 0; i < (int)palette.size(); i++) {
-                        if (palette[i]->equals(*block)) {
+                    for (int i = 0; i < (int)numericPalette.size(); i++) {
+                        if (numericPalette[i] == key) {
                             paletteIndex = i;
                             break;
                         }
                     }
                     if (paletteIndex < 0) {
+                        std::shared_ptr<Block const> block = Flatten::Block(id, blockData);
                         paletteIndex = (int)palette.size();
                         palette.push_back(block);
+                        numericPalette.push_back(key);
                     }
                     paletteIndices[index] = (uint16_t)paletteIndex;
                 }
