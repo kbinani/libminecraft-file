@@ -13,9 +13,21 @@ public:
 
     using LoadChunkCallback = std::function<bool(Chunk &)>;
 
-    bool loadAllChunks(bool &error, LoadChunkCallback callback) const {
+    bool loadAllChunks(bool &error, LoadChunkCallback callback, bool freadAtOnce = false) const {
+        std::shared_ptr<stream::InputStream> s;
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
-        stream::InputStreamReader sr(fs);
+        std::vector<uint8_t> buffer;
+        if (freadAtOnce) {
+            if (!fs->valid()) {
+                return false;
+            }
+            stream::InputStream::ReadUntilEos(*fs, buffer);
+            fs.reset();
+            s = std::make_shared<stream::ByteInputStream>((char const *)buffer.data(), buffer.size());
+        } else {
+            s = fs;
+        }
+        stream::InputStreamReader sr(s);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
                 if (!loadChunkImpl(x, z, sr, error, callback)) {

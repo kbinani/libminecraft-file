@@ -7,7 +7,7 @@ public:
     explicit ByteInputStream(std::string_view data)
         : fData(data) {}
 
-    ByteInputStream(char *data, size_t size)
+    ByteInputStream(char const *data, size_t size)
         : fData(data, size) {}
 
     size_t read(void *buf, size_t size) override {
