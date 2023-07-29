@@ -45,13 +45,12 @@ public:
         }
     }
 
-    bool loadChunk(::mcfile::stream::InputStreamReader &reader, std::function<void(Chunk &chunk)> callback) const {
+    bool loadChunk(::mcfile::stream::InputStreamReader &reader, std::function<bool(Chunk &chunk)> callback) const {
         auto chunk = loadChunk(reader);
         if (!chunk) {
             return false;
         }
-        callback(*chunk);
-        return true;
+        return callback(*chunk);
     }
 
     std::shared_ptr<WritableChunk> loadWritableChunk(::mcfile::stream::InputStreamReader &reader) const {

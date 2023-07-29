@@ -76,8 +76,7 @@ public:
                 if (!region) {
                     continue;
                 }
-                bool error = false;
-                return region->loadAllChunks(error, [minX, minZ, maxX, maxZ, callback](Chunk const &chunk) {
+                return region->loadAllChunks([minX, minZ, maxX, maxZ, callback](Chunk const &chunk) {
                     for (int y = 0; y < 256; y++) {
                         for (int z = std::max(minZ, chunk.minBlockZ()); z <= std::min(maxZ, chunk.maxBlockZ()); z++) {
                             for (int x = std::max(minX, chunk.minBlockX()); x <= std::min(maxX, chunk.maxBlockX()); x++) {

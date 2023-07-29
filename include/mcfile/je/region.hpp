@@ -11,13 +11,14 @@ public:
 
     Region &operator=(Region const &rh) = delete;
 
-    using LoadChunkCallback = std::function<bool(Chunk &)>;
-
-    bool loadAllChunks(bool &error, LoadChunkCallback callback, bool freadAtOnce = false) const {
+    struct LoadAllOptions {
+        bool freadAtOnce = false;
+    };
+    bool loadAllChunks(std::function<bool(Chunk &)> callback, LoadAllOptions options = {.freadAtOnce = false}) const {
         std::shared_ptr<stream::InputStream> s;
         auto fs = std::make_shared<stream::FileInputStream>(fFilePath);
         std::vector<uint8_t> buffer;
-        if (freadAtOnce) {
+        if (options.freadAtOnce) {
             if (!fs->valid()) {
                 return false;
             }
@@ -30,7 +31,7 @@ public:
         stream::InputStreamReader sr(s);
         for (int z = 0; z < 32; z++) {
             for (int x = 0; x < 32; x++) {
-                if (!loadChunkImpl(x, z, sr, error, callback)) {
+                if (!loadChunkImpl(x, z, sr, callback)) {
                     return false;
                 }
             }
@@ -699,12 +700,11 @@ private:
         , fFilePath(filePath) {
     }
 
-    bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader &sr, bool &error, LoadChunkCallback callback) const {
+    bool loadChunkImpl(int regionX, int regionZ, stream::InputStreamReader &sr, std::function<bool(Chunk &)> callback) const {
         std::shared_ptr<McaChunkLocator> data;
         bool ok = ChunkLocator(fX, fZ, regionX, regionZ, sr, data);
         if (!ok) {
-            error = true;
-            return true;
+            return false;
         }
         if (!data) {
             // chunk not saved yet
@@ -713,8 +713,7 @@ private:
         if (data->loadChunk(sr, callback)) {
             return true;
         } else {
-            error = true;
-            return true;
+            return false;
         }
     }
 
