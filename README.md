@@ -39,13 +39,12 @@ int main() {
     std::cout << biomes::Name(biome, chunk->dataVersion()) << std::endl; // "minecraft:crimson_forest" etc.
 
     // accessing all chunks in the region
-    bool err = false;
-    region->loadAllChunks(err, [](Chunk const &c) -> bool {
+    bool done = region->loadAllChunks([](Chunk const &c) -> bool {
         blocks::BlockId b = c.blockIdAt(c.minBlockX(), 0, c.maxBlockZ());
         std::cout << blocks::Name(b) << std::endl;
         return true; // continue
     });
-    std::cout << err << std::endl; // false if succeeded
+    std::cout << done << std::endl; // true if succeeded
 
     // erase chunk data from region
     // DANGEROUS: remove chunk (0, 0) from the mca file and overwrite it
