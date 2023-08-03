@@ -816,6 +816,7 @@ public:
         case 355: return ns u8"red_bed";
         case 356: return ns u8"repeater";
         case 357: return ns u8"cookie";
+        case 358: return ns u8"filled_map";
         case 359: return ns u8"shears";
         case 360: return ns u8"melon_slice";
         case 361: return ns u8"pumpkin_seeds";
@@ -872,6 +873,7 @@ public:
         case 384: return ns u8"experience_bottle";
         case 385: return ns u8"fire_charge";
         case 386: return ns u8"writable_book";
+        case 387: return ns u8"written_book";
         case 388: return ns u8"emerald";
         case 389: return ns u8"item_frame";
         case 390: return ns u8"flower_pot";
@@ -887,6 +889,7 @@ public:
             case 2: return ns u8"zombie_head";
             case 3: return ns u8"player_head";
             case 4: return ns u8"creeper_head";
+            case 5: return ns u8"dragon_head";
             case 0:
             default:
                 return ns u8"skeleton_skull";
@@ -894,6 +897,7 @@ public:
         case 398: return ns u8"carrot_on_a_stick";
         case 399: return ns u8"nether_star";
         case 400: return ns u8"pumpkin_pie";
+        case 401: return ns u8"firework_rocket";
         case 402: return ns u8"firework_star";
         case 403: return ns u8"enchanted_book";
         case 404: return ns u8"comparator";
@@ -901,11 +905,50 @@ public:
         case 406: return ns u8"quartz";
         case 407: return ns u8"tnt_minecart";
         case 408: return ns u8"hopper_minecart";
+        case 409: return ns u8"prismarine_shard";
+        case 410: return ns u8"prismarine_crystals";
+        case 411: return ns u8"rabbit";
+        case 412: return ns u8"cooked_rabbit";
+        case 413: return ns u8"rabbit_stew";
+        case 414: return ns u8"rabbit_foot";
+        case 415: return ns u8"rabbit_hide";
+        case 416: return ns u8"armor_stand";
         case 417: return ns u8"iron_horse_armor";
         case 418: return ns u8"golden_horse_armor";
         case 419: return ns u8"diamond_horse_armor";
         case 420: return ns u8"lead";
         case 421: return ns u8"name_tag";
+        case 422: return ns u8"command_block_minecart";
+        case 423: return ns u8"mutton";
+        case 424: return ns u8"cooked_mutton";
+        case 425: return ns u8"banner";
+        case 426: return ns u8"end_crystal";
+        case 427: return ns u8"spruce_door";
+        case 428: return ns u8"birch_door";
+        case 429: return ns u8"jungle_door";
+        case 430: return ns u8"acacia_door";
+        case 431: return ns u8"dark_oak_door";
+        case 432: return ns u8"chorus_fruit";
+        case 433: return ns u8"popped_chorus_fruit";
+        case 434: return ns u8"beetroot";
+        case 435: return ns u8"beetroot_seeds";
+        case 436: return ns u8"beetroot_soup";
+        case 437: return ns u8"dragon_breath";
+        case 438: return ns u8"splash_potion";
+        case 439: return ns u8"spectral_arrow";
+        case 440: return ns u8"tipped_arrow";
+        case 441: return ns u8"lingering_potion";
+        case 442: return ns u8"shield";
+        case 443: return ns u8"elytra";
+        case 444: return ns u8"spruce_boat";
+        case 445: return ns u8"birch_boat";
+        case 446: return ns u8"jungle_boat";
+        case 447: return ns u8"acacia_boat";
+        case 448: return ns u8"dark_oak_boat";
+        case 449: return ns u8"totem_of_undying";
+        case 450: return ns u8"shulker_shell";
+        case 452: return ns u8"iron_nugget";
+        case 453: return ns u8"knowledge_book";
         case 2256: return ns u8"music_disc_13";
         case 2257: return ns u8"music_disc_cat";
         case 2258: return ns u8"music_disc_blocks";
@@ -913,11 +956,11 @@ public:
         case 2260: return ns u8"music_disc_far";
         case 2261: return ns u8"music_disc_mall";
         case 2262: return ns u8"music_disc_mellohi";
-        case 2267: return ns u8"music_disc_wait";
         case 2263: return ns u8"music_disc_stal";
         case 2264: return ns u8"music_disc_strad";
         case 2265: return ns u8"music_disc_ward";
         case 2266: return ns u8"music_disc_11";
+        case 2267: return ns u8"music_disc_wait";
         }
         return nullopt;
 #undef ns
