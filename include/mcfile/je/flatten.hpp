@@ -925,1231 +925,1518 @@ public:
     }
 
     static std::shared_ptr<mcfile::je::Block const> Block(uint16_t blockId, uint8_t data) {
-        blocks::BlockId id = blocks::minecraft::air;
-        thread_local std::map<std::u8string, std::u8string> props;
+        using namespace std;
+        thread_local map<u8string, u8string> props;
         props.clear();
-        switch (blockId) {
-        case 0: id = blocks::minecraft::air; break;
-        case 1:
-            switch (data) {
-            case 1: id = blocks::minecraft::granite; break;
-            case 2: id = blocks::minecraft::polished_granite; break;
-            case 3: id = blocks::minecraft::diorite; break;
-            case 4: id = blocks::minecraft::polished_diorite; break;
-            case 5: id = blocks::minecraft::andesite; break;
-            case 6: id = blocks::minecraft::polished_andesite; break;
-            case 0:
-            default:
-                id = blocks::minecraft::stone;
-                break;
-            }
-            break;
-        case 2: id = blocks::minecraft::grass_block; break;
-        case 3:
-            switch (data) {
-            case 1: id = blocks::minecraft::coarse_dirt; break;
-            case 2: id = blocks::minecraft::podzol; break;
-            case 0:
-            default:
-                id = blocks::minecraft::dirt;
-                break;
-            }
-            break;
-        case 4: id = blocks::minecraft::cobblestone; break;
-        case 5:
-            switch (data) {
-            case 1: id = blocks::minecraft::spruce_planks; break;
-            case 2: id = blocks::minecraft::birch_planks; break;
-            case 3: id = blocks::minecraft::jungle_planks; break;
-            case 4: id = blocks::minecraft::acacia_planks; break;
-            case 5: id = blocks::minecraft::dark_oak_planks; break;
-            case 0:
-            default:
-                id = blocks::minecraft::oak_planks;
-                break;
-            }
-            break;
-        case 6:
-            switch (data & 0x7) {
-            case 1: id = blocks::minecraft::spruce_sapling; break;
-            case 2: id = blocks::minecraft::birch_sapling; break;
-            case 3: id = blocks::minecraft::jungle_sapling; break;
-            case 4: id = blocks::minecraft::acacia_sapling; break;
-            case 5: id = blocks::minecraft::dark_oak_sapling; break;
-            case 0:
-            default:
-                id = blocks::minecraft::oak_sapling;
-                break;
-            }
-            break;
-        case 7: id = blocks::minecraft::bedrock; break;
-        case 8: id = blocks::minecraft::water; break; //TODO: flowing_water
-        case 9:
-            id = blocks::minecraft::water;
-            props[u8"level"] = String::ToString(data);
-            break;
-        case 10: id = blocks::minecraft::lava; break; //TODO: flowing_lava
-        case 11:
-            id = blocks::minecraft::lava;
-            props[u8"level"] = String::ToString(data);
-            break;
-        case 12:
-            switch (data) {
-            case 1: id = blocks::minecraft::red_sand; break;
-            case 0:
-            default:
-                id = blocks::minecraft::sand;
-            }
-            break;
-        case 13: id = blocks::minecraft::gravel; break;
-        case 14: id = blocks::minecraft::gold_ore; break;
-        case 15: id = blocks::minecraft::iron_ore; break;
-        case 16: id = blocks::minecraft::coal_ore; break;
-        case 17:
-            switch (data & 0x3) {
-            case 1: id = blocks::minecraft::spruce_log; break;
-            case 2: id = blocks::minecraft::birch_log; break;
-            case 3: id = blocks::minecraft::jungle_log; break;
-            case 0:
-            default:
-                id = blocks::minecraft::oak_log;
-                break;
-            }
-            Log(data, props);
-            break;
-        case 18:
-            switch (data & 0x3) {
-            case 1: id = blocks::minecraft::spruce_leaves; break;
-            case 2: id = blocks::minecraft::birch_leaves; break;
-            case 3: id = blocks::minecraft::jungle_leaves; break;
-            case 0:
-            default:
-                id = blocks::minecraft::oak_leaves;
-                break;
-            }
-            Leaves(data, props);
-            break;
-        case 19:
-            switch (data) {
-            case 1: id = blocks::minecraft::wet_sponge; break;
-            case 0:
-            default:
-                id = blocks::minecraft::sponge;
-                break;
-            }
-            break;
-        case 20: id = blocks::minecraft::glass; break;
-        case 21: id = blocks::minecraft::lapis_ore; break;
-        case 22: id = blocks::minecraft::lapis_block; break;
-        case 23:
-            id = blocks::minecraft::dispenser;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 24:
-            switch (data) {
-            case 1: id = blocks::minecraft::chiseled_sandstone; break;
-            case 2: id = blocks::minecraft::cut_sandstone; break;
-            case 0:
-            default:
-                id = blocks::minecraft::sandstone;
-                break;
-            }
-            break;
-        case 25: id = blocks::minecraft::note_block; break;
-        case 26:
-            id = blocks::minecraft::red_bed;
-            Bed(data, props);
-            break;
-        case 27:
-            id = blocks::minecraft::powered_rail;
-            PoweredRail(data, props);
-            break;
-        case 28:
-            id = blocks::minecraft::detector_rail;
-            PoweredRail(data, props);
-            break;
-        case 29:
-            id = blocks::minecraft::sticky_piston;
-            Piston(data, props);
-            break;
-        case 30: id = blocks::minecraft::cobweb; break;
-        case 31:
-            switch (data) {
-            case 2: id = blocks::minecraft::fern; break;
-            case 1:
-            case 0: // shrub. Legacy console edition only
-            default:
-                id = blocks::minecraft::grass;
-                break;
-            }
-            break;
-        case 32: id = blocks::minecraft::dead_bush; break;
-        case 33:
-            id = blocks::minecraft::piston;
-            Piston(data, props);
-            break;
-        case 34:
-            id = blocks::minecraft::piston_head;
-            props[u8"facing"] = FacingA(data & 7);
-            props[u8"type"] = (data & 0x8) == 0x8 ? u8"sticky" : u8"normal";
-            break;
-        case 35:
-            switch (data) {
-            case 1: id = blocks::minecraft::orange_wool; break;
-            case 2: id = blocks::minecraft::magenta_wool; break;
-            case 3: id = blocks::minecraft::light_blue_wool; break;
-            case 4: id = blocks::minecraft::yellow_wool; break;
-            case 5: id = blocks::minecraft::lime_wool; break;
-            case 6: id = blocks::minecraft::pink_wool; break;
-            case 7: id = blocks::minecraft::gray_wool; break;
-            case 8: id = blocks::minecraft::light_gray_wool; break;
-            case 9: id = blocks::minecraft::cyan_wool; break;
-            case 10: id = blocks::minecraft::purple_wool; break;
-            case 11: id = blocks::minecraft::blue_wool; break;
-            case 12: id = blocks::minecraft::brown_wool; break;
-            case 13: id = blocks::minecraft::green_wool; break;
-            case 14: id = blocks::minecraft::red_wool; break;
-            case 15: id = blocks::minecraft::black_wool; break;
-            case 0:
-            default:
-                id = blocks::minecraft::white_wool;
-                break;
-            }
-            break;
-        case 37: id = blocks::minecraft::dandelion; break;
-        case 38:
-            switch (data) {
-            case 0: id = blocks::minecraft::poppy; break;
-            case 1: id = blocks::minecraft::blue_orchid; break;
-            case 2: id = blocks::minecraft::allium; break;
-            case 3: id = blocks::minecraft::azure_bluet; break;
-            case 4: id = blocks::minecraft::red_tulip; break;
-            case 5: id = blocks::minecraft::orange_tulip; break;
-            case 6: id = blocks::minecraft::white_tulip; break;
-            case 7: id = blocks::minecraft::pink_tulip; break;
-            case 8: id = blocks::minecraft::oxeye_daisy; break;
-            }
-            break;
-        case 39: id = blocks::minecraft::brown_mushroom; break;
-        case 40: id = blocks::minecraft::red_mushroom; break;
-        case 41: id = blocks::minecraft::gold_block; break;
-        case 42: id = blocks::minecraft::iron_block; break;
-        case 43:
-            switch (data) {
-            case 1: id = blocks::minecraft::sandstone_slab; break;
-            case 2: id = blocks::minecraft::oak_slab; break;
-            case 3: id = blocks::minecraft::cobblestone_slab; break;
-            case 4: id = blocks::minecraft::brick_slab; break;
-            case 5: id = blocks::minecraft::stone_brick_slab; break;
-            case 6: id = blocks::minecraft::nether_brick_slab; break;
-            case 7: id = blocks::minecraft::quartz_slab; break;
-            case 0:
-            default:
-                id = blocks::minecraft::smooth_stone_slab;
-                break;
-            }
-            props[u8"type"] = u8"double";
-            break;
-        case 44:
-            switch (data & 0x7) {
-            case 1: id = blocks::minecraft::sandstone_slab; break;
-            case 2: id = blocks::minecraft::oak_slab; break;
-            case 3: id = blocks::minecraft::cobblestone_slab; break;
-            case 4: id = blocks::minecraft::brick_slab; break;
-            case 5: id = blocks::minecraft::stone_brick_slab; break;
-            case 6: id = blocks::minecraft::nether_brick_slab; break;
-            case 7: id = blocks::minecraft::quartz_slab; break;
-            case 0:
-            default:
-                id = id = blocks::minecraft::smooth_stone_slab;
-                break;
-            }
-            props[u8"type"] = ((data >> 3) & 0x1) == 0x1 ? u8"top" : u8"bottom";
-            break;
-        case 45: id = blocks::minecraft::bricks; break;
-        case 46: id = blocks::minecraft::tnt; break;
-        case 47: id = blocks::minecraft::bookshelf; break;
-        case 48: id = blocks::minecraft::mossy_cobblestone; break;
-        case 49: id = blocks::minecraft::obsidian; break;
-        case 50:
-            if (data < 5) {
-                static std::u8string const facing[4] = {u8"east", u8"west", u8"south", u8"north"};
-                props[u8"facing"] = facing[std::clamp<uint8_t>(data, 1, 4) - 1];
-                id = blocks::minecraft::wall_torch;
-            } else {
-                id = blocks::minecraft::torch;
-            }
-            break;
-        case 51: id = blocks::minecraft::fire; break;
-        case 52: id = blocks::minecraft::spawner; break;
-        case 53:
-            id = blocks::minecraft::oak_stairs;
-            Stairs(data, props);
-            break;
-        case 54:
-            id = blocks::minecraft::chest;
-            Chest(data, props);
-            break;
-        case 55:
-            id = blocks::minecraft::redstone_wire;
-            props[u8"power"] = String::ToString(data);
-            break;
-        case 56: id = blocks::minecraft::diamond_ore; break;
-        case 57: id = blocks::minecraft::diamond_block; break;
-        case 58: id = blocks::minecraft::crafting_table; break;
-        case 59:
-            id = blocks::minecraft::wheat;
-            props[u8"age"] = String::ToString(data);
-            break;
-        case 60: id = blocks::minecraft::farmland; break;
-        case 61:
-        case 62: // lit
-            id = blocks::minecraft::furnace;
-            switch (data) {
-            case 3: props[u8"facing"] = u8"south"; break;
-            case 4: props[u8"facing"] = u8"west"; break;
-            case 5: props[u8"facing"] = u8"east"; break;
-            case 2:
-            default:
-                props[u8"facing"] = u8"north";
-                break;
-            }
-            break;
-        case 63:
-            id = blocks::minecraft::oak_sign;
-            props[u8"rotation"] = String::ToString(data);
-            break;
-        case 64:
-            id = blocks::minecraft::oak_door;
-            Door(data, props);
-            break;
-        case 65:
-            id = blocks::minecraft::ladder;
-            switch (data) {
-            case 5: props[u8"facing"] = u8"east"; break;
-            case 3: props[u8"facing"] = u8"south"; break;
-            case 4: props[u8"facing"] = u8"west"; break;
-            case 2:
-            default:
-                props[u8"facing"] = u8"north";
-                break;
-            }
-            break;
-        case 66:
-            id = blocks::minecraft::rail;
-            Rail(data, props);
-            break;
-        case 67:
-            id = blocks::minecraft::cobblestone_stairs;
-            Stairs(data, props);
-            break;
-        case 68:
-            id = blocks::minecraft::oak_wall_sign;
-            switch (data) {
-            case 3:
-                props[u8"facing"] = u8"south";
-                break;
-            case 4:
-                props[u8"facing"] = u8"west";
-                break;
-            case 5:
-                props[u8"facing"] = u8"east";
-                break;
-            case 2:
-            default:
-                props[u8"facing"] = u8"north";
-            }
-            break;
-        case 69:
-            id = blocks::minecraft::lever;
-            Lever(data, props);
-            break;
-        case 70: id = blocks::minecraft::stone_pressure_plate; break;
-        case 71:
-            id = blocks::minecraft::iron_door;
-            Door(data, props);
-            break;
-        case 72: id = blocks::minecraft::oak_pressure_plate; break;
-        case 73: id = blocks::minecraft::redstone_ore; break;
-        case 74: id = blocks::minecraft::redstone_ore; break; // glowing_redstone_ore
-        case 75:
-        case 76:
-            if (data == 5) {
-                id = blocks::minecraft::redstone_torch;
-            } else {
-                id = blocks::minecraft::redstone_wall_torch;
+        static function<blocks::BlockId(uint8_t, map<u8string, u8string> &)> const sAir = [](uint8_t, map<u8string, u8string> &) { return blocks::minecraft::air; };
+        static function<blocks::BlockId(uint8_t data, map<u8string, u8string> & props)> const sTable[] = {
+            // 0
+            sAir,
+            // 1
+            [](uint8_t data, map<u8string, u8string> &props) {
                 switch (data) {
+                case 1: return blocks::minecraft::granite;
+                case 2: return blocks::minecraft::polished_granite;
+                case 3: return blocks::minecraft::diorite;
+                case 4: return blocks::minecraft::polished_diorite;
+                case 5: return blocks::minecraft::andesite;
+                case 6: return blocks::minecraft::polished_andesite;
+                case 0:
+                default:
+                    return blocks::minecraft::stone;
+                }
+            },
+            // 2
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::grass_block; },
+            // 3
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::coarse_dirt;
+                case 2: return blocks::minecraft::podzol;
+                case 0:
+                default:
+                    return blocks::minecraft::dirt;
+                }
+            },
+            // 4
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cobblestone; },
+            // 5
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::spruce_planks;
+                case 2: return blocks::minecraft::birch_planks;
+                case 3: return blocks::minecraft::jungle_planks;
+                case 4: return blocks::minecraft::acacia_planks;
+                case 5: return blocks::minecraft::dark_oak_planks;
+                case 0:
+                default:
+                    return blocks::minecraft::oak_planks;
+                }
+            },
+            // 6
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data & 0x7) {
+                case 1: return blocks::minecraft::spruce_sapling;
+                case 2: return blocks::minecraft::birch_sapling;
+                case 3: return blocks::minecraft::jungle_sapling;
+                case 4: return blocks::minecraft::acacia_sapling;
+                case 5: return blocks::minecraft::dark_oak_sapling;
+                case 0:
+                default:
+                    return blocks::minecraft::oak_sapling;
+                }
+            },
+            // 7
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::bedrock; },
+            // 8
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::water; },
+            // 9
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"level"] = String::ToString(data);
+                return blocks::minecraft::water;
+            },
+            // 10
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::lava; },
+            // 11
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"level"] = String::ToString(data);
+                return blocks::minecraft::lava;
+            },
+            // 12
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::red_sand;
+                case 0:
+                default:
+                    return blocks::minecraft::sand;
+                }
+            },
+            // 13
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::gravel; },
+            // 14
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::gold_ore; },
+            // 15
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::iron_ore; },
+            // 16
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::coal_ore; },
+            // 17
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Log(data, props);
+                switch (data & 0x3) {
+                case 1: return blocks::minecraft::spruce_log;
+                case 2: return blocks::minecraft::birch_log;
+                case 3: return blocks::minecraft::jungle_log;
+                case 0:
+                default:
+                    return blocks::minecraft::oak_log;
+                }
+            },
+            // 18
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Leaves(data, props);
+                switch (data & 0x3) {
+                case 1: return blocks::minecraft::spruce_leaves;
+                case 2: return blocks::minecraft::birch_leaves;
+                case 3: return blocks::minecraft::jungle_leaves;
+                case 0:
+                default:
+                    return blocks::minecraft::oak_leaves;
+                }
+            },
+            // 19
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::wet_sponge;
+                case 0:
+                default:
+                    return blocks::minecraft::sponge;
+                }
+            },
+            // 20
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::glass; },
+            // 21
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::lapis_ore; },
+            // 22
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::lapis_block; },
+            // 23
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::dispenser;
+            },
+            // 24
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::chiseled_sandstone;
+                case 2: return blocks::minecraft::cut_sandstone;
+                case 0:
+                default:
+                    return blocks::minecraft::sandstone;
+                }
+            },
+            // 25
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::note_block; },
+            // 26
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Bed(data, props);
+                return blocks::minecraft::red_bed;
+            },
+            // 27
+            [](uint8_t data, map<u8string, u8string> &props) {
+                PoweredRail(data, props);
+                return blocks::minecraft::powered_rail;
+            },
+            // 28
+            [](uint8_t data, map<u8string, u8string> &props) {
+                PoweredRail(data, props);
+                return blocks::minecraft::detector_rail;
+            },
+            // 29
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Piston(data, props);
+                return blocks::minecraft::sticky_piston;
+            },
+            // 30
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cobweb; },
+            // 31
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 2: return blocks::minecraft::fern;
                 case 1:
+                case 0: // shrub. Legacy console edition only
+                default:
+                    return blocks::minecraft::grass;
+                }
+            },
+            // 32
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dead_bush; },
+            // 33
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Piston(data, props);
+                return blocks::minecraft::piston;
+            },
+            // 34
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data & 7);
+                props[u8"type"] = (data & 0x8) == 0x8 ? u8"sticky" : u8"normal";
+                return blocks::minecraft::piston_head;
+            },
+            // 35
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::orange_wool;
+                case 2: return blocks::minecraft::magenta_wool;
+                case 3: return blocks::minecraft::light_blue_wool;
+                case 4: return blocks::minecraft::yellow_wool;
+                case 5: return blocks::minecraft::lime_wool;
+                case 6: return blocks::minecraft::pink_wool;
+                case 7: return blocks::minecraft::gray_wool;
+                case 8: return blocks::minecraft::light_gray_wool;
+                case 9: return blocks::minecraft::cyan_wool;
+                case 10: return blocks::minecraft::purple_wool;
+                case 11: return blocks::minecraft::blue_wool;
+                case 12: return blocks::minecraft::brown_wool;
+                case 13: return blocks::minecraft::green_wool;
+                case 14: return blocks::minecraft::red_wool;
+                case 15: return blocks::minecraft::black_wool;
+                case 0:
+                default:
+                    return blocks::minecraft::white_wool;
+                }
+            },
+            // 36
+            sAir,
+            // 37
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dandelion; },
+            // 38
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 0: return blocks::minecraft::poppy;
+                case 1: return blocks::minecraft::blue_orchid;
+                case 2: return blocks::minecraft::allium;
+                case 3: return blocks::minecraft::azure_bluet;
+                case 4: return blocks::minecraft::red_tulip;
+                case 5: return blocks::minecraft::orange_tulip;
+                case 6: return blocks::minecraft::white_tulip;
+                case 7: return blocks::minecraft::pink_tulip;
+                case 8: return blocks::minecraft::oxeye_daisy;
+                default:
+                    return blocks::minecraft::air;
+                }
+            },
+            // 39
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::brown_mushroom; },
+            // 40
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::red_mushroom; },
+            // 41
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::gold_block; },
+            // 42
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::iron_block; },
+            // 43
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"type"] = u8"double";
+                switch (data) {
+                case 1: return blocks::minecraft::sandstone_slab;
+                case 2: return blocks::minecraft::oak_slab;
+                case 3: return blocks::minecraft::cobblestone_slab;
+                case 4: return blocks::minecraft::brick_slab;
+                case 5: return blocks::minecraft::stone_brick_slab;
+                case 6: return blocks::minecraft::nether_brick_slab;
+                case 7: return blocks::minecraft::quartz_slab;
+                case 0:
+                default:
+                    return blocks::minecraft::smooth_stone_slab;
+                }
+            },
+            // 44
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"type"] = ((data >> 3) & 0x1) == 0x1 ? u8"top" : u8"bottom";
+                switch (data & 0x7) {
+                case 1: return blocks::minecraft::sandstone_slab;
+                case 2: return blocks::minecraft::oak_slab;
+                case 3: return blocks::minecraft::cobblestone_slab;
+                case 4: return blocks::minecraft::brick_slab;
+                case 5: return blocks::minecraft::stone_brick_slab;
+                case 6: return blocks::minecraft::nether_brick_slab;
+                case 7: return blocks::minecraft::quartz_slab;
+                case 0:
+                default:
+                    return blocks::minecraft::smooth_stone_slab;
+                }
+            },
+            // 45
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::bricks; },
+            // 46
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::tnt; },
+            // 47
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::bookshelf; },
+            // 48
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::mossy_cobblestone; },
+            // 49
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::obsidian; },
+            // 50
+            [](uint8_t data, map<u8string, u8string> &props) {
+                if (data < 5) {
+                    static std::u8string const facing[4] = {u8"east", u8"west", u8"south", u8"north"};
+                    props[u8"facing"] = facing[std::clamp<uint8_t>(data, 1, 4) - 1];
+                    return blocks::minecraft::wall_torch;
+                } else {
+                    return blocks::minecraft::torch;
+                }
+            },
+            // 51
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::fire; },
+            // 52
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::spawner; },
+            // 53
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::oak_stairs;
+            },
+            // 54
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Chest(data, props);
+                return blocks::minecraft::chest;
+            },
+            // 55
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"power"] = String::ToString(data);
+                return blocks::minecraft::redstone_wire;
+            },
+            // 56
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::diamond_ore; },
+            // 57
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::diamond_block; },
+            // 58
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::crafting_table; },
+            // 59
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"age"] = String::ToString(data);
+                return blocks::minecraft::wheat;
+            },
+            // 60
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::farmland; },
+            // 61
+            [](uint8_t data, map<u8string, u8string> &props) {
+                // unlit furnace
+                switch (data) {
+                case 3: props[u8"facing"] = u8"south"; break;
+                case 4: props[u8"facing"] = u8"west"; break;
+                case 5: props[u8"facing"] = u8"east"; break;
+                case 2:
+                default:
+                    props[u8"facing"] = u8"north";
+                    break;
+                }
+                return blocks::minecraft::furnace;
+            },
+            // 62
+            [](uint8_t data, map<u8string, u8string> &props) {
+                // lit furnace
+                switch (data) {
+                case 3: props[u8"facing"] = u8"south"; break;
+                case 4: props[u8"facing"] = u8"west"; break;
+                case 5: props[u8"facing"] = u8"east"; break;
+                case 2:
+                default:
+                    props[u8"facing"] = u8"north";
+                    break;
+                }
+                return blocks::minecraft::furnace;
+            },
+            // 63
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"rotation"] = String::ToString(data);
+                return blocks::minecraft::oak_sign;
+            },
+            // 64
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Door(data, props);
+                return blocks::minecraft::oak_door;
+            },
+            // 65
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 5: props[u8"facing"] = u8"east"; break;
+                case 3: props[u8"facing"] = u8"south"; break;
+                case 4: props[u8"facing"] = u8"west"; break;
+                case 2:
+                default:
+                    props[u8"facing"] = u8"north";
+                    break;
+                }
+                return blocks::minecraft::ladder;
+            },
+            // 66
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Rail(data, props);
+                return blocks::minecraft::rail;
+            },
+            // 67
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::cobblestone_stairs;
+            },
+            // 68
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 3:
+                    props[u8"facing"] = u8"south";
+                    break;
+                case 4:
+                    props[u8"facing"] = u8"west";
+                    break;
+                case 5:
                     props[u8"facing"] = u8"east";
                     break;
                 case 2:
+                default:
+                    props[u8"facing"] = u8"north";
+                    break;
+                }
+                return blocks::minecraft::oak_wall_sign;
+            },
+            // 69
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Lever(data, props);
+                return blocks::minecraft::lever;
+            },
+            // 70
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::stone_pressure_plate; },
+            // 71
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Door(data, props);
+                return blocks::minecraft::iron_door;
+            },
+            // 72
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::oak_pressure_plate; },
+            // 73
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::redstone_ore; },
+            // 74
+            [](uint8_t data, map<u8string, u8string> &props) {
+                // glowing_redstone_ore
+                return blocks::minecraft::redstone_ore;
+            },
+            // 75
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"lit"] = u8"false";
+                if (data == 5) {
+                    return blocks::minecraft::redstone_torch;
+                } else {
+                    switch (data) {
+                    case 1:
+                        props[u8"facing"] = u8"east";
+                        break;
+                    case 2:
+                        props[u8"facing"] = u8"west";
+                        break;
+                    case 3:
+                        props[u8"facing"] = u8"south";
+                        break;
+                    case 4:
+                        props[u8"facing"] = u8"north";
+                        break;
+                    }
+                    return blocks::minecraft::redstone_wall_torch;
+                }
+            },
+            // 76
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"lit"] = u8"true";
+                if (data == 5) {
+                    return blocks::minecraft::redstone_torch;
+                } else {
+                    switch (data) {
+                    case 1:
+                        props[u8"facing"] = u8"east";
+                        break;
+                    case 2:
+                        props[u8"facing"] = u8"west";
+                        break;
+                    case 3:
+                        props[u8"facing"] = u8"south";
+                        break;
+                    case 4:
+                        props[u8"facing"] = u8"north";
+                        break;
+                    }
+                    return blocks::minecraft::redstone_wall_torch;
+                }
+            },
+            // 77
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Button(data, props);
+                return blocks::minecraft::stone_button;
+            },
+            // 78
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"layers"] = String::ToString(std::clamp(data + 1, 1, 8));
+                return blocks::minecraft::snow;
+            },
+            // 79
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::ice; },
+            // 80
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::snow_block; },
+            // 81
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cactus; },
+            // 82
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::clay; },
+            // 83
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::sugar_cane; },
+            // 84
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::jukebox; },
+            // 85
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::oak_fence; },
+            // 86
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingB(data);
+                return blocks::minecraft::carved_pumpkin;
+            },
+            // 87
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::netherrack; },
+            // 88
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::soul_sand; },
+            // 89
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::glowstone; },
+            // 90
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 2:
+                    props[u8"axis"] = u8"z";
+                    break;
+                case 1:
+                default:
+                    props[u8"axis"] = u8"x";
+                    break;
+                }
+                return blocks::minecraft::nether_portal;
+            },
+            // 91
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingB(data);
+                return blocks::minecraft::jack_o_lantern;
+            },
+            // 92
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cake; },
+            // 93
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data & 0x3) {
+                case 1:
                     props[u8"facing"] = u8"west";
+                    break;
+                case 2:
+                    props[u8"facing"] = u8"north";
+                    break;
+                case 3:
+                    props[u8"facing"] = u8"east";
+                    break;
+                case 0:
+                default:
+                    props[u8"facing"] = u8"south";
+                    break;
+                }
+                props[u8"delay"] = String::ToString(((data & 0xc) >> 2) + 1);
+                props[u8"powered"] = u8"false";
+                return blocks::minecraft::repeater;
+            },
+            // 94
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data & 0x3) {
+                case 1:
+                    props[u8"facing"] = u8"west";
+                    break;
+                case 2:
+                    props[u8"facing"] = u8"north";
+                    break;
+                case 3:
+                    props[u8"facing"] = u8"east";
+                    break;
+                case 0:
+                default:
+                    props[u8"facing"] = u8"south";
+                    break;
+                }
+                props[u8"delay"] = String::ToString(((data & 0xc) >> 2) + 1);
+                props[u8"powered"] = u8"true";
+                return blocks::minecraft::repeater;
+            },
+            // 95
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::orange_stained_glass;
+                case 2: return blocks::minecraft::magenta_stained_glass;
+                case 3: return blocks::minecraft::light_blue_stained_glass;
+                case 4: return blocks::minecraft::yellow_stained_glass;
+                case 5: return blocks::minecraft::lime_stained_glass;
+                case 6: return blocks::minecraft::pink_stained_glass;
+                case 7: return blocks::minecraft::gray_stained_glass;
+                case 8: return blocks::minecraft::light_gray_stained_glass;
+                case 9: return blocks::minecraft::cyan_stained_glass;
+                case 10: return blocks::minecraft::purple_stained_glass;
+                case 11: return blocks::minecraft::blue_stained_glass;
+                case 12: return blocks::minecraft::brown_stained_glass;
+                case 13: return blocks::minecraft::green_stained_glass;
+                case 14: return blocks::minecraft::red_stained_glass;
+                case 15: return blocks::minecraft::black_stained_glass;
+                case 0:
+                default:
+                    return blocks::minecraft::white_stained_glass;
+                }
+            },
+            // 96
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Trapdoor(data, props);
+                return blocks::minecraft::oak_trapdoor;
+            },
+            // 97
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::infested_cobblestone;
+                case 2: return blocks::minecraft::infested_stone_bricks;
+                case 3: return blocks::minecraft::infested_mossy_stone_bricks;
+                case 4: return blocks::minecraft::infested_cracked_stone_bricks;
+                case 5: return blocks::minecraft::infested_chiseled_stone_bricks;
+                case 0:
+                default:
+                    return blocks::minecraft::infested_stone;
+                }
+            },
+            // 98
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::mossy_stone_bricks;
+                case 2: return blocks::minecraft::cracked_stone_bricks;
+                case 3: return blocks::minecraft::chiseled_stone_bricks;
+                case 0:
+                default:
+                    return blocks::minecraft::stone_bricks;
+                }
+            },
+            // 99
+            [](uint8_t data, map<u8string, u8string> &props) {
+                return MushroomBlock(blocks::minecraft::brown_mushroom_block, data, props);
+            },
+            // 100
+            [](uint8_t data, map<u8string, u8string> &props) {
+                return MushroomBlock(blocks::minecraft::red_mushroom_block, data, props);
+            },
+            // 101
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::iron_bars; },
+            // 102
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::glass_pane; },
+            // 103
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::melon; },
+            // 104
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"age"] = String::ToString(data);
+                return blocks::minecraft::pumpkin_stem;
+            },
+            // 105
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"age"] = String::ToString(data);
+                return blocks::minecraft::melon_stem;
+            },
+            // 106
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"south"] = (data & 0x1) == 0x1 ? u8"true" : u8"false";
+                props[u8"west"] = (data & 0x2) == 0x2 ? u8"true" : u8"false";
+                props[u8"north"] = (data & 0x4) == 0x4 ? u8"true" : u8"false";
+                props[u8"east"] = (data & 0x8) == 0x8 ? u8"true" : u8"false";
+                return blocks::minecraft::vine;
+            },
+            // 107
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::oak_fence_gate; },
+            // 108
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::brick_stairs;
+            },
+            // 109
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::stone_brick_stairs;
+            },
+            // 110
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::mycelium; },
+            // 111
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::lily_pad; },
+            // 112
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::nether_bricks; },
+            // 113
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::nether_brick_fence; },
+            // 114
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::nether_brick_stairs;
+            },
+            // 115
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"age"] = String::ToString(data);
+                return blocks::minecraft::nether_wart;
+            },
+            // 116
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::enchanting_table; },
+            // 117
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::brewing_stand; },
+            // 118
+            [](uint8_t data, map<u8string, u8string> &props) {
+                if (data / 2 == 0) {
+                    return blocks::minecraft::cauldron;
+                } else {
+                    props[u8"level"] = String::ToString(data / 2);
+                    return blocks::minecraft::water_cauldron;
+                }
+            },
+            // 119
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::end_portal; },
+            // 120
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data & 0x3) {
+                case 1: props[u8"facing"] = u8"west"; break;
+                case 2: props[u8"facing"] = u8"north"; break;
+                case 3: props[u8"facing"] = u8"east"; break;
+                case 0:
+                default:
+                    props[u8"facing"] = u8"south";
+                    break;
+                }
+                props[u8"eye"] = data > 3 ? u8"true" : u8"false";
+                return blocks::minecraft::end_portal_frame;
+            },
+            // 121
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::end_stone; },
+            // 122
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dragon_egg; },
+            // 123
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"lit"] = u8"false";
+                return blocks::minecraft::redstone_lamp;
+            },
+            // 124
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"lit"] = u8"true";
+                return blocks::minecraft::redstone_lamp;
+            },
+            // 125
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"type"] = u8"double";
+                switch (data) {
+                case 1: return blocks::minecraft::spruce_slab;
+                case 2: return blocks::minecraft::birch_slab;
+                case 3: return blocks::minecraft::jungle_slab;
+                case 4: return blocks::minecraft::acacia_slab;
+                case 5: return blocks::minecraft::dark_oak_slab;
+                case 0:
+                default:
+                    return blocks::minecraft::oak_slab;
+                }
+            },
+            // 126
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"type"] = data < 8 ? u8"bottom" : u8"top";
+                switch (data & 0x7) {
+                case 1: return blocks::minecraft::spruce_slab;
+                case 2: return blocks::minecraft::birch_slab;
+                case 3: return blocks::minecraft::jungle_slab;
+                case 4: return blocks::minecraft::acacia_slab;
+                case 5: return blocks::minecraft::dark_oak_slab;
+                case 0:
+                default:
+                    return blocks::minecraft::oak_slab;
+                }
+            },
+            // 127
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
+                props[u8"age"] = String::ToString(data >> 2);
+                return blocks::minecraft::cocoa;
+            },
+            // 128
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::sandstone_stairs;
+            },
+            // 129
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::emerald_ore; },
+            // 130
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Chest(data, props);
+                return blocks::minecraft::ender_chest;
+            },
+            // 131
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data & 0x3) {
+                case 1:
+                    props[u8"facing"] = u8"west";
+                    break;
+                case 2:
+                    props[u8"facing"] = u8"north";
+                    break;
+                case 3:
+                    props[u8"facing"] = u8"east";
+                    break;
+                case 0:
+                default:
+                    props[u8"facing"] = u8"south";
+                    break;
+                }
+                props[u8"attached"] = (data & 0x4) == 0x4 ? u8"true" : u8"false";
+                props[u8"powered"] = (data & 0x8) == 0x8 ? u8"true" : u8"false";
+                return blocks::minecraft::tripwire_hook;
+            },
+            // 132
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::tripwire; },
+            // 133
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::emerald_block; },
+            // 134
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::spruce_stairs;
+            },
+            // 135
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::birch_stairs;
+            },
+            // 136
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::jungle_stairs;
+            },
+            // 137
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::command_block; },
+            // 138
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::beacon; },
+            // 139
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::mossy_cobblestone_wall; break;
+                case 0:
+                default:
+                    return blocks::minecraft::cobblestone_wall;
+                }
+            },
+            // 140
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::flower_pot; },
+            // 141
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"age"] = String::ToString(data);
+                return blocks::minecraft::carrots;
+            },
+            // 142
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"age"] = String::ToString(data);
+                return blocks::minecraft::potatoes;
+            },
+            // 143
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Button(data, props);
+                return blocks::minecraft::oak_button;
+            },
+            // 144
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::skeleton_skull; break;
+                case 3:
+                    props[u8"facing"] = u8"south";
+                    return blocks::minecraft::skeleton_wall_skull;
+                case 4:
+                    props[u8"facing"] = u8"west";
+                    return blocks::minecraft::skeleton_wall_skull;
+                case 2:
+                    props[u8"facing"] = u8"north";
+                    return blocks::minecraft::skeleton_wall_skull;
+                case 5:
+                    props[u8"facing"] = u8"east";
+                    return blocks::minecraft::skeleton_wall_skull;
+                default:
+                    return blocks::minecraft::air;
+                }
+            },
+            // 145
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data & 0x3) {
+                case 3: props[u8"facing"] = u8"east"; break;
+                case 1: props[u8"facing"] = u8"west"; break;
+                case 2: props[u8"facing"] = u8"north"; break;
+                case 0:
+                default:
+                    props[u8"facing"] = u8"south";
+                    break;
+                }
+                switch (data >> 2) {
+                case 1: return blocks::minecraft::chipped_anvil;
+                case 2: return blocks::minecraft::damaged_anvil;
+                case 0:
+                default:
+                    return blocks::minecraft::anvil;
+                }
+            },
+            // 146
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Chest(data, props);
+                return blocks::minecraft::trapped_chest;
+            },
+            // 147
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::light_weighted_pressure_plate; },
+            // 148
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::heavy_weighted_pressure_plate; },
+            // 149
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
+                props[u8"powered"] = u8"false";
+                props[u8"mode"] = (data & 0x4) == 0x4 ? u8"subtract" : u8"compare";
+                return blocks::minecraft::comparator;
+            },
+            // 150
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
+                props[u8"powered"] = u8"true";
+                props[u8"mode"] = (data & 0x4) == 0x4 ? u8"subtract" : u8"compare";
+                return blocks::minecraft::comparator;
+            },
+            // 151
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"inverted"] = u8"false";
+                return blocks::minecraft::daylight_detector;
+            },
+            // 152
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::redstone_block; },
+            // 153
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::nether_quartz_ore; },
+            // 154
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data & 0x7) {
+                case 2:
+                    props[u8"facing"] = u8"north";
                     break;
                 case 3:
                     props[u8"facing"] = u8"south";
                     break;
                 case 4:
+                    props[u8"facing"] = u8"west";
+                    break;
+                case 5:
+                    props[u8"facing"] = u8"east";
+                    break;
+                case 0:
+                default:
+                    props[u8"facing"] = u8"down";
+                    break;
+                }
+                props[u8"enabled"] = (data & 0x8) == 0x8 ? u8"false" : u8"true";
+                return blocks::minecraft::hopper;
+            },
+            // 155
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1:
+                    return blocks::minecraft::chiseled_quartz_block;
+                case 3:
+                    props[u8"axis"] = u8"x";
+                    return blocks::minecraft::quartz_pillar;
+                case 4:
+                    props[u8"axis"] = u8"z";
+                    return blocks::minecraft::quartz_pillar;
+                case 2:
+                    props[u8"axis"] = u8"y";
+                    return blocks::minecraft::quartz_pillar;
+                case 0:
+                default:
+                    return blocks::minecraft::quartz_block;
+                }
+            },
+            // 156
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::quartz_stairs;
+            },
+            // 157
+            [](uint8_t data, map<u8string, u8string> &props) {
+                PoweredRail(data, props);
+                return blocks::minecraft::activator_rail;
+            },
+            // 158
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::dropper;
+            },
+            // 159
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::orange_terracotta;
+                case 2: return blocks::minecraft::magenta_terracotta;
+                case 3: return blocks::minecraft::light_blue_terracotta;
+                case 4: return blocks::minecraft::yellow_terracotta;
+                case 5: return blocks::minecraft::lime_terracotta;
+                case 6: return blocks::minecraft::pink_terracotta;
+                case 7: return blocks::minecraft::gray_terracotta;
+                case 8: return blocks::minecraft::light_gray_terracotta;
+                case 9: return blocks::minecraft::cyan_terracotta;
+                case 10: return blocks::minecraft::purple_terracotta;
+                case 11: return blocks::minecraft::blue_terracotta;
+                case 12: return blocks::minecraft::brown_terracotta;
+                case 13: return blocks::minecraft::green_terracotta;
+                case 14: return blocks::minecraft::red_terracotta;
+                case 15: return blocks::minecraft::black_terracotta;
+                default:
+                case 0:
+                    return blocks::minecraft::white_terracotta;
+                }
+            },
+            // 160
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::orange_stained_glass_pane;
+                case 2: return blocks::minecraft::magenta_stained_glass_pane;
+                case 3: return blocks::minecraft::light_blue_stained_glass_pane;
+                case 4: return blocks::minecraft::yellow_stained_glass_pane;
+                case 5: return blocks::minecraft::lime_stained_glass_pane;
+                case 6: return blocks::minecraft::pink_stained_glass_pane;
+                case 7: return blocks::minecraft::gray_stained_glass_pane;
+                case 8: return blocks::minecraft::light_gray_stained_glass_pane;
+                case 9: return blocks::minecraft::cyan_stained_glass_pane;
+                case 10: return blocks::minecraft::purple_stained_glass_pane;
+                case 11: return blocks::minecraft::blue_stained_glass_pane;
+                case 12: return blocks::minecraft::brown_stained_glass_pane;
+                case 13: return blocks::minecraft::green_stained_glass_pane;
+                case 14: return blocks::minecraft::red_stained_glass_pane;
+                case 15: return blocks::minecraft::black_stained_glass_pane;
+                case 0:
+                default:
+                    return blocks::minecraft::white_stained_glass_pane;
+                }
+            },
+            // 161
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Leaves(data, props);
+                switch (data & 0x3) {
+                case 1: return blocks::minecraft::dark_oak_leaves;
+                case 0:
+                default:
+                    return blocks::minecraft::acacia_leaves;
+                }
+            },
+            // 162
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Log(data, props);
+                switch (data & 0x3) {
+                case 1: return blocks::minecraft::dark_oak_log;
+                case 0:
+                default:
+                    return blocks::minecraft::acacia_log;
+                }
+            },
+            // 163
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::acacia_stairs;
+            },
+            // 164
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::dark_oak_stairs;
+            },
+            // 165
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::slime_block; },
+            // 166
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::barrier; },
+            // 167
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Trapdoor(data, props);
+                return blocks::minecraft::iron_trapdoor;
+            },
+            // 168
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::prismarine_bricks;
+                case 2: return blocks::minecraft::dark_prismarine;
+                case 0:
+                default:
+                    return blocks::minecraft::prismarine;
+                }
+            },
+            // 169
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::sea_lantern; },
+            // 170
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"axis"] = Axis(data >> 2);
+                return blocks::minecraft::hay_block;
+            },
+            // 171
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::orange_carpet;
+                case 2: return blocks::minecraft::magenta_carpet;
+                case 3: return blocks::minecraft::light_blue_carpet;
+                case 4: return blocks::minecraft::yellow_carpet;
+                case 5: return blocks::minecraft::lime_carpet;
+                case 6: return blocks::minecraft::pink_carpet;
+                case 7: return blocks::minecraft::gray_carpet;
+                case 8: return blocks::minecraft::light_gray_carpet;
+                case 9: return blocks::minecraft::cyan_carpet;
+                case 10: return blocks::minecraft::purple_carpet;
+                case 11: return blocks::minecraft::blue_carpet;
+                case 12: return blocks::minecraft::brown_carpet;
+                case 13: return blocks::minecraft::green_carpet;
+                case 14: return blocks::minecraft::red_carpet;
+                case 15: return blocks::minecraft::black_carpet;
+                case 0:
+                default:
+                    return blocks::minecraft::white_carpet;
+                }
+            },
+            // 172
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::terracotta; },
+            // 173
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::coal_block; },
+            // 174
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::packed_ice; },
+            // 175
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::lilac;
+                case 2: return blocks::minecraft::tall_grass;
+                case 3: return blocks::minecraft::large_fern;
+                case 4: return blocks::minecraft::rose_bush;
+                case 5: return blocks::minecraft::peony;
+                case 0:
+                default:
+                    return blocks::minecraft::sunflower;
+                }
+            },
+            // 176
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"rotation"] = String::ToString(data);
+                return blocks::minecraft::white_banner;
+            },
+            // 177
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 3:
+                    props[u8"facing"] = u8"south";
+                    break;
+                case 4:
+                    props[u8"facing"] = u8"west";
+                    break;
+                case 5:
+                    props[u8"facing"] = u8"east";
+                    break;
+                case 2:
+                default:
                     props[u8"facing"] = u8"north";
                     break;
                 }
-            }
-            props[u8"lit"] = blockId == 76 ? u8"true" : u8"false";
-            break;
-        case 77:
-            id = blocks::minecraft::stone_button;
-            Button(data, props);
-            break;
-        case 78:
-            id = blocks::minecraft::snow;
-            props[u8"layers"] = String::ToString(std::clamp(data + 1, 1, 8));
-            break;
-        case 79: id = blocks::minecraft::ice; break;
-        case 80: id = blocks::minecraft::snow_block; break;
-        case 81: id = blocks::minecraft::cactus; break;
-        case 82: id = blocks::minecraft::clay; break;
-        case 83: id = blocks::minecraft::sugar_cane; break;
-        case 84: id = blocks::minecraft::jukebox; break;
-        case 85: id = blocks::minecraft::oak_fence; break;
-        case 86:
-            id = blocks::minecraft::carved_pumpkin;
-            props[u8"facing"] = FacingB(data);
-            break;
-        case 87: id = blocks::minecraft::netherrack; break;
-        case 88: id = blocks::minecraft::soul_sand; break;
-        case 89: id = blocks::minecraft::glowstone; break;
-        case 90:
-            id = blocks::minecraft::nether_portal;
-            switch (data) {
-            case 2:
-                props[u8"axis"] = u8"z";
-                break;
-            case 1:
-            default:
-                props[u8"axis"] = u8"x";
-                break;
-            }
-            break;
-        case 91:
-            id = blocks::minecraft::jack_o_lantern;
-            props[u8"facing"] = FacingB(data);
-            break;
-        case 92: id = blocks::minecraft::cake; break;
-        case 93:
-        case 94:
-            id = blocks::minecraft::repeater;
-            switch (data & 0x3) {
-            case 1:
-                props[u8"facing"] = u8"west";
-                break;
-            case 2:
-                props[u8"facing"] = u8"north";
-                break;
-            case 3:
-                props[u8"facing"] = u8"east";
-                break;
-            case 0:
-            default:
-                props[u8"facing"] = u8"south";
-                break;
-            }
-            props[u8"delay"] = String::ToString(((data & 0xc) >> 2) + 1);
-            props[u8"powered"] = blockId == 94 ? u8"true" : u8"false";
-            break;
-        case 95:
-            switch (data) {
-            case 1: id = blocks::minecraft::orange_stained_glass; break;
-            case 2: id = blocks::minecraft::magenta_stained_glass; break;
-            case 3: id = blocks::minecraft::light_blue_stained_glass; break;
-            case 4: id = blocks::minecraft::yellow_stained_glass; break;
-            case 5: id = blocks::minecraft::lime_stained_glass; break;
-            case 6: id = blocks::minecraft::pink_stained_glass; break;
-            case 7: id = blocks::minecraft::gray_stained_glass; break;
-            case 8: id = blocks::minecraft::light_gray_stained_glass; break;
-            case 9: id = blocks::minecraft::cyan_stained_glass; break;
-            case 10: id = blocks::minecraft::purple_stained_glass; break;
-            case 11: id = blocks::minecraft::blue_stained_glass; break;
-            case 12: id = blocks::minecraft::brown_stained_glass; break;
-            case 13: id = blocks::minecraft::green_stained_glass; break;
-            case 14: id = blocks::minecraft::red_stained_glass; break;
-            case 15: id = blocks::minecraft::black_stained_glass; break;
-            case 0:
-            default:
-                id = blocks::minecraft::white_stained_glass;
-                break;
-            }
-            break;
-        case 96:
-            id = blocks::minecraft::oak_trapdoor;
-            Trapdoor(data, props);
-            break;
-        case 97:
-            switch (data) {
-            case 1: id = blocks::minecraft::infested_cobblestone; break;
-            case 2: id = blocks::minecraft::infested_stone_bricks; break;
-            case 3: id = blocks::minecraft::infested_mossy_stone_bricks; break;
-            case 4: id = blocks::minecraft::infested_cracked_stone_bricks; break;
-            case 5: id = blocks::minecraft::infested_chiseled_stone_bricks; break;
-            case 0:
-            default:
-                id = blocks::minecraft::infested_stone;
-                break;
-            }
-            break;
-        case 98:
-            switch (data) {
-            case 1: id = blocks::minecraft::mossy_stone_bricks; break;
-            case 2: id = blocks::minecraft::cracked_stone_bricks; break;
-            case 3: id = blocks::minecraft::chiseled_stone_bricks; break;
-            case 0:
-            default:
-                id = blocks::minecraft::stone_bricks;
-                break;
-            }
-            break;
-        case 99:
-            id = MushroomBlock(blocks::minecraft::brown_mushroom_block, data, props);
-            break;
-        case 100:
-            id = MushroomBlock(blocks::minecraft::red_mushroom_block, data, props);
-            break;
-        case 101: id = blocks::minecraft::iron_bars; break;
-        case 102: id = blocks::minecraft::glass_pane; break;
-        case 103: id = blocks::minecraft::melon; break;
-        case 104:
-            id = blocks::minecraft::pumpkin_stem;
-            props[u8"age"] = String::ToString(data);
-            break;
-        case 105:
-            id = blocks::minecraft::melon_stem;
-            props[u8"age"] = String::ToString(data);
-            break;
-        case 106:
-            id = blocks::minecraft::vine;
-            props[u8"south"] = (data & 0x1) == 0x1 ? u8"true" : u8"false";
-            props[u8"west"] = (data & 0x2) == 0x2 ? u8"true" : u8"false";
-            props[u8"north"] = (data & 0x4) == 0x4 ? u8"true" : u8"false";
-            props[u8"east"] = (data & 0x8) == 0x8 ? u8"true" : u8"false";
-            break;
-        case 107: id = blocks::minecraft::oak_fence_gate; break;
-        case 108:
-            id = blocks::minecraft::brick_stairs;
-            Stairs(data, props);
-            break;
-        case 109:
-            id = blocks::minecraft::stone_brick_stairs;
-            Stairs(data, props);
-            break;
-        case 110: id = blocks::minecraft::mycelium; break;
-        case 111: id = blocks::minecraft::lily_pad; break;
-        case 112: id = blocks::minecraft::nether_bricks; break;
-        case 113: id = blocks::minecraft::nether_brick_fence; break;
-        case 114:
-            id = blocks::minecraft::nether_brick_stairs;
-            Stairs(data, props);
-            break;
-        case 115:
-            id = blocks::minecraft::nether_wart;
-            props[u8"age"] = String::ToString(data);
-            break;
-        case 116: id = blocks::minecraft::enchanting_table; break;
-        case 117: id = blocks::minecraft::brewing_stand; break;
-        case 118:
-            if (data / 2 == 0) {
-                id = blocks::minecraft::cauldron;
-            } else {
-                id = blocks::minecraft::water_cauldron;
-                props[u8"level"] = String::ToString(data / 2);
-            }
-            break;
-        case 119: id = blocks::minecraft::end_portal; break;
-        case 120:
-            id = blocks::minecraft::end_portal_frame;
-            switch (data & 0x3) {
-            case 1: props[u8"facing"] = u8"west"; break;
-            case 2: props[u8"facing"] = u8"north"; break;
-            case 3: props[u8"facing"] = u8"east"; break;
-            case 0:
-            default:
-                props[u8"facing"] = u8"south";
-                break;
-            }
-            props[u8"eye"] = data > 3 ? u8"true" : u8"false";
-            break;
-        case 121: id = blocks::minecraft::end_stone; break;
-        case 122: id = blocks::minecraft::dragon_egg; break;
-        case 123:
-            id = blocks::minecraft::redstone_lamp;
-            props[u8"lit"] = u8"false";
-            break;
-        case 124:
-            id = blocks::minecraft::redstone_lamp;
-            props[u8"lit"] = u8"true";
-            break;
-        case 125:
-            switch (data) {
-            case 1: id = blocks::minecraft::spruce_slab; break;
-            case 2: id = blocks::minecraft::birch_slab; break;
-            case 3: id = blocks::minecraft::jungle_slab; break;
-            case 4: id = blocks::minecraft::acacia_slab; break;
-            case 5: id = blocks::minecraft::dark_oak_slab; break;
-            case 0:
-            default:
-                id = blocks::minecraft::oak_slab;
-                break;
-            }
-            props[u8"type"] = u8"double";
-            break;
-        case 126:
-            switch (data & 0x7) {
-            case 1: id = blocks::minecraft::spruce_slab; break;
-            case 2: id = blocks::minecraft::birch_slab; break;
-            case 3: id = blocks::minecraft::jungle_slab; break;
-            case 4: id = blocks::minecraft::acacia_slab; break;
-            case 5: id = blocks::minecraft::dark_oak_slab; break;
-            case 0:
-            default:
-                id = blocks::minecraft::oak_slab;
-                break;
-            }
-            props[u8"type"] = data < 8 ? u8"bottom" : u8"top";
-            break;
-        case 127:
-            id = blocks::minecraft::cocoa;
-            props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
-            props[u8"age"] = String::ToString(data >> 2);
-            break;
-        case 128:
-            id = blocks::minecraft::sandstone_stairs;
-            Stairs(data, props);
-            break;
-        case 129: id = blocks::minecraft::emerald_ore; break;
-        case 130:
-            id = blocks::minecraft::ender_chest;
-            Chest(data, props);
-            break;
-        case 131:
-            id = blocks::minecraft::tripwire_hook;
-            switch (data & 0x3) {
-            case 1:
-                props[u8"facing"] = u8"west";
-                break;
-            case 2:
-                props[u8"facing"] = u8"north";
-                break;
-            case 3:
-                props[u8"facing"] = u8"east";
-                break;
-            case 0:
-            default:
-                props[u8"facing"] = u8"south";
-                break;
-            }
-            props[u8"attached"] = (data & 0x4) == 0x4 ? u8"true" : u8"false";
-            props[u8"powered"] = (data & 0x8) == 0x8 ? u8"true" : u8"false";
-            break;
-        case 132: id = blocks::minecraft::tripwire; break;
-        case 133: id = blocks::minecraft::emerald_block; break;
-        case 134:
-            id = blocks::minecraft::spruce_stairs;
-            Stairs(data, props);
-            break;
-        case 135:
-            id = blocks::minecraft::birch_stairs;
-            Stairs(data, props);
-            break;
-        case 136:
-            id = blocks::minecraft::jungle_stairs;
-            Stairs(data, props);
-            break;
-        case 137: id = blocks::minecraft::command_block; break;
-        case 138: id = blocks::minecraft::beacon; break;
-        case 139:
-            switch (data) {
-            case 1: id = blocks::minecraft::mossy_cobblestone_wall; break;
-            case 0:
-            default:
-                id = blocks::minecraft::cobblestone_wall;
-            }
-            break;
-        case 140: id = blocks::minecraft::flower_pot; break;
-        case 141:
-            id = blocks::minecraft::carrots;
-            props[u8"age"] = String::ToString(data);
-            break;
-        case 142:
-            id = blocks::minecraft::potatoes;
-            props[u8"age"] = String::ToString(data);
-            break;
-        case 143:
-            id = blocks::minecraft::oak_button;
-            Button(data, props);
-            break;
-        case 144:
-            switch (data) {
-            case 1: id = blocks::minecraft::skeleton_skull; break;
-            case 3:
-                id = blocks::minecraft::skeleton_wall_skull;
-                props[u8"facing"] = u8"south";
-                break;
-            case 4:
-                id = blocks::minecraft::skeleton_wall_skull;
-                props[u8"facing"] = u8"west";
-                break;
-            case 2:
-                id = blocks::minecraft::skeleton_wall_skull;
-                props[u8"facing"] = u8"north";
-                break;
-            case 5:
-                id = blocks::minecraft::skeleton_wall_skull;
-                props[u8"facing"] = u8"east";
-                break;
-            }
-            break;
-        case 145:
-            switch (data & 0x3) {
-            case 3: props[u8"facing"] = u8"east"; break;
-            case 1: props[u8"facing"] = u8"west"; break;
-            case 2: props[u8"facing"] = u8"north"; break;
-            case 0:
-            default:
-                props[u8"facing"] = u8"south";
-                break;
-            }
-            switch (data >> 2) {
-            case 1: id = blocks::minecraft::chipped_anvil; break;
-            case 2: id = blocks::minecraft::damaged_anvil; break;
-            case 0:
-            default:
-                id = blocks::minecraft::anvil;
-                break;
-            }
-            break;
-        case 146:
-            id = blocks::minecraft::trapped_chest;
-            Chest(data, props);
-            break;
-        case 147: id = blocks::minecraft::light_weighted_pressure_plate; break;
-        case 148: id = blocks::minecraft::heavy_weighted_pressure_plate; break;
-        case 149:
-        case 150:
-            id = blocks::minecraft::comparator;
-            props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
-            props[u8"powered"] = blockId == 150 ? u8"true" : u8"false";
-            props[u8"mode"] = (data & 0x4) == 0x4 ? u8"subtract" : u8"compare";
-            break;
-        case 151:
-            id = blocks::minecraft::daylight_detector;
-            props[u8"inverted"] = u8"false";
-            break;
-        case 152: id = blocks::minecraft::redstone_block; break;
-        case 153: id = blocks::minecraft::nether_quartz_ore; break;
-        case 154:
-            id = blocks::minecraft::hopper;
-            switch (data & 0x7) {
-            case 2:
-                props[u8"facing"] = u8"north";
-                break;
-            case 3:
-                props[u8"facing"] = u8"south";
-                break;
-            case 4:
-                props[u8"facing"] = u8"west";
-                break;
-            case 5:
-                props[u8"facing"] = u8"east";
-                break;
-            case 0:
-            default:
-                props[u8"facing"] = u8"down";
-                break;
-            }
-            props[u8"enabled"] = (data & 0x8) == 0x8 ? u8"false" : u8"true";
-            break;
-        case 155:
-            switch (data) {
-            case 1:
-                id = blocks::minecraft::chiseled_quartz_block;
-                break;
-            case 3:
-                id = blocks::minecraft::quartz_pillar;
-                props[u8"axis"] = u8"x";
-                break;
-            case 4:
-                id = blocks::minecraft::quartz_pillar;
-                props[u8"axis"] = u8"z";
-                break;
-            case 2:
-                id = blocks::minecraft::quartz_pillar;
-                props[u8"axis"] = u8"y";
-                break;
-            case 0:
-            default:
-                id = blocks::minecraft::quartz_block;
-                break;
-            }
-            break;
-        case 156:
-            id = blocks::minecraft::quartz_stairs;
-            Stairs(data, props);
-            break;
-        case 157:
-            id = blocks::minecraft::activator_rail;
-            PoweredRail(data, props);
-            break;
-        case 158:
-            id = blocks::minecraft::dropper;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 159:
-            switch (data) {
-            case 1: id = blocks::minecraft::orange_terracotta; break;
-            case 2: id = blocks::minecraft::magenta_terracotta; break;
-            case 3: id = blocks::minecraft::light_blue_terracotta; break;
-            case 4: id = blocks::minecraft::yellow_terracotta; break;
-            case 5: id = blocks::minecraft::lime_terracotta; break;
-            case 6: id = blocks::minecraft::pink_terracotta; break;
-            case 7: id = blocks::minecraft::gray_terracotta; break;
-            case 8: id = blocks::minecraft::light_gray_terracotta; break;
-            case 9: id = blocks::minecraft::cyan_terracotta; break;
-            case 10: id = blocks::minecraft::purple_terracotta; break;
-            case 11: id = blocks::minecraft::blue_terracotta; break;
-            case 12: id = blocks::minecraft::brown_terracotta; break;
-            case 13: id = blocks::minecraft::green_terracotta; break;
-            case 14: id = blocks::minecraft::red_terracotta; break;
-            case 15: id = blocks::minecraft::black_terracotta; break;
-            default:
-            case 0:
-                id = blocks::minecraft::white_terracotta;
-                break;
-            }
-            break;
-        case 160:
-            switch (data) {
-            case 1: id = blocks::minecraft::orange_stained_glass_pane; break;
-            case 2: id = blocks::minecraft::magenta_stained_glass_pane; break;
-            case 3: id = blocks::minecraft::light_blue_stained_glass_pane; break;
-            case 4: id = blocks::minecraft::yellow_stained_glass_pane; break;
-            case 5: id = blocks::minecraft::lime_stained_glass_pane; break;
-            case 6: id = blocks::minecraft::pink_stained_glass_pane; break;
-            case 7: id = blocks::minecraft::gray_stained_glass_pane; break;
-            case 8: id = blocks::minecraft::light_gray_stained_glass_pane; break;
-            case 9: id = blocks::minecraft::cyan_stained_glass_pane; break;
-            case 10: id = blocks::minecraft::purple_stained_glass_pane; break;
-            case 11: id = blocks::minecraft::blue_stained_glass_pane; break;
-            case 12: id = blocks::minecraft::brown_stained_glass_pane; break;
-            case 13: id = blocks::minecraft::green_stained_glass_pane; break;
-            case 14: id = blocks::minecraft::red_stained_glass_pane; break;
-            case 15: id = blocks::minecraft::black_stained_glass_pane; break;
-            case 0:
-            default:
-                id = blocks::minecraft::white_stained_glass_pane;
-                break;
-            }
-            break;
-        case 161:
-            switch (data & 0x3) {
-            case 1: id = blocks::minecraft::dark_oak_leaves; break;
-            case 0:
-            default:
-                id = blocks::minecraft::acacia_leaves;
-                break;
-            }
-            Leaves(data, props);
-            break;
-        case 162:
-            switch (data & 0x3) {
-            case 1: id = blocks::minecraft::dark_oak_log; break;
-            case 0:
-            default:
-                id = blocks::minecraft::acacia_log;
-                break;
-            }
-            Log(data, props);
-            break;
-        case 163:
-            id = blocks::minecraft::acacia_stairs;
-            Stairs(data, props);
-            break;
-        case 164:
-            id = blocks::minecraft::dark_oak_stairs;
-            Stairs(data, props);
-            break;
-        case 165: id = blocks::minecraft::slime_block; break;
-        case 166: id = blocks::minecraft::barrier; break;
-        case 167:
-            id = blocks::minecraft::iron_trapdoor;
-            Trapdoor(data, props);
-            break;
-        case 168:
-            switch (data) {
-            case 1: id = blocks::minecraft::prismarine_bricks; break;
-            case 2: id = blocks::minecraft::dark_prismarine; break;
-            case 0:
-            default:
-                id = blocks::minecraft::prismarine;
-            }
-            break;
-        case 169: id = blocks::minecraft::sea_lantern; break;
-        case 170:
-            id = blocks::minecraft::hay_block;
-            props[u8"axis"] = Axis(data >> 2);
-            break;
-        case 171:
-            switch (data) {
-            case 1: id = blocks::minecraft::orange_carpet; break;
-            case 2: id = blocks::minecraft::magenta_carpet; break;
-            case 3: id = blocks::minecraft::light_blue_carpet; break;
-            case 4: id = blocks::minecraft::yellow_carpet; break;
-            case 5: id = blocks::minecraft::lime_carpet; break;
-            case 6: id = blocks::minecraft::pink_carpet; break;
-            case 7: id = blocks::minecraft::gray_carpet; break;
-            case 8: id = blocks::minecraft::light_gray_carpet; break;
-            case 9: id = blocks::minecraft::cyan_carpet; break;
-            case 10: id = blocks::minecraft::purple_carpet; break;
-            case 11: id = blocks::minecraft::blue_carpet; break;
-            case 12: id = blocks::minecraft::brown_carpet; break;
-            case 13: id = blocks::minecraft::green_carpet; break;
-            case 14: id = blocks::minecraft::red_carpet; break;
-            case 15: id = blocks::minecraft::black_carpet; break;
-            case 0:
-            default:
-                id = blocks::minecraft::white_carpet;
-                break;
-            }
-            break;
-        case 172: id = blocks::minecraft::terracotta; break;
-        case 173: id = blocks::minecraft::coal_block; break;
-        case 174: id = blocks::minecraft::packed_ice; break;
-        case 175:
-            switch (data) {
-            case 1: id = blocks::minecraft::lilac; break;
-            case 2: id = blocks::minecraft::tall_grass; break;
-            case 3: id = blocks::minecraft::large_fern; break;
-            case 4: id = blocks::minecraft::rose_bush; break;
-            case 5: id = blocks::minecraft::peony; break;
-            case 0:
-            default:
-                id = blocks::minecraft::sunflower;
-                break;
-            }
-            break;
-        case 176:
-            id = blocks::minecraft::white_banner;
-            props[u8"rotation"] = String::ToString(data);
-            break;
-        case 177:
-            id = blocks::minecraft::white_wall_banner;
-            switch (data) {
-            case 3:
-                props[u8"facing"] = u8"south";
-                break;
-            case 4:
-                props[u8"facing"] = u8"west";
-                break;
-            case 5:
-                props[u8"facing"] = u8"east";
-                break;
-            case 2:
-            default:
-                props[u8"facing"] = u8"north";
-                break;
-            }
-            break;
-        case 178:
-            id = blocks::minecraft::daylight_detector;
-            props[u8"inverted"] = u8"true";
-            break;
-        case 179:
-            id = blocks::minecraft::red_sandstone;
-            switch (data) {
-            case 1: id = blocks::minecraft::chiseled_red_sandstone; break;
-            case 2: id = blocks::minecraft::cut_red_sandstone; break;
-            case 0:
-            default:
-                id = blocks::minecraft::red_sandstone;
-                break;
-            }
-            break;
-        case 180:
-            id = blocks::minecraft::red_sandstone_stairs;
-            Stairs(data, props);
-            break;
-        case 181:
-            id = blocks::minecraft::red_sandstone_slab;
-            props[u8"type"] = u8"double";
-            break;
-        case 182:
-            switch (data) {
-            case 8:
-                id = blocks::minecraft::red_sandstone_slab;
-                props[u8"type"] = u8"top";
-                break;
-            case 0:
-            default:
-                id = blocks::minecraft::red_sandstone_slab;
-                props[u8"type"] = u8"bottom";
-                break;
-            }
-            break;
-        case 183: id = blocks::minecraft::spruce_fence_gate; break;
-        case 184: id = blocks::minecraft::birch_fence_gate; break;
-        case 185: id = blocks::minecraft::jungle_fence_gate; break;
-        case 186: id = blocks::minecraft::dark_oak_fence_gate; break;
-        case 187: id = blocks::minecraft::acacia_fence_gate; break;
-        case 188: id = blocks::minecraft::spruce_fence; break;
-        case 189: id = blocks::minecraft::birch_fence; break;
-        case 190: id = blocks::minecraft::jungle_fence; break;
-        case 191: id = blocks::minecraft::dark_oak_fence; break;
-        case 192: id = blocks::minecraft::acacia_fence; break;
-        case 193:
-            id = blocks::minecraft::spruce_door;
-            Door(data, props);
-            break;
-        case 194:
-            id = blocks::minecraft::birch_door;
-            Door(data, props);
-            break;
-        case 195:
-            id = blocks::minecraft::jungle_door;
-            Door(data, props);
-            break;
-        case 196:
-            id = blocks::minecraft::acacia_door;
-            Door(data, props);
-            break;
-        case 197:
-            id = blocks::minecraft::dark_oak_door;
-            Door(data, props);
-            break;
-        case 198:
-            id = blocks::minecraft::end_rod;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 199: id = blocks::minecraft::chorus_plant; break;
-        case 200:
-            id = blocks::minecraft::chorus_flower;
-            props[u8"age"] = String::ToString(data);
-            break;
-        case 201: id = blocks::minecraft::purpur_block; break;
-        case 202:
-            id = blocks::minecraft::purpur_pillar;
-            props[u8"axis"] = Axis(data >> 2);
-            break;
-        case 203:
-            id = blocks::minecraft::purpur_stairs;
-            Stairs(data, props);
-            break;
-        case 204:
-            id = blocks::minecraft::purpur_slab;
-            props[u8"type"] = u8"double";
-            break;
-        case 205:
-            id = blocks::minecraft::purpur_slab;
-            if (data == 8) {
-                props[u8"type"] = u8"top";
-            } else {
-                props[u8"type"] = u8"bottom";
-            }
-            break;
-        case 206: id = blocks::minecraft::end_stone_bricks; break;
-        case 207:
-            id = blocks::minecraft::beetroots;
-            props[u8"age"] = String::ToString(data);
-            break;
-        case 208: id = blocks::minecraft::dirt_path; break;
-        case 209: id = blocks::minecraft::end_gateway; break;
-        case 210: id = blocks::minecraft::repeating_command_block; break;
-        case 211: id = blocks::minecraft::chain_command_block; break;
-        case 212: id = blocks::minecraft::frosted_ice; break;
-        case 213: id = blocks::minecraft::magma_block; break;
-        case 214: id = blocks::minecraft::nether_wart_block; break;
-        case 215: id = blocks::minecraft::red_nether_bricks; break;
-        case 216:
-            id = blocks::minecraft::bone_block;
-            props[u8"axis"] = Axis(data >> 2);
-            break;
-        case 217: id = blocks::minecraft::structure_void; break;
-        case 218:
-            id = blocks::minecraft::observer;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 219:
-            id = blocks::minecraft::white_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 220:
-            id = blocks::minecraft::orange_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 221:
-            id = blocks::minecraft::magenta_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 222:
-            id = blocks::minecraft::light_blue_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 223:
-            id = blocks::minecraft::yellow_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 224:
-            id = blocks::minecraft::lime_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 225:
-            id = blocks::minecraft::pink_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 226:
-            id = blocks::minecraft::gray_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 227:
-            id = blocks::minecraft::light_gray_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 228:
-            id = blocks::minecraft::cyan_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 229:
-            id = blocks::minecraft::shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 230:
-            id = blocks::minecraft::blue_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 231:
-            id = blocks::minecraft::brown_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 232:
-            id = blocks::minecraft::green_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 233:
-            id = blocks::minecraft::red_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 234:
-            id = blocks::minecraft::black_shulker_box;
-            props[u8"facing"] = FacingA(data);
-            break;
-        case 235:
-            id = blocks::minecraft::white_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 236:
-            id = blocks::minecraft::orange_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 237:
-            id = blocks::minecraft::magenta_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 238:
-            id = blocks::minecraft::light_blue_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 239:
-            id = blocks::minecraft::yellow_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 240:
-            id = blocks::minecraft::lime_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 241:
-            id = blocks::minecraft::pink_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 242:
-            id = blocks::minecraft::gray_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 243:
-            id = blocks::minecraft::light_gray_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 244:
-            id = blocks::minecraft::cyan_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 245:
-            id = blocks::minecraft::purple_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 246:
-            id = blocks::minecraft::blue_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 247:
-            id = blocks::minecraft::brown_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 248:
-            id = blocks::minecraft::green_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 249:
-            id = blocks::minecraft::red_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 250:
-            id = blocks::minecraft::black_glazed_terracotta;
-            GlazedTerracotta(data, props);
-            break;
-        case 251:
-            switch (data) {
-            case 1: id = blocks::minecraft::orange_concrete; break;
-            case 2: id = blocks::minecraft::magenta_concrete; break;
-            case 3: id = blocks::minecraft::light_blue_concrete; break;
-            case 4: id = blocks::minecraft::yellow_concrete; break;
-            case 5: id = blocks::minecraft::lime_concrete; break;
-            case 6: id = blocks::minecraft::pink_concrete; break;
-            case 7: id = blocks::minecraft::gray_concrete; break;
-            case 8: id = blocks::minecraft::light_gray_concrete; break;
-            case 9: id = blocks::minecraft::cyan_concrete; break;
-            case 10: id = blocks::minecraft::purple_concrete; break;
-            case 11: id = blocks::minecraft::blue_concrete; break;
-            case 12: id = blocks::minecraft::brown_concrete; break;
-            case 13: id = blocks::minecraft::green_concrete; break;
-            case 14: id = blocks::minecraft::red_concrete; break;
-            case 15: id = blocks::minecraft::black_concrete; break;
-            case 0:
-            default:
-                id = blocks::minecraft::white_concrete;
-                break;
-            }
-            break;
-        case 252:
-            switch (data) {
-            case 1: id = blocks::minecraft::orange_concrete_powder; break;
-            case 2: id = blocks::minecraft::magenta_concrete_powder; break;
-            case 3: id = blocks::minecraft::light_blue_concrete_powder; break;
-            case 4: id = blocks::minecraft::yellow_concrete_powder; break;
-            case 5: id = blocks::minecraft::lime_concrete_powder; break;
-            case 6: id = blocks::minecraft::pink_concrete_powder; break;
-            case 7: id = blocks::minecraft::gray_concrete_powder; break;
-            case 8: id = blocks::minecraft::light_gray_concrete_powder; break;
-            case 9: id = blocks::minecraft::cyan_concrete_powder; break;
-            case 10: id = blocks::minecraft::purple_concrete_powder; break;
-            case 11: id = blocks::minecraft::blue_concrete_powder; break;
-            case 12: id = blocks::minecraft::brown_concrete_powder; break;
-            case 13: id = blocks::minecraft::green_concrete_powder; break;
-            case 14: id = blocks::minecraft::red_concrete_powder; break;
-            case 15: id = blocks::minecraft::black_concrete_powder; break;
-            case 0:
-            default:
-                id = blocks::minecraft::white_concrete_powder;
-                break;
-            }
-            break;
-        case 255: id = blocks::minecraft::structure_block; break;
-        default: id = blocks::minecraft::air; break;
-        }
+                return blocks::minecraft::white_wall_banner;
+            },
+            // 178
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"inverted"] = u8"true";
+                return blocks::minecraft::daylight_detector;
+            },
+            // 179
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::chiseled_red_sandstone;
+                case 2: return blocks::minecraft::cut_red_sandstone;
+                case 0:
+                default:
+                    return blocks::minecraft::red_sandstone;
+                }
+            },
+            // 180
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::red_sandstone_stairs;
+            },
+            // 181
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"type"] = u8"double";
+                return blocks::minecraft::red_sandstone_slab;
+            },
+            // 182
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 8:
+                    props[u8"type"] = u8"top";
+                    return blocks::minecraft::red_sandstone_slab;
+                case 0:
+                default:
+                    props[u8"type"] = u8"bottom";
+                    return blocks::minecraft::red_sandstone_slab;
+                }
+            },
+            // 183
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::spruce_fence_gate; },
+            // 184
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::birch_fence_gate; },
+            // 185
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::jungle_fence_gate; },
+            // 186
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dark_oak_fence_gate; },
+            // 187
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::acacia_fence_gate; },
+            // 188
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::spruce_fence; },
+            // 189
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::birch_fence; },
+            // 190
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::jungle_fence; },
+            // 191
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dark_oak_fence; },
+            // 192
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::acacia_fence; },
+            // 193
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Door(data, props);
+                return blocks::minecraft::spruce_door;
+            },
+            // 194
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Door(data, props);
+                return blocks::minecraft::birch_door;
+            },
+            // 195
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Door(data, props);
+                return blocks::minecraft::jungle_door;
+            },
+            // 196
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Door(data, props);
+                return blocks::minecraft::acacia_door;
+            },
+            // 197
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Door(data, props);
+                return blocks::minecraft::dark_oak_door;
+            },
+            // 198
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::end_rod;
+            },
+            // 199
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::chorus_plant; },
+            // 200
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"age"] = String::ToString(data);
+                return blocks::minecraft::chorus_flower;
+            },
+            // 201
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::purpur_block; },
+            // 202
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"axis"] = Axis(data >> 2);
+                return blocks::minecraft::purpur_pillar;
+            },
+            // 203
+            [](uint8_t data, map<u8string, u8string> &props) {
+                Stairs(data, props);
+                return blocks::minecraft::purpur_stairs;
+            },
+            // 204
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"type"] = u8"double";
+                return blocks::minecraft::purpur_slab;
+            },
+            // 205
+            [](uint8_t data, map<u8string, u8string> &props) {
+                if (data == 8) {
+                    props[u8"type"] = u8"top";
+                } else {
+                    props[u8"type"] = u8"bottom";
+                }
+                return blocks::minecraft::purpur_slab;
+            },
+            // 206
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::end_stone_bricks; },
+            // 207
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"age"] = String::ToString(data);
+                return blocks::minecraft::beetroots;
+            },
+            // 208
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dirt_path; },
+            // 209
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::end_gateway; },
+            // 210
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::repeating_command_block; },
+            // 211
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::chain_command_block; },
+            // 212
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::frosted_ice; },
+            // 213
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::magma_block; },
+            // 214
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::nether_wart_block; },
+            // 215
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::red_nether_bricks; },
+            // 216
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"axis"] = Axis(data >> 2);
+                return blocks::minecraft::bone_block;
+            },
+            // 217
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::structure_void; },
+            // 218
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::observer;
+            },
+            // 219
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::white_shulker_box;
+            },
+            // 220
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::orange_shulker_box;
+            },
+            // 221
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::magenta_shulker_box;
+            },
+            // 222
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::light_blue_shulker_box;
+            },
+            // 223
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::yellow_shulker_box;
+            },
+            // 224
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::lime_shulker_box;
+            },
+            // 225
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::pink_shulker_box;
+            },
+            // 226
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::gray_shulker_box;
+            },
+            // 227
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::light_gray_shulker_box;
+            },
+            // 228
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::cyan_shulker_box;
+            },
+            // 229
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::shulker_box;
+            },
+            // 230
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::blue_shulker_box;
+            },
+            // 231
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::brown_shulker_box;
+            },
+            // 232
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::green_shulker_box;
+            },
+            // 233
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::red_shulker_box;
+            },
+            // 234
+            [](uint8_t data, map<u8string, u8string> &props) {
+                props[u8"facing"] = FacingA(data);
+                return blocks::minecraft::black_shulker_box;
+            },
+            // 235
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::white_glazed_terracotta;
+            },
+            // 236
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::orange_glazed_terracotta;
+            },
+            // 237
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::magenta_glazed_terracotta;
+            },
+            // 238
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::light_blue_glazed_terracotta;
+            },
+            // 239
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::yellow_glazed_terracotta;
+            },
+            // 240
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::lime_glazed_terracotta;
+            },
+            // 241
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::pink_glazed_terracotta;
+            },
+            // 242
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::gray_glazed_terracotta;
+            },
+            // 243
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::light_gray_glazed_terracotta;
+            },
+            // 244
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::cyan_glazed_terracotta;
+            },
+            // 245
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::purple_glazed_terracotta;
+            },
+            // 246
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::blue_glazed_terracotta;
+            },
+            // 247
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::brown_glazed_terracotta;
+            },
+            // 248
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::green_glazed_terracotta;
+            },
+            // 249
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::red_glazed_terracotta;
+            },
+            // 250
+            [](uint8_t data, map<u8string, u8string> &props) {
+                GlazedTerracotta(data, props);
+                return blocks::minecraft::black_glazed_terracotta;
+            },
+            // 251
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::orange_concrete;
+                case 2: return blocks::minecraft::magenta_concrete;
+                case 3: return blocks::minecraft::light_blue_concrete;
+                case 4: return blocks::minecraft::yellow_concrete;
+                case 5: return blocks::minecraft::lime_concrete;
+                case 6: return blocks::minecraft::pink_concrete;
+                case 7: return blocks::minecraft::gray_concrete;
+                case 8: return blocks::minecraft::light_gray_concrete;
+                case 9: return blocks::minecraft::cyan_concrete;
+                case 10: return blocks::minecraft::purple_concrete;
+                case 11: return blocks::minecraft::blue_concrete;
+                case 12: return blocks::minecraft::brown_concrete;
+                case 13: return blocks::minecraft::green_concrete;
+                case 14: return blocks::minecraft::red_concrete;
+                case 15: return blocks::minecraft::black_concrete;
+                case 0:
+                default:
+                    return blocks::minecraft::white_concrete;
+                }
+            },
+            // 252
+            [](uint8_t data, map<u8string, u8string> &props) {
+                switch (data) {
+                case 1: return blocks::minecraft::orange_concrete_powder;
+                case 2: return blocks::minecraft::magenta_concrete_powder;
+                case 3: return blocks::minecraft::light_blue_concrete_powder;
+                case 4: return blocks::minecraft::yellow_concrete_powder;
+                case 5: return blocks::minecraft::lime_concrete_powder;
+                case 6: return blocks::minecraft::pink_concrete_powder;
+                case 7: return blocks::minecraft::gray_concrete_powder;
+                case 8: return blocks::minecraft::light_gray_concrete_powder;
+                case 9: return blocks::minecraft::cyan_concrete_powder;
+                case 10: return blocks::minecraft::purple_concrete_powder;
+                case 11: return blocks::minecraft::blue_concrete_powder;
+                case 12: return blocks::minecraft::brown_concrete_powder;
+                case 13: return blocks::minecraft::green_concrete_powder;
+                case 14: return blocks::minecraft::red_concrete_powder;
+                case 15: return blocks::minecraft::black_concrete_powder;
+                case 0:
+                default:
+                    return blocks::minecraft::white_concrete_powder;
+                }
+            },
+            // 253
+            sAir,
+            // 254
+            sAir,
+            // 255
+            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::structure_block; },
+        };
+        auto id = sTable[0xff & blockId](data, props);
         return std::make_shared<mcfile::je::Block>(id, props);
     }
 
