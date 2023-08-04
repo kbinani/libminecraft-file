@@ -428,15 +428,24 @@ private:
             return nullptr;
         }
 
-        auto chunkY = tag.int32(u8"yPos");
-        if (!chunkY) {
-            return nullptr;
-        }
+        optional<int32_t> chunkY = tag.int32(u8"yPos");
 
         vector<shared_ptr<ChunkSection>> sections;
         // NOTE: blockEntities argument for MakeChunkSections is only used for ChunkSection112.
         vector<shared_ptr<nbt::CompoundTag>> emptyBlockEntities;
         auto createEmptySection = chunksection::ChunkSectionGenerator::MakeChunkSections(sectionsTag, dataVersion, chunkX, chunkZ, emptyBlockEntities, sections);
+        for (auto const &section : sections) {
+            if (section) {
+                if (chunkY) {
+                    chunkY = std::min<int32_t>(*chunkY, (int32_t)section->y());
+                } else {
+                    chunkY = (int32_t)section->y();
+                }
+            }
+        }
+        if (!chunkY) {
+            return nullptr;
+        }
 
         // NOTE: Always empty
         vector<shared_ptr<nbt::CompoundTag>> entities;
