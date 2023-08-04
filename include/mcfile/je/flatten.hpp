@@ -967,6 +967,15 @@ public:
 #undef egg
     }
 
+    template<size_t N>
+    static blocks::BlockId Select(uint8_t data, blocks::BlockId const table[N], blocks::BlockId fallback) {
+        if (data < N) {
+            return table[data];
+        } else [[unlikely]] {
+            return fallback;
+        }
+    }
+
     static std::shared_ptr<mcfile::je::Block const> Block(uint16_t blockId, uint8_t data) {
         using namespace std;
         using Func = function<blocks::BlockId(uint8_t, map<u8string, u8string> &)>;
@@ -978,57 +987,53 @@ public:
             sAir,
             // 1
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::granite;
-                case 2: return blocks::minecraft::polished_granite;
-                case 3: return blocks::minecraft::diorite;
-                case 4: return blocks::minecraft::polished_diorite;
-                case 5: return blocks::minecraft::andesite;
-                case 6: return blocks::minecraft::polished_andesite;
-                case 0:
-                default:
-                    return blocks::minecraft::stone;
-                }
+                static blocks::BlockId const sIds[7] = {
+                    blocks::minecraft::stone,
+                    blocks::minecraft::granite,
+                    blocks::minecraft::polished_granite,
+                    blocks::minecraft::diorite,
+                    blocks::minecraft::polished_diorite,
+                    blocks::minecraft::andesite,
+                    blocks::minecraft::polished_andesite,
+                };
+                return Select<7>(data, sIds, blocks::minecraft::stone);
             },
             // 2
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::grass_block; },
             // 3
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::coarse_dirt;
-                case 2: return blocks::minecraft::podzol;
-                case 0:
-                default:
-                    return blocks::minecraft::dirt;
-                }
+                static blocks::BlockId const sIds[3] = {
+                    blocks::minecraft::dirt,
+                    blocks::minecraft::coarse_dirt,
+                    blocks::minecraft::podzol,
+                };
+                return Select<3>(data, sIds, blocks::minecraft::dirt);
             },
             // 4
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cobblestone; },
             // 5
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::spruce_planks;
-                case 2: return blocks::minecraft::birch_planks;
-                case 3: return blocks::minecraft::jungle_planks;
-                case 4: return blocks::minecraft::acacia_planks;
-                case 5: return blocks::minecraft::dark_oak_planks;
-                case 0:
-                default:
-                    return blocks::minecraft::oak_planks;
-                }
+                static blocks::BlockId const sIds[6] = {
+                    blocks::minecraft::oak_planks,
+                    blocks::minecraft::spruce_planks,
+                    blocks::minecraft::birch_planks,
+                    blocks::minecraft::jungle_planks,
+                    blocks::minecraft::acacia_planks,
+                    blocks::minecraft::dark_oak_planks,
+                };
+                return Select<6>(data, sIds, blocks::minecraft::oak_planks);
             },
             // 6
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data & 0x7) {
-                case 1: return blocks::minecraft::spruce_sapling;
-                case 2: return blocks::minecraft::birch_sapling;
-                case 3: return blocks::minecraft::jungle_sapling;
-                case 4: return blocks::minecraft::acacia_sapling;
-                case 5: return blocks::minecraft::dark_oak_sapling;
-                case 0:
-                default:
-                    return blocks::minecraft::oak_sapling;
-                }
+                static blocks::BlockId const sIds[6] = {
+                    blocks::minecraft::oak_sapling,
+                    blocks::minecraft::spruce_sapling,
+                    blocks::minecraft::birch_sapling,
+                    blocks::minecraft::jungle_sapling,
+                    blocks::minecraft::acacia_sapling,
+                    blocks::minecraft::dark_oak_sapling,
+                };
+                return Select<6>(data & 0x7, sIds, blocks::minecraft::oak_sapling);
             },
             // 7
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::bedrock; },
@@ -1066,26 +1071,24 @@ public:
             // 17
             [](uint8_t data, map<u8string, u8string> &props) {
                 Log(data, props);
-                switch (data & 0x3) {
-                case 1: return blocks::minecraft::spruce_log;
-                case 2: return blocks::minecraft::birch_log;
-                case 3: return blocks::minecraft::jungle_log;
-                case 0:
-                default:
-                    return blocks::minecraft::oak_log;
-                }
+                static blocks::BlockId const sIds[4] = {
+                    blocks::minecraft::oak_log,
+                    blocks::minecraft::spruce_log,
+                    blocks::minecraft::birch_log,
+                    blocks::minecraft::jungle_log,
+                };
+                return Select<4>(data & 0x3, sIds, blocks::minecraft::oak_log);
             },
             // 18
             [](uint8_t data, map<u8string, u8string> &props) {
                 Leaves(data, props);
-                switch (data & 0x3) {
-                case 1: return blocks::minecraft::spruce_leaves;
-                case 2: return blocks::minecraft::birch_leaves;
-                case 3: return blocks::minecraft::jungle_leaves;
-                case 0:
-                default:
-                    return blocks::minecraft::oak_leaves;
-                }
+                static blocks::BlockId const sIds[4] = {
+                    blocks::minecraft::oak_leaves,
+                    blocks::minecraft::spruce_leaves,
+                    blocks::minecraft::birch_leaves,
+                    blocks::minecraft::jungle_leaves,
+                };
+                return Select<4>(data & 0x3, sIds, blocks::minecraft::oak_leaves);
             },
             // 19
             [](uint8_t data, map<u8string, u8string> &props) {
@@ -1166,26 +1169,25 @@ public:
             },
             // 35
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::orange_wool;
-                case 2: return blocks::minecraft::magenta_wool;
-                case 3: return blocks::minecraft::light_blue_wool;
-                case 4: return blocks::minecraft::yellow_wool;
-                case 5: return blocks::minecraft::lime_wool;
-                case 6: return blocks::minecraft::pink_wool;
-                case 7: return blocks::minecraft::gray_wool;
-                case 8: return blocks::minecraft::light_gray_wool;
-                case 9: return blocks::minecraft::cyan_wool;
-                case 10: return blocks::minecraft::purple_wool;
-                case 11: return blocks::minecraft::blue_wool;
-                case 12: return blocks::minecraft::brown_wool;
-                case 13: return blocks::minecraft::green_wool;
-                case 14: return blocks::minecraft::red_wool;
-                case 15: return blocks::minecraft::black_wool;
-                case 0:
-                default:
-                    return blocks::minecraft::white_wool;
-                }
+                static blocks::BlockId const sIds[16] = {
+                    blocks::minecraft::white_wool,
+                    blocks::minecraft::orange_wool,
+                    blocks::minecraft::magenta_wool,
+                    blocks::minecraft::light_blue_wool,
+                    blocks::minecraft::yellow_wool,
+                    blocks::minecraft::lime_wool,
+                    blocks::minecraft::pink_wool,
+                    blocks::minecraft::gray_wool,
+                    blocks::minecraft::light_gray_wool,
+                    blocks::minecraft::cyan_wool,
+                    blocks::minecraft::purple_wool,
+                    blocks::minecraft::blue_wool,
+                    blocks::minecraft::brown_wool,
+                    blocks::minecraft::green_wool,
+                    blocks::minecraft::red_wool,
+                    blocks::minecraft::black_wool,
+                };
+                return Select<16>(data, sIds, blocks::minecraft::white_wool);
             },
             // 36
             sAir,
@@ -1193,19 +1195,18 @@ public:
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dandelion; },
             // 38
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 0: return blocks::minecraft::poppy;
-                case 1: return blocks::minecraft::blue_orchid;
-                case 2: return blocks::minecraft::allium;
-                case 3: return blocks::minecraft::azure_bluet;
-                case 4: return blocks::minecraft::red_tulip;
-                case 5: return blocks::minecraft::orange_tulip;
-                case 6: return blocks::minecraft::white_tulip;
-                case 7: return blocks::minecraft::pink_tulip;
-                case 8: return blocks::minecraft::oxeye_daisy;
-                default:
-                    return blocks::minecraft::air;
-                }
+                static blocks::BlockId const sIds[9] = {
+                    blocks::minecraft::poppy,
+                    blocks::minecraft::blue_orchid,
+                    blocks::minecraft::allium,
+                    blocks::minecraft::azure_bluet,
+                    blocks::minecraft::red_tulip,
+                    blocks::minecraft::orange_tulip,
+                    blocks::minecraft::white_tulip,
+                    blocks::minecraft::pink_tulip,
+                    blocks::minecraft::oxeye_daisy,
+                };
+                return Select<9>(data, sIds, blocks::minecraft::air);
             },
             // 39
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::brown_mushroom; },
@@ -1218,34 +1219,32 @@ public:
             // 43
             [](uint8_t data, map<u8string, u8string> &props) {
                 props[u8"type"] = u8"double";
-                switch (data) {
-                case 1: return blocks::minecraft::sandstone_slab;
-                case 2: return blocks::minecraft::oak_slab;
-                case 3: return blocks::minecraft::cobblestone_slab;
-                case 4: return blocks::minecraft::brick_slab;
-                case 5: return blocks::minecraft::stone_brick_slab;
-                case 6: return blocks::minecraft::nether_brick_slab;
-                case 7: return blocks::minecraft::quartz_slab;
-                case 0:
-                default:
-                    return blocks::minecraft::smooth_stone_slab;
-                }
+                static blocks::BlockId const sIds[8] = {
+                    blocks::minecraft::smooth_stone_slab,
+                    blocks::minecraft::sandstone_slab,
+                    blocks::minecraft::oak_slab,
+                    blocks::minecraft::cobblestone_slab,
+                    blocks::minecraft::brick_slab,
+                    blocks::minecraft::stone_brick_slab,
+                    blocks::minecraft::nether_brick_slab,
+                    blocks::minecraft::quartz_slab,
+                };
+                return Select<8>(data, sIds, blocks::minecraft::smooth_stone_slab);
             },
             // 44
             [](uint8_t data, map<u8string, u8string> &props) {
                 props[u8"type"] = ((data >> 3) & 0x1) == 0x1 ? u8"top" : u8"bottom";
-                switch (data & 0x7) {
-                case 1: return blocks::minecraft::sandstone_slab;
-                case 2: return blocks::minecraft::oak_slab;
-                case 3: return blocks::minecraft::cobblestone_slab;
-                case 4: return blocks::minecraft::brick_slab;
-                case 5: return blocks::minecraft::stone_brick_slab;
-                case 6: return blocks::minecraft::nether_brick_slab;
-                case 7: return blocks::minecraft::quartz_slab;
-                case 0:
-                default:
-                    return blocks::minecraft::smooth_stone_slab;
-                }
+                static blocks::BlockId const sIds[8] = {
+                    blocks::minecraft::smooth_stone_slab,
+                    blocks::minecraft::sandstone_slab,
+                    blocks::minecraft::oak_slab,
+                    blocks::minecraft::cobblestone_slab,
+                    blocks::minecraft::brick_slab,
+                    blocks::minecraft::stone_brick_slab,
+                    blocks::minecraft::nether_brick_slab,
+                    blocks::minecraft::quartz_slab,
+                };
+                return Select<8>(data & 0x7, sIds, blocks::minecraft::smooth_stone_slab);
             },
             // 45
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::bricks; },
@@ -1545,26 +1544,25 @@ public:
             },
             // 95
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::orange_stained_glass;
-                case 2: return blocks::minecraft::magenta_stained_glass;
-                case 3: return blocks::minecraft::light_blue_stained_glass;
-                case 4: return blocks::minecraft::yellow_stained_glass;
-                case 5: return blocks::minecraft::lime_stained_glass;
-                case 6: return blocks::minecraft::pink_stained_glass;
-                case 7: return blocks::minecraft::gray_stained_glass;
-                case 8: return blocks::minecraft::light_gray_stained_glass;
-                case 9: return blocks::minecraft::cyan_stained_glass;
-                case 10: return blocks::minecraft::purple_stained_glass;
-                case 11: return blocks::minecraft::blue_stained_glass;
-                case 12: return blocks::minecraft::brown_stained_glass;
-                case 13: return blocks::minecraft::green_stained_glass;
-                case 14: return blocks::minecraft::red_stained_glass;
-                case 15: return blocks::minecraft::black_stained_glass;
-                case 0:
-                default:
-                    return blocks::minecraft::white_stained_glass;
-                }
+                static blocks::BlockId const sIds[16] = {
+                    blocks::minecraft::white_stained_glass,
+                    blocks::minecraft::orange_stained_glass,
+                    blocks::minecraft::magenta_stained_glass,
+                    blocks::minecraft::light_blue_stained_glass,
+                    blocks::minecraft::yellow_stained_glass,
+                    blocks::minecraft::lime_stained_glass,
+                    blocks::minecraft::pink_stained_glass,
+                    blocks::minecraft::gray_stained_glass,
+                    blocks::minecraft::light_gray_stained_glass,
+                    blocks::minecraft::cyan_stained_glass,
+                    blocks::minecraft::purple_stained_glass,
+                    blocks::minecraft::blue_stained_glass,
+                    blocks::minecraft::brown_stained_glass,
+                    blocks::minecraft::green_stained_glass,
+                    blocks::minecraft::red_stained_glass,
+                    blocks::minecraft::black_stained_glass,
+                };
+                return Select<16>(data, sIds, blocks::minecraft::white_stained_glass);
             },
             // 96
             [](uint8_t data, map<u8string, u8string> &props) {
@@ -1573,27 +1571,25 @@ public:
             },
             // 97
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::infested_cobblestone;
-                case 2: return blocks::minecraft::infested_stone_bricks;
-                case 3: return blocks::minecraft::infested_mossy_stone_bricks;
-                case 4: return blocks::minecraft::infested_cracked_stone_bricks;
-                case 5: return blocks::minecraft::infested_chiseled_stone_bricks;
-                case 0:
-                default:
-                    return blocks::minecraft::infested_stone;
-                }
+                static blocks::BlockId const sIds[6] = {
+                    blocks::minecraft::infested_stone,
+                    blocks::minecraft::infested_cobblestone,
+                    blocks::minecraft::infested_stone_bricks,
+                    blocks::minecraft::infested_mossy_stone_bricks,
+                    blocks::minecraft::infested_cracked_stone_bricks,
+                    blocks::minecraft::infested_chiseled_stone_bricks,
+                };
+                return Select<6>(data, sIds, blocks::minecraft::infested_stone);
             },
             // 98
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::mossy_stone_bricks;
-                case 2: return blocks::minecraft::cracked_stone_bricks;
-                case 3: return blocks::minecraft::chiseled_stone_bricks;
-                case 0:
-                default:
-                    return blocks::minecraft::stone_bricks;
-                }
+                static blocks::BlockId const sIds[4] = {
+                    blocks::minecraft::stone_bricks,
+                    blocks::minecraft::mossy_stone_bricks,
+                    blocks::minecraft::cracked_stone_bricks,
+                    blocks::minecraft::chiseled_stone_bricks,
+                };
+                return Select<4>(data, sIds, blocks::minecraft::stone_bricks);
             },
             // 99
             [](uint8_t data, map<u8string, u8string> &props) {
@@ -1703,30 +1699,28 @@ public:
             // 125
             [](uint8_t data, map<u8string, u8string> &props) {
                 props[u8"type"] = u8"double";
-                switch (data) {
-                case 1: return blocks::minecraft::spruce_slab;
-                case 2: return blocks::minecraft::birch_slab;
-                case 3: return blocks::minecraft::jungle_slab;
-                case 4: return blocks::minecraft::acacia_slab;
-                case 5: return blocks::minecraft::dark_oak_slab;
-                case 0:
-                default:
-                    return blocks::minecraft::oak_slab;
-                }
+                static blocks::BlockId const sIds[6] = {
+                    blocks::minecraft::oak_slab,
+                    blocks::minecraft::spruce_slab,
+                    blocks::minecraft::birch_slab,
+                    blocks::minecraft::jungle_slab,
+                    blocks::minecraft::acacia_slab,
+                    blocks::minecraft::dark_oak_slab,
+                };
+                return Select<6>(data, sIds, blocks::minecraft::oak_slab);
             },
             // 126
             [](uint8_t data, map<u8string, u8string> &props) {
                 props[u8"type"] = data < 8 ? u8"bottom" : u8"top";
-                switch (data & 0x7) {
-                case 1: return blocks::minecraft::spruce_slab;
-                case 2: return blocks::minecraft::birch_slab;
-                case 3: return blocks::minecraft::jungle_slab;
-                case 4: return blocks::minecraft::acacia_slab;
-                case 5: return blocks::minecraft::dark_oak_slab;
-                case 0:
-                default:
-                    return blocks::minecraft::oak_slab;
-                }
+                static blocks::BlockId const sIds[6] = {
+                    blocks::minecraft::oak_slab,
+                    blocks::minecraft::spruce_slab,
+                    blocks::minecraft::birch_slab,
+                    blocks::minecraft::jungle_slab,
+                    blocks::minecraft::acacia_slab,
+                    blocks::minecraft::dark_oak_slab,
+                };
+                return Select<6>(data & 0x7, sIds, blocks::minecraft::oak_slab);
             },
             // 127
             [](uint8_t data, map<u8string, u8string> &props) {
@@ -1946,49 +1940,47 @@ public:
             },
             // 159
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::orange_terracotta;
-                case 2: return blocks::minecraft::magenta_terracotta;
-                case 3: return blocks::minecraft::light_blue_terracotta;
-                case 4: return blocks::minecraft::yellow_terracotta;
-                case 5: return blocks::minecraft::lime_terracotta;
-                case 6: return blocks::minecraft::pink_terracotta;
-                case 7: return blocks::minecraft::gray_terracotta;
-                case 8: return blocks::minecraft::light_gray_terracotta;
-                case 9: return blocks::minecraft::cyan_terracotta;
-                case 10: return blocks::minecraft::purple_terracotta;
-                case 11: return blocks::minecraft::blue_terracotta;
-                case 12: return blocks::minecraft::brown_terracotta;
-                case 13: return blocks::minecraft::green_terracotta;
-                case 14: return blocks::minecraft::red_terracotta;
-                case 15: return blocks::minecraft::black_terracotta;
-                default:
-                case 0:
-                    return blocks::minecraft::white_terracotta;
-                }
+                static blocks::BlockId const sIds[16] = {
+                    blocks::minecraft::white_terracotta,
+                    blocks::minecraft::orange_terracotta,
+                    blocks::minecraft::magenta_terracotta,
+                    blocks::minecraft::light_blue_terracotta,
+                    blocks::minecraft::yellow_terracotta,
+                    blocks::minecraft::lime_terracotta,
+                    blocks::minecraft::pink_terracotta,
+                    blocks::minecraft::gray_terracotta,
+                    blocks::minecraft::light_gray_terracotta,
+                    blocks::minecraft::cyan_terracotta,
+                    blocks::minecraft::purple_terracotta,
+                    blocks::minecraft::blue_terracotta,
+                    blocks::minecraft::brown_terracotta,
+                    blocks::minecraft::green_terracotta,
+                    blocks::minecraft::red_terracotta,
+                    blocks::minecraft::black_terracotta,
+                };
+                return Select<16>(data, sIds, blocks::minecraft::white_terracotta);
             },
             // 160
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::orange_stained_glass_pane;
-                case 2: return blocks::minecraft::magenta_stained_glass_pane;
-                case 3: return blocks::minecraft::light_blue_stained_glass_pane;
-                case 4: return blocks::minecraft::yellow_stained_glass_pane;
-                case 5: return blocks::minecraft::lime_stained_glass_pane;
-                case 6: return blocks::minecraft::pink_stained_glass_pane;
-                case 7: return blocks::minecraft::gray_stained_glass_pane;
-                case 8: return blocks::minecraft::light_gray_stained_glass_pane;
-                case 9: return blocks::minecraft::cyan_stained_glass_pane;
-                case 10: return blocks::minecraft::purple_stained_glass_pane;
-                case 11: return blocks::minecraft::blue_stained_glass_pane;
-                case 12: return blocks::minecraft::brown_stained_glass_pane;
-                case 13: return blocks::minecraft::green_stained_glass_pane;
-                case 14: return blocks::minecraft::red_stained_glass_pane;
-                case 15: return blocks::minecraft::black_stained_glass_pane;
-                case 0:
-                default:
-                    return blocks::minecraft::white_stained_glass_pane;
-                }
+                static blocks::BlockId const sIds[16] = {
+                    blocks::minecraft::white_stained_glass_pane,
+                    blocks::minecraft::orange_stained_glass_pane,
+                    blocks::minecraft::magenta_stained_glass_pane,
+                    blocks::minecraft::light_blue_stained_glass_pane,
+                    blocks::minecraft::yellow_stained_glass_pane,
+                    blocks::minecraft::lime_stained_glass_pane,
+                    blocks::minecraft::pink_stained_glass_pane,
+                    blocks::minecraft::gray_stained_glass_pane,
+                    blocks::minecraft::light_gray_stained_glass_pane,
+                    blocks::minecraft::cyan_stained_glass_pane,
+                    blocks::minecraft::purple_stained_glass_pane,
+                    blocks::minecraft::blue_stained_glass_pane,
+                    blocks::minecraft::brown_stained_glass_pane,
+                    blocks::minecraft::green_stained_glass_pane,
+                    blocks::minecraft::red_stained_glass_pane,
+                    blocks::minecraft::black_stained_glass_pane,
+                };
+                return Select<16>(data, sIds, blocks::minecraft::white_stained_glass_pane);
             },
             // 161
             [](uint8_t data, map<u8string, u8string> &props) {
@@ -2031,13 +2023,12 @@ public:
             },
             // 168
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::prismarine_bricks;
-                case 2: return blocks::minecraft::dark_prismarine;
-                case 0:
-                default:
-                    return blocks::minecraft::prismarine;
-                }
+                static blocks::BlockId const sIds[3] = {
+                    blocks::minecraft::prismarine,
+                    blocks::minecraft::prismarine_bricks,
+                    blocks::minecraft::dark_prismarine,
+                };
+                return Select<3>(data, sIds, blocks::minecraft::prismarine);
             },
             // 169
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::sea_lantern; },
@@ -2048,26 +2039,25 @@ public:
             },
             // 171
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::orange_carpet;
-                case 2: return blocks::minecraft::magenta_carpet;
-                case 3: return blocks::minecraft::light_blue_carpet;
-                case 4: return blocks::minecraft::yellow_carpet;
-                case 5: return blocks::minecraft::lime_carpet;
-                case 6: return blocks::minecraft::pink_carpet;
-                case 7: return blocks::minecraft::gray_carpet;
-                case 8: return blocks::minecraft::light_gray_carpet;
-                case 9: return blocks::minecraft::cyan_carpet;
-                case 10: return blocks::minecraft::purple_carpet;
-                case 11: return blocks::minecraft::blue_carpet;
-                case 12: return blocks::minecraft::brown_carpet;
-                case 13: return blocks::minecraft::green_carpet;
-                case 14: return blocks::minecraft::red_carpet;
-                case 15: return blocks::minecraft::black_carpet;
-                case 0:
-                default:
-                    return blocks::minecraft::white_carpet;
-                }
+                static blocks::BlockId const sIds[16] = {
+                    blocks::minecraft::white_carpet,
+                    blocks::minecraft::orange_carpet,
+                    blocks::minecraft::magenta_carpet,
+                    blocks::minecraft::light_blue_carpet,
+                    blocks::minecraft::yellow_carpet,
+                    blocks::minecraft::lime_carpet,
+                    blocks::minecraft::pink_carpet,
+                    blocks::minecraft::gray_carpet,
+                    blocks::minecraft::light_gray_carpet,
+                    blocks::minecraft::cyan_carpet,
+                    blocks::minecraft::purple_carpet,
+                    blocks::minecraft::blue_carpet,
+                    blocks::minecraft::brown_carpet,
+                    blocks::minecraft::green_carpet,
+                    blocks::minecraft::red_carpet,
+                    blocks::minecraft::black_carpet,
+                };
+                return Select<16>(data, sIds, blocks::minecraft::white_carpet);
             },
             // 172
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::terracotta; },
@@ -2077,16 +2067,15 @@ public:
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::packed_ice; },
             // 175
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::lilac;
-                case 2: return blocks::minecraft::tall_grass;
-                case 3: return blocks::minecraft::large_fern;
-                case 4: return blocks::minecraft::rose_bush;
-                case 5: return blocks::minecraft::peony;
-                case 0:
-                default:
-                    return blocks::minecraft::sunflower;
-                }
+                static blocks::BlockId const sIds[6] = {
+                    blocks::minecraft::sunflower,
+                    blocks::minecraft::lilac,
+                    blocks::minecraft::tall_grass,
+                    blocks::minecraft::large_fern,
+                    blocks::minecraft::rose_bush,
+                    blocks::minecraft::peony,
+                };
+                return Select<6>(data, sIds, blocks::minecraft::sunflower);
             },
             // 176
             [](uint8_t data, map<u8string, u8string> &props) {
@@ -2119,13 +2108,12 @@ public:
             },
             // 179
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::chiseled_red_sandstone;
-                case 2: return blocks::minecraft::cut_red_sandstone;
-                case 0:
-                default:
-                    return blocks::minecraft::red_sandstone;
-                }
+                static blocks::BlockId const sIds[3] = {
+                    blocks::minecraft::red_sandstone,
+                    blocks::minecraft::chiseled_red_sandstone,
+                    blocks::minecraft::cut_red_sandstone,
+                };
+                return Select<3>(data, sIds, blocks::minecraft::red_sandstone);
             },
             // 180
             [](uint8_t data, map<u8string, u8string> &props) {
@@ -2429,49 +2417,45 @@ public:
             },
             // 251
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::orange_concrete;
-                case 2: return blocks::minecraft::magenta_concrete;
-                case 3: return blocks::minecraft::light_blue_concrete;
-                case 4: return blocks::minecraft::yellow_concrete;
-                case 5: return blocks::minecraft::lime_concrete;
-                case 6: return blocks::minecraft::pink_concrete;
-                case 7: return blocks::minecraft::gray_concrete;
-                case 8: return blocks::minecraft::light_gray_concrete;
-                case 9: return blocks::minecraft::cyan_concrete;
-                case 10: return blocks::minecraft::purple_concrete;
-                case 11: return blocks::minecraft::blue_concrete;
-                case 12: return blocks::minecraft::brown_concrete;
-                case 13: return blocks::minecraft::green_concrete;
-                case 14: return blocks::minecraft::red_concrete;
-                case 15: return blocks::minecraft::black_concrete;
-                case 0:
-                default:
-                    return blocks::minecraft::white_concrete;
-                }
+                static blocks::BlockId const sIds[16] = {
+                    blocks::minecraft::white_concrete,
+                    blocks::minecraft::orange_concrete,
+                    blocks::minecraft::magenta_concrete,
+                    blocks::minecraft::light_blue_concrete,
+                    blocks::minecraft::yellow_concrete,
+                    blocks::minecraft::lime_concrete,
+                    blocks::minecraft::pink_concrete,
+                    blocks::minecraft::gray_concrete,
+                    blocks::minecraft::light_gray_concrete,
+                    blocks::minecraft::cyan_concrete,
+                    blocks::minecraft::purple_concrete,
+                    blocks::minecraft::blue_concrete,
+                    blocks::minecraft::brown_concrete,
+                    blocks::minecraft::green_concrete,
+                    blocks::minecraft::red_concrete,
+                    blocks::minecraft::black_concrete};
+                return Select<16>(data, sIds, blocks::minecraft::white_concrete);
             },
             // 252
             [](uint8_t data, map<u8string, u8string> &props) {
-                switch (data) {
-                case 1: return blocks::minecraft::orange_concrete_powder;
-                case 2: return blocks::minecraft::magenta_concrete_powder;
-                case 3: return blocks::minecraft::light_blue_concrete_powder;
-                case 4: return blocks::minecraft::yellow_concrete_powder;
-                case 5: return blocks::minecraft::lime_concrete_powder;
-                case 6: return blocks::minecraft::pink_concrete_powder;
-                case 7: return blocks::minecraft::gray_concrete_powder;
-                case 8: return blocks::minecraft::light_gray_concrete_powder;
-                case 9: return blocks::minecraft::cyan_concrete_powder;
-                case 10: return blocks::minecraft::purple_concrete_powder;
-                case 11: return blocks::minecraft::blue_concrete_powder;
-                case 12: return blocks::minecraft::brown_concrete_powder;
-                case 13: return blocks::minecraft::green_concrete_powder;
-                case 14: return blocks::minecraft::red_concrete_powder;
-                case 15: return blocks::minecraft::black_concrete_powder;
-                case 0:
-                default:
-                    return blocks::minecraft::white_concrete_powder;
-                }
+                static blocks::BlockId const sIds[16] = {
+                    blocks::minecraft::white_concrete_powder,
+                    blocks::minecraft::orange_concrete_powder,
+                    blocks::minecraft::magenta_concrete_powder,
+                    blocks::minecraft::light_blue_concrete_powder,
+                    blocks::minecraft::yellow_concrete_powder,
+                    blocks::minecraft::lime_concrete_powder,
+                    blocks::minecraft::pink_concrete_powder,
+                    blocks::minecraft::gray_concrete_powder,
+                    blocks::minecraft::light_gray_concrete_powder,
+                    blocks::minecraft::cyan_concrete_powder,
+                    blocks::minecraft::purple_concrete_powder,
+                    blocks::minecraft::blue_concrete_powder,
+                    blocks::minecraft::brown_concrete_powder,
+                    blocks::minecraft::green_concrete_powder,
+                    blocks::minecraft::red_concrete_powder,
+                    blocks::minecraft::black_concrete_powder};
+                return Select<16>(data, sIds, blocks::minecraft::white_concrete_powder);
             },
             // 253
             sAir,
