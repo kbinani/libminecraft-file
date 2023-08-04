@@ -969,10 +969,11 @@ public:
 
     static std::shared_ptr<mcfile::je::Block const> Block(uint16_t blockId, uint8_t data) {
         using namespace std;
+        using Func = function<blocks::BlockId(uint8_t, map<u8string, u8string> &)>;
         thread_local map<u8string, u8string> props;
         props.clear();
-        static function<blocks::BlockId(uint8_t, map<u8string, u8string> &)> const sAir = [](uint8_t, map<u8string, u8string> &) { return blocks::minecraft::air; };
-        static function<blocks::BlockId(uint8_t data, map<u8string, u8string> & props)> const sTable[] = {
+        static Func const sAir = [](uint8_t, map<u8string, u8string> &) { return blocks::minecraft::air; };
+        static Func const sTable[] = {
             // 0
             sAir,
             // 1
@@ -2479,6 +2480,7 @@ public:
             // 255
             [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::structure_block; },
         };
+        static_assert(sizeof(sTable) == 256 * sizeof(Func));
         auto id = sTable[0xff & blockId](data, props);
         return std::make_shared<mcfile::je::Block>(id, props);
     }
