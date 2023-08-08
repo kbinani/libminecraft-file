@@ -435,13 +435,21 @@ private:
 
         optional<int32_t> chunkY = tag.int32(u8"yPos");
         if (!chunkY) {
+            optional<int32_t> minSectionY;
             for (auto const &section : sections) {
                 if (section) {
-                    if (chunkY) {
-                        chunkY = std::min<int32_t>(*chunkY, (int32_t)section->y());
+                    if (minSectionY) {
+                        minSectionY = std::min<int32_t>(*minSectionY, (int32_t)section->y());
                     } else {
-                        chunkY = (int32_t)section->y();
+                        minSectionY = (int32_t)section->y();
                     }
+                }
+            }
+            if (minSectionY) {
+                if (*minSectionY == -1 || *minSectionY == 0) {
+                    chunkY = 0;
+                } else if (*minSectionY == -5 || *minSectionY == -4) {
+                    chunkY = -4;
                 }
             }
         }
