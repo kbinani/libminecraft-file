@@ -19,13 +19,16 @@ public:
     static FILE *Open(std::filesystem::path const &path, Mode mode) {
 #if defined(_WIN32)
         std::wstring m = ModeWString(mode);
+        FILE *ret = nullptr;
+        if (_wfopen_s(&ret, path.c_str(), m.c_str()) == 0) {
+            return ret;
+        }
+        if (path.native().starts_with(LR"(\\?\)")) {
+            return nullptr;
+        }
         auto p = path;
         p.make_preferred();
-        std::wstring s = p.native();
-        if (!s.starts_with(LR"(\\?\)")) {
-            s = LR"(\\?\)" + s;
-        }
-        FILE *ret = nullptr;
+        std::wstring s = LR"(\\?\)" + p.native();
         if (_wfopen_s(&ret, s.c_str(), m.c_str()) == 0) {
             return ret;
         } else {
