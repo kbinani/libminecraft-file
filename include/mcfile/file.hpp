@@ -18,9 +18,15 @@ public:
 
     static FILE *Open(std::filesystem::path const &path, Mode mode) {
 #if defined(_WIN32)
-        auto m = ModeWString(mode);
+        std::wstring m = ModeWString(mode);
+        auto p = path;
+        p.make_preferred();
+        std::wstring s = p.native();
+        if (!s.starts_with(LR"(\\?\)")) {
+            s = LR"(\\?\)" + s;
+        }
         FILE *ret = nullptr;
-        if (_wfopen_s(&ret, path.c_str(), m.c_str()) == 0) {
+        if (_wfopen_s(&ret, s.c_str(), m.c_str()) == 0) {
             return ret;
         } else {
             return nullptr;
