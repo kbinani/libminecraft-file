@@ -152,7 +152,7 @@ std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromFile(fs::path p) {
 }
 
 std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromCompressedFile(fs::path p) {
-    return mcfile::nbt::CompoundTag::ReadCompressed(p, Endian::Big);
+    return mcfile::nbt::CompoundTag::ReadCompressedFromFile(p, Endian::Big);
 }
 
 } // namespace
@@ -236,7 +236,7 @@ TEST_CASE("1.18") {
         fs::path in = dir / "data" / "5biomes" / "c.-1.-54.nbt";
         shared_ptr<WritableChunk> expected;
         {
-            auto root = CompoundTag::Read(in, Endian::Big);
+            auto root = CompoundTag::ReadFromFile(in, Endian::Big);
             expected = WritableChunk::MakeChunk(-1, -54, root);
         }
 
@@ -249,7 +249,7 @@ TEST_CASE("1.18") {
 
         shared_ptr<Chunk> actual;
         {
-            auto root = CompoundTag::ReadCompressed(out, Endian::Big);
+            auto root = CompoundTag::ReadCompressedFromFile(out, Endian::Big);
             actual = Chunk::MakeChunk(-1, -54, root);
         }
 
