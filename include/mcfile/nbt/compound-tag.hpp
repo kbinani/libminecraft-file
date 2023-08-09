@@ -589,7 +589,7 @@ public:
         });
     }
 
-    static std::shared_ptr<CompoundTag> Read(std::filesystem::path path, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadFromFile(std::filesystem::path path, Endian endian) {
         auto s = std::make_shared<mcfile::stream::FileInputStream>(path);
         return Read(s, endian);
     }
@@ -629,7 +629,7 @@ public:
         return tag;
     }
 
-    static std::shared_ptr<CompoundTag> ReadCompressed(std::filesystem::path p, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadCompressedFromFile(std::filesystem::path p, Endian endian) {
         auto s = std::make_shared<mcfile::stream::FileInputStream>(p);
         return ReadCompressed(*s, endian);
     }
