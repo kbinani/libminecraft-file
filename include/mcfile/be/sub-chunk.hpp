@@ -147,15 +147,17 @@ private:
         int k = 0;
         for (int i = 0; i < numWords; i++) {
             uint32_t word = indexBuffer[i];
-            for (int j = 0; j < blocksPerWord && k < 4096; j++, k++) {
+            for (int j = 0; j < blocksPerWord && k < 4096; j++) {
                 uint16_t v = (word >> (bitsPerBlock * j)) & mask;
-                index[k] = v;
+                index[k++] = v;
             }
         }
-        assert(index.size() == 4096);
 
         uint32_t numPaletteEntries;
         if (!sr.read(&numPaletteEntries)) {
+            return false;
+        }
+        if (numPaletteEntries > 4096) {
             return false;
         }
 
