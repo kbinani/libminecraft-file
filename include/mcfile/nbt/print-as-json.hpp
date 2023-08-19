@@ -5,18 +5,24 @@ namespace nbt {
 
 struct JsonPrintOptions {
     bool fTypeHint = false;
+    int fIndent = 2;
+    bool fNewLine = true;
 };
 
 namespace detail {
 
-static inline std::string Indent(int level) {
-    return std::string(level * 2, ' ');
+static inline std::string Indent(int level, int size) {
+    return std::string(level * size, ' ');
 }
 
 template<class Stream>
 static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, JsonPrintOptions options, bool comma = false, int depth = 0) {
     using namespace mcfile::u8stream;
     std::string hint = "";
+    std::string endl = options.fNewLine ? "\n" : "";
+    if (!options.fNewLine && options.fTypeHint) {
+        throw std::invalid_argument("Invalid argument combination: fNewLine=false and fTypeHint=true");
+    }
     switch (value.type()) {
     case Tag::Type::Byte: {
         uint8_t u8 = value.asByte()->fValue;
@@ -53,15 +59,15 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
         if (compound->empty()) {
             out << "{}";
         } else {
-            out << "{" << std::endl;
+            out << "{" << endl;
             for (auto it = compound->begin(); it != compound->end();) {
                 std::u8string name = it->first;
-                out << Indent(depth + 1) << "\"" << name << "\": ";
+                out << Indent(depth + 1, options.fIndent) << "\"" << name << "\": ";
                 std::shared_ptr<Tag> value = it->second;
                 it++;
                 PrintAsJsonImpl(out, *value, options, it != compound->end(), depth + 1);
             }
-            out << Indent(depth) << "}";
+            out << Indent(depth, options.fIndent) << "}";
         }
         break;
     }
@@ -71,12 +77,12 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
             out << "[]";
             hint = "list";
         } else {
-            out << "[" << std::endl;
+            out << "[" << endl;
             for (int i = 0; i < list->fValue.size(); i++) {
-                out << Indent(depth + 1);
+                out << Indent(depth + 1, options.fIndent);
                 PrintAsJsonImpl(out, *list->fValue[i], options, i + 1 < list->fValue.size(), depth + 1);
             }
-            out << Indent(depth) << "]";
+            out << Indent(depth, options.fIndent) << "]";
         }
         break;
     }
@@ -90,13 +96,13 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
             if (options.fTypeHint) {
                 out << " // byte[]";
             }
-            out << std::endl;
+            out << endl;
             for (int i = 0; i < list.size(); i++) {
                 uint8_t u8 = list[i];
                 int8_t i8 = *(int8_t *)&u8;
-                out << Indent(depth + 1) << (int)i8 << std::endl;
+                out << Indent(depth + 1, options.fIndent) << (int)i8 << endl;
             }
-            out << Indent(depth) << "]";
+            out << Indent(depth, options.fIndent) << "]";
         }
         break;
     }
@@ -110,11 +116,11 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
             if (options.fTypeHint) {
                 out << " // int[]";
             }
-            out << std::endl;
+            out << endl;
             for (int i = 0; i < list.size(); i++) {
-                out << Indent(depth + 1) << list[i] << std::endl;
+                out << Indent(depth + 1, options.fIndent) << list[i] << endl;
             }
-            out << Indent(depth) << "]";
+            out << Indent(depth, options.fIndent) << "]";
         }
         break;
     }
@@ -128,11 +134,11 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
             if (options.fTypeHint) {
                 out << " // long[]";
             }
-            out << std::endl;
+            out << endl;
             for (int i = 0; i < list.size(); i++) {
-                out << Indent(depth + 1) << list[i] << std::endl;
+                out << Indent(depth + 1, options.fIndent) << list[i] << endl;
             }
-            out << Indent(depth) << "]";
+            out << Indent(depth, options.fIndent) << "]";
         }
         break;
     }
@@ -146,7 +152,7 @@ static inline void PrintAsJsonImpl(Stream &out, mcfile::nbt::Tag const &value, J
     if (options.fTypeHint && !hint.empty()) {
         out << " // " << hint;
     }
-    out << std::endl;
+    out << endl;
 }
 } // namespace detail
 
