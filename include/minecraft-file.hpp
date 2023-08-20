@@ -100,9 +100,7 @@
 #include <mcfile/je/block.hpp>
 #include <mcfile/biomes/biome-id.hpp>
 #include <mcfile/biomes/minecraft.hpp>
-#include <mcfile/biomes/from-int.hpp>
-#include <mcfile/biomes/from-name.hpp>
-#include <mcfile/biomes/name.hpp>
+#include <mcfile/biomes/biome.hpp>
 #include <mcfile/dimension.hpp>
 #include <mcfile/palette-list.hpp>
 #include <mcfile/je/block-palette.hpp>

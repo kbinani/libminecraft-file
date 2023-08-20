@@ -108,7 +108,7 @@ public:
                 if (!tag) {
                     return nullptr;
                 }
-                auto b = biomes::FromName(tag->fValue);
+                auto b = biomes::Biome::FromName(tag->fValue);
                 if (!b) {
                     return nullptr;
                 }
@@ -333,7 +333,7 @@ public:
                                  std::shared_ptr<nbt::LongArrayTag> &outPackedIndices,
                                  int dataVersion) {
         for (auto const &biome : inPalette) {
-            auto name = biomes::Name(biome, dataVersion);
+            auto name = biomes::Biome::Name(biome, dataVersion);
             outPalette->push_back(std::make_shared<mcfile::nbt::StringTag>(name));
         }
         size_t size = outPalette->size();

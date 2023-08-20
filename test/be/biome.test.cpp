@@ -10,11 +10,11 @@ using namespace mcfile::biomes;
 TEST_CASE("be/biome") {
     using namespace mcfile::biomes::minecraft;
     for (BiomeId b = 1; b < minecraft::minecraft_max_biome_id; b++) {
-        auto name = Name(b, mcfile::je::Chunk::kDataVersion);
+        auto name = mcfile::biomes::Biome::Name(b, mcfile::je::Chunk::kDataVersion);
         if (name.empty()) {
             continue;
         }
-        uint32_t iv = Biome::ToUint32(b);
+        uint32_t iv = mcfile::be::Biome::ToUint32(b);
         switch (b) {
         case ocean:
             CHECK(iv == 0);

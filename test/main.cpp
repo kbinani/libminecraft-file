@@ -126,17 +126,17 @@ TEST_CASE("block-id") {
 }
 
 TEST_CASE("biome_id") {
-    CHECK(biomes::Name(biomes::minecraft::mushroom_field_shore, mcfile::je::Chunk::kDataVersion) == u8"minecraft:mushroom_fields");
-    CHECK(biomes::Name(biomes::minecraft::mushroom_field_shore, 2838 - 1) == u8"minecraft:mushroom_field_shore");
-    CHECK(biomes::FromName(u8"minecraft:mushroom_field_shore") == biomes::minecraft::mushroom_field_shore);
+    CHECK(biomes::Biome::Name(biomes::minecraft::mushroom_field_shore, mcfile::je::Chunk::kDataVersion) == u8"minecraft:mushroom_fields");
+    CHECK(biomes::Biome::Name(biomes::minecraft::mushroom_field_shore, 2838 - 1) == u8"minecraft:mushroom_field_shore");
+    CHECK(biomes::Biome::FromName(u8"minecraft:mushroom_field_shore") == biomes::minecraft::mushroom_field_shore);
 
     for (mcfile::biomes::BiomeId id = 1; id < biomes::minecraft::minecraft_max_biome_id; id++) {
         if (id == biomes::minecraft::mushroom_field_shore) {
             continue;
         }
-        auto name = biomes::Name(id, mcfile::je::Chunk::kDataVersion);
+        auto name = biomes::Biome::Name(id, mcfile::je::Chunk::kDataVersion);
         CHECK(!name.empty());
-        auto reverse = biomes::FromName(name);
+        auto reverse = biomes::Biome::FromName(name);
         CHECK(reverse == id);
         if (reverse != id) {
             std::cout << name << std::endl;

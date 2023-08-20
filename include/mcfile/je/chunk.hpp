@@ -671,7 +671,11 @@ private:
             }
             out.resize(size);
             for (int i = 0; i < size; i++) {
-                out[i] = biomes::FromInt(value[i]);
+                if (auto biome = biomes::Biome::FromInt(value[i]); biome) {
+                    out[i] = *biome;
+                } else {
+                    out[i] = biomes::unknown;
+                }
             }
         } else if (biomesTag->type() == nbt::Tag::Type::ByteArray) {
             vector<uint8_t> const &value = biomesTag->asByteArray()->value();
@@ -680,7 +684,11 @@ private:
             }
             out.resize(256);
             for (int i = 0; i < 256; i++) {
-                out[i] = biomes::FromInt(value[i]);
+                if (auto biome = biomes::Biome::FromInt(value[i]); biome) {
+                    out[i] = *biome;
+                } else {
+                    out[i] = biomes::unknown;
+                }
             }
         }
     }

@@ -202,21 +202,29 @@ private:
 
         if (fDataVersion >= 2203) { // 19w36a
             if (fLegacyBiomes.size() == 1024 || fLegacyBiomes.size() == 1536) {
-                vector<int32_t> biomes;
-                biomes.reserve(fLegacyBiomes.size());
-                for (uint16_t b : fLegacyBiomes) {
-                    biomes.push_back((uint8_t)(0xff & b));
+                vector<int32_t> arr;
+                arr.reserve(fLegacyBiomes.size());
+                for (biomes::BiomeId b : fLegacyBiomes) {
+                    if (auto id = biomes::Biome::ToInt(b); id) {
+                        arr.push_back(*id);
+                    } else {
+                        arr.push_back(0);
+                    }
                 }
-                level->set(u8"Biomes", make_shared<IntArrayTag>(biomes));
+                level->set(u8"Biomes", make_shared<IntArrayTag>(arr));
             }
         } else {
             if (fLegacyBiomes.size() == 256) {
-                vector<uint8_t> biomes;
-                biomes.reserve(256);
-                for (uint16_t b : fLegacyBiomes) {
-                    biomes.push_back((uint8_t)(0xff & b));
+                vector<uint8_t> arr;
+                arr.reserve(256);
+                for (biomes::BiomeId b : fLegacyBiomes) {
+                    if (auto id = biomes::Biome::ToInt(b); id) {
+                        arr.push_back(*id);
+                    } else {
+                        arr.push_back(0);
+                    }
                 }
-                level->set(u8"Biomes", make_shared<ByteArrayTag>(biomes));
+                level->set(u8"Biomes", make_shared<ByteArrayTag>(arr));
             }
         }
 

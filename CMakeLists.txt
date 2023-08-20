@@ -39,10 +39,8 @@ set(mcfile_files
   include/mcfile/be/wrap-db.hpp
   include/mcfile/biome-palette.hpp
   include/mcfile/biomes/biome-id.hpp
-  include/mcfile/biomes/from-int.hpp
-  include/mcfile/biomes/from-name.hpp
+  include/mcfile/biomes/biome.hpp
   include/mcfile/biomes/minecraft.hpp
-  include/mcfile/biomes/name.hpp
   include/mcfile/blocks/block-data.hpp
   include/mcfile/blocks/block-id.hpp
   include/mcfile/blocks/data/ageable.hpp
