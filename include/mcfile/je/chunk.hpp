@@ -365,6 +365,7 @@ protected:
         fStructures.swap(s.fStructures);
         fTileTicks.swap(s.fTileTicks);
         fLiquidTicks.swap(s.fLiquidTicks);
+        fLegacyBiomes.swap(s.fLegacyBiomes);
     }
 
 private:
