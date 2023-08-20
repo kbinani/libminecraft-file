@@ -65,7 +65,7 @@ public:
     static void PackPaletteIndexToI64(std::vector<uint16_t> const &paletteIndices, std::vector<int64_t> &blockStates) {
         blockStates.clear();
 
-        uint64_t const mask = std::numeric_limits<uint64_t>::max() >> (64 - BitsPerBlock);
+        uint64_t constexpr mask = std::numeric_limits<uint64_t>::max() >> (64 - BitsPerBlock);
         int count = 0;
         uint64_t v = 0;
         for (uint16_t idx : paletteIndices) {
