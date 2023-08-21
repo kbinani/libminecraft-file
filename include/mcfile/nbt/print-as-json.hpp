@@ -1,12 +1,26 @@
 #pragma once
 
-namespace mcfile {
-namespace nbt {
+namespace mcfile::nbt {
 
 struct JsonPrintOptions {
     bool fTypeHint = false;
     int fIndent = 2;
     bool fNewLine = true;
+
+    JsonPrintOptions &typeHint(bool v) {
+        fTypeHint = v;
+        return *this;
+    }
+
+    JsonPrintOptions &indent(int v) {
+        fIndent = v;
+        return *this;
+    }
+
+    JsonPrintOptions &newLine(bool v) {
+        fNewLine = v;
+        return *this;
+    }
 };
 
 namespace detail {
@@ -161,5 +175,4 @@ static inline void PrintAsJson(Stream &out, mcfile::nbt::Tag const &tag, JsonPri
     detail::PrintAsJsonImpl(out, tag, options, false, 0);
 }
 
-} // namespace nbt
-} // namespace mcfile
+} // namespace mcfile::nbt
