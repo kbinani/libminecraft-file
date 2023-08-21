@@ -34,6 +34,13 @@ public:
             return nullptr;
         }
 
+        // version values:
+        // 1.0.0.16: 0
+        // 1.1.5.0: 0
+        // 1.2.10.2: 0
+        // 1.4.2.0: 8
+        // 1.10.1.1: 9
+
         if (version == 8) {
             return ParseVersion8(sr, chunkY);
         } else if (version == 9) {
