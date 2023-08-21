@@ -12,7 +12,7 @@ struct JsonPrintOptions {
 namespace detail {
 
 static inline std::string Indent(int level, int size) {
-    return std::string(level * size, ' ');
+    return std::string((size_t)std::max(0, level) * (size_t)std::max(0, size), ' ');
 }
 
 template<class Stream>
