@@ -236,7 +236,9 @@ private:
 
         auto tileEntities = make_shared<ListTag>(Tag::Type::Compound);
         for (auto const &it : fTileEntities) {
-            tileEntities->push_back(it.second->clone());
+            if (it.second) {
+                tileEntities->push_back(it.second->clone());
+            }
         }
         level->set(u8"TileEntities", tileEntities);
 
