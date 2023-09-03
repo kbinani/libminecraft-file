@@ -56,6 +56,12 @@ public:
             PackPaletteIndexToI64<7, 9>(paletteIndices, blockStates);
         } else if (numPaletteEntries <= 256) {
             PackPaletteIndexToI64<8, 8>(paletteIndices, blockStates);
+        } else if (numPaletteEntries <= 512) {
+            PackPaletteIndexToI64<9, 7>(paletteIndices, blockStates);
+        } else if (numPaletteEntries <= 1024) {
+            PackPaletteIndexToI64<10, 6>(paletteIndices, blockStates);
+        } else if (numPaletteEntries <= 4096) {
+            PackPaletteIndexToI64<12, 5>(paletteIndices, blockStates);
         } else {
             PackPaletteIndexToI64<16, 4>(paletteIndices, blockStates);
         }
