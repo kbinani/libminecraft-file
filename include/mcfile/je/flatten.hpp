@@ -782,6 +782,7 @@ public:
             default:
                 return ns u8"cod";
             }
+            break;
         case 350:
             switch (DrainDamage(damage)) {
             case 1: return ns u8"cooked_salmon";

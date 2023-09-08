@@ -363,7 +363,7 @@ public:
         }
         if (!bitset.empty()) {
             uint64_t u = 0;
-            for (size_t j = 0; j < bitset.size(); j++) {
+            for (size_t j = 0; j < 64 && j < bitset.size(); j++) {
                 uint64_t t = bitset[j] ? 1 : 0;
                 u |= t << j;
             }

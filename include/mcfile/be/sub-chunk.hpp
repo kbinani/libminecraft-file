@@ -250,8 +250,8 @@ private:
             return std::nullopt;
         }
 
-        int paletteIndex = fPaletteIndices[index];
-        if (paletteIndex < 0 || fPalette.size() <= paletteIndex) {
+        uint16_t paletteIndex = fPaletteIndices[index];
+        if (fPalette.size() <= paletteIndex) {
             return std::nullopt;
         }
 

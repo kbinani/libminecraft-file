@@ -15,8 +15,8 @@ public:
         if (!index) {
             return std::nullopt;
         }
-        int idx = fIndex[*index];
-        if (idx < 0 || fPalette.size() <= idx) {
+        uint16_t idx = fIndex[*index];
+        if (fPalette.size() <= idx) {
             return std::nullopt;
         }
         return fPalette[idx];
@@ -64,7 +64,11 @@ public:
                 }
                 int8_t i = lookup[id];
                 if (i < 0) {
-                    i = fPalette.size();
+                    auto size = fPalette.size();
+                    if (size > numeric_limits<int8_t>::max()) [[unlikely]] {
+                        return false;
+                    }
+                    i = (int8_t)size;
                     lookup[id] = i;
                     fPalette.push_back(id);
                 }

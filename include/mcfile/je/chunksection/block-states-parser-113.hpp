@@ -18,10 +18,10 @@ public:
             size_t v0BitOffset = bitIndex - 64 * u64Index;
             size_t v1Bits = bitsPerIndex - v0Bits;
             uint64_t v0 = *(uint64_t *)(blockStates.data() + u64Index);
-            uint64_t paletteIndex = (v0 >> v0BitOffset) & ((1 << v0Bits) - 1);
+            uint64_t paletteIndex = (v0 >> v0BitOffset) & ((uint64_t(1) << v0Bits) - 1);
             if (v1Bits > 0) {
                 uint64_t v1 = *(uint64_t *)(blockStates.data() + (u64Index + 1));
-                uint64_t t = v1 & ((1 << v1Bits) - 1);
+                uint64_t t = v1 & ((uint64_t(1) << v1Bits) - 1);
                 paletteIndex = (t << v0Bits) | paletteIndex;
             }
             paletteIndices[i] = (uint16_t)(paletteIndex & 0xffff);

@@ -57,7 +57,7 @@ public:
     }
 
     bool seek(uint64_t offset) override {
-        if (offset < 0 || fBuffer.size() <= offset) {
+        if (fBuffer.size() <= offset) {
             return false;
         }
         fLoc = offset;

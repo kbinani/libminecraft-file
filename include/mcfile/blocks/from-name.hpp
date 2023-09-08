@@ -834,7 +834,6 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:lava_cauldron"] = lava_cauldron;
     t[u8"minecraft:powder_snow_cauldron"] = powder_snow_cauldron;
     t[u8"minecraft:dirt_path"] = dirt_path;
-    t[u8"minecraft:waxed_copper_block"] = waxed_copper_block;
     t[u8"minecraft:rooted_dirt"] = rooted_dirt;
     t[u8"minecraft:flowering_azalea_leaves"] = flowering_azalea_leaves;
     t[u8"minecraft:big_dripleaf"] = big_dripleaf;

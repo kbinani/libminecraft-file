@@ -836,7 +836,6 @@ static inline std::vector<Characteristics> CreateTable() {
     m[lava_cauldron] = {.name = u8"minecraft:lava_cauldron", .opaque = false};
     m[powder_snow_cauldron] = {.name = u8"minecraft:powder_snow_cauldron", .opaque = false};
     m[dirt_path] = {.name = u8"minecraft:dirt_path", .opaque = false};
-    m[waxed_copper_block] = {.name = u8"minecraft:waxed_copper_block", .opaque = true};
     m[rooted_dirt] = {.name = u8"minecraft:rooted_dirt", .opaque = true};
     m[flowering_azalea_leaves] = {.name = u8"minecraft:flowering_azalea_leaves", .opaque = false};
     m[big_dripleaf] = {.name = u8"minecraft:big_dripleaf", .opaque = false};
