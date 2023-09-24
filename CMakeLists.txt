@@ -124,6 +124,7 @@ set(mcfile_test_files
   test/main.cpp
   test/be/biome-section.test.cpp
   test/be/biome.test.cpp
+  test/be/db-key.test.cpp
   test/Point3D.hpp
   test/BlockData.hpp
   test/flatten.test.cpp
@@ -161,6 +162,9 @@ target_link_libraries(mcfile INTERFACE ${mcfile_test_link_libraries})
 
 add_executable(mcfile-test ${mcfile_test_files})
 target_link_libraries(mcfile-test mcfile doctest)
+if (MSVC)
+  target_compile_options(mcfile-test PRIVATE /bigobj)
+endif()
 
 add_executable(mcfile-example example/main.cpp)
 target_link_libraries(mcfile-example mcfile)

@@ -142,35 +142,29 @@ public:
         return ComposeChunkKey(chunkX, chunkZ, dim, static_cast<uint8_t>(tag));
     }
 
-    static std::optional<DbKey> Parse(std::string const &key) {
+    static DbKey Parse(std::string const &key) {
+        if (key.starts_with("map_") || key == "BiomeData" || key == "Overworld" || key == "mobevents" || key == "scoreboard" || key == "~local_player") {
+            DbKey k;
+            k.fIsTagged = false;
+            k.fUnTagged = key;
+            return k;
+        }
         switch (key.size()) {
         case 9: {
-            if (key == "BiomeData" || key == "Overworld" || key == "mobevents") {
-                DbKey k;
-                k.fIsTagged = false;
-                k.fUnTagged = key;
-                return k;
-            } else {
-                uint8_t tag = key[8];
-                int32_t cx = Mem::Read<int32_t>(key, 0);
-                int32_t cz = Mem::Read<int32_t>(key, 4);
-                DbKey k;
-                k.fIsTagged = true;
-                k.fTagged.fTag = tag;
-                k.fTagged.fDimension = Dimension::Overworld;
-                k.fTagged.fChunk.fX = cx;
-                k.fTagged.fChunk.fZ = cz;
-                return k;
-            }
+            uint8_t tag = key[8];
+            int32_t cx = Mem::Read<int32_t>(key, 0);
+            int32_t cz = Mem::Read<int32_t>(key, 4);
+            DbKey k;
+            k.fIsTagged = true;
+            k.fTagged.fTag = tag;
+            k.fTagged.fDimension = Dimension::Overworld;
+            k.fTagged.fChunk.fX = cx;
+            k.fTagged.fChunk.fZ = cz;
+            return k;
         }
         case 10: {
             uint8_t tag = key[8];
-            if (key == "scoreboard" || tag != 0x2f) {
-                DbKey k;
-                k.fIsTagged = false;
-                k.fUnTagged = key;
-                return k;
-            } else {
+            if (tag == 0x2f) {
                 int32_t cx = Mem::Read<int32_t>(key, 0);
                 int32_t cz = Mem::Read<int32_t>(key, 4);
                 uint8_t rawY = key[9];
@@ -183,27 +177,25 @@ public:
                 k.fTagged.fSubChunk.fY = y;
                 k.fTagged.fSubChunk.fZ = cz;
                 return k;
-            }
-        }
-        case 13: {
-            if (key == "~local_player") {
+            } else {
                 DbKey k;
                 k.fIsTagged = false;
                 k.fUnTagged = key;
                 return k;
-            } else {
-                uint8_t tag = key[12];
-                int32_t cx = Mem::Read<int32_t>(key, 0);
-                int32_t cz = Mem::Read<int32_t>(key, 4);
-                int32_t dim = Mem::Read<int32_t>(key, 8);
-                DbKey k;
-                k.fIsTagged = true;
-                k.fTagged.fTag = tag;
-                k.fTagged.fDimension = dim == 1 ? Dimension::Nether : Dimension::End;
-                k.fTagged.fChunk.fX = cx;
-                k.fTagged.fChunk.fZ = cz;
-                return k;
             }
+        }
+        case 13: {
+            uint8_t tag = key[12];
+            int32_t cx = Mem::Read<int32_t>(key, 0);
+            int32_t cz = Mem::Read<int32_t>(key, 4);
+            int32_t dim = Mem::Read<int32_t>(key, 8);
+            DbKey k;
+            k.fIsTagged = true;
+            k.fTagged.fTag = tag;
+            k.fTagged.fDimension = dim == 1 ? Dimension::Nether : Dimension::End;
+            k.fTagged.fChunk.fX = cx;
+            k.fTagged.fChunk.fZ = cz;
+            return k;
         }
         case 14: {
             uint8_t tag = key[12];

@@ -101,21 +101,18 @@ public:
                 continue;
             }
             auto k = DbKey::Parse(key.ToString());
-            if (!k) {
+            if (!k.fIsTagged) {
                 continue;
             }
-            if (!k->fIsTagged) {
-                continue;
-            }
-            uint8_t const tag = k->fTagged.fTag;
+            uint8_t const tag = k.fTagged.fTag;
             if (tag != static_cast<uint8_t>(DbKey::Tag::Version) && tag != static_cast<uint8_t>(DbKey::Tag::VersionLegacy)) {
                 continue;
             }
-            if (k->fTagged.fDimension != dim) {
+            if (k.fTagged.fDimension != dim) {
                 continue;
             }
-            int cx = k->fTagged.fChunk.fX;
-            int cz = k->fTagged.fChunk.fZ;
+            int cx = k.fTagged.fChunk.fX;
+            int cz = k.fTagged.fChunk.fZ;
             if (!cb(cx, cz)) {
                 return false;
             }
