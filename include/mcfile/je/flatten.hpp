@@ -988,6 +988,7 @@ public:
             sAir,
             // 1
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 static blocks::BlockId const sIds[7] = {
                     blocks::minecraft::stone,
                     blocks::minecraft::granite,
@@ -1000,9 +1001,13 @@ public:
                 return Select<7>(data, sIds, blocks::minecraft::stone);
             },
             // 2
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::grass_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::grass_block;
+            },
             // 3
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 static blocks::BlockId const sIds[3] = {
                     blocks::minecraft::dirt,
                     blocks::minecraft::coarse_dirt,
@@ -1011,9 +1016,13 @@ public:
                 return Select<3>(data, sIds, blocks::minecraft::dirt);
             },
             // 4
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cobblestone; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::cobblestone;
+            },
             // 5
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 static blocks::BlockId const sIds[6] = {
                     blocks::minecraft::oak_planks,
                     blocks::minecraft::spruce_planks,
@@ -1026,6 +1035,7 @@ public:
             },
             // 6
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[6] = {
                     blocks::minecraft::oak_sapling,
                     blocks::minecraft::spruce_sapling,
@@ -1034,26 +1044,47 @@ public:
                     blocks::minecraft::acacia_sapling,
                     blocks::minecraft::dark_oak_sapling,
                 };
+                props[u8"stage"] = String::ToString((data >> 3) & 0x1);
                 return Select<6>(data & 0x7, sIds, blocks::minecraft::oak_sapling);
             },
             // 7
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::bedrock; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::bedrock;
+            },
             // 8
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::water; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                //IGNORE: props[u8"level"] = String::ToString(data & 0x7);
+                props[u8"falling"] = ((0x8 & data) == 0x8) ? u8"true" : u8"false";
+                return blocks::minecraft::water;
+            },
             // 9
             [](uint8_t data, map<u8string, u8string> &props) {
-                props[u8"level"] = String::ToString(data);
+                // flowing_water
+                AssertDataLayout(data, 0b1111);
+                props[u8"level"] = String::ToString(data & 0x7);
+                props[u8"falling"] = ((0x8 & data) == 0x8) ? u8"true" : u8"false";
                 return blocks::minecraft::water;
             },
             // 10
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::lava; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                //IGNORE: props[u8"level"] = String::ToString(data & 0x7);
+                props[u8"falling"] = ((0x8 & data) == 0x8) ? u8"true" : u8"false";
+                return blocks::minecraft::lava;
+            },
             // 11
             [](uint8_t data, map<u8string, u8string> &props) {
-                props[u8"level"] = String::ToString(data);
+                // flowing_lava
+                AssertDataLayout(data, 0b1111);
+                props[u8"level"] = String::ToString(data & 0x7);
+                props[u8"falling"] = ((0x8 & data) == 0x8) ? u8"true" : u8"false";
                 return blocks::minecraft::lava;
             },
             // 12
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
                 switch (data) {
                 case 1: return blocks::minecraft::red_sand;
                 case 0:
@@ -1062,15 +1093,28 @@ public:
                 }
             },
             // 13
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::gravel; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::gravel;
+            },
             // 14
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::gold_ore; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::gold_ore;
+            },
             // 15
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::iron_ore; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::iron_ore;
+            },
             // 16
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::coal_ore; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::coal_ore;
+            },
             // 17
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Log(data, props);
                 static blocks::BlockId const sIds[4] = {
                     blocks::minecraft::oak_log,
@@ -1082,6 +1126,7 @@ public:
             },
             // 18
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Leaves(data, props);
                 static blocks::BlockId const sIds[4] = {
                     blocks::minecraft::oak_leaves,
@@ -1089,10 +1134,12 @@ public:
                     blocks::minecraft::birch_leaves,
                     blocks::minecraft::jungle_leaves,
                 };
+                // IGNORE: check_decay = ((data >> 3) & 0x1 == 0x1) ? "true" : "false"
                 return Select<4>(data & 0x3, sIds, blocks::minecraft::oak_leaves);
             },
             // 19
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
                 switch (data) {
                 case 1: return blocks::minecraft::wet_sponge;
                 case 0:
@@ -1101,18 +1148,30 @@ public:
                 }
             },
             // 20
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::glass; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::glass;
+            },
             // 21
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::lapis_ore; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::lapis_ore;
+            },
             // 22
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::lapis_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::lapis_block;
+            },
             // 23
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"facing"] = FacingA(data);
+                props[u8"triggered"] = ((0x8 & data) == 0x8) ? u8"true" : u8"false";
                 return blocks::minecraft::dispenser;
             },
             // 24
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 switch (data) {
                 case 1: return blocks::minecraft::chiseled_sandstone;
                 case 2: return blocks::minecraft::cut_sandstone;
@@ -1122,31 +1181,42 @@ public:
                 }
             },
             // 25
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::note_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::note_block;
+            },
             // 26
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Bed(data, props);
                 return blocks::minecraft::red_bed;
             },
             // 27
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 PoweredRail(data, props);
                 return blocks::minecraft::powered_rail;
             },
             // 28
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 PoweredRail(data, props);
                 return blocks::minecraft::detector_rail;
             },
             // 29
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Piston(data, props);
                 return blocks::minecraft::sticky_piston;
             },
             // 30
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cobweb; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::cobweb;
+            },
             // 31
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 switch (data) {
                 case 2: return blocks::minecraft::fern;
                 case 1:
@@ -1156,20 +1226,26 @@ public:
                 }
             },
             // 32
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dead_bush; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::dead_bush;
+            },
             // 33
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Piston(data, props);
                 return blocks::minecraft::piston;
             },
             // 34
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"facing"] = FacingA(data & 7);
                 props[u8"type"] = (data & 0x8) == 0x8 ? u8"sticky" : u8"normal";
                 return blocks::minecraft::piston_head;
             },
             // 35
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[16] = {
                     blocks::minecraft::white_wool,
                     blocks::minecraft::orange_wool,
@@ -1193,9 +1269,13 @@ public:
             // 36
             sAir,
             // 37
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dandelion; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::dandelion;
+            },
             // 38
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[9] = {
                     blocks::minecraft::poppy,
                     blocks::minecraft::blue_orchid,
@@ -1210,15 +1290,28 @@ public:
                 return Select<9>(data, sIds, blocks::minecraft::air);
             },
             // 39
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::brown_mushroom; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::brown_mushroom;
+            },
             // 40
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::red_mushroom; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::red_mushroom;
+            },
             // 41
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::gold_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::gold_block;
+            },
             // 42
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::iron_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::iron_block;
+            },
             // 43
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"type"] = u8"double";
                 static blocks::BlockId const sIds[8] = {
                     blocks::minecraft::smooth_stone_slab,
@@ -1234,6 +1327,7 @@ public:
             },
             // 44
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"type"] = ((data >> 3) & 0x1) == 0x1 ? u8"top" : u8"bottom";
                 static blocks::BlockId const sIds[8] = {
                     blocks::minecraft::smooth_stone_slab,
@@ -1248,17 +1342,34 @@ public:
                 return Select<8>(data & 0x7, sIds, blocks::minecraft::smooth_stone_slab);
             },
             // 45
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::bricks; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::bricks;
+            },
             // 46
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::tnt; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
+                props[u8"unstable"] = ((data & 0x1) == 0x1) ? u8"true" : u8"false";
+                return blocks::minecraft::tnt;
+            },
             // 47
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::bookshelf; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::bookshelf;
+            },
             // 48
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::mossy_cobblestone; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::mossy_cobblestone;
+            },
             // 49
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::obsidian; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::obsidian;
+            },
             // 50
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 if (data < 5) {
                     static std::u8string const facing[4] = {u8"east", u8"west", u8"south", u8"north"};
                     props[u8"facing"] = facing[std::clamp<uint8_t>(data, 1, 4) - 1];
@@ -1268,40 +1379,65 @@ public:
                 }
             },
             // 51
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::fire; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                props[u8"age"] = String::ToString(0xf & data);
+                return blocks::minecraft::fire;
+            },
             // 52
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::spawner; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::spawner;
+            },
             // 53
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::oak_stairs;
             },
             // 54
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 Chest(data, props);
                 return blocks::minecraft::chest;
             },
             // 55
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"power"] = String::ToString(data);
                 return blocks::minecraft::redstone_wire;
             },
             // 56
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::diamond_ore; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::diamond_ore;
+            },
             // 57
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::diamond_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::diamond_block;
+            },
             // 58
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::crafting_table; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::crafting_table;
+            },
             // 59
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"age"] = String::ToString(data);
                 return blocks::minecraft::wheat;
             },
             // 60
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::farmland; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
+                props[u8"moisture"] = String::ToString(data & 0x7);
+                return blocks::minecraft::farmland;
+            },
             // 61
             [](uint8_t data, map<u8string, u8string> &props) {
                 // unlit furnace
+                AssertDataLayout(data, 0b111);
                 switch (data) {
                 case 3: props[u8"facing"] = u8"south"; break;
                 case 4: props[u8"facing"] = u8"west"; break;
@@ -1316,6 +1452,7 @@ public:
             // 62
             [](uint8_t data, map<u8string, u8string> &props) {
                 // lit furnace
+                AssertDataLayout(data, 0b111);
                 switch (data) {
                 case 3: props[u8"facing"] = u8"south"; break;
                 case 4: props[u8"facing"] = u8"west"; break;
@@ -1329,16 +1466,19 @@ public:
             },
             // 63
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"rotation"] = String::ToString(data);
                 return blocks::minecraft::oak_sign;
             },
             // 64
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Door(data, props);
                 return blocks::minecraft::oak_door;
             },
             // 65
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 switch (data) {
                 case 5: props[u8"facing"] = u8"east"; break;
                 case 3: props[u8"facing"] = u8"south"; break;
@@ -1352,16 +1492,19 @@ public:
             },
             // 66
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Rail(data, props);
                 return blocks::minecraft::rail;
             },
             // 67
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::cobblestone_stairs;
             },
             // 68
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 switch (data) {
                 case 3:
                     props[u8"facing"] = u8"south";
@@ -1381,27 +1524,42 @@ public:
             },
             // 69
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Lever(data, props);
                 return blocks::minecraft::lever;
             },
             // 70
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::stone_pressure_plate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
+                props[u8"powered"] = ((data & 0x1) == 0x1) ? u8"true" : u8"false";
+                return blocks::minecraft::stone_pressure_plate;
+            },
             // 71
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Door(data, props);
                 return blocks::minecraft::iron_door;
             },
             // 72
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::oak_pressure_plate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
+                props[u8"powered"] = ((data & 0x1) == 0x1) ? u8"true" : u8"false";
+                return blocks::minecraft::oak_pressure_plate;
+            },
             // 73
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::redstone_ore; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::redstone_ore;
+            },
             // 74
             [](uint8_t data, map<u8string, u8string> &props) {
                 // glowing_redstone_ore
+                AssertDataLayout(data, 0b0);
                 return blocks::minecraft::redstone_ore;
             },
             // 75
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"lit"] = u8"false";
                 if (data == 5) {
                     return blocks::minecraft::redstone_torch;
@@ -1425,6 +1583,7 @@ public:
             },
             // 76
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"lit"] = u8"true";
                 if (data == 5) {
                     return blocks::minecraft::redstone_torch;
@@ -1448,41 +1607,78 @@ public:
             },
             // 77
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Button(data, props);
                 return blocks::minecraft::stone_button;
             },
             // 78
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"layers"] = String::ToString(std::clamp(data + 1, 1, 8));
                 return blocks::minecraft::snow;
             },
             // 79
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::ice; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::ice;
+            },
             // 80
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::snow_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::snow_block;
+            },
             // 81
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cactus; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                props[u8"age"] = String::ToString(data & 0xf);
+                return blocks::minecraft::cactus;
+            },
             // 82
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::clay; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::clay;
+            },
             // 83
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::sugar_cane; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                props[u8"age"] = String::ToString(data & 0xf);
+                return blocks::minecraft::sugar_cane;
+            },
             // 84
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::jukebox; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
+                props[u8"has_record"] = ((data & 0x1) == 0x1) ? u8"true" : u8"false";
+                return blocks::minecraft::jukebox;
+            },
             // 85
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::oak_fence; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::oak_fence;
+            },
             // 86
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 props[u8"facing"] = FacingB(data);
                 return blocks::minecraft::carved_pumpkin;
             },
             // 87
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::netherrack; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::netherrack;
+            },
             // 88
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::soul_sand; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::soul_sand;
+            },
             // 89
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::glowstone; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::glowstone;
+            },
             // 90
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 switch (data) {
                 case 2:
                     props[u8"axis"] = u8"z";
@@ -1496,13 +1692,19 @@ public:
             },
             // 91
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 props[u8"facing"] = FacingB(data);
                 return blocks::minecraft::jack_o_lantern;
             },
             // 92
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::cake; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
+                props[u8"bites"] = String::ToString(std::clamp(data & 0x7, 0, 6));
+                return blocks::minecraft::cake;
+            },
             // 93
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 switch (data & 0x3) {
                 case 1:
                     props[u8"facing"] = u8"west";
@@ -1524,6 +1726,7 @@ public:
             },
             // 94
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 switch (data & 0x3) {
                 case 1:
                     props[u8"facing"] = u8"west";
@@ -1545,6 +1748,7 @@ public:
             },
             // 95
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[16] = {
                     blocks::minecraft::white_stained_glass,
                     blocks::minecraft::orange_stained_glass,
@@ -1567,11 +1771,13 @@ public:
             },
             // 96
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Trapdoor(data, props);
                 return blocks::minecraft::oak_trapdoor;
             },
             // 97
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 static blocks::BlockId const sIds[6] = {
                     blocks::minecraft::infested_stone,
                     blocks::minecraft::infested_cobblestone,
@@ -1584,6 +1790,7 @@ public:
             },
             // 98
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 static blocks::BlockId const sIds[4] = {
                     blocks::minecraft::stone_bricks,
                     blocks::minecraft::mossy_stone_bricks,
@@ -1594,30 +1801,44 @@ public:
             },
             // 99
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 return MushroomBlock(blocks::minecraft::brown_mushroom_block, data, props);
             },
             // 100
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 return MushroomBlock(blocks::minecraft::red_mushroom_block, data, props);
             },
             // 101
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::iron_bars; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::iron_bars;
+            },
             // 102
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::glass_pane; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::glass_pane;
+            },
             // 103
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::melon; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::melon;
+            },
             // 104
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"age"] = String::ToString(data);
                 return blocks::minecraft::pumpkin_stem;
             },
             // 105
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"age"] = String::ToString(data);
                 return blocks::minecraft::melon_stem;
             },
             // 106
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"south"] = (data & 0x1) == 0x1 ? u8"true" : u8"false";
                 props[u8"west"] = (data & 0x2) == 0x2 ? u8"true" : u8"false";
                 props[u8"north"] = (data & 0x4) == 0x4 ? u8"true" : u8"false";
@@ -1625,41 +1846,71 @@ public:
                 return blocks::minecraft::vine;
             },
             // 107
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::oak_fence_gate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                FenceGate(data, props);
+                return blocks::minecraft::oak_fence_gate;
+            },
             // 108
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::brick_stairs;
             },
             // 109
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::stone_brick_stairs;
             },
             // 110
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::mycelium; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::mycelium;
+            },
             // 111
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::lily_pad; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::lily_pad;
+            },
             // 112
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::nether_bricks; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::nether_bricks;
+            },
             // 113
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::nether_brick_fence; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::nether_brick_fence;
+            },
             // 114
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::nether_brick_stairs;
             },
             // 115
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 props[u8"age"] = String::ToString(data);
                 return blocks::minecraft::nether_wart;
             },
             // 116
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::enchanting_table; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::enchanting_table;
+            },
             // 117
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::brewing_stand; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
+                props[u8"has_bottle_0"] = ((data & 0x1) == 0x1) ? u8"true" : u8"false";
+                props[u8"has_bottle_1"] = ((data & 0x2) == 0x2) ? u8"true" : u8"false";
+                props[u8"has_bottle_2"] = ((data & 0x4) == 0x4) ? u8"true" : u8"false";
+                return blocks::minecraft::brewing_stand;
+            },
             // 118
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 if (data / 2 == 0) {
                     return blocks::minecraft::cauldron;
                 } else {
@@ -1668,9 +1919,13 @@ public:
                 }
             },
             // 119
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::end_portal; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::end_portal;
+            },
             // 120
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 switch (data & 0x3) {
                 case 1: props[u8"facing"] = u8"west"; break;
                 case 2: props[u8"facing"] = u8"north"; break;
@@ -1684,21 +1939,30 @@ public:
                 return blocks::minecraft::end_portal_frame;
             },
             // 121
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::end_stone; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::end_stone;
+            },
             // 122
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dragon_egg; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::dragon_egg;
+            },
             // 123
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
                 props[u8"lit"] = u8"false";
                 return blocks::minecraft::redstone_lamp;
             },
             // 124
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
                 props[u8"lit"] = u8"true";
                 return blocks::minecraft::redstone_lamp;
             },
             // 125
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"type"] = u8"double";
                 static blocks::BlockId const sIds[6] = {
                     blocks::minecraft::oak_slab,
@@ -1712,6 +1976,7 @@ public:
             },
             // 126
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"type"] = data < 8 ? u8"bottom" : u8"top";
                 static blocks::BlockId const sIds[6] = {
                     blocks::minecraft::oak_slab,
@@ -1725,24 +1990,31 @@ public:
             },
             // 127
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
                 props[u8"age"] = String::ToString(data >> 2);
                 return blocks::minecraft::cocoa;
             },
             // 128
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::sandstone_stairs;
             },
             // 129
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::emerald_ore; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::emerald_ore;
+            },
             // 130
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 Chest(data, props);
                 return blocks::minecraft::ender_chest;
             },
             // 131
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 switch (data & 0x3) {
                 case 1:
                     props[u8"facing"] = u8"west";
@@ -1763,30 +2035,50 @@ public:
                 return blocks::minecraft::tripwire_hook;
             },
             // 132
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::tripwire; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                props[u8"attached"] = ((data & 0x4) == 0x4) ? u8"true" : u8"false";
+                props[u8"powered"] = ((data & 0x1) == 0x1) ? u8"true" : u8"false";
+                props[u8"disarmed"] = ((data & 0x8) == 0x8) ? u8"true" : u8"false";
+                // data & 0x2 == 0 when north=false,east=false,south=false,west=false,attached=true,powered=true,disarmed=true
+                return blocks::minecraft::tripwire;
+            },
             // 133
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::emerald_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::emerald_block;
+            },
             // 134
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::spruce_stairs;
             },
             // 135
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::birch_stairs;
             },
             // 136
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::jungle_stairs;
             },
             // 137
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::command_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::command_block;
+            },
             // 138
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::beacon; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::beacon;
+            },
             // 139
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
                 switch (data) {
                 case 1: return blocks::minecraft::mossy_cobblestone_wall; break;
                 case 0:
@@ -1795,24 +2087,32 @@ public:
                 }
             },
             // 140
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::flower_pot; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                // IGNORE: legacy_data = data & 0xf
+                return blocks::minecraft::flower_pot;
+            },
             // 141
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"age"] = String::ToString(data);
                 return blocks::minecraft::carrots;
             },
             // 142
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"age"] = String::ToString(data);
                 return blocks::minecraft::potatoes;
             },
             // 143
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Button(data, props);
                 return blocks::minecraft::oak_button;
             },
             // 144
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 switch (data) {
                 case 1: return blocks::minecraft::skeleton_skull; break;
                 case 3:
@@ -1833,6 +2133,7 @@ public:
             },
             // 145
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 switch (data & 0x3) {
                 case 3: props[u8"facing"] = u8"east"; break;
                 case 1: props[u8"facing"] = u8"west"; break;
@@ -1852,15 +2153,25 @@ public:
             },
             // 146
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 Chest(data, props);
                 return blocks::minecraft::trapped_chest;
             },
             // 147
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::light_weighted_pressure_plate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
+                props[u8"powered"] = ((data & 0x1) == 0x1) ? u8"true" : u8"false";
+                return blocks::minecraft::light_weighted_pressure_plate;
+            },
             // 148
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::heavy_weighted_pressure_plate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1);
+                props[u8"powered"] = ((data & 0x1) == 0x1) ? u8"true" : u8"false";
+                return blocks::minecraft::heavy_weighted_pressure_plate;
+            },
             // 149
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
                 props[u8"powered"] = u8"false";
                 props[u8"mode"] = (data & 0x4) == 0x4 ? u8"subtract" : u8"compare";
@@ -1868,6 +2179,7 @@ public:
             },
             // 150
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingN2E3S0W1(data & 0x3);
                 props[u8"powered"] = u8"true";
                 props[u8"mode"] = (data & 0x4) == 0x4 ? u8"subtract" : u8"compare";
@@ -1875,15 +2187,23 @@ public:
             },
             // 151
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
                 props[u8"inverted"] = u8"false";
                 return blocks::minecraft::daylight_detector;
             },
             // 152
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::redstone_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::redstone_block;
+            },
             // 153
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::nether_quartz_ore; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::nether_quartz_ore;
+            },
             // 154
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 switch (data & 0x7) {
                 case 2:
                     props[u8"facing"] = u8"north";
@@ -1907,6 +2227,7 @@ public:
             },
             // 155
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 switch (data) {
                 case 1:
                     return blocks::minecraft::chiseled_quartz_block;
@@ -1926,21 +2247,25 @@ public:
             },
             // 156
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::quartz_stairs;
             },
             // 157
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 PoweredRail(data, props);
                 return blocks::minecraft::activator_rail;
             },
             // 158
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::dropper;
             },
             // 159
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[16] = {
                     blocks::minecraft::white_terracotta,
                     blocks::minecraft::orange_terracotta,
@@ -1963,6 +2288,7 @@ public:
             },
             // 160
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[16] = {
                     blocks::minecraft::white_stained_glass_pane,
                     blocks::minecraft::orange_stained_glass_pane,
@@ -1985,7 +2311,9 @@ public:
             },
             // 161
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Leaves(data, props);
+                // IGNORE: check_decay = ((data >> 3) & 0x1 == 0x1) ? "true" : "false"
                 switch (data & 0x3) {
                 case 1: return blocks::minecraft::dark_oak_leaves;
                 case 0:
@@ -1995,6 +2323,7 @@ public:
             },
             // 162
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Log(data, props);
                 switch (data & 0x3) {
                 case 1: return blocks::minecraft::dark_oak_log;
@@ -2005,25 +2334,35 @@ public:
             },
             // 163
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::acacia_stairs;
             },
             // 164
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::dark_oak_stairs;
             },
             // 165
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::slime_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::slime_block;
+            },
             // 166
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::barrier; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::barrier;
+            },
             // 167
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Trapdoor(data, props);
                 return blocks::minecraft::iron_trapdoor;
             },
             // 168
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 static blocks::BlockId const sIds[3] = {
                     blocks::minecraft::prismarine,
                     blocks::minecraft::prismarine_bricks,
@@ -2032,14 +2371,19 @@ public:
                 return Select<3>(data, sIds, blocks::minecraft::prismarine);
             },
             // 169
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::sea_lantern; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::sea_lantern;
+            },
             // 170
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1100);
                 props[u8"axis"] = Axis(data >> 2);
                 return blocks::minecraft::hay_block;
             },
             // 171
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[16] = {
                     blocks::minecraft::white_carpet,
                     blocks::minecraft::orange_carpet,
@@ -2061,13 +2405,23 @@ public:
                 return Select<16>(data, sIds, blocks::minecraft::white_carpet);
             },
             // 172
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::terracotta; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::terracotta;
+            },
             // 173
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::coal_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::coal_block;
+            },
             // 174
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::packed_ice; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::packed_ice;
+            },
             // 175
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 static blocks::BlockId const sIds[6] = {
                     blocks::minecraft::sunflower,
                     blocks::minecraft::lilac,
@@ -2080,11 +2434,13 @@ public:
             },
             // 176
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 props[u8"rotation"] = String::ToString(data);
                 return blocks::minecraft::white_banner;
             },
             // 177
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 switch (data) {
                 case 3:
                     props[u8"facing"] = u8"south";
@@ -2104,11 +2460,13 @@ public:
             },
             // 178
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
                 props[u8"inverted"] = u8"true";
                 return blocks::minecraft::daylight_detector;
             },
             // 179
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 static blocks::BlockId const sIds[3] = {
                     blocks::minecraft::red_sandstone,
                     blocks::minecraft::chiseled_red_sandstone,
@@ -2118,16 +2476,19 @@ public:
             },
             // 180
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::red_sandstone_stairs;
             },
             // 181
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
                 props[u8"type"] = u8"double";
                 return blocks::minecraft::red_sandstone_slab;
             },
             // 182
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1000);
                 switch (data) {
                 case 8:
                     props[u8"type"] = u8"top";
@@ -2139,81 +2500,133 @@ public:
                 }
             },
             // 183
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::spruce_fence_gate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                FenceGate(data, props);
+                return blocks::minecraft::spruce_fence_gate;
+            },
             // 184
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::birch_fence_gate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                FenceGate(data, props);
+                return blocks::minecraft::birch_fence_gate;
+            },
             // 185
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::jungle_fence_gate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                FenceGate(data, props);
+                return blocks::minecraft::jungle_fence_gate;
+            },
             // 186
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dark_oak_fence_gate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                FenceGate(data, props);
+                return blocks::minecraft::dark_oak_fence_gate;
+            },
             // 187
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::acacia_fence_gate; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
+                FenceGate(data, props);
+                return blocks::minecraft::acacia_fence_gate;
+            },
             // 188
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::spruce_fence; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::spruce_fence;
+            },
             // 189
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::birch_fence; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::birch_fence;
+            },
             // 190
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::jungle_fence; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::jungle_fence;
+            },
             // 191
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dark_oak_fence; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::dark_oak_fence;
+            },
             // 192
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::acacia_fence; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::acacia_fence;
+            },
             // 193
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Door(data, props);
                 return blocks::minecraft::spruce_door;
             },
             // 194
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Door(data, props);
                 return blocks::minecraft::birch_door;
             },
             // 195
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Door(data, props);
                 return blocks::minecraft::jungle_door;
             },
             // 196
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Door(data, props);
                 return blocks::minecraft::acacia_door;
             },
             // 197
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Door(data, props);
                 return blocks::minecraft::dark_oak_door;
             },
             // 198
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::end_rod;
             },
             // 199
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::chorus_plant; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::chorus_plant;
+            },
             // 200
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"age"] = String::ToString(data);
                 return blocks::minecraft::chorus_flower;
             },
             // 201
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::purpur_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::purpur_block;
+            },
             // 202
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1100);
                 props[u8"axis"] = Axis(data >> 2);
                 return blocks::minecraft::purpur_pillar;
             },
             // 203
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 Stairs(data, props);
                 return blocks::minecraft::purpur_stairs;
             },
             // 204
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
                 props[u8"type"] = u8"double";
                 return blocks::minecraft::purpur_slab;
             },
             // 205
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1000);
                 if (data == 8) {
                     props[u8"type"] = u8"top";
                 } else {
@@ -2222,202 +2635,268 @@ public:
                 return blocks::minecraft::purpur_slab;
             },
             // 206
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::end_stone_bricks; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::end_stone_bricks;
+            },
             // 207
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 props[u8"age"] = String::ToString(data);
                 return blocks::minecraft::beetroots;
             },
             // 208
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::dirt_path; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::dirt_path;
+            },
             // 209
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::end_gateway; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::end_gateway;
+            },
             // 210
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::repeating_command_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::repeating_command_block;
+            },
             // 211
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::chain_command_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::chain_command_block;
+            },
             // 212
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::frosted_ice; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::frosted_ice;
+            },
             // 213
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::magma_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::magma_block;
+            },
             // 214
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::nether_wart_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::nether_wart_block;
+            },
             // 215
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::red_nether_bricks; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::red_nether_bricks;
+            },
             // 216
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1100);
                 props[u8"axis"] = Axis(data >> 2);
                 return blocks::minecraft::bone_block;
             },
             // 217
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::structure_void; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::structure_void;
+            },
             // 218
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::observer;
             },
             // 219
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::white_shulker_box;
             },
             // 220
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::orange_shulker_box;
             },
             // 221
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::magenta_shulker_box;
             },
             // 222
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::light_blue_shulker_box;
             },
             // 223
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::yellow_shulker_box;
             },
             // 224
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::lime_shulker_box;
             },
             // 225
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::pink_shulker_box;
             },
             // 226
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::gray_shulker_box;
             },
             // 227
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::light_gray_shulker_box;
             },
             // 228
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::cyan_shulker_box;
             },
             // 229
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::shulker_box;
             },
             // 230
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::blue_shulker_box;
             },
             // 231
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::brown_shulker_box;
             },
             // 232
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::green_shulker_box;
             },
             // 233
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::red_shulker_box;
             },
             // 234
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b111);
                 props[u8"facing"] = FacingA(data);
                 return blocks::minecraft::black_shulker_box;
             },
             // 235
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::white_glazed_terracotta;
             },
             // 236
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::orange_glazed_terracotta;
             },
             // 237
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::magenta_glazed_terracotta;
             },
             // 238
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::light_blue_glazed_terracotta;
             },
             // 239
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::yellow_glazed_terracotta;
             },
             // 240
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::lime_glazed_terracotta;
             },
             // 241
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::pink_glazed_terracotta;
             },
             // 242
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::gray_glazed_terracotta;
             },
             // 243
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::light_gray_glazed_terracotta;
             },
             // 244
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::cyan_glazed_terracotta;
             },
             // 245
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::purple_glazed_terracotta;
             },
             // 246
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::blue_glazed_terracotta;
             },
             // 247
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::brown_glazed_terracotta;
             },
             // 248
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::green_glazed_terracotta;
             },
             // 249
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::red_glazed_terracotta;
             },
             // 250
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b11);
                 GlazedTerracotta(data, props);
                 return blocks::minecraft::black_glazed_terracotta;
             },
             // 251
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[16] = {
                     blocks::minecraft::white_concrete,
                     blocks::minecraft::orange_concrete,
@@ -2439,6 +2918,7 @@ public:
             },
             // 252
             [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b1111);
                 static blocks::BlockId const sIds[16] = {
                     blocks::minecraft::white_concrete_powder,
                     blocks::minecraft::orange_concrete_powder,
@@ -2463,7 +2943,10 @@ public:
             // 254
             sAir,
             // 255
-            [](uint8_t data, map<u8string, u8string> &props) { return blocks::minecraft::structure_block; },
+            [](uint8_t data, map<u8string, u8string> &props) {
+                AssertDataLayout(data, 0b0);
+                return blocks::minecraft::structure_block;
+            },
         };
         static_assert(sizeof(sTable) == 256 * sizeof(Func));
         auto id = sTable[0xff & blockId](data, props);
@@ -2495,6 +2978,15 @@ public:
             props[u8"hinge"] = hinge[std::clamp(data & 0x1, 0, 1)];
             props[u8"powered"] = powered[std::clamp((data >> 1) & 0x1, 0, 1)];
         }
+    }
+
+    static void FenceGate(uint8_t data, std::map<std::u8string, std::u8string> &props) {
+        static std::u8string const facing[4] = {u8"south", u8"west", u8"north", u8"east"};
+        static std::u8string const open[2] = {u8"false", u8"true"};
+        static std::u8string const powered[2] = {u8"false", u8"true"};
+        props[u8"facing"] = facing[data & 0x3];
+        props[u8"open"] = open[(data >> 2) & 0x1];
+        props[u8"powered"] = powered[(data >> 3) & 0x1];
     }
 
     static std::u8string Axis(uint8_t v) {
@@ -2798,6 +3290,10 @@ private:
         int16_t v = *damage;
         *damage = 0;
         return v;
+    }
+
+    static void AssertDataLayout(uint8_t data, uint8_t layout) {
+        assert((data & (~layout)) == 0);
     }
 };
 } // namespace mcfile::je
