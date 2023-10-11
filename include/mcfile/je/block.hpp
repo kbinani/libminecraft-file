@@ -20,6 +20,13 @@ public:
         : Block(id, blocks::Name(id), PackProperties(props)) {
     }
 
+    Block(blocks::BlockId id, std::u8string const &name, std::u8string const &data)
+        : fId(id)
+        , fBlockData(name + data)
+        , fName(fBlockData.data(), name.size())
+        , fData(fBlockData.data() + name.size(), fBlockData.size() - name.size()) {
+    }
+
     static std::shared_ptr<Block const> FromBlockData(std::u8string const &blockData, int dataVersion) {
         using namespace std;
         size_t bra = blockData.find(u8'[');
@@ -156,13 +163,6 @@ public:
     }
 
 private:
-    Block(blocks::BlockId id, std::u8string const &name, std::u8string const &data)
-        : fId(id)
-        , fBlockData(name + data)
-        , fName(fBlockData.data(), name.size())
-        , fData(fBlockData.data() + name.size(), fBlockData.size() - name.size()) {
-    }
-
     static std::u8string ToString(std::u8string const &name, std::map<std::u8string, std::u8string> const &props) {
         using namespace std;
         if (props.empty()) {
