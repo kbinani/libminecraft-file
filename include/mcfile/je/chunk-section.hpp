@@ -16,6 +16,7 @@ public:
     virtual bool setBiomeAt(int offsetX, int offsetY, int offsetZ, biomes::BiomeId biome) = 0;
     virtual bool setBiomes(biomes::BiomeId biomesXYZ[4][4][4]) = 0;
     virtual void fill(mcfile::biomes::BiomeId biome) = 0;
+    virtual ChunkSection *clone() const = 0;
 
     virtual std::optional<int> blockPaletteIndexAt(int offsetX, int offsetY, int offsetZ) const = 0;
     virtual void eachBlockPalette(std::function<bool(std::shared_ptr<Block const> const &block, size_t index)> visitor) const = 0;

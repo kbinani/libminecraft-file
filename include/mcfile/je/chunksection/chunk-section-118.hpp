@@ -385,6 +385,20 @@ public:
         return (y << 4) + (z << 2) + x;
     }
 
+    ChunkSection118 *clone() const override {
+        using namespace std;
+        unique_ptr<ChunkSection118> s(new ChunkSection118(fY));
+        copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(s->fBlockLight));
+        copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(s->fSkyLight));
+        s->fBlocks = fBlocks;
+        if (fExtra) {
+            s->fExtra = fExtra->copy();
+        }
+        s->fBiomes = fBiomes;
+        s->fDataVersion = fDataVersion;
+        return s.release();
+    }
+
 private:
     ChunkSection118(int y,
                     std::vector<std::shared_ptr<Block const>> const &blockPalette,
@@ -403,6 +417,9 @@ private:
         fBlocks.reset(blockPalette, blockPaletteIndices);
         fBiomes.reset(biomePalette, biomePaletteIndices);
     }
+
+    explicit ChunkSection118(int y)
+        : fY(y) {}
 
 public:
     int const fY;

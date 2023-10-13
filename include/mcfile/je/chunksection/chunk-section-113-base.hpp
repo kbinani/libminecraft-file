@@ -195,6 +195,18 @@ public:
                                                                      extra));
     }
 
+    ChunkSection113Base *clone() const override {
+        using namespace std;
+        unique_ptr<ChunkSection113Base> s(new ChunkSection113Base(fY));
+        copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(s->fBlockLight));
+        copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(s->fSkyLight));
+        s->fBlocks = fBlocks;
+        if (fExtra) {
+            s->fExtra = fExtra->copy();
+        }
+        return s.release();
+    }
+
 protected:
     ChunkSection113Base(int y,
                         std::vector<std::shared_ptr<Block const>> const &palette,
@@ -208,6 +220,9 @@ protected:
         fBlockLight.swap(blockLight);
         fSkyLight.swap(skyLight);
     }
+
+    explicit ChunkSection113Base(int y)
+        : fY(y) {}
 
 private:
     static size_t BlockIndex(int offsetX, int offsetY, int offsetZ) {

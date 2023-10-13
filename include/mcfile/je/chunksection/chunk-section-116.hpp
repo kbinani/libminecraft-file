@@ -68,6 +68,19 @@ public:
         fBiomes.fill(biome);
     }
 
+    ChunkSection116 *clone() const override {
+        using namespace std;
+        unique_ptr<ChunkSection116> s(new ChunkSection116(fY));
+        copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(s->fBlockLight));
+        copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(s->fSkyLight));
+        s->fBlocks = fBlocks;
+        if (fExtra) {
+            s->fExtra = fExtra->copy();
+        }
+        s->fBiomes = fBiomes;
+        return s.release();
+    }
+
 private:
     ChunkSection116(int y,
                     std::vector<std::shared_ptr<Block const>> const &palette,
@@ -77,6 +90,9 @@ private:
                     std::shared_ptr<nbt::CompoundTag> const &extra)
         : ChunkSection113Base<BlockStatesParser116>(y, palette, paletteIndices, blockLight, skyLight, extra) {
     }
+
+    explicit ChunkSection116(int y)
+        : ChunkSection113Base<BlockStatesParser116>(y) {}
 
     static size_t BiomeIndex(int offsetX, int offsetY, int offsetZ) {
         assert(0 <= offsetX && offsetX < 16 && 0 <= offsetY && offsetY < 16 && 0 <= offsetZ && offsetZ < 16);

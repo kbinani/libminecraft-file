@@ -83,6 +83,14 @@ public:
         });
     }
 
+    ChunkSection112 *clone() const override {
+        std::unique_ptr<ChunkSection112> s(new ChunkSection112(fY));
+        std::copy(fBlockLight.begin(), fBlockLight.end(), std::back_inserter(s->fBlockLight));
+        std::copy(fSkyLight.begin(), fSkyLight.end(), std::back_inserter(s->fSkyLight));
+        s->fBlocks = fBlocks;
+        return s.release();
+    }
+
 private:
     ChunkSection112(int y,
                     std::vector<std::shared_ptr<Block const>> const &palette, std::vector<uint16_t> const &paletteIndices,
@@ -93,6 +101,9 @@ private:
         fSkyLight.swap(skyLight);
         fBlocks.reset(palette, paletteIndices);
     }
+
+    explicit ChunkSection112(int y)
+        : fY(y) {}
 
     static std::shared_ptr<ChunkSection112> MakeRawSection(nbt::CompoundTag const *section) {
         if (!section) {

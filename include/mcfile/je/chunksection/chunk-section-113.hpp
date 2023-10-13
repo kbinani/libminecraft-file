@@ -21,6 +21,18 @@ public:
                                 extra));
     }
 
+    ChunkSection113 *clone() const override {
+        using namespace std;
+        unique_ptr<ChunkSection113> s(new ChunkSection113(fY));
+        copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(s->fBlockLight));
+        copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(s->fSkyLight));
+        s->fBlocks = fBlocks;
+        if (fExtra) {
+            s->fExtra = fExtra->copy();
+        }
+        return s.release();
+    }
+
 private:
     ChunkSection113(int y,
                     std::vector<std::shared_ptr<Block const>> const &palette,
@@ -30,6 +42,9 @@ private:
                     std::shared_ptr<nbt::CompoundTag> const &extra)
         : ChunkSection113Base<BlockStatesParser113>(y, palette, paletteIndices, blockLight, skyLight, extra) {
     }
+
+    explicit ChunkSection113(int y)
+        : ChunkSection113Base<BlockStatesParser113>(y) {}
 };
 
 } // namespace mcfile::je::chunksection

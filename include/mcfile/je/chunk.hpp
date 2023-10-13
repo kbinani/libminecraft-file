@@ -280,6 +280,10 @@ public:
         return fDataVersion;
     }
 
+    virtual Chunk *clone() const {
+        return cloneImpl();
+    }
+
     static std::shared_ptr<Chunk> MakeChunk(int chunkX, int chunkZ, std::shared_ptr<nbt::CompoundTag> const &root) {
         if (!root) {
             return nullptr;
@@ -339,12 +343,12 @@ public:
         return MakeChunk(chunkX, chunkZ, root);
     }
 
-    Chunk(int cx, int cy, int cz, int dataVersion = kDataVersion)
+    Chunk(int cx, int cy, int cz, int dataVersion = kDataVersion, std::u8string status = u8"minecraft:full")
         : fChunkX(cx)
         , fChunkY(cy)
         , fChunkZ(cz)
         , fLastUpdate(0)
-        , fStatus(u8"full")
+        , fStatus(status)
         , fCreateEmptySection(chunksection::ChunkSectionGenerator::GetEmptySectionCreatorFromDataVersion(dataVersion))
         , fDataVersion(dataVersion) {
     }
@@ -730,6 +734,38 @@ protected:
     std::optional<bool> fTerrainPopulated;
     std::function<std::shared_ptr<ChunkSection>(int sectionY)> const fCreateEmptySection;
     int fDataVersion;
+
+private:
+    Chunk *cloneImpl() const {
+        using namespace std;
+        auto c = make_unique<Chunk>(fChunkX, fChunkY, fChunkZ, fDataVersion, fStatus);
+        c->fSections.clear();
+        for (auto const &section : fSections) {
+            if (section) {
+                c->fSections.push_back(shared_ptr<ChunkSection>(section->clone()));
+            } else {
+                c->fSections.push_back(nullptr);
+            }
+        }
+        if (fBottomSection) {
+            c->fBottomSection.reset(fBottomSection->clone());
+        }
+        for (auto const &entity : fEntities) {
+            c->fEntities.push_back(entity->copy());
+        }
+        for (auto const &it : fTileEntities) {
+            c->fTileEntities[it.first] = it.second->copy();
+        }
+        if (fStructures) {
+            c->fStructures = fStructures->copy();
+        }
+        c->fLastUpdate = fLastUpdate;
+        copy(fTileTicks.begin(), fTileTicks.end(), back_inserter(c->fTileTicks));
+        copy(fLiquidTicks.begin(), fLiquidTicks.end(), back_inserter(c->fLiquidTicks));
+        copy(fLegacyBiomes.begin(), fLegacyBiomes.end(), back_inserter(c->fLegacyBiomes));
+        c->fTerrainPopulated = fTerrainPopulated;
+        return c.release();
+    }
 };
 
 } // namespace mcfile::je

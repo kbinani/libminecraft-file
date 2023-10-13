@@ -383,6 +383,12 @@ private:
 
 public:
     std::shared_ptr<mcfile::nbt::CompoundTag> fRoot;
+
+public:
+    WritableChunk *clone() const override {
+        std::unique_ptr<Chunk> ch(Chunk::clone());
+        return new WritableChunk(*ch, fRoot ? fRoot->copy() : nullptr);
+    }
 };
 
 } // namespace mcfile::je
