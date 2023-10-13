@@ -495,22 +495,33 @@ public:
             , fDeleteInput(false) {}
         std::function<std::string(int chunkX, int chunkZ)> fChunkFileName = Region::GetDefaultCompressedChunkNbtFileName;
         bool fDeleteInput = false;
+        std::function<void(int chunks)> fProgress = nullptr;
     };
 
     static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, ConcatOptions options = ConcatOptions()) = delete;
 
-    static bool ConcatCompressedNbt(int regionX, int regionZ, std::filesystem::path const &directory, std::filesystem::path const &resultMcaFilePath, ConcatOptions options = ConcatOptions()) {
+    static bool ConcatCompressedNbt(
+        int regionX,
+        int regionZ,
+        std::filesystem::path const &directory,
+        std::filesystem::path const &resultMcaFilePath,
+        ConcatOptions options = ConcatOptions()) {
         using namespace std;
         namespace fs = std::filesystem;
 
         auto output = make_shared<mcfile::stream::DeferOpeningOutputStream>([resultMcaFilePath]() { return make_shared<mcfile::stream::FileOutputStream>(resultMcaFilePath); });
-        return SquashChunksAsMca(*output, [regionX, regionZ, options, directory](int localChunkX, int localChunkZ, mcfile::stream::OutputStream &stream, bool &stop) {
+        int chunks = 0;
+        return SquashChunksAsMca(*output, [regionX, regionZ, options, directory, &chunks](int localChunkX, int localChunkZ, mcfile::stream::OutputStream &stream, bool &stop) {
             int cx = regionX * 32 + localChunkX;
             int cz = regionZ * 32 + localChunkZ;
             string filename = options.fChunkFileName(cx, cz);
             auto file = fs::path(directory) / filename;
             error_code ec;
             if (!fs::is_regular_file(file, ec)) {
+                chunks++;
+                if (options.fProgress) {
+                    options.fProgress(chunks);
+                }
                 return;
             }
             if (ec) {
@@ -525,6 +536,10 @@ public:
                     stop = true;
                     return;
                 }
+            }
+            chunks++;
+            if (options.fProgress) {
+                options.fProgress(chunks);
             }
         });
     }
