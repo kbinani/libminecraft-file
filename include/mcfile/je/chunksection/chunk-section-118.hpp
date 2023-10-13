@@ -387,7 +387,7 @@ public:
 
     ChunkSection118 *clone() const override {
         using namespace std;
-        unique_ptr<ChunkSection118> s(new ChunkSection118(fY));
+        unique_ptr<ChunkSection118> s(new ChunkSection118(fY, fDataVersion));
         copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(s->fBlockLight));
         copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(s->fSkyLight));
         s->fBlocks = fBlocks;
@@ -395,7 +395,6 @@ public:
             s->fExtra = fExtra->copy();
         }
         s->fBiomes = fBiomes;
-        s->fDataVersion = fDataVersion;
         return s.release();
     }
 
@@ -418,8 +417,9 @@ private:
         fBiomes.reset(biomePalette, biomePaletteIndices);
     }
 
-    explicit ChunkSection118(int y)
-        : fY(y) {}
+    ChunkSection118(int y, int dataVersion)
+        : fY(y)
+        , fDataVersion(dataVersion) {}
 
 public:
     int const fY;
