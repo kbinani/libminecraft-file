@@ -448,10 +448,6 @@ public:
         fValue[name] = std::make_shared<StringTag>(value);
     }
 
-    void set(std::u8string const &name, std::u8string_view const &value) {
-        fValue[name] = std::make_shared<StringTag>(std::u8string(value));
-    }
-
     std::shared_ptr<Tag> clone() const override {
         return copy();
     }
