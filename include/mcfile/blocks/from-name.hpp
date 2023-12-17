@@ -1031,6 +1031,67 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:sniffer_egg"] = sniffer_egg;
     t[u8"minecraft:suspicious_gravel"] = suspicious_gravel;
 
+    // 1.20.3
+    t[u8"minecraft:tuff_stairs"] = tuff_stairs;
+    t[u8"minecraft:tuff_slab"] = tuff_slab;
+    t[u8"minecraft:tuff_wall"] = tuff_wall;
+    t[u8"minecraft:chiseled_tuff"] = chiseled_tuff;
+    t[u8"minecraft:polished_tuff"] = polished_tuff;
+    t[u8"minecraft:polished_tuff_stairs"] = polished_tuff_stairs;
+    t[u8"minecraft:polished_tuff_slab"] = polished_tuff_slab;
+    t[u8"minecraft:polished_tuff_wall"] = polished_tuff_wall;
+    t[u8"minecraft:tuff_bricks"] = tuff_bricks;
+    t[u8"minecraft:tuff_brick_stairs"] = tuff_brick_stairs;
+    t[u8"minecraft:tuff_brick_slab"] = tuff_brick_slab;
+    t[u8"minecraft:tuff_brick_wall"] = tuff_brick_wall;
+    t[u8"minecraft:chiseled_tuff_bricks"] = chiseled_tuff_bricks;
+    t[u8"minecraft:trial_spawner"] = trial_spawner;
+
+    t[u8"minecraft:chiseled_copper"] = chiseled_copper;
+    t[u8"minecraft:exposed_chiseled_copper"] = exposed_chiseled_copper;
+    t[u8"minecraft:weathered_chiseled_copper"] = weathered_chiseled_copper;
+    t[u8"minecraft:oxidized_chiseled_copper"] = oxidized_chiseled_copper;
+    t[u8"minecraft:waxed_chiseled_copper"] = waxed_chiseled_copper;
+    t[u8"minecraft:waxed_exposed_chiseled_copper"] = waxed_exposed_chiseled_copper;
+    t[u8"minecraft:waxed_weathered_chiseled_copper"] = waxed_weathered_chiseled_copper;
+    t[u8"minecraft:waxed_oxidized_chiseled_copper"] = waxed_oxidized_chiseled_copper;
+
+    t[u8"minecraft:copper_grate"] = copper_grate;
+    t[u8"minecraft:exposed_copper_grate"] = exposed_copper_grate;
+    t[u8"minecraft:weathered_copper_grate"] = weathered_copper_grate;
+    t[u8"minecraft:oxidized_copper_grate"] = oxidized_copper_grate;
+    t[u8"minecraft:waxed_copper_grate"] = waxed_copper_grate;
+    t[u8"minecraft:waxed_exposed_copper_grate"] = waxed_exposed_copper_grate;
+    t[u8"minecraft:waxed_weathered_copper_grate"] = waxed_weathered_copper_grate;
+    t[u8"minecraft:waxed_oxidized_copper_grate"] = waxed_oxidized_copper_grate;
+
+    t[u8"minecraft:copper_door"] = copper_door;
+    t[u8"minecraft:exposed_copper_door"] = exposed_copper_door;
+    t[u8"minecraft:weathered_copper_door"] = weathered_copper_door;
+    t[u8"minecraft:oxidized_copper_door"] = oxidized_copper_door;
+    t[u8"minecraft:waxed_copper_door"] = waxed_copper_door;
+    t[u8"minecraft:waxed_exposed_copper_door"] = waxed_exposed_copper_door;
+    t[u8"minecraft:waxed_weathered_copper_door"] = waxed_weathered_copper_door;
+    t[u8"minecraft:waxed_oxidized_copper_door"] = waxed_oxidized_copper_door;
+
+    t[u8"minecraft:copper_trapdoor"] = copper_trapdoor;
+    t[u8"minecraft:exposed_copper_trapdoor"] = exposed_copper_trapdoor;
+    t[u8"minecraft:weathered_copper_trapdoor"] = weathered_copper_trapdoor;
+    t[u8"minecraft:oxidized_copper_trapdoor"] = oxidized_copper_trapdoor;
+    t[u8"minecraft:waxed_copper_trapdoor"] = waxed_copper_trapdoor;
+    t[u8"minecraft:waxed_exposed_copper_trapdoor"] = waxed_exposed_copper_trapdoor;
+    t[u8"minecraft:waxed_weathered_copper_trapdoor"] = waxed_weathered_copper_trapdoor;
+    t[u8"minecraft:waxed_oxidized_copper_trapdoor"] = waxed_oxidized_copper_trapdoor;
+
+    t[u8"minecraft:copper_bulb"] = copper_bulb;
+    t[u8"minecraft:exposed_copper_bulb"] = exposed_copper_bulb;
+    t[u8"minecraft:weathered_copper_bulb"] = weathered_copper_bulb;
+    t[u8"minecraft:oxidized_copper_bulb"] = oxidized_copper_bulb;
+    t[u8"minecraft:waxed_copper_bulb"] = waxed_copper_bulb;
+    t[u8"minecraft:waxed_exposed_copper_bulb"] = waxed_exposed_copper_bulb;
+    t[u8"minecraft:waxed_weathered_copper_bulb"] = waxed_weathered_copper_bulb;
+    t[u8"minecraft:waxed_oxidized_copper_bulb"] = waxed_oxidized_copper_bulb;
+
     return ret;
 }
 

@@ -1033,6 +1033,67 @@ static inline std::vector<Characteristics> CreateTable() {
     m[sniffer_egg] = {.name = u8"minecraft:sniffer_egg", .opaque = false};
     m[suspicious_gravel] = {.name = u8"minecraft:suspicious_gravel", .opaque = true};
 
+    // 1.20.3
+    m[tuff_stairs] = {.name = u8"minecraft:tuff_stairs", .opaque = false};
+    m[tuff_slab] = {.name = u8"minecraft:tuff_slab", .opaque = false};
+    m[tuff_wall] = {.name = u8"minecraft:tuff_wall", .opaque = false};
+    m[chiseled_tuff] = {.name = u8"minecraft:chiseled_tuff", .opaque = true};
+    m[polished_tuff] = {.name = u8"minecraft:polished_tuff", .opaque = true};
+    m[polished_tuff_stairs] = {.name = u8"minecraft:polished_tuff_stairs", .opaque = false};
+    m[polished_tuff_slab] = {.name = u8"minecraft:polished_tuff_slab", .opaque = false};
+    m[polished_tuff_wall] = {.name = u8"minecraft:polished_tuff_wall", .opaque = false};
+    m[tuff_bricks] = {.name = u8"minecraft:tuff_bricks", .opaque = true};
+    m[tuff_brick_stairs] = {.name = u8"minecraft:tuff_brick_stairs", .opaque = false};
+    m[tuff_brick_slab] = {.name = u8"minecraft:tuff_brick_slab", .opaque = false};
+    m[tuff_brick_wall] = {.name = u8"minecraft:tuff_brick_wall", .opaque = false};
+    m[chiseled_tuff_bricks] = {.name = u8"minecraft:chiseled_tuff_bricks", .opaque = true};
+    m[trial_spawner] = {.name = u8"minecraft:trial_spawner", .opaque = false};
+
+    m[chiseled_copper] = {.name = u8"minecraft:chiseled_copper", .opaque = true};
+    m[exposed_chiseled_copper] = {.name = u8"minecraft:exposed_chiseled_copper", .opaque = true};
+    m[weathered_chiseled_copper] = {.name = u8"minecraft:weathered_chiseled_copper", .opaque = true};
+    m[oxidized_chiseled_copper] = {.name = u8"minecraft:oxidized_chiseled_copper", .opaque = true};
+    m[waxed_chiseled_copper] = {.name = u8"minecraft:waxed_chiseled_copper", .opaque = true};
+    m[waxed_exposed_chiseled_copper] = {.name = u8"minecraft:waxed_exposed_chiseled_copper", .opaque = true};
+    m[waxed_weathered_chiseled_copper] = {.name = u8"minecraft:waxed_weathered_chiseled_copper", .opaque = true};
+    m[waxed_oxidized_chiseled_copper] = {.name = u8"minecraft:waxed_oxidized_chiseled_copper", .opaque = true};
+
+    m[copper_grate] = {.name = u8"minecraft:copper_grate", .opaque = false};
+    m[exposed_copper_grate] = {.name = u8"minecraft:exposed_copper_grate", .opaque = false};
+    m[weathered_copper_grate] = {.name = u8"minecraft:weathered_copper_grate", .opaque = false};
+    m[oxidized_copper_grate] = {.name = u8"minecraft:oxidized_copper_grate", .opaque = false};
+    m[waxed_copper_grate] = {.name = u8"minecraft:waxed_copper_grate", .opaque = false};
+    m[waxed_exposed_copper_grate] = {.name = u8"minecraft:waxed_exposed_copper_grate", .opaque = false};
+    m[waxed_weathered_copper_grate] = {.name = u8"minecraft:waxed_weathered_copper_grate", .opaque = false};
+    m[waxed_oxidized_copper_grate] = {.name = u8"minecraft:waxed_oxidized_copper_grate", .opaque = false};
+
+    m[copper_door] = {.name = u8"minecraft:copper_door", .opaque = false};
+    m[exposed_copper_door] = {.name = u8"minecraft:exposed_copper_door", .opaque = false};
+    m[weathered_copper_door] = {.name = u8"minecraft:weathered_copper_door", .opaque = false};
+    m[oxidized_copper_door] = {.name = u8"minecraft:oxidized_copper_door", .opaque = false};
+    m[waxed_copper_door] = {.name = u8"minecraft:waxed_copper_door", .opaque = false};
+    m[waxed_exposed_copper_door] = {.name = u8"minecraft:waxed_exposed_copper_door", .opaque = false};
+    m[waxed_weathered_copper_door] = {.name = u8"minecraft:waxed_weathered_copper_door", .opaque = false};
+    m[waxed_oxidized_copper_door] = {.name = u8"minecraft:waxed_oxidized_copper_door", .opaque = false};
+
+    m[copper_trapdoor] = {.name = u8"minecraft:copper_trapdoor", .opaque = false};
+    m[exposed_copper_trapdoor] = {.name = u8"minecraft:exposed_copper_trapdoor", .opaque = false};
+    m[weathered_copper_trapdoor] = {.name = u8"minecraft:weathered_copper_trapdoor", .opaque = false};
+    m[oxidized_copper_trapdoor] = {.name = u8"minecraft:oxidized_copper_trapdoor", .opaque = false};
+    m[waxed_copper_trapdoor] = {.name = u8"minecraft:waxed_copper_trapdoor", .opaque = false};
+    m[waxed_exposed_copper_trapdoor] = {.name = u8"minecraft:waxed_exposed_copper_trapdoor", .opaque = false};
+    m[waxed_weathered_copper_trapdoor] = {.name = u8"minecraft:waxed_weathered_copper_trapdoor", .opaque = false};
+    m[waxed_oxidized_copper_trapdoor] = {.name = u8"minecraft:waxed_oxidized_copper_trapdoor", .opaque = false};
+
+    m[copper_bulb] = {.name = u8"minecraft:copper_bulb", .opaque = true};
+    m[exposed_copper_bulb] = {.name = u8"minecraft:exposed_copper_bulb", .opaque = true};
+    m[weathered_copper_bulb] = {.name = u8"minecraft:weathered_copper_bulb", .opaque = true};
+    m[oxidized_copper_bulb] = {.name = u8"minecraft:oxidized_copper_bulb", .opaque = true};
+    m[waxed_copper_bulb] = {.name = u8"minecraft:waxed_copper_bulb", .opaque = true};
+    m[waxed_exposed_copper_bulb] = {.name = u8"minecraft:waxed_exposed_copper_bulb", .opaque = true};
+    m[waxed_weathered_copper_bulb] = {.name = u8"minecraft:waxed_weathered_copper_bulb", .opaque = true};
+    m[waxed_oxidized_copper_bulb] = {.name = u8"minecraft:waxed_oxidized_copper_bulb", .opaque = true};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);
