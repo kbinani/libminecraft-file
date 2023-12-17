@@ -16,6 +16,7 @@ if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
     add_compile_options(
       /source-charset:utf-8
       /MP
+      /ZI
       /Zc:__cplusplus # Enable updated __cplusplus macro
       /Zc:preprocessor # Enable preprocessor conformance mode
     )
