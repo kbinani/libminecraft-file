@@ -256,7 +256,7 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:granite_slab"] = granite_slab;
     t[u8"minecraft:granite_stairs"] = granite_stairs;
     t[u8"minecraft:granite_wall"] = granite_wall;
-    t[u8"minecraft:grass"] = grass;
+    t[u8"minecraft:short_grass"] = short_grass;
     t[u8"minecraft:grass_block"] = grass_block;
     t[u8"minecraft:grass_path"] = dirt_path;
     t[u8"minecraft:gravel"] = gravel;
@@ -1111,6 +1111,9 @@ static inline BlockId FromNameWithMigration(std::u8string const &name, int fromD
     }
     if (fromDataVersion < 2724 && name == u8"minecraft:grass_path") {
         return minecraft::dirt_path;
+    }
+    if (fromDataVersion < 3698 && name == u8"minecraft:grass") {
+        return minecraft::short_grass;
     }
     return FromName(name);
 }

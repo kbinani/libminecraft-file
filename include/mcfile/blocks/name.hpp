@@ -260,7 +260,7 @@ static inline std::vector<Characteristics> CreateTable() {
     m[granite_slab] = {.name = u8"minecraft:granite_slab", .opaque = false};
     m[granite_stairs] = {.name = u8"minecraft:granite_stairs", .opaque = false};
     m[granite_wall] = {.name = u8"minecraft:granite_wall", .opaque = false};
-    m[grass] = {.name = u8"minecraft:grass", .opaque = false};
+    m[short_grass] = {.name = u8"minecraft:short_grass", .opaque = false};
     m[grass_block] = {.name = u8"minecraft:grass_block", .opaque = true};
     m[gravel] = {.name = u8"minecraft:gravel", .opaque = true};
     m[gray_banner] = {.name = u8"minecraft:gray_banner", .opaque = false};
@@ -1127,6 +1127,8 @@ static inline std::u8string Name(BlockId id, int dataVersion = -1) {
             return u8"minecraft:grass_path";
         } else if (id == minecraft::water_cauldron && dataVersion < 2724) {
             return u8"minecraft:cauldron";
+        } else if (id == minecraft::short_grass && dataVersion < 3698) {
+            return u8"minecraft:grass";
         }
     }
     auto characteristic = impl::BlockCharacteristic(id);

@@ -252,7 +252,7 @@ enum : BlockId {
     granite_slab,
     granite_stairs,
     granite_wall,
-    grass,
+    // grass, // renamed to short_grass in 1.20.3
     grass_block,
     // grass_path, // renamed to dirt_path in 1.17
     gravel,
@@ -1058,6 +1058,7 @@ enum : BlockId {
     tuff_brick_wall,
     chiseled_tuff_bricks,
     trial_spawner,
+    short_grass, // was grass before 1.20.3
 
     chiseled_copper,
     exposed_chiseled_copper,

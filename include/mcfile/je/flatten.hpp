@@ -1222,7 +1222,7 @@ public:
                 case 1:
                 case 0: // shrub. Legacy console edition only
                 default:
-                    return blocks::minecraft::grass;
+                    return blocks::minecraft::short_grass;
                 }
             },
             // 32

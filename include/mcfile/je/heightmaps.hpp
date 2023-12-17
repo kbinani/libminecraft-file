@@ -2691,7 +2691,6 @@ public:
         case granite_slab:
         case granite_stairs:
         case granite_wall:
-        case grass:
         case grass_block:
         case gravel:
         case gray_banner:
@@ -3437,6 +3436,7 @@ public:
         case pitcher_plant:
         case sniffer_egg:
         case suspicious_gravel:
+        case short_grass:
             return true;
         default:
             return false;
