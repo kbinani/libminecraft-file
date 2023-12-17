@@ -849,6 +849,60 @@ public:
         case calibrated_sculk_sensor:
         case sniffer_egg:
         case suspicious_gravel:
+        case tuff_stairs:
+        case tuff_slab:
+        case tuff_wall:
+        case chiseled_tuff:
+        case polished_tuff:
+        case polished_tuff_stairs:
+        case polished_tuff_slab:
+        case polished_tuff_wall:
+        case tuff_bricks:
+        case tuff_brick_stairs:
+        case tuff_brick_slab:
+        case tuff_brick_wall:
+        case chiseled_tuff_bricks:
+        case trial_spawner:
+        case chiseled_copper:
+        case exposed_chiseled_copper:
+        case weathered_chiseled_copper:
+        case oxidized_chiseled_copper:
+        case waxed_chiseled_copper:
+        case waxed_exposed_chiseled_copper:
+        case waxed_weathered_chiseled_copper:
+        case waxed_oxidized_chiseled_copper:
+        case copper_grate:
+        case exposed_copper_grate:
+        case weathered_copper_grate:
+        case oxidized_copper_grate:
+        case waxed_copper_grate:
+        case waxed_exposed_copper_grate:
+        case waxed_weathered_copper_grate:
+        case waxed_oxidized_copper_grate:
+        case copper_door:
+        case exposed_copper_door:
+        case weathered_copper_door:
+        case oxidized_copper_door:
+        case waxed_copper_door:
+        case waxed_exposed_copper_door:
+        case waxed_weathered_copper_door:
+        case waxed_oxidized_copper_door:
+        case copper_trapdoor:
+        case exposed_copper_trapdoor:
+        case weathered_copper_trapdoor:
+        case oxidized_copper_trapdoor:
+        case waxed_copper_trapdoor:
+        case waxed_exposed_copper_trapdoor:
+        case waxed_weathered_copper_trapdoor:
+        case waxed_oxidized_copper_trapdoor:
+        case copper_bulb:
+        case exposed_copper_bulb:
+        case weathered_copper_bulb:
+        case oxidized_copper_bulb:
+        case waxed_copper_bulb:
+        case waxed_exposed_copper_bulb:
+        case waxed_weathered_copper_bulb:
+        case waxed_oxidized_copper_bulb:
             return true;
         default:
             return false;
@@ -1648,6 +1702,60 @@ public:
         case calibrated_sculk_sensor:
         case sniffer_egg:
         case suspicious_gravel:
+        case tuff_stairs:
+        case tuff_slab:
+        case tuff_wall:
+        case chiseled_tuff:
+        case polished_tuff:
+        case polished_tuff_stairs:
+        case polished_tuff_slab:
+        case polished_tuff_wall:
+        case tuff_bricks:
+        case tuff_brick_stairs:
+        case tuff_brick_slab:
+        case tuff_brick_wall:
+        case chiseled_tuff_bricks:
+        case trial_spawner:
+        case chiseled_copper:
+        case exposed_chiseled_copper:
+        case weathered_chiseled_copper:
+        case oxidized_chiseled_copper:
+        case waxed_chiseled_copper:
+        case waxed_exposed_chiseled_copper:
+        case waxed_weathered_chiseled_copper:
+        case waxed_oxidized_chiseled_copper:
+        case copper_grate:
+        case exposed_copper_grate:
+        case weathered_copper_grate:
+        case oxidized_copper_grate:
+        case waxed_copper_grate:
+        case waxed_exposed_copper_grate:
+        case waxed_weathered_copper_grate:
+        case waxed_oxidized_copper_grate:
+        case copper_door:
+        case exposed_copper_door:
+        case weathered_copper_door:
+        case oxidized_copper_door:
+        case waxed_copper_door:
+        case waxed_exposed_copper_door:
+        case waxed_weathered_copper_door:
+        case waxed_oxidized_copper_door:
+        case copper_trapdoor:
+        case exposed_copper_trapdoor:
+        case weathered_copper_trapdoor:
+        case oxidized_copper_trapdoor:
+        case waxed_copper_trapdoor:
+        case waxed_exposed_copper_trapdoor:
+        case waxed_weathered_copper_trapdoor:
+        case waxed_oxidized_copper_trapdoor:
+        case copper_bulb:
+        case exposed_copper_bulb:
+        case weathered_copper_bulb:
+        case oxidized_copper_bulb:
+        case waxed_copper_bulb:
+        case waxed_exposed_copper_bulb:
+        case waxed_weathered_copper_bulb:
+        case waxed_oxidized_copper_bulb:
             return true;
         default:
             return false;
@@ -2435,6 +2543,60 @@ public:
         case calibrated_sculk_sensor:
         case sniffer_egg:
         case suspicious_gravel:
+        case tuff_stairs:
+        case tuff_slab:
+        case tuff_wall:
+        case chiseled_tuff:
+        case polished_tuff:
+        case polished_tuff_stairs:
+        case polished_tuff_slab:
+        case polished_tuff_wall:
+        case tuff_bricks:
+        case tuff_brick_stairs:
+        case tuff_brick_slab:
+        case tuff_brick_wall:
+        case chiseled_tuff_bricks:
+        case trial_spawner:
+        case chiseled_copper:
+        case exposed_chiseled_copper:
+        case weathered_chiseled_copper:
+        case oxidized_chiseled_copper:
+        case waxed_chiseled_copper:
+        case waxed_exposed_chiseled_copper:
+        case waxed_weathered_chiseled_copper:
+        case waxed_oxidized_chiseled_copper:
+        case copper_grate:
+        case exposed_copper_grate:
+        case weathered_copper_grate:
+        case oxidized_copper_grate:
+        case waxed_copper_grate:
+        case waxed_exposed_copper_grate:
+        case waxed_weathered_copper_grate:
+        case waxed_oxidized_copper_grate:
+        case copper_door:
+        case exposed_copper_door:
+        case weathered_copper_door:
+        case oxidized_copper_door:
+        case waxed_copper_door:
+        case waxed_exposed_copper_door:
+        case waxed_weathered_copper_door:
+        case waxed_oxidized_copper_door:
+        case copper_trapdoor:
+        case exposed_copper_trapdoor:
+        case weathered_copper_trapdoor:
+        case oxidized_copper_trapdoor:
+        case waxed_copper_trapdoor:
+        case waxed_exposed_copper_trapdoor:
+        case waxed_weathered_copper_trapdoor:
+        case waxed_oxidized_copper_trapdoor:
+        case copper_bulb:
+        case exposed_copper_bulb:
+        case weathered_copper_bulb:
+        case oxidized_copper_bulb:
+        case waxed_copper_bulb:
+        case waxed_exposed_copper_bulb:
+        case waxed_weathered_copper_bulb:
+        case waxed_oxidized_copper_bulb:
             return true;
         default:
             return false;
@@ -3436,7 +3598,61 @@ public:
         case pitcher_plant:
         case sniffer_egg:
         case suspicious_gravel:
+        case tuff_stairs:
+        case tuff_slab:
+        case tuff_wall:
+        case chiseled_tuff:
+        case polished_tuff:
+        case polished_tuff_stairs:
+        case polished_tuff_slab:
+        case polished_tuff_wall:
+        case tuff_bricks:
+        case tuff_brick_stairs:
+        case tuff_brick_slab:
+        case tuff_brick_wall:
+        case chiseled_tuff_bricks:
+        case trial_spawner:
         case short_grass:
+        case chiseled_copper:
+        case exposed_chiseled_copper:
+        case weathered_chiseled_copper:
+        case oxidized_chiseled_copper:
+        case waxed_chiseled_copper:
+        case waxed_exposed_chiseled_copper:
+        case waxed_weathered_chiseled_copper:
+        case waxed_oxidized_chiseled_copper:
+        case copper_grate:
+        case exposed_copper_grate:
+        case weathered_copper_grate:
+        case oxidized_copper_grate:
+        case waxed_copper_grate:
+        case waxed_exposed_copper_grate:
+        case waxed_weathered_copper_grate:
+        case waxed_oxidized_copper_grate:
+        case copper_door:
+        case exposed_copper_door:
+        case weathered_copper_door:
+        case oxidized_copper_door:
+        case waxed_copper_door:
+        case waxed_exposed_copper_door:
+        case waxed_weathered_copper_door:
+        case waxed_oxidized_copper_door:
+        case copper_trapdoor:
+        case exposed_copper_trapdoor:
+        case weathered_copper_trapdoor:
+        case oxidized_copper_trapdoor:
+        case waxed_copper_trapdoor:
+        case waxed_exposed_copper_trapdoor:
+        case waxed_weathered_copper_trapdoor:
+        case waxed_oxidized_copper_trapdoor:
+        case copper_bulb:
+        case exposed_copper_bulb:
+        case weathered_copper_bulb:
+        case oxidized_copper_bulb:
+        case waxed_copper_bulb:
+        case waxed_exposed_copper_bulb:
+        case waxed_weathered_copper_bulb:
+        case waxed_oxidized_copper_bulb:
             return true;
         default:
             return false;
