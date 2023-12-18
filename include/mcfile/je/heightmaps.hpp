@@ -863,6 +863,7 @@ public:
         case tuff_brick_wall:
         case chiseled_tuff_bricks:
         case trial_spawner:
+        case crafter:
         case chiseled_copper:
         case exposed_chiseled_copper:
         case weathered_chiseled_copper:
@@ -1716,6 +1717,7 @@ public:
         case tuff_brick_wall:
         case chiseled_tuff_bricks:
         case trial_spawner:
+        case crafter:
         case chiseled_copper:
         case exposed_chiseled_copper:
         case weathered_chiseled_copper:
@@ -2557,6 +2559,7 @@ public:
         case tuff_brick_wall:
         case chiseled_tuff_bricks:
         case trial_spawner:
+        case crafter:
         case chiseled_copper:
         case exposed_chiseled_copper:
         case weathered_chiseled_copper:
@@ -3612,6 +3615,7 @@ public:
         case tuff_brick_wall:
         case chiseled_tuff_bricks:
         case trial_spawner:
+        case crafter:
         case short_grass:
         case chiseled_copper:
         case exposed_chiseled_copper:

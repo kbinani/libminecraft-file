@@ -1048,6 +1048,7 @@ static inline std::vector<Characteristics> CreateTable() {
     m[tuff_brick_wall] = {.name = u8"minecraft:tuff_brick_wall", .opaque = false};
     m[chiseled_tuff_bricks] = {.name = u8"minecraft:chiseled_tuff_bricks", .opaque = true};
     m[trial_spawner] = {.name = u8"minecraft:trial_spawner", .opaque = false};
+    m[crafter] = {.name = u8"minecraft:crafter", .opaque = true};
 
     m[chiseled_copper] = {.name = u8"minecraft:chiseled_copper", .opaque = true};
     m[exposed_chiseled_copper] = {.name = u8"minecraft:exposed_chiseled_copper", .opaque = true};

@@ -1058,6 +1058,7 @@ enum : BlockId {
     tuff_brick_wall,
     chiseled_tuff_bricks,
     trial_spawner,
+    crafter,
     short_grass, // was grass before 1.20.3
 
     chiseled_copper,

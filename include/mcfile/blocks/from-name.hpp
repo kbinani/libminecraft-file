@@ -1046,6 +1046,7 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:tuff_brick_wall"] = tuff_brick_wall;
     t[u8"minecraft:chiseled_tuff_bricks"] = chiseled_tuff_bricks;
     t[u8"minecraft:trial_spawner"] = trial_spawner;
+    t[u8"minecraft:crafter"] = crafter;
 
     t[u8"minecraft:chiseled_copper"] = chiseled_copper;
     t[u8"minecraft:exposed_chiseled_copper"] = exposed_chiseled_copper;
