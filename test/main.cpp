@@ -67,7 +67,7 @@ TEST_CASE("1.13.2") {
                     if (e.fName == u8"NULL") {
                         CHECK(blockId == blocks::unknown);
                     } else {
-                        auto ex = blocks::FromName(e.fName);
+                        auto ex = blocks::FromName(e.fName, chunk->getDataVersion());
                         CHECK(blockId == ex);
                     }
                 }
@@ -114,10 +114,11 @@ TEST_CASE("20w06a") {
 }
 
 TEST_CASE("block-id") {
+    int const dataVersion = mcfile::je::Chunk::kDataVersion;
     for (mcfile::blocks::BlockId id = 1; id < blocks::minecraft::minecraft_max_block_id; id++) {
-        auto name = blocks::Name(id);
+        auto name = blocks::Name(id, dataVersion);
         CHECK(!name.empty());
-        auto reverse = blocks::FromName(name);
+        auto reverse = blocks::FromName(name, dataVersion);
         CHECK(reverse == id);
         if (reverse != id) {
             std::cout << name << std::endl;

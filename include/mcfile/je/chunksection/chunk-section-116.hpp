@@ -4,10 +4,10 @@ namespace mcfile::je::chunksection {
 
 class ChunkSection116 : public ChunkSection113Base<BlockStatesParser116> {
 public:
-    static std::shared_ptr<ChunkSection116> MakeEmpty(int sectionY) {
+    static std::shared_ptr<ChunkSection116> MakeEmpty(int sectionY, int dataVersion) {
         using namespace std;
         vector<shared_ptr<Block const>> palette;
-        palette.push_back(make_shared<Block const>(u8"minecraft:air"));
+        palette.push_back(Block::FromId(blocks::minecraft::air, dataVersion));
         vector<uint16_t> paletteIndices(4096, 0);
         vector<uint8_t> blockLight;
         vector<uint8_t> skyLight;

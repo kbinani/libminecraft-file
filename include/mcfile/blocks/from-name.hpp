@@ -1096,27 +1096,26 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     return ret;
 }
 
-static inline BlockId FromName(std::u8string_view const &name) {
+static inline BlockId FromName(std::u8string const &name, int fromDataVersion) {
     using namespace std;
+
+    if (fromDataVersion < 2724 && name == u8"minecraft:grass_path") {
+        return minecraft::dirt_path;
+    }
+    if (fromDataVersion < 3698 && name == u8"minecraft:grass") {
+        if (fromDataVersion < 1451) {
+            return minecraft::grass_block;
+        } else {
+            return minecraft::short_grass;
+        }
+    }
     static unique_ptr<unordered_map<u8string_view, blocks::BlockId> const> const mapping(CreateTable());
+
     auto mappingIt = mapping->find(name);
     if (mappingIt == mapping->end()) {
         return unknown;
     }
     return mappingIt->second;
-}
-
-static inline BlockId FromNameWithMigration(std::u8string const &name, int fromDataVersion) {
-    if (fromDataVersion < 1451 && name == u8"minecraft:grass") {
-        return minecraft::grass_block;
-    }
-    if (fromDataVersion < 2724 && name == u8"minecraft:grass_path") {
-        return minecraft::dirt_path;
-    }
-    if (fromDataVersion < 3698 && name == u8"minecraft:grass") {
-        return minecraft::short_grass;
-    }
-    return FromName(name);
 }
 
 } // namespace blocks

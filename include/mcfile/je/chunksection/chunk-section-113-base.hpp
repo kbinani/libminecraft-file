@@ -34,7 +34,7 @@ public:
         }
         auto index = BlockIndex(offsetX, offsetY, offsetZ);
         if (fBlocks.empty()) {
-            auto air = std::make_shared<Block>(u8"minecraft:air");
+            auto air = Block::FromId(blocks::minecraft::air, block->fDataVersion);
             fBlocks.set(0, air);
         }
         return fBlocks.set(index, block);
@@ -111,7 +111,7 @@ public:
         });
     }
 
-    static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const *section) {
+    static std::shared_ptr<ChunkSection> MakeChunkSection(nbt::CompoundTag const *section, int dataVersion) {
         if (!section) {
             return nullptr;
         }
@@ -158,7 +158,7 @@ public:
                         properties.insert(std::make_pair(n, v->fValue));
                     }
                 }
-                palette.push_back(std::make_shared<Block const>(nameTag->fValue, properties));
+                palette.push_back(Block::FromNameAndProperties(nameTag->fValue, dataVersion, properties));
             }
         }
 

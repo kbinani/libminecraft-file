@@ -1122,7 +1122,7 @@ static inline std::optional<Characteristics> BlockCharacteristic(BlockId id) {
 
 } // namespace impl
 
-static inline std::u8string Name(BlockId id, int dataVersion = -1) {
+static inline std::u8string Name(BlockId id, int dataVersion) {
     if (dataVersion > 0) {
         if (id == minecraft::dirt_path && dataVersion < 2724) {
             return u8"minecraft:grass_path";

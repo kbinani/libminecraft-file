@@ -36,9 +36,9 @@ TEST_CASE("flatten") {
                         continue;
                     }
                     auto level = root->compoundTag(u8"Level");
-                    if (!level) {
-                        continue;
-                    }
+                    REQUIRE(level);
+                    auto dataVersion = root->int32(u8"DataVersion");
+                    REQUIRE(dataVersion);
                     auto sections = level->listTag(u8"Sections");
                     if (!sections) {
                         continue;
@@ -63,7 +63,9 @@ TEST_CASE("flatten") {
                                     uint8_t const idHi = Flatten::Nibble4(add, index);
                                     uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
                                     uint8_t const blockData = Flatten::Nibble4(data, index);
-                                    auto block = Flatten::Block(id, blockData);
+                                    int bx = cx * 16 + x;
+                                    int bz = cz * 16 + z;
+                                    auto block = Flatten::Block(id, blockData, *dataVersion);
                                     CHECK(block != nullptr);
                                 }
                             }

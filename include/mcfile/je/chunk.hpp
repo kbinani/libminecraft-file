@@ -8,6 +8,8 @@ public:
         kDataVersion = 3463, // 1.20
     };
 
+    using CreateEmptyChunkSection = std::function<std::shared_ptr<ChunkSection>(int sectionY, int dataVersion)>;
+
     std::shared_ptr<Block const> blockAt(int x, int y, int z) const {
         int const chunkX = Coordinate::ChunkFromBlock(x);
         int const chunkZ = Coordinate::ChunkFromBlock(z);
@@ -276,7 +278,7 @@ public:
         }
     }
 
-    int dataVersion() const {
+    int getDataVersion() const {
         return fDataVersion;
     }
 
@@ -384,7 +386,7 @@ private:
           std::vector<TickingBlock> liquidTicks,
           std::u8string const &status,
           std::optional<bool> terrainPopulated,
-          std::function<std::shared_ptr<ChunkSection>(int sectionY)> createEmptySection)
+          CreateEmptyChunkSection createEmptySection)
         : fChunkX(chunkX)
         , fChunkY(chunkY)
         , fChunkZ(chunkZ)
@@ -650,7 +652,7 @@ private:
             section = fSections[idx];
         }
         if (!section && fChunkY <= cy && cy <= maxChunkY() && fCreateEmptySection) {
-            section = fCreateEmptySection(cy);
+            section = fCreateEmptySection(cy, fDataVersion);
             if (section) {
                 if (fSections.size() <= idx) {
                     fSections.resize(idx + 1);
@@ -732,7 +734,7 @@ public:
 protected:
     std::u8string const fStatus;
     std::optional<bool> fTerrainPopulated;
-    std::function<std::shared_ptr<ChunkSection>(int sectionY)> const fCreateEmptySection;
+    CreateEmptyChunkSection const fCreateEmptySection;
     int fDataVersion;
 
 private:

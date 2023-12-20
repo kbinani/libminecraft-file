@@ -59,7 +59,7 @@ public:
         return CompoundTag::WriteCompressed(*c, s, Endian::Big);
     }
 
-    void dataVersion(int version) {
+    void setDataVersion(int version) {
         fDataVersion = version;
     }
 

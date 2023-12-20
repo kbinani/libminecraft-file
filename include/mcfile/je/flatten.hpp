@@ -651,7 +651,7 @@ public:
         return u8"minecraft:" + u8string(i);
     }
 
-    static std::optional<std::u8string> Item(int16_t id, int16_t *damage) {
+    static std::optional<std::u8string> Item(int16_t id, int16_t *damage, int dataVersion) {
         using namespace std;
         int16_t safety = 0;
         assert(damage);
@@ -659,7 +659,7 @@ public:
             damage = &safety;
         }
         if (id < 256) {
-            auto block = Block(id, *damage);
+            auto block = Block(id, *damage, dataVersion);
             if (block) {
                 *damage = 0;
                 return u8string(block->fName);
@@ -977,7 +977,7 @@ public:
         }
     }
 
-    static std::shared_ptr<mcfile::je::Block const> Block(uint16_t blockId, uint8_t data) {
+    static std::shared_ptr<mcfile::je::Block const> Block(uint16_t blockId, uint8_t data, int dataVersion) {
         using namespace std;
         using Func = function<blocks::BlockId(uint8_t, map<u8string, u8string> &)>;
         thread_local map<u8string, u8string> props;
@@ -2950,7 +2950,7 @@ public:
         };
         static_assert(sizeof(sTable) == 256 * sizeof(Func));
         auto id = sTable[0xff & blockId](data, props);
-        return std::make_shared<mcfile::je::Block>(id, props);
+        return mcfile::je::Block::FromIdAndProperties(id, dataVersion, props);
     }
 
     static inline uint8_t Nibble4(std::vector<uint8_t> const &arr, int index) {

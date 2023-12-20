@@ -5,7 +5,7 @@ namespace mcfile::je::chunksection {
 class ChunkSection112 : public ChunkSection {
 public:
     static void MakeChunkSections(std::shared_ptr<nbt::ListTag> const &tags,
-                                  int chunkX, int chunkZ,
+                                  int chunkX, int chunkZ, int dataVersion,
                                   std::vector<std::shared_ptr<nbt::CompoundTag>> const &tileEntities,
                                   std::vector<std::shared_ptr<ChunkSection>> &out) {
         using namespace std;
@@ -16,7 +16,7 @@ public:
             if (!section) {
                 continue;
             }
-            auto const &converted = MakeRawSection(section);
+            auto const &converted = MakeRawSection(section, dataVersion);
             if (converted) {
                 rawSections.push_back(converted);
             }
@@ -25,10 +25,10 @@ public:
         Migrate(rawSections, chunkX, chunkZ, tileEntities, out);
     }
 
-    static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY) {
+    static std::shared_ptr<ChunkSection> MakeEmpty(int sectionY, int dataVersion) {
         using namespace std;
         vector<shared_ptr<Block const>> palette;
-        palette.push_back(make_shared<Block const>(u8"minecraft:air"));
+        palette.push_back(Block::FromId(blocks::minecraft::air, dataVersion));
         vector<uint16_t> indices(4096, 0);
         vector<uint8_t> blockLight;
         vector<uint8_t> skyLight(2048, 0xff);
@@ -105,7 +105,7 @@ private:
     explicit ChunkSection112(int y)
         : fY(y) {}
 
-    static std::shared_ptr<ChunkSection112> MakeRawSection(nbt::CompoundTag const *section) {
+    static std::shared_ptr<ChunkSection112> MakeRawSection(nbt::CompoundTag const *section, int dataVersion) {
         if (!section) {
             return nullptr;
         }
@@ -148,7 +148,7 @@ private:
         }
 
         std::vector<std::shared_ptr<Block const>> palette;
-        std::vector<std::pair<uint8_t, uint16_t>> numericPalette;
+        std::vector<std::pair<uint16_t, uint8_t>> numericPalette;
         std::vector<uint16_t> paletteIndices(16 * 16 * 16);
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
@@ -158,7 +158,7 @@ private:
                     uint8_t const idHi = Flatten::Nibble4(add, index);
                     uint16_t const id = (uint16_t)idLo + ((uint16_t)idHi << 8);
                     uint8_t const blockData = Flatten::Nibble4(data, index);
-                    std::pair<uint8_t, uint16_t> key = std::make_pair(id, blockData);
+                    std::pair<uint16_t, uint8_t> key = std::make_pair(id, blockData);
                     int paletteIndex = -1;
                     for (int i = 0; i < (int)numericPalette.size(); i++) {
                         if (numericPalette[i] == key) {
@@ -167,7 +167,7 @@ private:
                         }
                     }
                     if (paletteIndex < 0) {
-                        std::shared_ptr<Block const> block = Flatten::Block(id, blockData);
+                        std::shared_ptr<Block const> block = Flatten::Block(id, blockData, dataVersion);
                         paletteIndex = (int)palette.size();
                         palette.push_back(block);
                         numericPalette.push_back(key);
@@ -263,8 +263,7 @@ private:
                             auto tile = tileAt(x, by, z);
                             if (tile && tile->string(u8"id", u8"") == u8"minecraft:bed") {
                                 auto colorCode = tile->int32(u8"color", 0);
-                                auto color = ColorNameFromCode(colorCode);
-                                converted = block->renamed(u8"minecraft:" + color + u8"_bed");
+                                converted = block->withId(BedBlockIdFromCode(colorCode));
                             }
                         } else if (name == u8"note_block") {
                             auto tile = tileAt(x, by, z);
@@ -295,38 +294,33 @@ private:
                                 auto rot = tile->byte(u8"Rot");
                                 auto type = tile->byte(u8"SkullType");
                                 if (rot && type) {
-                                    u8string n = u8"skeleton";
-                                    u8string p = u8"skull";
+                                    using namespace blocks::minecraft;
+                                    bool wall = !(name == u8"skeleton_skull");
+                                    blocks::BlockId id = skeleton_skull;
                                     switch (*type) {
                                     case 0:
-                                        n = u8"skeleton";
-                                        p = u8"skull";
+                                        id = wall ? skeleton_wall_skull : skeleton_skull;
                                         break;
                                     case 1:
-                                        n = u8"wither_skeleton";
-                                        p = u8"skull";
+                                        id = wall ? wither_skeleton_wall_skull : wither_skeleton_skull;
                                         break;
                                     case 2:
-                                        n = u8"zombie";
-                                        p = u8"head";
+                                        id = wall ? zombie_wall_head : zombie_head;
                                         break;
                                     case 3:
-                                        n = u8"player";
-                                        p = u8"head";
+                                        id = wall ? player_wall_head : player_head;
                                         break;
                                     case 4:
-                                        n = u8"creeper";
-                                        p = u8"head";
+                                        id = wall ? creeper_wall_head : creeper_head;
                                         break;
                                     case 5:
-                                        n = u8"dragon";
-                                        p = u8"head";
+                                        id = wall ? dragon_wall_head : dragon_head;
                                         break;
                                     }
-                                    if (name == u8"skeleton_skull") {
-                                        converted = block->renamed(u8"minecraft:" + n + u8"_" + p)->applying({{u8"rotation", String::ToString(*rot)}});
+                                    if (wall) {
+                                        converted = block->withId(id);
                                     } else {
-                                        converted = block->renamed(u8"minecraft:" + n + u8"_wall_" + p);
+                                        converted = block->withId(id)->applying({{u8"rotation", String::ToString(*rot)}});
                                     }
                                 }
                             }
@@ -355,43 +349,44 @@ private:
         }
     }
 
-    static std::u8string ColorNameFromCode(int32_t code) {
+    static blocks::BlockId BedBlockIdFromCode(int32_t code) {
+        using namespace blocks::minecraft;
         switch (code % 16) {
         case 0:
-            return u8"white";
+            return white_bed;
         case 1:
-            return u8"orange";
+            return orange_bed;
         case 2:
-            return u8"magenta";
+            return magenta_bed;
         case 3:
-            return u8"light_blue";
+            return light_blue_bed;
         case 4:
-            return u8"yellow";
+            return yellow_bed;
         case 5:
-            return u8"lime";
+            return lime_bed;
         case 6:
-            return u8"pink";
+            return pink_bed;
         case 7:
-            return u8"gray";
+            return gray_bed;
         case 8:
-            return u8"light_gray";
+            return light_gray_bed;
         case 9:
-            return u8"cyan";
+            return cyan_bed;
         case 10:
-            return u8"purple";
+            return purple_bed;
         case 11:
-            return u8"blue";
+            return blue_bed;
         case 12:
-            return u8"brown";
+            return brown_bed;
         case 13:
-            return u8"green";
+            return green_bed;
         case 14:
-            return u8"red";
+            return red_bed;
         case 15:
-            return u8"black";
+            return black_bed;
         }
         assert(false);
-        return u8"";
+        return red_bed;
     }
 
     static std::shared_ptr<Block const> GetBlockAt(int offsetX, int blockY, int offsetZ, std::vector<std::shared_ptr<ChunkSection112>> const &raw) {

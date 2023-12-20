@@ -34,7 +34,7 @@ public:
     };
     //clang-format: on
 
-    static std::function<std::shared_ptr<ChunkSection>(int sectionY)>
+    static std::function<std::shared_ptr<ChunkSection>(int sectionY, int dataVersion)>
     MakeChunkSections(std::shared_ptr<nbt::ListTag> const &sections,
                       int const dataVersion,
                       int chunkX, int chunkZ,
@@ -49,7 +49,7 @@ public:
 
         if (dataVersion < kMinDataVersionChunkSection113) {
             if (sections) {
-                chunksection::ChunkSection112::MakeChunkSections(sections, chunkX, chunkZ, tileEntities, result);
+                chunksection::ChunkSection112::MakeChunkSections(sections, chunkX, chunkZ, dataVersion, tileEntities, result);
             }
             return chunksection::ChunkSection112::MakeEmpty;
         } else if (dataVersion < kMinDataVersionChunkSection116) {
@@ -59,7 +59,7 @@ public:
                     if (!section) {
                         continue;
                     }
-                    auto const &converted = chunksection::ChunkSection113::MakeChunkSection(section);
+                    auto const &converted = chunksection::ChunkSection113::MakeChunkSection(section, dataVersion);
                     if (converted) {
                         result.push_back(converted);
                     }
@@ -73,7 +73,7 @@ public:
                     if (!section) {
                         continue;
                     }
-                    auto const &converted = chunksection::ChunkSection116::MakeChunkSection(section);
+                    auto const &converted = chunksection::ChunkSection116::MakeChunkSection(section, dataVersion);
                     if (converted) {
                         result.push_back(converted);
                     }
@@ -97,7 +97,7 @@ public:
         }
     }
 
-    static std::function<std::shared_ptr<ChunkSection>(int sectionY)> GetEmptySectionCreatorFromDataVersion(int dataVersion) {
+    static std::function<std::shared_ptr<ChunkSection>(int sectionY, int dataVersion)> GetEmptySectionCreatorFromDataVersion(int dataVersion) {
         if (dataVersion < kMinDataVersionChunkSection113) {
             return chunksection::ChunkSection112::MakeEmpty;
         } else if (dataVersion < kMinDataVersionChunkSection116) {

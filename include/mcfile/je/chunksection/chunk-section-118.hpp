@@ -4,10 +4,10 @@ namespace mcfile::je::chunksection {
 
 class ChunkSection118 : public ChunkSection {
 public:
-    static std::shared_ptr<ChunkSection118> MakeEmpty(int sectionY) {
+    static std::shared_ptr<ChunkSection118> MakeEmpty(int sectionY, int dataVersion) {
         using namespace std;
         vector<shared_ptr<Block const>> blockPalette;
-        blockPalette.push_back(make_shared<Block const>(u8"minecraft:air"));
+        blockPalette.push_back(Block::FromId(blocks::minecraft::air, dataVersion));
         vector<uint16_t> blockPaletteIndices(4096, 0);
         vector<biomes::BiomeId> biomePalette;
         vector<uint16_t> biomePaletteIndices;
@@ -78,7 +78,7 @@ public:
                         properties.insert(make_pair(n, v->fValue));
                     }
                 }
-                blockPalette.push_back(make_shared<Block const>(*name, properties));
+                blockPalette.push_back(Block::FromNameAndProperties(*name, dataVersion, properties));
             }
             if (blockPalette.empty()) {
                 return nullptr;

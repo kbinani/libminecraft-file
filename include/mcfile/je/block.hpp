@@ -4,27 +4,28 @@ namespace mcfile::je {
 
 class Block {
 public:
-    explicit Block(std::u8string const &name, std::u8string const &data = u8"")
-        : Block(blocks::FromName(name), name, data) {
+    static std::shared_ptr<Block> FromName(std::u8string const &name, int dataVersion, std::u8string const &data = u8"") {
+        return std::shared_ptr<Block>(new Block(blocks::FromName(name, dataVersion), name, data, dataVersion));
     }
 
-    Block(std::u8string const &name, std::map<std::u8string, std::u8string> const &props)
-        : Block(blocks::FromName(name), name, PackProperties(props)) {
+    static std::shared_ptr<Block> FromNameAndProperties(std::u8string const &name, int dataVersion, std::map<std::u8string, std::u8string> const &props) {
+        return std::shared_ptr<Block>(new Block(blocks::FromName(name, dataVersion), name, PackProperties(props), dataVersion));
     }
 
-    explicit Block(blocks::BlockId id, std::u8string const &data = u8"")
-        : Block(id, blocks::Name(id), data) {
+    static std::shared_ptr<Block> FromId(blocks::BlockId id, int dataVersion, std::u8string const &data = u8"") {
+        return std::shared_ptr<Block>(new Block(id, blocks::Name(id, dataVersion), data, dataVersion));
     }
 
-    Block(blocks::BlockId id, std::map<std::u8string, std::u8string> const &props)
-        : Block(id, blocks::Name(id), PackProperties(props)) {
+    static std::shared_ptr<Block> FromIdAndProperties(blocks::BlockId id, int dataVersion, std::map<std::u8string, std::u8string> const &props) {
+        return std::shared_ptr<Block>(new Block(id, blocks::Name(id, dataVersion), PackProperties(props), dataVersion));
     }
 
-    Block(blocks::BlockId id, std::u8string const &name, std::u8string const &data)
+    Block(blocks::BlockId id, std::u8string const &name, std::u8string const &data, int dataVersion)
         : fId(id)
         , fBlockData(name + data)
         , fName(fBlockData.data(), name.size())
-        , fData(fBlockData.data() + name.size(), fBlockData.size() - name.size()) {
+        , fData(fBlockData.data() + name.size(), fBlockData.size() - name.size())
+        , fDataVersion(dataVersion) {
     }
 
     static std::shared_ptr<Block const> FromBlockData(std::u8string const &blockData, int dataVersion) {
@@ -36,11 +37,11 @@ public:
             name = blockData.substr(0, bra);
             data = blockData.substr(bra);
         }
-        auto id = blocks::FromNameWithMigration(name, dataVersion);
+        auto id = blocks::FromName(name, dataVersion);
         if (id == blocks::unknown) {
             return nullptr;
         }
-        return shared_ptr<Block const>(new Block(id, name, data));
+        return shared_ptr<Block const>(new Block(id, name, data, dataVersion));
     }
 
     bool equals(Block const &other) const {
@@ -116,25 +117,24 @@ public:
                 props.erase(it.first);
             }
         }
-        return shared_ptr<Block const>(new Block(fId, u8string(fName.data(), fName.size()), PackProperties(props)));
+        return shared_ptr<Block const>(new Block(fId, u8string(fName.data(), fName.size()), PackProperties(props), fDataVersion));
     }
 
-    std::shared_ptr<Block const> renamed(std::u8string_view const &name) const {
-        auto id = blocks::FromName(name);
-        return std::shared_ptr<Block const>(new Block(id, std::u8string(name), std::u8string(fData)));
+    std::shared_ptr<Block const> withId(blocks::BlockId id) const {
+        return std::shared_ptr<Block const>(new Block(id, blocks::Name(id, fDataVersion), std::u8string(fData), fDataVersion));
     }
 
     std::shared_ptr<Block const> copy() const {
-        return std::shared_ptr<Block const>(new Block(fId, std::u8string(fName), std::u8string(fData)));
+        return std::shared_ptr<Block const>(new Block(fId, std::u8string(fName), std::u8string(fData), fDataVersion));
     }
 
-    static std::shared_ptr<Block const> FromCompoundTag(nbt::CompoundTag const &tag) {
+    static std::shared_ptr<Block const> FromCompoundTag(nbt::CompoundTag const &tag, int dataVersion) {
         using namespace std;
         auto name = tag.string(u8"Name");
         if (!name) {
             return nullptr;
         }
-        auto id = blocks::FromName(*name);
+        auto id = blocks::FromName(*name, dataVersion);
         auto properties = tag.compoundTag(u8"Properties");
         u8string data;
         if (properties) {
@@ -155,7 +155,7 @@ public:
                 data += u8"]";
             }
         }
-        return std::shared_ptr<Block const>(new Block(id, *name, data));
+        return std::shared_ptr<Block const>(new Block(id, *name, data, dataVersion));
     }
 
     std::u8string name() const {
@@ -219,6 +219,7 @@ public:
     std::u8string const fBlockData; // "minecraft:grass_block[snowy=true]"
     std::u8string_view const fName; // "minecraft:grass_block"
     std::u8string_view const fData; // "[snowy=true]"
+    int const fDataVersion;
 };
 
 } // namespace mcfile::je
