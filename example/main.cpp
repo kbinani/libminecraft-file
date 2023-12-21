@@ -27,12 +27,12 @@ int main() {
 
     // get biome type at (x, y, z) = (1, 0, 2)
     biomes::BiomeId biome = chunk->biomeAt(1, 2);
-    std::cout << biomes::Biome::Name(biome, chunk->dataVersion()) << std::endl; // "minecraft:crimson_forest" etc.
+    std::cout << biomes::Biome::Name(biome, chunk->getDataVersion()) << std::endl; // "minecraft:crimson_forest" etc.
 
     // accessing all chunks in the region
     bool done = region->loadAllChunks([](Chunk const &c) -> bool {
         blocks::BlockId b = c.blockIdAt(c.minBlockX(), 0, c.maxBlockZ());
-        std::cout << blocks::Name(b) << std::endl;
+        std::cout << blocks::Name(b, c.getDataVersion()) << std::endl;
         return true; // continue
     });
     std::cout << done << std::endl; // true if succeeded
