@@ -223,6 +223,16 @@ public:
     };
 
     Status status() const {
+        // Java Edition 1.20 3463 "minecraft:full"
+        // Java Edition 1.20-pre7 3461 "minecraft:full"
+        // Java Edition 1.20-pre6 3460 "minecraft:full"
+        // Java Edition 1.20-pre5 3458 "minecraft:full"
+        // Java Edition 1.20-pre4 3457 "full"
+        // Java Edition 1.20-pre1 3454 "full"
+        // Java Edition 23w18a 3453 "full"
+        // Java Edition 23w16a 3449 "full"
+        // Java Edition 1.19.4 3337 "full"
+        // Java Edition 1.19 3105 "full"
         // Java Edition 1.15.2 2230 "full"
         // Java Edition 1.14.1 1957 "full"
         // Java Edition 19w02a 1921 "full"
