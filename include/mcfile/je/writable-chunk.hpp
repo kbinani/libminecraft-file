@@ -98,8 +98,13 @@ private:
             }
         }
 
+        u8string status = fStatus;
+        if (fDataVersion < 3458 && status.starts_with(u8"minecraft:")) {
+            status = status.substr(10);
+        }
+        level->set(u8"Status", make_shared<StringTag>(status));
+
         level->set(u8"DataVersion", make_shared<IntTag>(fDataVersion));
-        level->set(u8"Status", make_shared<StringTag>(fStatus));
         level->set(u8"xPos", make_shared<IntTag>(fChunkX));
         level->set(u8"zPos", make_shared<IntTag>(fChunkZ));
         level->set(u8"yPos", make_shared<IntTag>(fChunkY));
@@ -246,7 +251,11 @@ private:
             level->set(u8"Structures", fStructures->clone());
         }
 
-        level->set(u8"Status", make_shared<StringTag>(fStatus));
+        u8string status = fStatus;
+        if (status.starts_with(u8"minecraft:")) {
+            status = status.substr(10);
+        }
+        level->set(u8"Status", make_shared<StringTag>(status));
 
         static set<u8string> const whitelist = {
             u8"DataVersion",
