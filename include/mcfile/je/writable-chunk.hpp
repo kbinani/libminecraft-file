@@ -47,6 +47,11 @@ public:
             entities->push_back(it);
         }
         c->set(u8"Entities", entities);
+        c->set(u8"DataVersion", std::make_shared<IntTag>(fDataVersion));
+        auto position = std::make_shared<IntArrayTag>();
+        position->fValue.push_back(fChunkX);
+        position->fValue.push_back(fChunkZ);
+        c->set(u8"Position", position);
         return c;
     }
 
