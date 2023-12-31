@@ -242,7 +242,7 @@ public:
         fBiomes.fill(biome);
     }
 
-    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const override {
+    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag(Dimension d) const override {
         using namespace std;
         using namespace mcfile::nbt;
 
@@ -264,7 +264,7 @@ public:
             vector<uint16_t> index;
             fBiomes.copy(palette, index);
             BiomePalette::ShrinkToFit(palette, index);
-            PackBiomePalette(palette, index, biomePalette, biomePaletteData, fDataVersion);
+            PackBiomePalette(palette, index, biomePalette, biomePaletteData, fDataVersion, biomes::Biome::Default(d));
             biomes->set(u8"palette", biomePalette);
             if (biomePaletteData) {
                 biomes->set(u8"data", biomePaletteData);
@@ -331,10 +331,11 @@ public:
                                  std::vector<uint16_t> const &inIndices,
                                  std::shared_ptr<nbt::ListTag> &outPalette,
                                  std::shared_ptr<nbt::LongArrayTag> &outPackedIndices,
-                                 int dataVersion) {
+                                 int dataVersion,
+                                 std::u8string const &fallbackBiome) {
         for (auto const &biome : inPalette) {
             auto name = biomes::Biome::Name(biome, dataVersion);
-            outPalette->push_back(std::make_shared<mcfile::nbt::StringTag>(name));
+            outPalette->push_back(std::make_shared<mcfile::nbt::StringTag>(name ? *name : fallbackBiome));
         }
         size_t size = outPalette->size();
         if (size <= 1) {

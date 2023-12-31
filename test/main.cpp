@@ -131,16 +131,43 @@ TEST_CASE("biome_id") {
     CHECK(biomes::Biome::Name(biomes::minecraft::mushroom_field_shore, 2838 - 1) == u8"minecraft:mushroom_field_shore");
     CHECK(biomes::Biome::FromName(u8"minecraft:mushroom_field_shore") == biomes::minecraft::mushroom_field_shore);
 
-    for (mcfile::biomes::BiomeId id = 1; id < biomes::minecraft::minecraft_max_biome_id; id++) {
-        if (id == biomes::minecraft::mushroom_field_shore) {
-            continue;
+    SUBCASE("1.20") {
+        // clang-format off
+        std::unordered_set<std::u8string> const expected = {
+            u8"badlands", u8"bamboo_jungle", u8"basalt_deltas", u8"beach", u8"birch_forest",
+            u8"cherry_grove", u8"cold_ocean", u8"crimson_forest", u8"dark_forest", u8"deep_cold_ocean",
+            u8"deep_dark", u8"deep_frozen_ocean", u8"deep_lukewarm_ocean", u8"deep_ocean", u8"desert",
+            u8"dripstone_caves", u8"end_barrens", u8"end_highlands", u8"end_midlands", u8"eroded_badlands",
+            u8"flower_forest", u8"forest", u8"frozen_ocean", u8"frozen_peaks", u8"frozen_river",
+            u8"grove", u8"ice_spikes", u8"jagged_peaks", u8"jungle", u8"lukewarm_ocean",
+            u8"lush_caves", u8"mangrove_swamp", u8"meadow", u8"mushroom_fields", u8"nether_wastes",
+            u8"ocean", u8"old_growth_birch_forest", u8"old_growth_pine_taiga", u8"old_growth_spruce_taiga", u8"plains",
+            u8"river", u8"savanna", u8"savanna_plateau", u8"small_end_islands", u8"snowy_beach",
+            u8"snowy_plains", u8"snowy_slopes", u8"snowy_taiga", u8"soul_sand_valley", u8"sparse_jungle",
+            u8"stony_peaks", u8"stony_shore", u8"sunflower_plains", u8"swamp", u8"taiga",
+            u8"the_end", u8"the_void", u8"warm_ocean", u8"warped_forest", u8"windswept_forest",
+            u8"windswept_gravelly_hills", u8"windswept_hills", u8"windswept_savanna", u8"wooded_badlands",
+        };
+        // clang-format on
+        std::unordered_set<std::u8string> actual;
+        for (mcfile::biomes::BiomeId id = 1; id < biomes::minecraft::minecraft_max_biome_id; id++) {
+            auto name = biomes::Biome::Name(id, 3463);
+            if (!name) {
+                continue;
+            }
+            CHECK(name->starts_with(u8"minecraft:"));
+            actual.insert(name->substr(10));
         }
-        auto name = biomes::Biome::Name(id, mcfile::je::Chunk::kDataVersion);
-        CHECK(!name.empty());
-        auto reverse = biomes::Biome::FromName(name);
-        CHECK(reverse == id);
-        if (reverse != id) {
-            std::cout << name << std::endl;
+        if (actual.size() != expected.size()) {
+            for (auto const &a : actual) {
+                if (auto found = expected.find(a); found == expected.end()) {
+                    std::cout << "excess biome: " << a << std::endl;
+                }
+            }
+        }
+        CHECK(actual.size() == expected.size());
+        for (auto const &e : expected) {
+            CHECK(actual.find(e) != actual.end());
         }
     }
 }
@@ -192,7 +219,7 @@ TEST_CASE("1.18") {
         auto const &writableChunk = world.writableChunkAt(0, 0);
         auto written = *tempDir / "written_c.0.0.nbt";
         auto stream = std::make_shared<mcfile::stream::FileOutputStream>(written);
-        CHECK(writableChunk->write(*stream));
+        CHECK(writableChunk->write(*stream, Dimension::Overworld));
         stream.reset();
 
         auto expectedNbt = ReadCompoundFromFile(original);
@@ -245,7 +272,7 @@ TEST_CASE("1.18") {
         auto out = *tmp / "out.nbt";
         {
             auto s = std::make_shared<FileOutputStream>(out);
-            expected->write(*s);
+            expected->write(*s, Dimension::Overworld);
         }
 
         shared_ptr<Chunk> actual;

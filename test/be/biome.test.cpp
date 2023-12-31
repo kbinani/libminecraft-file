@@ -11,7 +11,7 @@ TEST_CASE("be/biome") {
     using namespace mcfile::biomes::minecraft;
     for (BiomeId b = 1; b < minecraft::minecraft_max_biome_id; b++) {
         auto name = mcfile::biomes::Biome::Name(b, mcfile::je::Chunk::kDataVersion);
-        if (name.empty()) {
+        if (!name) {
             continue;
         }
         uint32_t iv = mcfile::be::Biome::ToUint32(b);

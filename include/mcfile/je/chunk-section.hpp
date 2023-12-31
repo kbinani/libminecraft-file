@@ -27,7 +27,7 @@ public:
         return false;
     }
 
-    virtual std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag() const {
+    virtual std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag(Dimension d) const {
         return nullptr;
     }
 };

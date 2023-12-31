@@ -23,16 +23,16 @@ public:
         return ret;
     }
 
-    std::shared_ptr<nbt::CompoundTag> toCompoundTag() const {
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag(Dimension d) const {
         if (fDataVersion <= 2840) {
-            return toCompoundTag112();
+            return toCompoundTag112(d);
         } else {
-            return toCompoundTag118();
+            return toCompoundTag118(d);
         }
     }
 
-    bool write(stream::OutputStream &s) const {
-        auto compound = toCompoundTag();
+    bool write(stream::OutputStream &s, Dimension d) const {
+        auto compound = toCompoundTag(d);
         if (!compound) {
             return false;
         }
@@ -74,7 +74,7 @@ private:
         , fRoot(root) {
     }
 
-    std::shared_ptr<nbt::CompoundTag> toCompoundTag118() const {
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag118(Dimension d) const {
         using namespace std;
         using namespace mcfile::nbt;
 
@@ -150,7 +150,7 @@ private:
             });
             auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
             if (sections[0]->fSkyLight.size() == 2048 && fBottomSection && fBottomSection->fSkyLight.size() == 2048 && fDataVersion >= 1901) {
-                auto s = fBottomSection->toCompoundTag();
+                auto s = fBottomSection->toCompoundTag(d);
                 if (!s) {
                     return nullptr;
                 }
@@ -158,7 +158,7 @@ private:
                 isLightOn = true;
             }
             for (auto const &section : sections) {
-                auto s = section->toCompoundTag();
+                auto s = section->toCompoundTag(d);
                 if (!s) {
                     return nullptr;
                 }
@@ -178,7 +178,7 @@ private:
         return level;
     }
 
-    std::shared_ptr<nbt::CompoundTag> toCompoundTag112() const {
+    std::shared_ptr<nbt::CompoundTag> toCompoundTag112(Dimension d) const {
         using namespace std;
         using namespace mcfile::nbt;
         auto root = make_shared<CompoundTag>();
@@ -201,7 +201,7 @@ private:
             });
             auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
             for (auto const &section : sections) {
-                auto s = section->toCompoundTag();
+                auto s = section->toCompoundTag(d);
                 if (!s) {
                     return nullptr;
                 }
