@@ -495,7 +495,7 @@ public:
             , fDeleteInput(false) {}
         std::function<std::string(int chunkX, int chunkZ)> fChunkFileName = Region::GetDefaultCompressedChunkNbtFileName;
         bool fDeleteInput = false;
-        std::function<void(int chunks)> fProgress = nullptr;
+        std::function<bool(int chunks)> fProgress = nullptr;
     };
 
     static bool ConcatCompressedNbt(int regionX, int regionZ, std::string const &directory, std::string const &resultMcaFilePath, ConcatOptions options = ConcatOptions()) = delete;
@@ -519,8 +519,8 @@ public:
             error_code ec;
             if (!fs::is_regular_file(file, ec)) {
                 chunks++;
-                if (options.fProgress) {
-                    options.fProgress(chunks);
+                if (options.fProgress && !options.fProgress(chunks)) {
+                    stop = true;
                 }
                 return;
             }
@@ -538,8 +538,8 @@ public:
                 }
             }
             chunks++;
-            if (options.fProgress) {
-                options.fProgress(chunks);
+            if (options.fProgress && !options.fProgress(chunks)) {
+                stop = true;
             }
         });
     }
