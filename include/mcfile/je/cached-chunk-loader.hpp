@@ -4,8 +4,8 @@ namespace mcfile::je {
 
 class CachedChunkLoader {
 public:
-    explicit CachedChunkLoader(Region region)
-        : fRegion(region) {
+    explicit CachedChunkLoader(McaEditor &editor)
+        : fEditor(editor) {
     }
 
     void addToCache(std::shared_ptr<Chunk const> const &chunk) {
@@ -43,7 +43,12 @@ private:
         Pos2i pos(cx, cz);
         auto found = fCache.find(pos);
         if (found == fCache.end()) {
-            auto chunk = fRegion.chunkAt(pos.fX, pos.fZ);
+            int rx = Coordinate::RegionFromChunk(cx);
+            int rz = Coordinate::RegionFromChunk(cz);
+            int x = cx - rx * 32;
+            int z = cz - rz * 32;
+            auto nbt = fEditor.get(x, z);
+            auto chunk = Chunk::MakeChunk(cx, cz, nbt);
             fCache.insert(std::make_pair(pos, chunk));
             return chunk;
         } else {
@@ -52,7 +57,7 @@ private:
     }
 
 private:
-    Region fRegion;
+    McaEditor &fEditor;
     std::unordered_map<Pos2i, std::shared_ptr<Chunk const>, Pos2iHasher> fCache;
 };
 } // namespace mcfile::je
