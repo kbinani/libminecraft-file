@@ -147,15 +147,15 @@ else()
   CPMAddPackage(
     NAME ZLIB
     GITHUB_REPOSITORY madler/zlib
-    GIT_TAG v1.2.13)
+    GIT_TAG v1.3)
   target_include_directories(zlibstatic INTERFACE ${ZLIB_SOURCE_DIR} $<TARGET_PROPERTY:zlibstatic,BINARY_DIR>)
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
 
-CPMAddPackage("gh:ebiggers/libdeflate@1.17")
+CPMAddPackage("gh:ebiggers/libdeflate@1.19")
 list(APPEND mcfile_test_link_libraries libdeflate::libdeflate_static)
 
-CPMAddPackage("gh:doctest/doctest@2.4.9")
+CPMAddPackage("gh:doctest/doctest@2.4.11")
 
 add_library(mcfile INTERFACE ${mcfile_files})
 target_include_directories(mcfile INTERFACE include)
