@@ -182,7 +182,7 @@ public:
             }
         case old_growth_pine_taiga:
             if (chunkDataVersion < 2838) {
-                return u8"minecraft:giant_spruce_taiga";
+                return u8"minecraft:giant_tree_taiga";
             } else {
                 return u8"minecraft:old_growth_pine_taiga";
             }
@@ -366,6 +366,18 @@ public:
             } else {
                 return u8"minecraft:wooded_badlands";
             }
+        case frozen_peaks:
+            if (chunkDataVersion < 2838) {
+                return u8"minecraft:snowy_mountains";
+            } else {
+                return u8"minecraft:frozen_peaks";
+            }
+        case jagged_peaks:
+            if (chunkDataVersion < 2838) {
+                return u8"minecraft:mountains";
+            } else {
+                return u8"minecraft:jagged_peaks";
+            }
         case deep_warm_ocean:
             if (chunkDataVersion < 2844) {
                 return u8"minecraft:deep_warm_ocean";
@@ -402,7 +414,42 @@ public:
             } else {
                 return u8"minecraft:windswept_hills";
             }
+        case dripstone_caves:
+            if (chunkDataVersion < 2685) {
+                return u8"minecraft:mountains";
+            } else {
+                return u8"minecraft:dripstone_caves";
+            }
+        case lush_caves:
+            if (chunkDataVersion < 2699) {
+                return u8"minecraft:mountains";
+            } else {
+                return u8"minecraft:lush_caves";
+            }
+        case mangrove_swamp:
+            if (chunkDataVersion < 3088) {
+                return u8"minecraft:swamp";
+            } else {
+                return u8"minecraft:mangrove_swamp";
+            }
+        case deep_dark:
+            if (chunkDataVersion < 3066) {
+                if (chunkDataVersion < 2838) {
+                    return u8"minecraft:mountains";
+                } else {
+                    return u8"minecraft:windswept_hills";
+                }
+            } else {
+                return u8"minecraft:deep_dark";
+            }
+        case cherry_grove:
+            if (chunkDataVersion < 3442) {
+                return u8"minecraft:flower_forest";
+            } else {
+                return u8"minecraft:cherry_grove";
+            }
         }
+        // https://github.com/ViaVersion/ViaBackwards/blob/master/common/src/main/resources/assets/viabackwards/data/biome-mappings.json
 
         static std::map<BiomeId, std::u8string> const mapping = {
             {minecraft::ocean, u8"minecraft:ocean"},
