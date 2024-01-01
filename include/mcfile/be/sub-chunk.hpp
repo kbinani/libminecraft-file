@@ -63,8 +63,8 @@ private:
     static std::shared_ptr<SubChunk> ParseVersion0(mcfile::stream::InputStreamReader &sr, int8_t chunkY) {
         using namespace std;
 
-        vector<uint8_t> id(4096);
-        vector<uint8_t> data(4096);
+        array<uint8_t, 4096> id;
+        array<uint8_t, 4096> data;
         for (int i = 0; i < 4096; i++) {
             if (!sr.read(id.data() + i)) {
                 return nullptr;

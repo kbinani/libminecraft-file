@@ -11,8 +11,11 @@ public:
 private:
     template<typename T>
     static std::shared_ptr<T> makeTagImpl() {
-        auto p = std::shared_ptr<T>(new T);
-        return p;
+        struct U : T {
+            U()
+                : T() {}
+        };
+        return std::make_shared<U>();
     }
 };
 

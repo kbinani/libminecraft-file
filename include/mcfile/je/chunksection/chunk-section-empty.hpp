@@ -62,7 +62,7 @@ public:
 
     ChunkSectionEmpty *clone() const override {
         using namespace std;
-        unique_ptr<ChunkSectionEmpty> s(new ChunkSectionEmpty(fY));
+        auto s = make_unique<ChunkSectionEmpty>(fY);
         copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(s->fBlockLight));
         copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(s->fSkyLight));
         return s.release();

@@ -18,8 +18,8 @@ public:
     }
 
     std::shared_ptr<LongArrayTag> copy() const {
-        std::vector<int64_t> copy = value();
-        return std::shared_ptr<LongArrayTag>(new LongArrayTag(copy));
+        std::vector<int64_t> c = fValue;
+        return std::make_shared<LongArrayTag>(c);
     }
 };
 

@@ -109,7 +109,7 @@ private:
     static std::unordered_map<BiomeId, int> *CreateRTable() {
         auto ret = new std::unordered_map<BiomeId, int>();
         for (auto const &it : Table()) {
-            ret->insert(std::make_pair(it.second, it.first));
+            (*ret)[it.second] = it.first;
         }
         return ret;
     }

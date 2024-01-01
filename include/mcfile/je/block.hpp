@@ -5,19 +5,19 @@ namespace mcfile::je {
 class Block {
 public:
     static std::shared_ptr<Block> FromName(std::u8string const &name, int dataVersion, std::u8string const &data = u8"") {
-        return std::shared_ptr<Block>(new Block(blocks::FromName(name, dataVersion), name, data, dataVersion));
+        return std::make_shared<Block>(blocks::FromName(name, dataVersion), name, data, dataVersion);
     }
 
     static std::shared_ptr<Block> FromNameAndProperties(std::u8string const &name, int dataVersion, std::map<std::u8string, std::u8string> const &props) {
-        return std::shared_ptr<Block>(new Block(blocks::FromName(name, dataVersion), name, PackProperties(props), dataVersion));
+        return std::make_shared<Block>(blocks::FromName(name, dataVersion), name, PackProperties(props), dataVersion);
     }
 
     static std::shared_ptr<Block> FromId(blocks::BlockId id, int dataVersion, std::u8string const &data = u8"") {
-        return std::shared_ptr<Block>(new Block(id, blocks::Name(id, dataVersion), data, dataVersion));
+        return std::make_shared<Block>(id, blocks::Name(id, dataVersion), data, dataVersion);
     }
 
     static std::shared_ptr<Block> FromIdAndProperties(blocks::BlockId id, int dataVersion, std::map<std::u8string, std::u8string> const &props) {
-        return std::shared_ptr<Block>(new Block(id, blocks::Name(id, dataVersion), PackProperties(props), dataVersion));
+        return std::make_shared<Block>(id, blocks::Name(id, dataVersion), PackProperties(props), dataVersion);
     }
 
     Block(blocks::BlockId id, std::u8string const &name, std::u8string const &data, int dataVersion)
@@ -41,7 +41,7 @@ public:
         if (id == blocks::unknown) {
             return nullptr;
         }
-        return shared_ptr<Block const>(new Block(id, name, data, dataVersion));
+        return make_shared<Block const>(id, name, data, dataVersion);
     }
 
     bool equals(Block const &other) const {
@@ -117,15 +117,15 @@ public:
                 props.erase(it.first);
             }
         }
-        return shared_ptr<Block const>(new Block(fId, u8string(fName.data(), fName.size()), PackProperties(props), fDataVersion));
+        return make_shared<Block const>(fId, u8string(fName.data(), fName.size()), PackProperties(props), fDataVersion);
     }
 
     std::shared_ptr<Block const> withId(blocks::BlockId id) const {
-        return std::shared_ptr<Block const>(new Block(id, blocks::Name(id, fDataVersion), std::u8string(fData), fDataVersion));
+        return std::make_shared<Block const>(id, blocks::Name(id, fDataVersion), std::u8string(fData), fDataVersion);
     }
 
     std::shared_ptr<Block const> copy() const {
-        return std::shared_ptr<Block const>(new Block(fId, std::u8string(fName), std::u8string(fData), fDataVersion));
+        return std::make_shared<Block const>(fId, std::u8string(fName), std::u8string(fData), fDataVersion);
     }
 
     static std::shared_ptr<Block const> FromCompoundTag(nbt::CompoundTag const &tag, int dataVersion) {
@@ -155,7 +155,7 @@ public:
                 data += u8"]";
             }
         }
-        return std::shared_ptr<Block const>(new Block(id, *name, data, dataVersion));
+        return std::make_shared<Block const>(id, *name, data, dataVersion);
     }
 
     std::u8string name() const {

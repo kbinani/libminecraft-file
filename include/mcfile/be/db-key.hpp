@@ -279,8 +279,7 @@ public:
     }
 
 private:
-    DbKey() {
-    }
+    DbKey() = default;
 
     static void PlaceXZTag(std::vector<char> &out, int32_t chunkX, int32_t chunkZ, Tag tag) {
         PlaceXZTag(out, chunkX, chunkZ, static_cast<uint8_t>(tag));

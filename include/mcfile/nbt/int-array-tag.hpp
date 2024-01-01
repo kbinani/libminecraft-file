@@ -18,8 +18,8 @@ public:
     }
 
     std::shared_ptr<IntArrayTag> copy() const {
-        std::vector<int32_t> copy = value();
-        return std::shared_ptr<IntArrayTag>(new IntArrayTag(copy));
+        std::vector<int32_t> c = fValue;
+        return std::make_shared<IntArrayTag>(c);
     }
 };
 

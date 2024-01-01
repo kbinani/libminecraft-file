@@ -27,7 +27,7 @@ protected:
             if (!tag->readImpl(r)) {
                 return false;
             }
-            tmp.insert(std::make_pair(name, tag));
+            tmp[name] = tag;
         }
         fValue.swap(tmp);
         return true;
@@ -171,12 +171,12 @@ public:
     }
 
     void insert(std::pair<std::u8string, std::shared_ptr<Tag>> const &item) {
-        fValue.insert(item);
+        fValue[item.first] = item.second;
     }
 
     void insert(std::initializer_list<std::pair<std::u8string const, std::shared_ptr<Tag>>> l) {
         for (auto const &it : l) {
-            fValue.insert(it);
+            fValue[it.first] = it.second;
         }
     }
 
@@ -425,7 +425,7 @@ public:
         return v ? v->fValue : fallback;
     }
 
-    std::u8string string(std::u8string const &name, std::u8string fallback) const {
+    std::u8string string(std::u8string const &name, std::u8string const &fallback) const {
         auto v = stringTag(name);
         return v ? v->fValue : fallback;
     }

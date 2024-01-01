@@ -30,7 +30,7 @@ protected:
         if (!r.read(tmp)) {
             return false;
         }
-        fValue = tmp;
+        fValue.swap(tmp);
         return true;
     }
 
