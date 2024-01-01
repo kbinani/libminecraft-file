@@ -12,7 +12,7 @@ enum : BiomeId {
     swamp,
     river,
     nether_wastes,
-    the_end,
+    the_end, // 10
     frozen_ocean,
     frozen_river,
     snowy_plains, // was "snowy_tundra" before 1.18
@@ -22,7 +22,7 @@ enum : BiomeId {
     beach,
     desert_hills,
     wooded_hills,
-    taiga_hills,
+    taiga_hills, // 20
     mountain_edge,
     jungle,
     jungle_hills,
@@ -32,7 +32,7 @@ enum : BiomeId {
     snowy_beach,
     birch_forest,
     birch_forest_hills,
-    dark_forest,
+    dark_forest, // 30
     snowy_taiga,
     snowy_taiga_hills,
     old_growth_pine_taiga, // was "giant_tree_taiga" before 1.18
@@ -41,8 +41,8 @@ enum : BiomeId {
     savanna,
     savanna_plateau,
     badlands,
-    wooded_badlands, // was "wooded_badlands_plateau" before 1.18
-    badlands_plateau,
+    wooded_badlands,  // was "wooded_badlands_plateau" before 1.18
+    badlands_plateau, // 40
     small_end_islands,
     end_midlands,
     end_highlands,
@@ -52,7 +52,7 @@ enum : BiomeId {
     cold_ocean,
     deep_warm_ocean,
     deep_lukewarm_ocean,
-    deep_cold_ocean,
+    deep_cold_ocean, // 50
     deep_frozen_ocean,
     the_void,
     sunflower_plains,
@@ -62,7 +62,7 @@ enum : BiomeId {
     taiga_mountains,
     swamp_hills,
     ice_spikes,
-    modified_jungle,
+    modified_jungle, // 60
     modified_jungle_edge,
     old_growth_birch_forest, // was "tall_birch_forest" before 1.18
     tall_birch_hills,
@@ -71,8 +71,8 @@ enum : BiomeId {
     old_growth_spruce_taiga, // was "giant_spruce_taiga" before 1.18
     giant_spruce_taiga_hills,
     modified_gravelly_mountains,
-    windswept_savanna, // was "shattered_savanna" before 1.18
-    shattered_savanna_plateau,
+    windswept_savanna,         // was "shattered_savanna" before 1.18
+    shattered_savanna_plateau, // 70
     eroded_badlands,
     modified_wooded_badlands_plateau,
     modified_badlands_plateau,
@@ -88,7 +88,7 @@ enum : BiomeId {
     basalt_deltas,
 
     // 1.18
-    dripstone_caves,
+    dripstone_caves, // 80
     lush_caves,
 
     // not numbered in >= 1.18
