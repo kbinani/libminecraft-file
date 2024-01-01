@@ -150,7 +150,7 @@ private:
             });
             auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
             if (sections[0]->fSkyLight.size() == 2048 && fBottomSection && fBottomSection->fSkyLight.size() == 2048 && fDataVersion >= 1901) {
-                auto s = fBottomSection->toCompoundTag(d);
+                auto s = fBottomSection->toCompoundTag(d, fDataVersion);
                 if (!s) {
                     return nullptr;
                 }
@@ -158,7 +158,7 @@ private:
                 isLightOn = true;
             }
             for (auto const &section : sections) {
-                auto s = section->toCompoundTag(d);
+                auto s = section->toCompoundTag(d, fDataVersion);
                 if (!s) {
                     return nullptr;
                 }
@@ -201,7 +201,7 @@ private:
             });
             auto sectionsList = make_shared<ListTag>(Tag::Type::Compound);
             for (auto const &section : sections) {
-                auto s = section->toCompoundTag(d);
+                auto s = section->toCompoundTag(d, fDataVersion);
                 if (!s) {
                     return nullptr;
                 }

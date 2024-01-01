@@ -45,7 +45,7 @@ public:
         return true;
     }
 
-    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag(Dimension d) const override {
+    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag(Dimension d, int dataVersion) const override {
         auto ret = std::make_shared<nbt::CompoundTag>();
 
         int8_t h = fY;

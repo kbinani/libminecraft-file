@@ -20,7 +20,6 @@ public:
             blockPaletteIndices,
             biomePalette,
             biomePaletteIndices,
-            2858,
             blockLight,
             skyLight,
             extra));
@@ -154,7 +153,6 @@ public:
             blockPaletteIndices,
             biomePalette,
             biomePaletteIndices,
-            dataVersion,
             blockLight,
             skyLight,
             extra));
@@ -242,7 +240,7 @@ public:
         fBiomes.fill(biome);
     }
 
-    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag(Dimension d) const override {
+    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag(Dimension d, int dataVersion) const override {
         using namespace std;
         using namespace mcfile::nbt;
 
@@ -264,7 +262,7 @@ public:
             vector<uint16_t> index;
             fBiomes.copy(palette, index);
             BiomePalette::ShrinkToFit(palette, index);
-            PackBiomePalette(palette, index, biomePalette, biomePaletteData, fDataVersion, biomes::Biome::Default(d));
+            PackBiomePalette(palette, index, biomePalette, biomePaletteData, dataVersion, biomes::Biome::Default(d));
             biomes->set(u8"palette", biomePalette);
             if (biomePaletteData) {
                 biomes->set(u8"data", biomePaletteData);
@@ -388,7 +386,7 @@ public:
 
     ChunkSection118 *clone() const override {
         using namespace std;
-        unique_ptr<ChunkSection118> s(new ChunkSection118(fY, fDataVersion));
+        unique_ptr<ChunkSection118> s(new ChunkSection118(fY));
         copy(fBlockLight.begin(), fBlockLight.end(), back_inserter(s->fBlockLight));
         copy(fSkyLight.begin(), fSkyLight.end(), back_inserter(s->fSkyLight));
         s->fBlocks = fBlocks;
@@ -405,12 +403,10 @@ private:
                     std::vector<uint16_t> const &blockPaletteIndices,
                     std::vector<mcfile::biomes::BiomeId> const &biomePalette,
                     std::vector<uint16_t> const &biomePaletteIndices,
-                    int dataVersion,
                     std::vector<uint8_t> &blockLight,
                     std::vector<uint8_t> &skyLight,
                     std::shared_ptr<nbt::CompoundTag> extra)
         : fY(y)
-        , fDataVersion(dataVersion)
         , fExtra(extra) {
         fBlockLight.swap(blockLight);
         fSkyLight.swap(skyLight);
@@ -418,15 +414,13 @@ private:
         fBiomes.reset(biomePalette, biomePaletteIndices);
     }
 
-    ChunkSection118(int y, int dataVersion)
-        : fY(y)
-        , fDataVersion(dataVersion) {}
+    explicit ChunkSection118(int y)
+        : fY(y) {}
 
 public:
     int const fY;
     BlockPalette fBlocks;
     BiomePalette fBiomes;
-    int fDataVersion;
     std::shared_ptr<nbt::CompoundTag> fExtra;
 };
 

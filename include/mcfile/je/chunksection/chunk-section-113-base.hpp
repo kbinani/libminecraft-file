@@ -59,7 +59,7 @@ public:
     void fill(biomes::BiomeId biome) override {
     }
 
-    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag(Dimension d) const override {
+    std::shared_ptr<mcfile::nbt::CompoundTag> toCompoundTag(Dimension d, int dataVersion) const override {
         using namespace std;
         using namespace mcfile::nbt;
         auto root = make_shared<CompoundTag>();
