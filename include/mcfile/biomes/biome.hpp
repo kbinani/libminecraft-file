@@ -173,16 +173,6 @@ public:
             {minecraft::savanna, u8"minecraft:savanna"},
             {minecraft::savanna_plateau, u8"minecraft:savanna_plateau"},
             {minecraft::badlands, u8"minecraft:badlands"},
-            {minecraft::small_end_islands, u8"minecraft:small_end_islands"},
-            {minecraft::end_midlands, u8"minecraft:end_midlands"},
-            {minecraft::end_highlands, u8"minecraft:end_highlands"},
-            {minecraft::end_barrens, u8"minecraft:end_barrens"},
-            {minecraft::warm_ocean, u8"minecraft:warm_ocean"},
-            {minecraft::lukewarm_ocean, u8"minecraft:lukewarm_ocean"},
-            {minecraft::cold_ocean, u8"minecraft:cold_ocean"},
-            {minecraft::deep_lukewarm_ocean, u8"minecraft:deep_lukewarm_ocean"},
-            {minecraft::deep_cold_ocean, u8"minecraft:deep_cold_ocean"},
-            {minecraft::deep_frozen_ocean, u8"minecraft:deep_frozen_ocean"},
             {minecraft::the_void, u8"minecraft:the_void"},
             {minecraft::sunflower_plains, u8"minecraft:sunflower_plains"},
             {minecraft::flower_forest, u8"minecraft:flower_forest"},
@@ -191,8 +181,94 @@ public:
         };
 
         static auto const ns = [](std::u8string const &v) -> std::u8string { return u8"minecraft:" + v; };
+#if !defined(NDEBUG)
+        bool special = true;
+        struct Defer {
+            explicit Defer(std::function<void()> fn)
+                : fFn(fn) {}
+            ~Defer() {
+                fFn();
+            }
+            std::function<void()> fFn;
+        } d([&]() {
+            if (special) {
+                using namespace u8stream;
+                if (auto found = mapping.find(id); found != mapping.end()) {
+                    std::cout << found->second << std::endl;
+                }
+            }
+        });
+#endif
 
         switch (id) {
+        case small_end_islands:
+            if (dataVersion < 1466) {
+                return ns(u8"the_end");
+            } else {
+                return ns(u8"small_end_islands");
+            }
+        case end_midlands:
+            if (dataVersion < 1466) {
+                return ns(u8"the_end");
+            } else {
+                return ns(u8"end_midlands");
+            }
+        case end_highlands:
+            if (dataVersion < 1466) {
+                return ns(u8"the_end");
+            } else {
+                return ns(u8"end_highlands");
+            }
+        case end_barrens:
+            if (dataVersion < 1466) {
+                return ns(u8"the_end");
+            } else {
+                return ns(u8"end_barrens");
+            }
+        case warm_ocean:
+            if (dataVersion < 1470) {
+                return ns(u8"ocean");
+            } else {
+                return ns(u8"warm_ocean");
+            }
+        case lukewarm_ocean:
+            if (dataVersion < 1470) {
+                return ns(u8"ocean");
+            } else {
+                return ns(u8"lukewarm_ocean");
+            }
+        case cold_ocean:
+            if (dataVersion < 1470) {
+                return ns(u8"ocean");
+            } else {
+                return ns(u8"cold_ocean");
+            }
+        case deep_warm_ocean:
+            if (dataVersion < 1470) {
+                return ns(u8"deep_ocean");
+            } else if (dataVersion < 2844) {
+                return ns(u8"deep_warm_ocean");
+            } else {
+                return ns(u8"deep_ocean");
+            }
+        case deep_lukewarm_ocean:
+            if (dataVersion < 1470) {
+                return ns(u8"deep_ocean");
+            } else {
+                return ns(u8"deep_lukewarm_ocean");
+            }
+        case deep_cold_ocean:
+            if (dataVersion < 1470) {
+                return ns(u8"deep_ocean");
+            } else {
+                return ns(u8"deep_cold_ocean");
+            }
+        case deep_frozen_ocean:
+            if (dataVersion < 1470) {
+                return ns(u8"deep_ocean");
+            } else {
+                return ns(u8"deep_frozen_ocean");
+            }
         case bamboo_jungle:
             if (dataVersion < 1901) {
                 return ns(u8"jungle");
@@ -459,12 +535,6 @@ public:
             } else {
                 return ns(u8"jagged_peaks");
             }
-        case deep_warm_ocean:
-            if (dataVersion < 2844) {
-                return ns(u8"deep_warm_ocean");
-            } else {
-                return ns(u8"deep_ocean");
-            }
         case meadow:
             if (dataVersion > 2730) {
                 return ns(u8"meadow");
@@ -530,6 +600,9 @@ public:
                 return ns(u8"cherry_grove");
             }
         }
+#if !defined(NDEBUG)
+        special = false;
+#endif
 
         // For newly added biomes, see
         // https://github.com/ViaVersion/ViaBackwards/blob/master/common/src/main/resources/assets/viabackwards/data/biome-mappings.json

@@ -223,4 +223,25 @@ TEST_CASE("biome") {
         // clang-format on
         runTestCase(expected, 1631);
     }
+
+    SUBCASE("1.12") {
+        // clang-format off
+        std::unordered_set<std::u8string> const expected = {
+            u8"badlands", u8"badlands_plateau", u8"beach", u8"birch_forest", u8"birch_forest_hills",
+            u8"dark_forest", u8"dark_forest_hills", u8"deep_ocean", u8"desert", u8"desert_hills",
+            u8"desert_lakes", u8"eroded_badlands", u8"flower_forest", u8"forest", u8"frozen_ocean",
+            u8"frozen_river", u8"giant_spruce_taiga", u8"giant_spruce_taiga_hills", u8"giant_tree_taiga", u8"giant_tree_taiga_hills",
+            u8"gravelly_mountains", u8"ice_spikes", u8"jungle", u8"jungle_edge", u8"jungle_hills",
+            u8"modified_badlands_plateau", u8"modified_gravelly_mountains", u8"modified_jungle", u8"modified_jungle_edge", u8"modified_wooded_badlands_plateau",
+            u8"mountain_edge", u8"mountains", u8"mushroom_field_shore", u8"mushroom_fields", u8"nether",
+            u8"ocean", u8"plains", u8"river", u8"savanna", u8"savanna_plateau",
+            u8"shattered_savanna", u8"shattered_savanna_plateau", u8"snowy_beach", u8"snowy_mountains", u8"snowy_taiga",
+            u8"snowy_taiga_hills", u8"snowy_taiga_mountains", u8"snowy_tundra", u8"stone_shore", u8"sunflower_plains",
+            u8"swamp", u8"swamp_hills", u8"taiga", u8"taiga_hills", u8"taiga_mountains",
+            u8"tall_birch_forest", u8"tall_birch_hills", u8"the_end", u8"the_void", u8"wooded_badlands_plateau",
+            u8"wooded_hills", u8"wooded_mountains",
+        };
+        // clang-format on
+        runTestCase(expected, 1343);
+    }
 }
