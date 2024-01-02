@@ -146,307 +146,335 @@ public:
         }
     }
 
-    static std::optional<std::u8string> Name(BiomeId id, int chunkDataVersion) {
+    static std::optional<std::u8string> Name(BiomeId id, int dataVersion) {
         using namespace mcfile::biomes::minecraft;
+        static auto const ns = [](std::u8string const &v) -> std::u8string { return u8"minecraft:" + v; };
         switch (id) {
         case nether_wastes:
-            if (chunkDataVersion >= 2504) {
-                // 20w06a
-                return u8"minecraft:nether_wastes";
+            if (dataVersion < 2504) {
+                return ns(u8"nether");
             } else {
-                return u8"minecraft:nether";
+                return ns(u8"nether_wastes");
             }
-        case snowy_plains:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:snowy_tundra";
+        case soul_sand_valley:
+            if (dataVersion < 2504) {
+                return ns(u8"nether");
             } else {
-                return u8"minecraft:snowy_plains";
+                return ns(u8"soul_sand_valley");
             }
-        case windswept_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:mountains";
+        case crimson_forest:
+            if (dataVersion < 2504) {
+                return ns(u8"nether");
             } else {
-                return u8"minecraft:windswept_hills";
+                return ns(u8"crimson_forest");
             }
-        case windswept_gravelly_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:gravelly_mountains";
+        case warped_forest:
+            if (dataVersion < 2504) {
+                return ns(u8"nether");
             } else {
-                return u8"minecraft:windswept_gravelly_hills";
+                return ns(u8"warped_forest");
             }
-        case windswept_forest:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:wooded_mountains";
-            } else {
-                return u8"minecraft:windswept_forest";
-            }
-        case old_growth_pine_taiga:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:giant_tree_taiga";
-            } else {
-                return u8"minecraft:old_growth_pine_taiga";
-            }
-        case old_growth_spruce_taiga:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:giant_spruce_taiga";
-            } else {
-                return u8"minecraft:old_growth_spruce_taiga";
-            }
-        case stony_shore:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:stone_shore";
-            } else {
-                return u8"minecraft:stony_shore";
-            }
-        case windswept_savanna:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:shattered_savanna";
-            } else {
-                return u8"minecraft:windswept_savanna";
-            }
-        case sparse_jungle:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:jungle_edge";
-            } else {
-                return u8"minecraft:sparse_jungle";
-            }
-        case wooded_badlands:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:wooded_badlands_plateau";
-            } else {
-                return u8"minecraft:wooded_badlands";
-            }
-        case old_growth_birch_forest:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:tall_birch_forest";
-            } else {
-                return u8"minecraft:old_growth_birch_forest";
-            }
-        case mushroom_field_shore:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:mushroom_field_shore";
-            } else {
-                return u8"minecraft:mushroom_fields";
-            }
-        case snowy_mountains:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:snowy_mountains";
-            } else {
-                return u8"minecraft:snowy_plains";
-            }
-        case desert_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:desert_hills";
-            } else {
-                return u8"minecraft:desert";
-            }
-        case wooded_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:wooded_hills";
-            } else {
-                return u8"minecraft:forest";
-            }
-        case taiga_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:taiga_hills";
-            } else {
-                return u8"minecraft:taiga";
-            }
-        case jungle_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:jungle_hills";
-            } else {
-                return u8"minecraft:jungle";
-            }
-        case birch_forest_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:birch_forest_hills";
-            } else {
-                return u8"minecraft:birch_forest";
-            }
-        case snowy_taiga_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:snowy_taiga_hills";
-            } else {
-                return u8"minecraft:snowy_taiga";
-            }
-        case giant_tree_taiga_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:giant_tree_taiga_hills";
-            } else {
-                return u8"minecraft:old_growth_pine_taiga";
-            }
-        case badlands_plateau:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:badlands_plateau";
-            } else {
-                return u8"minecraft:badlands";
-            }
-        case desert_lakes:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:desert_lakes";
-            } else {
-                return u8"minecraft:desert";
-            }
-        case taiga_mountains:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:taiga_mountains";
-            } else {
-                return u8"minecraft:taiga";
-            }
-        case swamp_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:swamp_hills";
-            } else {
-                return u8"minecraft:swamp";
-            }
-        case modified_jungle:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:modified_jungle";
-            } else {
-                return u8"minecraft:jungle";
-            }
-        case modified_jungle_edge:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:modified_jungle_edge";
-            } else {
-                return u8"minecraft:sparse_jungle";
-            }
-        case tall_birch_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:tall_birch_hills";
-            } else {
-                return u8"minecraft:old_growth_birch_forest";
-            }
-        case dark_forest_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:dark_forest_hills";
-            } else {
-                return u8"minecraft:dark_forest";
-            }
-        case snowy_taiga_mountains:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:snowy_taiga_mountains";
-            } else {
-                return u8"minecraft:snowy_taiga";
-            }
-        case giant_spruce_taiga_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:giant_spruce_taiga_hills";
-            } else {
-                return u8"minecraft:old_growth_spruce_taiga";
-            }
-        case modified_gravelly_mountains:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:modified_gravelly_mountains";
-            } else {
-                return u8"minecraft:windswept_gravelly_hills";
-            }
-        case shattered_savanna_plateau:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:shattered_savanna_plateau";
-            } else {
-                return u8"minecraft:windswept_savanna";
-            }
-        case modified_badlands_plateau:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:modified_badlands_plateau";
-            } else {
-                return u8"minecraft:badlands";
-            }
-        case bamboo_jungle_hills:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:bamboo_jungle_hills";
-            } else {
-                return u8"minecraft:bamboo_jungle";
-            }
-        case modified_wooded_badlands_plateau:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:modified_wooded_badlands_plateau";
-            } else {
-                return u8"minecraft:wooded_badlands";
-            }
-        case frozen_peaks:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:snowy_mountains";
-            } else {
-                return u8"minecraft:frozen_peaks";
-            }
-        case jagged_peaks:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:mountains";
-            } else {
-                return u8"minecraft:jagged_peaks";
-            }
-        case deep_warm_ocean:
-            if (chunkDataVersion < 2844) {
-                return u8"minecraft:deep_warm_ocean";
-            } else {
-                return u8"minecraft:deep_ocean";
-            }
-        case meadow:
-            if (chunkDataVersion > 2730) {
-                return u8"minecraft:meadow";
-            } else {
-                return u8"minecraft:plains";
-            }
-        case grove:
-            if (chunkDataVersion > 2730) {
-                return u8"minecraft:grove";
-            } else {
-                return u8"minecraft:snowy_mountains";
-            }
-        case snowy_slopes:
-            if (chunkDataVersion > 2730) {
-                return u8"minecraft:snowy_slopes";
-            } else {
-                return u8"minecraft:snowy_mountains";
-            }
-        case stony_peaks:
-            if (chunkDataVersion > 2730) {
-                return u8"minecraft:stony_peaks";
-            } else {
-                return u8"minecraft:mountains";
-            }
-        case mountain_edge:
-            if (chunkDataVersion < 2838) {
-                return u8"minecraft:mountain_edge";
-            } else {
-                return u8"minecraft:windswept_hills";
-            }
-        case dripstone_caves:
-            if (chunkDataVersion < 2685) {
-                return u8"minecraft:mountains";
-            } else {
-                return u8"minecraft:dripstone_caves";
-            }
-        case lush_caves:
-            if (chunkDataVersion < 2699) {
-                return u8"minecraft:mountains";
-            } else {
-                return u8"minecraft:lush_caves";
-            }
-        case mangrove_swamp:
-            if (chunkDataVersion < 3088) {
-                return u8"minecraft:swamp";
-            } else {
-                return u8"minecraft:mangrove_swamp";
-            }
-        case deep_dark:
-            if (chunkDataVersion < 3066) {
-                if (chunkDataVersion < 2838) {
-                    return u8"minecraft:mountains";
+        case basalt_deltas:
+            if (dataVersion < 2525) {
+                if (dataVersion < 2504) {
+                    return ns(u8"nether");
                 } else {
-                    return u8"minecraft:windswept_hills";
+                    return ns(u8"nether_wastes");
                 }
             } else {
-                return u8"minecraft:deep_dark";
+                return ns(u8"basalt_deltas");
+            }
+        case snowy_plains:
+            if (dataVersion < 2838) {
+                return ns(u8"snowy_tundra");
+            } else {
+                return ns(u8"snowy_plains");
+            }
+        case windswept_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"mountains");
+            } else {
+                return ns(u8"windswept_hills");
+            }
+        case windswept_gravelly_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"gravelly_mountains");
+            } else {
+                return ns(u8"windswept_gravelly_hills");
+            }
+        case windswept_forest:
+            if (dataVersion < 2838) {
+                return ns(u8"wooded_mountains");
+            } else {
+                return ns(u8"windswept_forest");
+            }
+        case old_growth_pine_taiga:
+            if (dataVersion < 2838) {
+                return ns(u8"giant_tree_taiga");
+            } else {
+                return ns(u8"old_growth_pine_taiga");
+            }
+        case old_growth_spruce_taiga:
+            if (dataVersion < 2838) {
+                return ns(u8"giant_spruce_taiga");
+            } else {
+                return ns(u8"old_growth_spruce_taiga");
+            }
+        case stony_shore:
+            if (dataVersion < 2838) {
+                return ns(u8"stone_shore");
+            } else {
+                return ns(u8"stony_shore");
+            }
+        case windswept_savanna:
+            if (dataVersion < 2838) {
+                return ns(u8"shattered_savanna");
+            } else {
+                return ns(u8"windswept_savanna");
+            }
+        case sparse_jungle:
+            if (dataVersion < 2838) {
+                return ns(u8"jungle_edge");
+            } else {
+                return ns(u8"sparse_jungle");
+            }
+        case wooded_badlands:
+            if (dataVersion < 2838) {
+                return ns(u8"wooded_badlands_plateau");
+            } else {
+                return ns(u8"wooded_badlands");
+            }
+        case old_growth_birch_forest:
+            if (dataVersion < 2838) {
+                return ns(u8"tall_birch_forest");
+            } else {
+                return ns(u8"old_growth_birch_forest");
+            }
+        case mushroom_field_shore:
+            if (dataVersion < 2838) {
+                return ns(u8"mushroom_field_shore");
+            } else {
+                return ns(u8"mushroom_fields");
+            }
+        case snowy_mountains:
+            if (dataVersion < 2838) {
+                return ns(u8"snowy_mountains");
+            } else {
+                return ns(u8"snowy_plains");
+            }
+        case desert_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"desert_hills");
+            } else {
+                return ns(u8"desert");
+            }
+        case wooded_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"wooded_hills");
+            } else {
+                return ns(u8"forest");
+            }
+        case taiga_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"taiga_hills");
+            } else {
+                return ns(u8"taiga");
+            }
+        case jungle_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"jungle_hills");
+            } else {
+                return ns(u8"jungle");
+            }
+        case birch_forest_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"birch_forest_hills");
+            } else {
+                return ns(u8"birch_forest");
+            }
+        case snowy_taiga_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"snowy_taiga_hills");
+            } else {
+                return ns(u8"snowy_taiga");
+            }
+        case giant_tree_taiga_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"giant_tree_taiga_hills");
+            } else {
+                return ns(u8"old_growth_pine_taiga");
+            }
+        case badlands_plateau:
+            if (dataVersion < 2838) {
+                return ns(u8"badlands_plateau");
+            } else {
+                return ns(u8"badlands");
+            }
+        case desert_lakes:
+            if (dataVersion < 2838) {
+                return ns(u8"desert_lakes");
+            } else {
+                return ns(u8"desert");
+            }
+        case taiga_mountains:
+            if (dataVersion < 2838) {
+                return ns(u8"taiga_mountains");
+            } else {
+                return ns(u8"taiga");
+            }
+        case swamp_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"swamp_hills");
+            } else {
+                return ns(u8"swamp");
+            }
+        case modified_jungle:
+            if (dataVersion < 2838) {
+                return ns(u8"modified_jungle");
+            } else {
+                return ns(u8"jungle");
+            }
+        case modified_jungle_edge:
+            if (dataVersion < 2838) {
+                return ns(u8"modified_jungle_edge");
+            } else {
+                return ns(u8"sparse_jungle");
+            }
+        case tall_birch_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"tall_birch_hills");
+            } else {
+                return ns(u8"old_growth_birch_forest");
+            }
+        case dark_forest_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"dark_forest_hills");
+            } else {
+                return ns(u8"dark_forest");
+            }
+        case snowy_taiga_mountains:
+            if (dataVersion < 2838) {
+                return ns(u8"snowy_taiga_mountains");
+            } else {
+                return ns(u8"snowy_taiga");
+            }
+        case giant_spruce_taiga_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"giant_spruce_taiga_hills");
+            } else {
+                return ns(u8"old_growth_spruce_taiga");
+            }
+        case modified_gravelly_mountains:
+            if (dataVersion < 2838) {
+                return ns(u8"modified_gravelly_mountains");
+            } else {
+                return ns(u8"windswept_gravelly_hills");
+            }
+        case shattered_savanna_plateau:
+            if (dataVersion < 2838) {
+                return ns(u8"shattered_savanna_plateau");
+            } else {
+                return ns(u8"windswept_savanna");
+            }
+        case modified_badlands_plateau:
+            if (dataVersion < 2838) {
+                return ns(u8"modified_badlands_plateau");
+            } else {
+                return ns(u8"badlands");
+            }
+        case bamboo_jungle_hills:
+            if (dataVersion < 2838) {
+                return ns(u8"bamboo_jungle_hills");
+            } else {
+                return ns(u8"bamboo_jungle");
+            }
+        case modified_wooded_badlands_plateau:
+            if (dataVersion < 2838) {
+                return ns(u8"modified_wooded_badlands_plateau");
+            } else {
+                return ns(u8"wooded_badlands");
+            }
+        case frozen_peaks:
+            if (dataVersion < 2838) {
+                return ns(u8"snowy_mountains");
+            } else {
+                return ns(u8"frozen_peaks");
+            }
+        case jagged_peaks:
+            if (dataVersion < 2838) {
+                return ns(u8"mountains");
+            } else {
+                return ns(u8"jagged_peaks");
+            }
+        case deep_warm_ocean:
+            if (dataVersion < 2844) {
+                return ns(u8"deep_warm_ocean");
+            } else {
+                return ns(u8"deep_ocean");
+            }
+        case meadow:
+            if (dataVersion > 2730) {
+                return ns(u8"meadow");
+            } else {
+                return ns(u8"plains");
+            }
+        case grove:
+            if (dataVersion > 2730) {
+                return ns(u8"grove");
+            } else {
+                return ns(u8"snowy_mountains");
+            }
+        case snowy_slopes:
+            if (dataVersion > 2730) {
+                return ns(u8"snowy_slopes");
+            } else {
+                return ns(u8"snowy_mountains");
+            }
+        case stony_peaks:
+            if (dataVersion > 2730) {
+                return ns(u8"stony_peaks");
+            } else {
+                return ns(u8"mountains");
+            }
+        case mountain_edge:
+            if (dataVersion < 2838) {
+                return ns(u8"mountain_edge");
+            } else {
+                return ns(u8"windswept_hills");
+            }
+        case dripstone_caves:
+            if (dataVersion < 2685) {
+                return ns(u8"mountains");
+            } else {
+                return ns(u8"dripstone_caves");
+            }
+        case lush_caves:
+            if (dataVersion < 2699) {
+                return ns(u8"mountains");
+            } else {
+                return ns(u8"lush_caves");
+            }
+        case mangrove_swamp:
+            if (dataVersion < 3088) {
+                return ns(u8"swamp");
+            } else {
+                return ns(u8"mangrove_swamp");
+            }
+        case deep_dark:
+            if (dataVersion < 3066) {
+                if (dataVersion < 2838) {
+                    return ns(u8"mountains");
+                } else {
+                    return ns(u8"windswept_hills");
+                }
+            } else {
+                return ns(u8"deep_dark");
             }
         case cherry_grove:
-            if (chunkDataVersion < 3442) {
-                return u8"minecraft:flower_forest";
+            if (dataVersion < 3442) {
+                return ns(u8"flower_forest");
             } else {
-                return u8"minecraft:cherry_grove";
+                return ns(u8"cherry_grove");
             }
         }
         // https://github.com/ViaVersion/ViaBackwards/blob/master/common/src/main/resources/assets/viabackwards/data/biome-mappings.json
