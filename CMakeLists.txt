@@ -132,7 +132,8 @@ set(mcfile_test_files
   test/nbt.test.cpp
   test/data4b3d.test.cpp
   test/heightmap.test.cpp
-  test/string.test.hpp)
+  test/string.test.hpp
+  test/biome.test.cpp)
 
 set(CMAKE_REQUIRED_FLAGS "-lstdc++fs")
 check_c_compiler_flag("" TEST_RESULT_STDCXXFS)
