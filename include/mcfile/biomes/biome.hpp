@@ -150,6 +150,12 @@ public:
         using namespace mcfile::biomes::minecraft;
         static auto const ns = [](std::u8string const &v) -> std::u8string { return u8"minecraft:" + v; };
         switch (id) {
+        case bamboo_jungle:
+            if (dataVersion < 1901) {
+                return ns(u8"jungle");
+            } else {
+                return ns(u8"bamboo_jungle");
+            }
         case nether_wastes:
             if (dataVersion < 2504) {
                 return ns(u8"nether");
@@ -384,7 +390,11 @@ public:
             }
         case bamboo_jungle_hills:
             if (dataVersion < 2838) {
-                return ns(u8"bamboo_jungle_hills");
+                if (dataVersion < 1901) {
+                    return ns(u8"jungle_hills");
+                } else {
+                    return ns(u8"bamboo_jungle_hills");
+                }
             } else {
                 return ns(u8"bamboo_jungle");
             }
