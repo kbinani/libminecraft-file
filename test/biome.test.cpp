@@ -37,6 +37,10 @@ TEST_CASE("biome") {
         for (auto const &e : expected) {
             CHECK(actual.find(e) != actual.end());
         }
+
+        for (auto const &e : expected) {
+            CHECK(biomes::Biome::FromName(u8"minecraft:" + e));
+        }
     };
 
     SUBCASE("1.20") {
