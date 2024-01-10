@@ -34,30 +34,50 @@ public:
         return DecompressImpl(in, inSize, out, outSizeExact, libdeflate_deflate_decompress);
     }
 
+    template<class Out>
+    static bool DecompressDeflate(void *in, size_t inSize, std::vector<uint8_t> &out) {
+        return DecompressImpl<-15>(in, inSize, out);
+    }
+
     static bool DecompressZlib(std::vector<uint8_t> &inout) {
-        if (inout.empty()) {
+        std::vector<uint8_t> out;
+        if (!DecompressImpl<15>(inout.data(), inout.size(), out)) {
+            return false;
+        }
+        inout.swap(out);
+        return true;
+    }
+
+private:
+    template<int WindowSize, class Out>
+    static bool DecompressImpl(void *in, size_t inSize, Out &out) {
+        out.clear();
+        if (inSize == 0) {
             return true;
         }
         int ret;
         z_stream zs;
-        std::vector<uint8_t> buff(kSegSize, 0);
-        std::vector<uint8_t> outData;
-        unsigned long prevOut = 0;
-
-        memset(&zs, 0, sizeof(zs));
-        if (inflateInit(&zs) != Z_OK) {
+        if (inSize > std::numeric_limits<decltype(zs.avail_in)>::max()) {
             return false;
         }
 
-        zs.next_in = inout.data();
-        zs.avail_in = inout.size();
+        std::vector<uint8_t> buff(kSegSize, 0);
+        unsigned long prevOut = 0;
+
+        memset(&zs, 0, sizeof(zs));
+        if (inflateInit2(&zs, WindowSize) != Z_OK) {
+            return false;
+        }
+
+        zs.next_in = (Bytef *)in;
+        zs.avail_in = inSize;
 
         do {
             zs.next_out = buff.data();
             zs.avail_out = buff.size();
 
             ret = inflate(&zs, 0);
-            std::copy_n(buff.begin(), zs.total_out - prevOut, std::back_inserter(outData));
+            std::copy_n(buff.begin(), zs.total_out - prevOut, std::back_inserter(out));
             prevOut = zs.total_out;
         } while (ret == Z_OK);
 
@@ -66,11 +86,9 @@ public:
             return false;
         }
 
-        inout.swap(outData);
         return true;
     }
 
-private:
     template<class GetBound, class Compress, class Out>
     static bool CompressImpl(void *in, size_t inSize, Out &out, GetBound getBound, Compress compress, int level = Z_BEST_COMPRESSION) {
         if (inSize == 0) {
