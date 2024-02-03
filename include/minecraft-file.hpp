@@ -49,6 +49,7 @@
 #include <leveldb/db.h>
 #endif
 #include <libdeflate.h>
+#include <lz4.h>
 
 // clang-format off
 
