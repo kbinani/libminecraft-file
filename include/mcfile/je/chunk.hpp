@@ -323,9 +323,9 @@ public:
         }
     }
 
-    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::string const &filePath, int chunkX, int chunkZ) = delete;
+    static std::shared_ptr<Chunk> LoadFromDeflateCompressedChunkNbtFile(std::string const &filePath, int chunkX, int chunkZ) = delete;
 
-    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(std::filesystem::path const &filePath, int chunkX, int chunkZ) {
+    static std::shared_ptr<Chunk> LoadFromDeflateCompressedChunkNbtFile(std::filesystem::path const &filePath, int chunkX, int chunkZ) {
         std::error_code ec;
         auto size = std::filesystem::file_size(filePath, ec);
         if (ec) {
@@ -335,12 +335,12 @@ public:
         if (!in) {
             return nullptr;
         }
-        auto result = LoadFromCompressedChunkNbtFile(in, size, chunkX, chunkZ);
+        auto result = LoadFromDeflateCompressedChunkNbtFile(in, size, chunkX, chunkZ);
         fclose(in);
         return result;
     }
 
-    static std::shared_ptr<Chunk> LoadFromCompressedChunkNbtFile(FILE *in, uint64_t size, int chunkX, int chunkZ) {
+    static std::shared_ptr<Chunk> LoadFromDeflateCompressedChunkNbtFile(FILE *in, uint64_t size, int chunkX, int chunkZ) {
         if (!in) {
             return nullptr;
         }
@@ -348,7 +348,7 @@ public:
         if (!File::Fread(buffer.data(), size, 1, in)) {
             return nullptr;
         }
-        auto root = nbt::CompoundTag::ReadCompressed(buffer, Endian::Big);
+        auto root = nbt::CompoundTag::ReadDeflateCompressed(buffer, Endian::Big);
         if (!root) {
             return nullptr;
         }

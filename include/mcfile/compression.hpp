@@ -26,12 +26,12 @@ public:
 
     template<class Out>
     static bool DecompressZlib(void *in, size_t inSize, Out &out, size_t outSizeExact) {
-        return DecompressImpl(in, inSize, out, outSizeExact, libdeflate_zlib_decompress);
+        return DecompressDeflateImpl(in, inSize, out, outSizeExact, libdeflate_zlib_decompress);
     }
 
     template<class Out>
     static bool DecompressDeflate(void *in, size_t inSize, Out &out, size_t outSizeExact) {
-        return DecompressImpl(in, inSize, out, outSizeExact, libdeflate_deflate_decompress);
+        return DecompressDeflateImpl(in, inSize, out, outSizeExact, libdeflate_deflate_decompress);
     }
 
     template<class Out>
@@ -46,6 +46,11 @@ public:
         }
         inout.swap(out);
         return true;
+    }
+
+    static bool DecompressLz4(std::vector<uint8_t> &inout) {
+        // TODO:
+        return false;
     }
 
 private:
@@ -125,7 +130,7 @@ private:
     }
 
     template<class Decompress, class Out>
-    static bool DecompressImpl(void *in, size_t inSize, Out &out, size_t outSize, Decompress decompress) {
+    static bool DecompressDeflateImpl(void *in, size_t inSize, Out &out, size_t outSize, Decompress decompress) {
         if (inSize == 0) {
             return true;
         }

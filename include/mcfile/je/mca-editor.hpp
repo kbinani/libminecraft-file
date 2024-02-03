@@ -5,7 +5,11 @@ namespace mcfile::je {
 class McaEditor {
     std::vector<bool> fUsedSectors;
     std::vector<uint32_t> fIndex;
-    std::vector<std::string> fCompressedChunks;
+    struct Data {
+        std::string fData;
+        RegionCompression::CompressionType fCompressionType;
+    };
+    std::vector<Data> fCompressedChunks;
 
 public:
     static std::unique_ptr<McaEditor> Open(std::filesystem::path const &path) {
@@ -15,7 +19,7 @@ public:
         usedSectors[1] = true;
 
         std::vector<uint32_t> index(1024, 0);
-        std::vector<std::string> compressedChunks(1024);
+        std::vector<Data> compressedChunks(1024);
 
         ScopedFile file(File::Open(path, File::Mode::Read));
         if (!file) {
@@ -59,7 +63,8 @@ public:
             if (fread(&comp, sizeof(comp), 1, file.get()) != 1) {
                 return nullptr;
             }
-            if (comp != 2) {
+            auto type = RegionCompression::CompressionTypeFromUint8(comp);
+            if (!type) {
                 return nullptr;
             }
             std::string tmp;
@@ -67,7 +72,8 @@ public:
             if (fread(tmp.data(), tmp.size(), 1, file.get()) != 1) {
                 return nullptr;
             }
-            compressedChunks[i] = tmp;
+            compressedChunks[i].fData.swap(tmp);
+            compressedChunks[i].fCompressionType = *type;
         }
         return std::unique_ptr<McaEditor>(new McaEditor(usedSectors, index, compressedChunks));
     }
@@ -77,11 +83,11 @@ public:
             return nullptr;
         }
         int index = localZ * 32 + localX;
-        std::string const &data = fCompressedChunks[index];
-        if (data.empty()) {
+        Data const &data = fCompressedChunks[index];
+        if (data.fData.empty()) {
             return nullptr;
         }
-        return nbt::CompoundTag::ReadCompressed(data, Endian::Big);
+        return RegionCompression::Decompress(data.fCompressionType, data.fData, Endian::Big);
     }
 
     std::shared_ptr<nbt::CompoundTag> extract(int localX, int localZ) {
@@ -94,7 +100,8 @@ public:
         uint32_t sectorOffset = SectorOffset(loc);
         uint32_t numSectors = NumSectors(loc);
         fIndex[index] = 0;
-        std::string().swap(fCompressedChunks[index]);
+        std::string().swap(fCompressedChunks[index].fData);
+        fCompressedChunks[index].fCompressionType = RegionCompression::CompressionType::None;
         if (fUsedSectors.size() < sectorOffset + numSectors) {
             fUsedSectors.resize(sectorOffset + numSectors);
         }
@@ -110,7 +117,7 @@ public:
         }
         int index = localZ * 32 + localX;
 
-        auto data = nbt::CompoundTag::WriteCompressed(tag, Endian::Big);
+        auto data = nbt::CompoundTag::WriteDeflateCompressed(tag, Endian::Big);
         if (!data) {
             return false;
         }
@@ -147,7 +154,8 @@ public:
                 fUsedSectors.push_back(false);
             }
         }
-        fCompressedChunks[index].swap(*data);
+        fCompressedChunks[index].fData.swap(*data);
+        fCompressedChunks[index].fCompressionType = RegionCompression::CompressionType::Deflate;
         for (int i = 0; i < numSectors; i++) {
             fUsedSectors[offset + i] = true;
         }
@@ -175,23 +183,23 @@ public:
                 continue;
             }
 
-            std::string const &data = fCompressedChunks[i];
-            if (data.empty()) {
+            Data const &data = fCompressedChunks[i];
+            if (data.fData.empty()) {
                 continue;
             }
 
             if (!File::Fseek(file.get(), offset * 4096, SEEK_SET)) {
                 return false;
             }
-            uint32_t size = U32BEFromNative(data.size() + 1);
+            uint32_t size = U32BEFromNative(data.fData.size() + 1);
             if (fwrite(&size, sizeof(size), 1, file.get()) != 1) {
                 return false;
             }
-            uint8_t comp = 2;
+            uint8_t comp = static_cast<uint8_t>(data.fCompressionType);
             if (fwrite(&comp, sizeof(comp), 1, file.get()) != 1) {
                 return false;
             }
-            if (fwrite(data.data(), data.size(), 1, file.get()) != 1) {
+            if (fwrite(data.fData.data(), data.fData.size(), 1, file.get()) != 1) {
                 return false;
             }
         }
@@ -205,7 +213,7 @@ public:
         return File::Ftruncate(file.get(), (lastTrue + 1) * 4096);
     }
 
-    static bool Load(std::filesystem::path const &path, int localX, int localZ, std::string &out) {
+    static bool Load(std::filesystem::path const &path, int localX, int localZ, std::string &out, RegionCompression::CompressionType &type) {
         if (localX < 0 || 32 <= localX || localZ < 0 || 32 <= localZ) {
             return false;
         }
@@ -237,7 +245,8 @@ public:
         if (!s.read(&comp, sizeof(comp))) {
             return false;
         }
-        if (comp != 2) {
+        auto t = RegionCompression::CompressionTypeFromUint8(comp);
+        if (!t) {
             return false;
         }
         std::string tmp;
@@ -246,15 +255,17 @@ public:
             return false;
         }
         tmp.swap(out);
+        type = *t;
         return true;
     }
 
     static bool Load(std::filesystem::path const &path, int localX, int localZ, std::shared_ptr<nbt::CompoundTag> &out) {
         std::string tmp;
-        if (!Load(path, localX, localZ, tmp)) {
+        RegionCompression::CompressionType type;
+        if (!Load(path, localX, localZ, tmp, type)) {
             return false;
         }
-        auto ret = nbt::CompoundTag::ReadCompressed(tmp, Endian::Big);
+        auto ret = RegionCompression::Decompress(type, tmp, Endian::Big);
         if (!ret) {
             return false;
         }
@@ -263,7 +274,7 @@ public:
     }
 
 private:
-    McaEditor(std::vector<bool> &usedSectors, std::vector<uint32_t> &index, std::vector<std::string> &compressedChunks) {
+    McaEditor(std::vector<bool> &usedSectors, std::vector<uint32_t> &index, std::vector<Data> &compressedChunks) {
         fUsedSectors.swap(usedSectors);
         fIndex.swap(index);
         fCompressedChunks.swap(compressedChunks);

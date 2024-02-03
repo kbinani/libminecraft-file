@@ -76,6 +76,7 @@ set(mcfile_files
   include/mcfile/je/heightmaps.hpp
   include/mcfile/je/mca-chunk-locator.hpp
   include/mcfile/je/mca-editor.hpp
+  include/mcfile/je/region-compression.hpp
   include/mcfile/je/region.hpp
   include/mcfile/je/set-block-options.hpp
   include/mcfile/je/ticking-block.hpp

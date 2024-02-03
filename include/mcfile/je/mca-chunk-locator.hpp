@@ -26,14 +26,15 @@ public:
         if (!reader.read(&compressionType)) {
             return nullptr;
         }
-        if (compressionType != 2) {
+        auto type = RegionCompression::CompressionTypeFromUint8(compressionType);
+        if (!type) {
             return nullptr;
         }
         std::vector<uint8_t> buffer(fLength - 1);
         if (!reader.read(buffer)) {
             return nullptr;
         }
-        return nbt::CompoundTag::ReadCompressed(buffer, reader.fEndian);
+        return RegionCompression::Decompress(*type, buffer, reader.fEndian);
     }
 
     std::shared_ptr<Chunk> loadChunk(::mcfile::stream::InputStreamReader &reader) const {

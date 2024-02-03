@@ -357,7 +357,8 @@ public:
             fclose(in);
             return false;
         }
-        if (compressionType != 2) {
+        auto type = RegionCompression::CompressionTypeFromUint8(compressionType);
+        if (!type) {
             fclose(in);
             return false;
         }
@@ -639,7 +640,7 @@ public:
             if (!tag) {
                 return;
             }
-            if (!mcfile::nbt::CompoundTag::WriteCompressed(*tag, out, Endian::Big)) {
+            if (!mcfile::nbt::CompoundTag::WriteDeflateCompressed(*tag, out, Endian::Big)) {
                 stop = true;
             }
         });
