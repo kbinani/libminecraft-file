@@ -162,24 +162,13 @@ CPMAddPackage(
   GITHUB_REPOSITORY lz4/lz4
   GIT_TAG v1.9.4
   DOWNLOAD_ONLY YES)
-add_library(lz4 STATIC
-  ${lz4_SOURCE_DIR}/lib/lz4.h
-  ${lz4_SOURCE_DIR}/lib/lz4.c
-  ${lz4_SOURCE_DIR}/lib/lz4file.h
-  ${lz4_SOURCE_DIR}/lib/lz4file.c
-  ${lz4_SOURCE_DIR}/lib/lz4frame.h
-  ${lz4_SOURCE_DIR}/lib/lz4frame.c
-  ${lz4_SOURCE_DIR}/lib/lz4hc.h
-  ${lz4_SOURCE_DIR}/lib/lz4hc.c
-  ${lz4_SOURCE_DIR}/lib/xxhash.h
-  ${lz4_SOURCE_DIR}/lib/xxhash.c
-)
-list(APPEND mcfile_test_link_libraries lz4)
+add_subdirectory(${lz4_SOURCE_DIR}/build/cmake ${lz4_SOURCE_DIR})
+list(APPEND mcfile_test_link_libraries lz4_static)
 
 CPMAddPackage("gh:doctest/doctest@2.4.11")
 
 add_library(mcfile INTERFACE ${mcfile_files})
-target_include_directories(mcfile INTERFACE include ${lz4_SOURCE_DIR}/lib)
+target_include_directories(mcfile INTERFACE include)
 target_link_libraries(mcfile INTERFACE ${mcfile_test_link_libraries})
 
 add_executable(mcfile-test ${mcfile_test_files})
