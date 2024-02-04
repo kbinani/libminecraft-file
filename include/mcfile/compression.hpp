@@ -49,39 +49,54 @@ public:
     }
 
     static bool DecompressLz4(std::vector<uint8_t> &inout) {
-        if (inout.size() < 21) {
-            return false;
-        }
+        using namespace std;
+        size_t remaining = inout.size();
+        vector<uint8_t> out;
         char magic[] = "LZ4Block";
-        for (int i = 0; i < 8; i++) {
-            if (inout[i] != magic[i]) {
+        size_t offset = 0;
+        size_t constexpr headerLength = 21;
+        while (remaining > 0) {
+            if (remaining < headerLength) {
                 return false;
             }
-        }
-        uint8_t token = inout[8];
-        uint8_t method = token & 0xf0;
-        uint32_t compressedLength = U32FromLE(Mem::Read<uint32_t>(inout, 9));
-        if (compressedLength + 21 >= inout.size()) {
-            return false;
-        }
-        uint32_t decompressedLength = U32FromLE(Mem::Read<uint32_t>(inout, 13));
-        uint32_t checksum = Mem::Read<uint32_t>(inout, 17);
-        if (method == 0x10) {
-            // raw
-            inout.erase(inout.begin() + 21 + compressedLength, inout.end());
-            inout.erase(inout.begin(), inout.begin() + 21);
-            return true;
-        } else if (method == 0x20) {
-            // compressed
-            std::vector<uint8_t> out(decompressedLength);
-            if (LZ4_decompress_safe((char const *)inout.data() + 21, (char *)out.data(), compressedLength, out.size()) < 0) {
+            for (int i = 0; i < 8; i++) {
+                if (inout[offset + i] != magic[i]) {
+                    return false;
+                }
+            }
+            uint8_t token = inout[offset + 8];
+            uint8_t method = token & 0xf0;
+            uint32_t compressedLength = U32FromLE(Mem::Read<uint32_t>(inout, offset + 9));
+            size_t advance = compressedLength + headerLength;
+            if (compressedLength == 0) {
+                break;
+            } else if (advance >= remaining) {
                 return false;
             }
-            inout.swap(out);
-            return true;
-        } else {
-            return false;
+            uint32_t decompressedLength = U32FromLE(Mem::Read<uint32_t>(inout, offset + 13));
+            if (decompressedLength == 0) {
+                break;
+            }
+            uint32_t checksum = Mem::Read<uint32_t>(inout, offset + 17);
+            if (method == 0x10) {
+                // raw
+                out.reserve(out.size() + compressedLength);
+                copy_n(inout.begin() + offset + headerLength, compressedLength, back_inserter(out));
+            } else if (method == 0x20) {
+                // compressed
+                size_t prev = out.size();
+                out.resize(prev + decompressedLength);
+                if (LZ4_decompress_safe((char const *)inout.data() + offset + headerLength, (char *)out.data() + prev, compressedLength, decompressedLength) < 0) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            offset += advance;
+            remaining -= advance;
         }
+        inout.swap(out);
+        return true;
     }
 
 private:
