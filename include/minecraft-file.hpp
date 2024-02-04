@@ -69,8 +69,8 @@
 #include <mcfile/stream/output-stream-writer.hpp>
 #include <mcfile/stream/defer-opening-output-stream.hpp>
 #include <mcfile/u8stream.hpp>
-#include <mcfile/compression.hpp>
 #include <mcfile/mem.hpp>
+#include <mcfile/compression.hpp>
 #include <mcfile/string.hpp>
 #include <mcfile/nbt/tag-factory.hpp>
 #include <mcfile/nbt/tag.hpp>

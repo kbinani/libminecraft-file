@@ -49,8 +49,39 @@ public:
     }
 
     static bool DecompressLz4(std::vector<uint8_t> &inout) {
-        // TODO:
-        return false;
+        if (inout.size() < 21) {
+            return false;
+        }
+        char magic[] = "LZ4Block";
+        for (int i = 0; i < 8; i++) {
+            if (inout[i] != magic[i]) {
+                return false;
+            }
+        }
+        uint8_t token = inout[8];
+        uint8_t method = token & 0xf0;
+        uint32_t compressedLength = U32FromLE(Mem::Read<uint32_t>(inout, 9));
+        if (compressedLength + 21 >= inout.size()) {
+            return false;
+        }
+        uint32_t decompressedLength = U32FromLE(Mem::Read<uint32_t>(inout, 13));
+        uint32_t checksum = Mem::Read<uint32_t>(inout, 17);
+        if (method == 0x10) {
+            // raw
+            inout.erase(inout.begin() + 21 + compressedLength, inout.end());
+            inout.erase(inout.begin(), inout.begin() + 21);
+            return true;
+        } else if (method == 0x20) {
+            // compressed
+            std::vector<uint8_t> out(decompressedLength);
+            if (LZ4_decompress_safe((char const *)inout.data() + 21, (char *)out.data(), compressedLength, out.size()) < 0) {
+                return false;
+            }
+            inout.swap(out);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 private:
