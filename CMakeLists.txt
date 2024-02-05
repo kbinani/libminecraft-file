@@ -162,7 +162,7 @@ CPMAddPackage(
   GITHUB_REPOSITORY lz4/lz4
   GIT_TAG v1.9.4
   DOWNLOAD_ONLY YES)
-add_subdirectory(${lz4_SOURCE_DIR}/build/cmake ${lz4_SOURCE_DIR})
+add_subdirectory(${lz4_SOURCE_DIR}/build/cmake ${lz4_SOURCE_DIR} EXCLUDE_FROM_ALL)
 list(APPEND mcfile_test_link_libraries lz4_static)
 
 CPMAddPackage("gh:doctest/doctest@2.4.11")
