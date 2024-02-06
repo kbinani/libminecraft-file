@@ -119,6 +119,7 @@ set(mcfile_files
   include/mcfile/stream/output-stream.hpp
   include/mcfile/string.hpp
   include/mcfile/u8stream.hpp
+  include/mcfile/xxhash.hpp
   include/minecraft-file.hpp
   #end libminecraft-file source files
   )

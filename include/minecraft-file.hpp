@@ -50,6 +50,7 @@
 #endif
 #include <libdeflate.h>
 #include <lz4.h>
+#include <xxhash.h>
 
 // clang-format off
 
@@ -70,6 +71,7 @@
 #include <mcfile/stream/defer-opening-output-stream.hpp>
 #include <mcfile/u8stream.hpp>
 #include <mcfile/mem.hpp>
+#include <mcfile/xxhash.hpp>
 #include <mcfile/compression.hpp>
 #include <mcfile/string.hpp>
 #include <mcfile/nbt/tag-factory.hpp>
