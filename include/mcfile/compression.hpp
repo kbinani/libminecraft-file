@@ -77,9 +77,13 @@ public:
             if (decompressedLength == 0) {
                 break;
             }
-            uint32_t checksum = Mem::Read<uint32_t>(inout, offset + 17);
+            uint32_t actualChecksum = Mem::Read<uint32_t>(inout, offset + 17);
             if (method == 0x10) {
                 // raw
+                uint32_t expectedChecksum = XXHash<uint32_t>::Digest(inout.data() + offset + 21, compressedLength, 0x9747b28c) & 0xfffffff;
+                if (actualChecksum != expectedChecksum) {
+                    return false;
+                }
                 out.reserve(out.size() + compressedLength);
                 copy_n(inout.begin() + offset + headerLength, compressedLength, back_inserter(out));
             } else if (method == 0x20) {
@@ -87,6 +91,10 @@ public:
                 size_t prev = out.size();
                 out.resize(prev + decompressedLength);
                 if (LZ4_decompress_safe((char const *)inout.data() + offset + headerLength, (char *)out.data() + prev, compressedLength, decompressedLength) < 0) {
+                    return false;
+                }
+                uint32_t expectedChecksum = XXHash<uint32_t>::Digest(out.data() + prev, decompressedLength, 0x9747b28c) & 0xfffffff;
+                if (actualChecksum != expectedChecksum) {
                     return false;
                 }
             } else {
