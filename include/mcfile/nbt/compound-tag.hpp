@@ -328,6 +328,9 @@ public:
         return std::dynamic_pointer_cast<LongArrayTag>(found->second);
     }
 
+    template<class Tag>
+    std::shared_ptr<Tag> get(std::u8string const &name) const;
+
     std::optional<int8_t> byte(std::u8string const &name) const {
         auto v = byteTag(name);
         if (v) {
@@ -746,5 +749,65 @@ private:
 public:
     std::map<std::u8string, std::shared_ptr<Tag>> fValue;
 };
+
+template<>
+inline std::shared_ptr<ByteTag> CompoundTag::get(std::u8string const &name) const {
+    return byteTag(name);
+}
+
+template<>
+inline std::shared_ptr<ShortTag> CompoundTag::get(std::u8string const &name) const {
+    return shortTag(name);
+}
+
+template<>
+inline std::shared_ptr<IntTag> CompoundTag::get(std::u8string const &name) const {
+    return intTag(name);
+}
+
+template<>
+inline std::shared_ptr<LongTag> CompoundTag::get(std::u8string const &name) const {
+    return longTag(name);
+}
+
+template<>
+inline std::shared_ptr<FloatTag> CompoundTag::get(std::u8string const &name) const {
+    return floatTag(name);
+}
+
+template<>
+inline std::shared_ptr<DoubleTag> CompoundTag::get(std::u8string const &name) const {
+    return doubleTag(name);
+}
+
+template<>
+inline std::shared_ptr<ByteArrayTag> CompoundTag::get(std::u8string const &name) const {
+    return byteArrayTag(name);
+}
+
+template<>
+inline std::shared_ptr<StringTag> CompoundTag::get(std::u8string const &name) const {
+    return stringTag(name);
+}
+
+template<>
+inline std::shared_ptr<ListTag> CompoundTag::get(std::u8string const &name) const {
+    return listTag(name);
+}
+
+template<>
+inline std::shared_ptr<CompoundTag> CompoundTag::get(std::u8string const &name) const {
+    return compoundTag(name);
+}
+
+template<>
+inline std::shared_ptr<IntArrayTag> CompoundTag::get(std::u8string const &name) const {
+    return intArrayTag(name);
+}
+
+template<>
+inline std::shared_ptr<LongArrayTag> CompoundTag::get(std::u8string const &name) const {
+    return longArrayTag(name);
+}
 
 } // namespace mcfile::nbt
