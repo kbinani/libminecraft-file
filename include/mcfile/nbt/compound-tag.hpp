@@ -331,6 +331,9 @@ public:
     template<class Tag>
     std::shared_ptr<Tag> get(std::u8string const &name) const;
 
+    template<class Value>
+    std::optional<Value> value(std::u8string const &name) const;
+
     std::optional<int8_t> byte(std::u8string const &name) const {
         auto v = byteTag(name);
         if (v) {
@@ -808,6 +811,46 @@ inline std::shared_ptr<IntArrayTag> CompoundTag::get(std::u8string const &name) 
 template<>
 inline std::shared_ptr<LongArrayTag> CompoundTag::get(std::u8string const &name) const {
     return longArrayTag(name);
+}
+
+template<>
+inline std::optional<int8_t> CompoundTag::value(std::u8string const &name) const {
+    return byte(name);
+}
+
+template<>
+inline std::optional<int16_t> CompoundTag::value(std::u8string const &name) const {
+    return int16(name);
+}
+
+template<>
+inline std::optional<int32_t> CompoundTag::value(std::u8string const &name) const {
+    return int32(name);
+}
+
+template<>
+inline std::optional<int64_t> CompoundTag::value(std::u8string const &name) const {
+    return int64(name);
+}
+
+template<>
+inline std::optional<float> CompoundTag::value(std::u8string const &name) const {
+    return float32(name);
+}
+
+template<>
+inline std::optional<double> CompoundTag::value(std::u8string const &name) const {
+    return float64(name);
+}
+
+template<>
+inline std::optional<std::u8string> CompoundTag::value(std::u8string const &name) const {
+    return string(name);
+}
+
+template<>
+inline std::optional<bool> CompoundTag::value(std::u8string const &name) const {
+    return boolean(name);
 }
 
 } // namespace mcfile::nbt
