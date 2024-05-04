@@ -904,6 +904,7 @@ public:
         case waxed_exposed_copper_bulb:
         case waxed_weathered_copper_bulb:
         case waxed_oxidized_copper_bulb:
+        case vault:
             return true;
         default:
             return false;
@@ -1758,6 +1759,7 @@ public:
         case waxed_exposed_copper_bulb:
         case waxed_weathered_copper_bulb:
         case waxed_oxidized_copper_bulb:
+        case vault:
             return true;
         default:
             return false;
@@ -2600,6 +2602,7 @@ public:
         case waxed_exposed_copper_bulb:
         case waxed_weathered_copper_bulb:
         case waxed_oxidized_copper_bulb:
+        case vault:
             return true;
         default:
             return false;
@@ -3657,6 +3660,7 @@ public:
         case waxed_exposed_copper_bulb:
         case waxed_weathered_copper_bulb:
         case waxed_oxidized_copper_bulb:
+        case vault:
             return true;
         default:
             return false;
