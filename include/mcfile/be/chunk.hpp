@@ -187,7 +187,7 @@ private:
           std::vector<std::shared_ptr<mcfile::nbt::CompoundTag>> &entities,
           std::vector<PendingTick> &pendingTicks,
           std::shared_ptr<BiomeMap> &biomes,
-          int8_t version,
+          uint8_t version,
           LoadWhat what)
         : fChunkX(chunkX)
         , fChunkZ(chunkZ)
@@ -352,14 +352,18 @@ private:
 
         int8_t actualMinY = 0;
 
-        int8_t chunkVersion = std::numeric_limits<int8_t>::lowest();
+        uint8_t chunkVersion = 0;
         if (auto version = db.get(DbKey::Version(chunkX, chunkZ, d)); version) {
             if (version->size() == 1) {
-                chunkVersion = Mem::Read<int8_t>(*version, 0);
+                chunkVersion = Mem::Read<uint8_t>(*version, 0);
+            } else {
+                return nullptr;
             }
         } else if (auto legacyVersion = db.get(DbKey::VersionLegacy(chunkX, chunkZ, d)); legacyVersion) {
             if (legacyVersion->size() == 1) {
-                chunkVersion = Mem::Read<int8_t>(*legacyVersion, 0);
+                chunkVersion = Mem::Read<uint8_t>(*legacyVersion, 0);
+            } else {
+                return nullptr;
             }
         }
 
@@ -414,7 +418,7 @@ private:
 public:
     int32_t const fChunkX;
     int32_t const fChunkZ;
-    int8_t const fVersion;
+    uint8_t const fVersion;
     std::vector<std::shared_ptr<SubChunk>> fSubChunks;
     int32_t fChunkY;
     LoadWhat const fWhat;
