@@ -1095,6 +1095,7 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
 
     // 1.21
     t[u8"minecraft:vault"] = vault;
+    t[u8"minecraft:heavy_core"] = heavy_core;
 
     return ret;
 }

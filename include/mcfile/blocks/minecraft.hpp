@@ -1108,6 +1108,7 @@ enum : BlockId {
 
     // 1.21
     vault,
+    heavy_core,
 
     minecraft_max_block_id,
 };

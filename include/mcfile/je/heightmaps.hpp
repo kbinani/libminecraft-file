@@ -24,6 +24,7 @@ public:
         using namespace mcfile::blocks::minecraft;
         switch (block.fId) {
         case sea_pickle:
+        case heavy_core:
             return block.property(u8"waterlogged") == u8"true";
         }
         return IsMotionBlockingById(block.fId);
@@ -33,6 +34,7 @@ public:
         using namespace mcfile::blocks::minecraft;
         switch (block.fId) {
         case sea_pickle:
+        case heavy_core:
             return block.property(u8"waterlogged") == u8"true";
         }
         return IsMotionBlockingNoLeavesById(block.fId);
@@ -3661,6 +3663,7 @@ public:
         case waxed_weathered_copper_bulb:
         case waxed_oxidized_copper_bulb:
         case vault:
+        case heavy_core:
             return true;
         default:
             return false;

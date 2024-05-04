@@ -1097,6 +1097,7 @@ static inline std::vector<Characteristics> CreateTable() {
 
     // 1.21
     m[vault] = {.name = u8"minecraft:vault", .opaque = false};
+    m[heavy_core] = {.name = u8"minecraft:heavy_core", .opaque = false};
 
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
