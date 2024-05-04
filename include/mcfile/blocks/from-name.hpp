@@ -1093,6 +1093,9 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:waxed_weathered_copper_bulb"] = waxed_weathered_copper_bulb;
     t[u8"minecraft:waxed_oxidized_copper_bulb"] = waxed_oxidized_copper_bulb;
 
+    // 1.21
+    t[u8"minecraft:vault"] = vault;
+
     return ret;
 }
 

@@ -1106,6 +1106,9 @@ enum : BlockId {
     waxed_weathered_copper_bulb,
     waxed_oxidized_copper_bulb,
 
+    // 1.21
+    vault,
+
     minecraft_max_block_id,
 };
 

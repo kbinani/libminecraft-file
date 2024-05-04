@@ -1095,6 +1095,9 @@ static inline std::vector<Characteristics> CreateTable() {
     m[waxed_weathered_copper_bulb] = {.name = u8"minecraft:waxed_weathered_copper_bulb", .opaque = true};
     m[waxed_oxidized_copper_bulb] = {.name = u8"minecraft:waxed_oxidized_copper_bulb", .opaque = true};
 
+    // 1.21
+    m[vault] = {.name = u8"minecraft:vault", .opaque = false};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);
