@@ -131,6 +131,37 @@ public:
         return "actorprefix" + key;
     }
 
+    static std::string PosTrackDB(int32_t id) {
+        // {
+        //   "dim": 0, // int, 0 = overworld, 1 = nether, 2 = end
+        //   "id": "0x00000003",
+        //   "pos": [
+        //     0, // int
+        //     62, // int
+        //     0 // int
+        //   ],
+        //   "status": 0, // byte
+        //   "version": 1 // byte
+        // }
+        return "PosTrackDB-" + TrackId(id);
+    }
+
+    static std::string TrackId(int32_t id) {
+        char out[11];
+        memset(out, 0, sizeof(out));
+        uint32_t u = *(uint32_t *)&id;
+        sprintf(out, "0x%08x", u);
+        return std::string(out);
+    }
+
+    static std::string PositionTrackDBLastId() {
+        // {
+        //   "id": "0x00000012",
+        //   "version": 1 // byte
+        // }
+        return "PositionTrackDB-LastId";
+    }
+
     static std::string ComposeChunkKey(int32_t chunkX, int32_t chunkZ, Dimension dim, uint8_t tag) {
         std::vector<char> b;
         PlaceXZTag(b, chunkX, chunkZ, tag);
