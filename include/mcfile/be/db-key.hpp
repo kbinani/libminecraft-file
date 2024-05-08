@@ -150,7 +150,11 @@ public:
         char out[11];
         memset(out, 0, sizeof(out));
         uint32_t u = *(uint32_t *)&id;
-        sprintf(out, "0x%08x", u);
+#if defined(_MSC_VER)
+        sprintf_s(out, sizeof(out), "0x%08x", u);
+#else
+        snprintf(out, sizeof(out), "0x%08x", u);
+#endif
         return std::string(out);
     }
 
