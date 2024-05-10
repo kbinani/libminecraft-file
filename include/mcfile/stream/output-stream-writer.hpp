@@ -75,14 +75,6 @@ public:
         return fStream->write((void *)s.data(), length);
     }
 
-    [[nodiscard]] bool write(std::u8string const &s) {
-        uint16_t length = (uint16_t)std::min(s.size(), (size_t)std::numeric_limits<uint16_t>::max());
-        if (!write(length)) {
-            return false;
-        }
-        return fStream->write((void *)s.data(), length);
-    }
-
 private:
     std::shared_ptr<OutputStream> fStream;
     Endian const fEndian;

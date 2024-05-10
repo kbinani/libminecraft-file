@@ -15,8 +15,12 @@ protected:
                 break;
             }
 
-            std::u8string name;
-            if (!r.read(name)) {
+            std::string key;
+            if (!r.read(key)) {
+                return false;
+            }
+            auto name = String::Utf8FromJavaUtf8(key);
+            if (!name) {
                 return false;
             }
 
@@ -27,7 +31,7 @@ protected:
             if (!tag->readImpl(r)) {
                 return false;
             }
-            tmp[name] = tag;
+            tmp[*name] = tag;
         }
         fValue.swap(tmp);
         return true;
@@ -39,7 +43,11 @@ protected:
             if (!w.write(static_cast<uint8_t>(type))) {
                 return false;
             }
-            if (!w.write(it->first)) {
+            auto s = String::JavaUtf8FromUtf8(it->first);
+            if (!s) {
+                return false;
+            }
+            if (!w.write(*s)) {
                 return false;
             }
             if (!it->second->writeImpl(w)) {
@@ -62,7 +70,7 @@ public:
         if (!w.write(static_cast<uint8_t>(Tag::Type::Compound))) {
             return false;
         }
-        if (!w.write(std::u8string())) {
+        if (!w.write(std::string())) {
             return false;
         }
         return tag.writeImpl(w);
@@ -630,7 +638,7 @@ public:
         if (type != static_cast<uint8_t>(Tag::Type::Compound)) {
             return nullptr;
         }
-        std::u8string n;
+        std::string n;
         if (!isr.read(n)) {
             return nullptr;
         }
@@ -735,7 +743,7 @@ private:
             if (!reader.read(&type)) {
                 break;
             }
-            std::u8string name;
+            std::string name;
             if (!reader.read(name)) {
                 break;
             }

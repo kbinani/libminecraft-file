@@ -122,20 +122,6 @@ public:
         return true;
     }
 
-    [[nodiscard]] bool read(std::u8string &s) {
-        uint16_t length;
-        if (!read(&length)) {
-            return false;
-        }
-        s.resize(length);
-        if (length > 0) {
-            if (fStream->read(s.data(), s.size()) != s.size()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     uint64_t pos() const {
         if (!fStream) {
             return 0;
