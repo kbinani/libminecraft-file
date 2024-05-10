@@ -4,8 +4,9 @@ namespace mcfile::stream {
 
 class InputStreamReader {
 public:
-    explicit InputStreamReader(std::shared_ptr<InputStream> stream, Endian endian = Endian::Big)
-        : fEndian(endian)
+    explicit InputStreamReader(std::shared_ptr<InputStream> stream, Encoding encoding = Encoding::Java)
+        : fEndian(encoding == Encoding::Java ? Endian::Big : Endian::Little)
+        , fEncoding(encoding)
         , fStream(stream) {
     }
 
@@ -107,19 +108,28 @@ public:
         return true;
     }
 
-    [[nodiscard]] [[deprecated]] bool read(std::string &s) {
+    [[nodiscard]] bool read(std::u8string &s) {
         uint16_t length;
         if (!read(&length)) {
             return false;
         }
-        std::vector<uint8_t> buffer(length);
-        if (!read(buffer)) {
+        std::string buffer;
+        buffer.resize(length);
+        if (fStream->read(buffer.data(), length) != length) {
             return false;
         }
-        buffer.push_back(0);
-        std::string tmp((char const *)buffer.data());
-        s.swap(tmp);
-        return true;
+        if (fEncoding == Encoding::Java) {
+            if (auto r = String::Utf8FromJavaUtf8(buffer); r) {
+                s.swap(*r);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            s.clear();
+            std::copy(buffer.begin(), buffer.end(), std::back_inserter(s));
+            return true;
+        }
     }
 
     uint64_t pos() const {
@@ -137,6 +147,7 @@ private:
 
 public:
     Endian const fEndian;
+    Encoding const fEncoding;
 
 private:
     std::shared_ptr<InputStream> fStream;

@@ -87,7 +87,7 @@ public:
         if (data.fData.empty()) {
             return nullptr;
         }
-        return RegionCompression::Decompress(data.fCompressionType, data.fData, Endian::Big);
+        return RegionCompression::Decompress(data.fCompressionType, data.fData, Encoding::Java);
     }
 
     std::shared_ptr<nbt::CompoundTag> extract(int localX, int localZ) {
@@ -117,7 +117,7 @@ public:
         }
         int index = localZ * 32 + localX;
 
-        auto data = nbt::CompoundTag::WriteDeflateCompressed(tag, Endian::Big);
+        auto data = nbt::CompoundTag::WriteDeflateCompressed(tag, Encoding::Java);
         if (!data) {
             return false;
         }
@@ -265,7 +265,7 @@ public:
         if (!Load(path, localX, localZ, tmp, type)) {
             return false;
         }
-        auto ret = RegionCompression::Decompress(type, tmp, Endian::Big);
+        auto ret = RegionCompression::Decompress(type, tmp, Encoding::Java);
         if (!ret) {
             return false;
         }

@@ -26,24 +26,16 @@ public:
 
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
-        std::string tmp;
+        std::u8string tmp;
         if (!r.read(tmp)) {
             return false;
         }
-        if (auto s = String::Utf8FromJavaUtf8(tmp); s) {
-            fValue = *s;
-            return true;
-        } else {
-            return false;
-        }
+        fValue.swap(tmp);
+        return true;
     }
 
     bool writeImpl(::mcfile::stream::OutputStreamWriter &w) const override {
-        if (auto s = String::JavaUtf8FromUtf8(fValue); s) {
-            return w.write(*s);
-        } else {
-            return false;
-        }
+        return w.write(fValue);
     }
 
 public:

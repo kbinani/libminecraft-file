@@ -56,6 +56,7 @@ set(mcfile_files
   include/mcfile/coordinate.hpp
   include/mcfile/data4b3d.hpp
   include/mcfile/dimension.hpp
+  include/mcfile/encoding.hpp
   include/mcfile/endianness.hpp
   include/mcfile/file.hpp
   include/mcfile/je/block-palette.hpp

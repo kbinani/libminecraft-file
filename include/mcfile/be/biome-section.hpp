@@ -95,7 +95,7 @@ public:
 
         d->clear();
         auto s = make_shared<stream::ByteStream>();
-        stream::OutputStreamWriter w(s, Endian::Little);
+        stream::OutputStreamWriter w(s, Encoding::LittleEndian);
 
         if (fPalette.empty()) {
             return false;

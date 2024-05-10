@@ -129,12 +129,12 @@ TEST_CASE("block-id") {
 namespace {
 std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromFile(fs::path p) {
     auto s = std::make_shared<mcfile::stream::FileInputStream>(p);
-    mcfile::stream::InputStreamReader reader(s, Endian::Big);
+    mcfile::stream::InputStreamReader reader(s, Encoding::Java);
     return mcfile::nbt::CompoundTag::Read(reader);
 }
 
 std::shared_ptr<mcfile::nbt::CompoundTag> ReadCompoundFromCompressedFile(fs::path p) {
-    return mcfile::nbt::CompoundTag::ReadCompressedFromFile(p, Endian::Big);
+    return mcfile::nbt::CompoundTag::ReadCompressedFromFile(p, Encoding::Java);
 }
 
 } // namespace
@@ -218,7 +218,7 @@ TEST_CASE("1.18") {
         fs::path in = dir / "data" / "5biomes" / "c.-1.-54.nbt";
         shared_ptr<WritableChunk> expected;
         {
-            auto root = CompoundTag::ReadFromFile(in, Endian::Big);
+            auto root = CompoundTag::ReadFromFile(in, Encoding::Java);
             expected = WritableChunk::MakeChunk(-1, -54, root);
         }
 
@@ -231,7 +231,7 @@ TEST_CASE("1.18") {
 
         shared_ptr<Chunk> actual;
         {
-            auto root = CompoundTag::ReadCompressedFromFile(out, Endian::Big);
+            auto root = CompoundTag::ReadCompressedFromFile(out, Encoding::Java);
             actual = Chunk::MakeChunk(-1, -54, root);
         }
 

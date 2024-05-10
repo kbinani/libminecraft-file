@@ -34,7 +34,7 @@ public:
         if (!reader.read(buffer)) {
             return nullptr;
         }
-        return RegionCompression::Decompress(*type, buffer, reader.fEndian);
+        return RegionCompression::Decompress(*type, buffer, reader.fEncoding);
     }
 
     std::shared_ptr<Chunk> loadChunk(::mcfile::stream::InputStreamReader &reader) const {

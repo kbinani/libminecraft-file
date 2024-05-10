@@ -21,13 +21,13 @@ public:
         return fPalette[paletteIndex];
     }
 
-    static std::shared_ptr<SubChunk> Parse(std::string const &data, int8_t chunkY, Endian endian) {
+    static std::shared_ptr<SubChunk> Parse(std::string const &data, int8_t chunkY, Encoding encoding) {
         using namespace std;
         using namespace mcfile::stream;
         using namespace mcfile::nbt;
 
         auto bs = make_shared<ByteInputStream>(data);
-        InputStreamReader sr(bs, endian);
+        InputStreamReader sr(bs, encoding);
 
         uint8_t version;
         if (!sr.read(&version)) {

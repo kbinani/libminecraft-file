@@ -36,7 +36,7 @@ public:
         if (!compound) {
             return false;
         }
-        return nbt::CompoundTag::WriteDeflateCompressed(*compound, s, Endian::Big);
+        return nbt::CompoundTag::WriteDeflateCompressed(*compound, s, Encoding::Java);
     }
 
     std::shared_ptr<nbt::CompoundTag> toEntitiesCompoundTag() const {
@@ -61,7 +61,7 @@ public:
         if (!c) {
             return false;
         }
-        return CompoundTag::WriteDeflateCompressed(*c, s, Endian::Big);
+        return CompoundTag::WriteDeflateCompressed(*c, s, Encoding::Java);
     }
 
     void setDataVersion(int version) {

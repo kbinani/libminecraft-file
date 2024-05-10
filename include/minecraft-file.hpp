@@ -55,9 +55,11 @@
 // clang-format off
 
 #include <mcfile/endianness.hpp>
+#include <mcfile/encoding.hpp>
 #include <mcfile/algorithm.hpp>
 #include <mcfile/file.hpp>
 #include <mcfile/scoped-file.hpp>
+#include <mcfile/string.hpp>
 #include <mcfile/stream/input-stream.hpp>
 #include <mcfile/stream/output-stream.hpp>
 #include <mcfile/stream/file-input-stream.hpp>
@@ -73,7 +75,6 @@
 #include <mcfile/mem.hpp>
 #include <mcfile/xxhash.hpp>
 #include <mcfile/compression.hpp>
-#include <mcfile/string.hpp>
 #include <mcfile/nbt/tag-factory.hpp>
 #include <mcfile/nbt/tag.hpp>
 #include <mcfile/nbt/end-tag.hpp>

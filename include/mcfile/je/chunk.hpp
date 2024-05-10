@@ -348,7 +348,7 @@ public:
         if (!File::Fread(buffer.data(), size, 1, in)) {
             return nullptr;
         }
-        auto root = nbt::CompoundTag::ReadDeflateCompressed(buffer, Endian::Big);
+        auto root = nbt::CompoundTag::ReadDeflateCompressed(buffer, Encoding::Java);
         if (!root) {
             return nullptr;
         }

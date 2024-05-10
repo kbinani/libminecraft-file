@@ -53,7 +53,7 @@ TEST_CASE("nbt") {
         auto const dir = fs::path(__FILE__).parent_path();
         auto s = std::make_shared<mcfile::stream::FileInputStream>(dir / "data" / "unicode.nbt");
 
-        auto tag = CompoundTag::Read(s, mcfile::Endian::Big);
+        auto tag = CompoundTag::Read(s, mcfile::Encoding::Java);
         REQUIRE(tag);
 
         auto actual = tag->string(u8"Text1");

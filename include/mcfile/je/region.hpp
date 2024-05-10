@@ -640,7 +640,7 @@ public:
             if (!tag) {
                 return;
             }
-            if (!mcfile::nbt::CompoundTag::WriteDeflateCompressed(*tag, out, Endian::Big)) {
+            if (!mcfile::nbt::CompoundTag::WriteDeflateCompressed(*tag, out, Encoding::Java)) {
                 stop = true;
             }
         });

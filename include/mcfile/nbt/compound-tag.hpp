@@ -15,12 +15,8 @@ protected:
                 break;
             }
 
-            std::string key;
-            if (!r.read(key)) {
-                return false;
-            }
-            auto name = String::Utf8FromJavaUtf8(key);
-            if (!name) {
+            std::u8string name;
+            if (!r.read(name)) {
                 return false;
             }
 
@@ -31,7 +27,7 @@ protected:
             if (!tag->readImpl(r)) {
                 return false;
             }
-            tmp[*name] = tag;
+            tmp[name] = tag;
         }
         fValue.swap(tmp);
         return true;
@@ -43,11 +39,7 @@ protected:
             if (!w.write(static_cast<uint8_t>(type))) {
                 return false;
             }
-            auto s = String::JavaUtf8FromUtf8(it->first);
-            if (!s) {
-                return false;
-            }
-            if (!w.write(*s)) {
+            if (!w.write(it->first)) {
                 return false;
             }
             if (!it->second->writeImpl(w)) {
@@ -70,25 +62,25 @@ public:
         if (!w.write(static_cast<uint8_t>(Tag::Type::Compound))) {
             return false;
         }
-        if (!w.write(std::string())) {
+        if (!w.write(std::u8string())) {
             return false;
         }
         return tag.writeImpl(w);
     }
 
-    [[nodiscard]] static bool Write(CompoundTag const &tag, std::filesystem::path const &file, Endian endian) {
+    [[nodiscard]] static bool Write(CompoundTag const &tag, std::filesystem::path const &file, Encoding encoding) {
         auto stream = std::make_shared<mcfile::stream::FileOutputStream>(file);
-        return Write(tag, stream, endian);
+        return Write(tag, stream, encoding);
     }
 
-    [[nodiscard]] static bool Write(CompoundTag const &tag, std::shared_ptr<mcfile::stream::OutputStream> const &stream, Endian endian) {
-        mcfile::stream::OutputStreamWriter w(stream, endian);
+    [[nodiscard]] static bool Write(CompoundTag const &tag, std::shared_ptr<mcfile::stream::OutputStream> const &stream, Encoding encoding) {
+        mcfile::stream::OutputStreamWriter w(stream, encoding);
         return Write(tag, w);
     }
 
-    static std::optional<std::string> Write(CompoundTag const &tag, Endian endian) {
+    static std::optional<std::string> Write(CompoundTag const &tag, Encoding encoding) {
         auto s = std::make_shared<mcfile::stream::ByteStream>();
-        if (!Write(tag, s, endian)) {
+        if (!Write(tag, s, encoding)) {
             return std::nullopt;
         }
         std::string ret;
@@ -592,41 +584,41 @@ public:
         });
     }
 
-    static void ReadSequential(std::string const &data, Endian endian, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
+    static void ReadSequential(std::string const &data, Encoding encoding, std::function<bool(std::shared_ptr<CompoundTag> const &value)> callback) {
         auto s = std::make_shared<mcfile::stream::ByteInputStream>(data);
-        mcfile::stream::InputStreamReader reader(s, endian);
+        mcfile::stream::InputStreamReader reader(s, encoding);
         ReadUntilEosImpl(reader, callback);
     }
 
-    static void ReadSequentialUntilEos(std::string const &data, Endian endian, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
+    static void ReadSequentialUntilEos(std::string const &data, Encoding encoding, std::function<void(std::shared_ptr<CompoundTag> const &value)> callback) {
         auto s = std::make_shared<mcfile::stream::ByteInputStream>(data);
-        mcfile::stream::InputStreamReader reader(s, endian);
+        mcfile::stream::InputStreamReader reader(s, encoding);
         ReadUntilEosImpl(reader, [callback](std::shared_ptr<CompoundTag> const &value) {
             callback(value);
             return true;
         });
     }
 
-    static std::shared_ptr<CompoundTag> ReadFromFile(std::filesystem::path path, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadFromFile(std::filesystem::path path, Encoding encoding) {
         auto s = std::make_shared<mcfile::stream::FileInputStream>(path);
-        return Read(s, endian);
+        return Read(s, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> Read(std::string const &data, Endian endian) {
+    static std::shared_ptr<CompoundTag> Read(std::string const &data, Encoding encoding) {
         auto s = std::make_shared<mcfile::stream::ByteInputStream>(data);
-        return Read(s, endian);
+        return Read(s, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> Read(std::vector<uint8_t> const &buffer, Endian endian) {
+    static std::shared_ptr<CompoundTag> Read(std::vector<uint8_t> const &buffer, Encoding encoding) {
         std::vector<uint8_t> tmp;
         tmp.reserve(buffer.size());
         std::copy(buffer.begin(), buffer.end(), std::back_inserter(tmp));
         auto s = std::make_shared<mcfile::stream::ByteStream>(tmp);
-        return Read(s, endian);
+        return Read(s, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> Read(std::shared_ptr<stream::InputStream> const &stream, Endian endian) {
-        mcfile::stream::InputStreamReader isr(stream, endian);
+    static std::shared_ptr<CompoundTag> Read(std::shared_ptr<stream::InputStream> const &stream, Encoding encoding) {
+        mcfile::stream::InputStreamReader isr(stream, encoding);
         return Read(isr);
     }
 
@@ -638,7 +630,7 @@ public:
         if (type != static_cast<uint8_t>(Tag::Type::Compound)) {
             return nullptr;
         }
-        std::string n;
+        std::u8string n;
         if (!isr.read(n)) {
             return nullptr;
         }
@@ -650,71 +642,71 @@ public:
         return tag;
     }
 
-    static std::shared_ptr<CompoundTag> ReadCompressedFromFile(std::filesystem::path p, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadCompressedFromFile(std::filesystem::path p, Encoding encoding) {
         auto s = std::make_shared<mcfile::stream::FileInputStream>(p);
-        return ReadDeflateCompressed(*s, endian);
+        return ReadDeflateCompressed(*s, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> ReadDeflateCompressed(std::string const &data, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadDeflateCompressed(std::string const &data, Encoding encoding) {
         std::vector<uint8_t> buffer;
         buffer.reserve(data.size());
         std::copy(data.begin(), data.end(), std::back_inserter(buffer));
-        return ReadDeflateCompressed(buffer, endian);
+        return ReadDeflateCompressed(buffer, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> ReadDeflateCompressed(mcfile::stream::InputStream &stream, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadDeflateCompressed(mcfile::stream::InputStream &stream, Encoding encoding) {
         std::vector<uint8_t> buffer;
         mcfile::stream::InputStream::ReadUntilEos(stream, buffer);
-        return ReadDeflateCompressed(buffer, endian);
+        return ReadDeflateCompressed(buffer, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> ReadDeflateCompressed(std::vector<uint8_t> const &buffer, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadDeflateCompressed(std::vector<uint8_t> const &buffer, Encoding encoding) {
         std::vector<uint8_t> tmp;
         tmp.reserve(buffer.size());
         std::copy(buffer.begin(), buffer.end(), std::back_inserter(tmp));
         if (!Compression::DecompressZlib(tmp)) {
             return nullptr;
         }
-        return Read(tmp, endian);
+        return Read(tmp, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> ReadLz4Compressed(std::string const &data, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadLz4Compressed(std::string const &data, Encoding encoding) {
         std::vector<uint8_t> buffer;
         buffer.reserve(data.size());
         std::copy(data.begin(), data.end(), std::back_inserter(buffer));
         if (!Compression::DecompressLz4(buffer)) {
             return nullptr;
         }
-        return Read(buffer, endian);
+        return Read(buffer, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> ReadLz4Compressed(mcfile::stream::InputStream &stream, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadLz4Compressed(mcfile::stream::InputStream &stream, Encoding encoding) {
         std::vector<uint8_t> buffer;
         mcfile::stream::InputStream::ReadUntilEos(stream, buffer);
         if (!Compression::DecompressLz4(buffer)) {
             return nullptr;
         }
-        return Read(buffer, endian);
+        return Read(buffer, encoding);
     }
 
-    static std::shared_ptr<CompoundTag> ReadLz4Compressed(std::vector<uint8_t> const &buffer, Endian endian) {
+    static std::shared_ptr<CompoundTag> ReadLz4Compressed(std::vector<uint8_t> const &buffer, Encoding encoding) {
         std::vector<uint8_t> tmp;
         tmp.reserve(buffer.size());
         std::copy(buffer.begin(), buffer.end(), std::back_inserter(tmp));
         if (!Compression::DecompressLz4(tmp)) {
             return nullptr;
         }
-        return Read(tmp, endian);
+        return Read(tmp, encoding);
     }
 
-    static bool WriteDeflateCompressed(CompoundTag const &tag, std::filesystem::path file, Endian endian) {
+    static bool WriteDeflateCompressed(CompoundTag const &tag, std::filesystem::path file, Encoding encoding) {
         auto o = std::make_shared<stream::FileOutputStream>(file);
-        return WriteDeflateCompressed(tag, *o, endian);
+        return WriteDeflateCompressed(tag, *o, encoding);
     }
 
-    static std::optional<std::string> WriteDeflateCompressed(CompoundTag const &tag, Endian endian) {
+    static std::optional<std::string> WriteDeflateCompressed(CompoundTag const &tag, Encoding encoding) {
         auto s = std::make_shared<stream::ByteStream>();
-        if (!WriteDeflateCompressed(tag, *s, endian)) {
+        if (!WriteDeflateCompressed(tag, *s, encoding)) {
             return std::nullopt;
         }
         std::string ret;
@@ -722,9 +714,9 @@ public:
         return ret;
     }
 
-    static bool WriteDeflateCompressed(CompoundTag const &tag, mcfile::stream::OutputStream &stream, Endian endian) {
+    static bool WriteDeflateCompressed(CompoundTag const &tag, mcfile::stream::OutputStream &stream, Encoding encoding) {
         auto s = std::make_shared<stream::ByteStream>();
-        stream::OutputStreamWriter osr(s, endian);
+        stream::OutputStreamWriter osr(s, encoding);
         if (!Write(tag, osr)) {
             return false;
         }
@@ -743,7 +735,7 @@ private:
             if (!reader.read(&type)) {
                 break;
             }
-            std::string name;
+            std::u8string name;
             if (!reader.read(name)) {
                 break;
             }

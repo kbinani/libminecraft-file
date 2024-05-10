@@ -25,27 +25,27 @@ public:
     }
 
     template<class T>
-    static std::shared_ptr<nbt::CompoundTag> Decompress(CompressionType type, T const &data, Endian endian) {
+    static std::shared_ptr<nbt::CompoundTag> Decompress(CompressionType type, T const &data, Encoding encoding) {
         switch (type) {
         case CompressionType::Deflate:
-            return nbt::CompoundTag::ReadDeflateCompressed(data, endian);
+            return nbt::CompoundTag::ReadDeflateCompressed(data, encoding);
         case CompressionType::None:
-            return nbt::CompoundTag::Read(data, endian);
+            return nbt::CompoundTag::Read(data, encoding);
         case CompressionType::Lz4:
-            return nbt::CompoundTag::ReadLz4Compressed(data, endian);
+            return nbt::CompoundTag::ReadLz4Compressed(data, encoding);
         }
         return nullptr;
     }
 
     template<class T>
-    static std::shared_ptr<nbt::CompoundTag> Decompress(uint8_t type, T const &data, Endian endian) {
+    static std::shared_ptr<nbt::CompoundTag> Decompress(uint8_t type, T const &data, Encoding encoding) {
         switch (type) {
         case 2:
-            return nbt::CompoundTag::ReadDeflateCompressed(data, endian);
+            return nbt::CompoundTag::ReadDeflateCompressed(data, encoding);
         case 3:
-            return nbt::CompoundTag::Read(data, endian);
+            return nbt::CompoundTag::Read(data, encoding);
         case 4:
-            return nbt::CompoundTag::ReadLz4Compressed(data, endian);
+            return nbt::CompoundTag::ReadLz4Compressed(data, encoding);
         }
         return nullptr;
     }
