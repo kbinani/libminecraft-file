@@ -156,7 +156,7 @@ else()
   list(APPEND mcfile_test_link_libraries zlibstatic)
 endif()
 
-CPMAddPackage("gh:ebiggers/libdeflate@1.19")
+CPMAddPackage("gh:ebiggers/libdeflate@1.20")
 list(APPEND mcfile_test_link_libraries libdeflate::libdeflate_static)
 
 CPMAddPackage(
