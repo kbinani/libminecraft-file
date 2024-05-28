@@ -37,6 +37,7 @@
 #include <optional>
 #include <ostream>
 #include <random>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <string>

@@ -1,0 +1,47 @@
+#include <doctest/doctest.h>
+
+#include "minecraft-file.hpp"
+
+using namespace mcfile;
+using namespace mcfile::nbt;
+using namespace std;
+
+namespace fs = std::filesystem;
+
+TEST_CASE("snbt") {
+    SUBCASE("basic") {
+        ostringstream out;
+        auto nbt = make_shared<CompoundTag>();
+        nbt->set(u8"a", make_shared<ByteTag>(1));
+        nbt->set(u8"b", make_shared<ShortTag>(2));
+        nbt->set(u8"c", make_shared<IntTag>(3));
+        nbt->set(u8"d", make_shared<LongTag>(4));
+        nbt->set(u8"e", make_shared<FloatTag>(5));
+        nbt->set(u8"f", make_shared<DoubleTag>(6));
+        auto byteArray = make_shared<ByteArrayTag>();
+        byteArray->fValue.push_back(7);
+        byteArray->fValue.push_back(-7);
+        nbt->set(u8"g", byteArray);
+        auto intArray = make_shared<IntArrayTag>();
+        intArray->fValue.push_back(8);
+        intArray->fValue.push_back(-8);
+        nbt->set(u8"h", intArray);
+        auto longArray = make_shared<LongArrayTag>();
+        longArray->fValue.push_back(9);
+        longArray->fValue.push_back(-9);
+        nbt->set(u8"i", longArray);
+        nbt->set(u8"j", make_shared<StringTag>(u8"foo"));
+        auto list = make_shared<ListTag>(Tag::Type::Int);
+        list->push_back(make_shared<IntTag>(10));
+        list->push_back(make_shared<IntTag>(-10));
+        nbt->set(u8"k", list);
+        auto compound = make_shared<CompoundTag>();
+        compound->set(u8"[wa]", make_shared<FloatTag>(3.14));
+        nbt->set(u8"l", compound);
+
+        nbt->toSnbt(out, {});
+
+        auto s = out.str();
+        CHECK(s == R"({a:1b,b:2s,c:3,d:4l,e:5f,f:6d,g:[B;7b,249b],h:[I;8,-8],i:[L;9l,-9l],j:"foo",k:[10,-10],l:{"[wa]":3.14f}})");
+    }
+}

@@ -11,6 +11,8 @@ public:
         return EndTag::Shared();
     }
 
+    void toSnbt(std::ostream &, SnbtOptions const &) const override {}
+
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &) override { return true; }
     bool writeImpl(::mcfile::stream::OutputStreamWriter &) const override { return true; }

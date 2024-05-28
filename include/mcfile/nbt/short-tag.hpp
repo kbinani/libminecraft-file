@@ -16,6 +16,10 @@ public:
     std::shared_ptr<ShortTag> copy() const {
         return std::make_shared<ShortTag>(fValue);
     }
+
+    void toSnbt(std::ostream &out, SnbtOptions const &) const override {
+        out << fValue << "s";
+    }
 };
 
 } // namespace mcfile::nbt

@@ -21,6 +21,17 @@ public:
         std::vector<int32_t> c = fValue;
         return std::make_shared<IntArrayTag>(c);
     }
+
+    void toSnbt(std::ostream &out, SnbtOptions const &) const override {
+        out << "[I;";
+        for (size_t i = 0; i < fValue.size(); i++) {
+            if (i > 0) {
+                out << ",";
+            }
+            out << fValue[i];
+        }
+        out << "]";
+    }
 };
 
 } // namespace mcfile::nbt

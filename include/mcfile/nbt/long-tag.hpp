@@ -16,6 +16,10 @@ public:
     std::shared_ptr<LongTag> copy() const {
         return std::make_shared<LongTag>(fValue);
     }
+
+    void toSnbt(std::ostream &out, SnbtOptions const &) const override {
+        out << fValue << "l";
+    }
 };
 
 } // namespace mcfile::nbt

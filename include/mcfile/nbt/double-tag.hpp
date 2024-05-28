@@ -24,6 +24,10 @@ public:
         return o.fValue == fValue;
     }
 
+    void toSnbt(std::ostream &out, SnbtOptions const &) const override {
+        out << fValue << "d";
+    }
+
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint64_t v;

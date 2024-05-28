@@ -66,6 +66,9 @@ public:
 
     virtual std::shared_ptr<Tag> clone() const = 0;
 
+    struct SnbtOptions {};
+    virtual void toSnbt(std::ostream &out, SnbtOptions const &) const = 0;
+
 protected:
     Tag() {}
 

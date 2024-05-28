@@ -53,6 +53,21 @@ public:
         return ret;
     }
 
+    void toSnbt(std::ostream &out, SnbtOptions const &opt) const override {
+        out << "[";
+        size_t count = 0;
+        for (auto const &it : fValue) {
+            if (it) {
+                if (count > 0) {
+                    out << ",";
+                }
+                it->toSnbt(out, opt);
+                count++;
+            }
+        }
+        out << "]";
+    }
+
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint8_t type;

@@ -483,6 +483,27 @@ public:
         return true;
     }
 
+    void toSnbt(std::ostream &out, SnbtOptions const &opt) const override {
+        out << "{";
+        size_t count = 0;
+        static std::regex sReg(R"([,:{}\[\]])");
+        for (auto const &it : fValue) {
+            if (it.second) {
+                if (count > 0) {
+                    out << ",";
+                }
+                if (std::regex_search((char const *)it.first.c_str(), sReg)) {
+                    out << '"' << (char const *)StringTag::Escape(it.first).c_str() << "\":";
+                } else {
+                    out << (char const *)StringTag::Escape(it.first).c_str() << ":";
+                }
+                it.second->toSnbt(out, opt);
+                count++;
+            }
+        }
+        out << "}";
+    }
+
     static bool Equals(Tag const &a, Tag const &b) {
         if (a.type() != b.type()) {
             return false;

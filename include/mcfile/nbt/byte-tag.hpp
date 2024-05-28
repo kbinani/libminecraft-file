@@ -16,6 +16,10 @@ public:
     std::shared_ptr<ByteTag> copy() const {
         return std::make_shared<ByteTag>(fValue);
     }
+
+    void toSnbt(std::ostream &out, SnbtOptions const &) const override {
+        out << (int)fValue << "b";
+    }
 };
 
 } // namespace mcfile::nbt
