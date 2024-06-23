@@ -41,14 +41,12 @@ public:
         // 1.4.2.0: 8
         // 1.10.1.1: 9
 
-        if (version == 0) {
-            return ParseVersion0(sr, chunkY);
+        if (version == 9) {
+            return ParseVersion9(sr, chunkY);
         } else if (version == 8) {
             return ParseVersion8(sr, chunkY);
-        } else if (version == 9) {
-            return ParseVersion9(sr, chunkY);
         } else {
-            return nullptr;
+            return ParseClassic(sr, chunkY);
         }
     }
 
@@ -60,7 +58,7 @@ public:
     }
 
 private:
-    static std::shared_ptr<SubChunk> ParseVersion0(mcfile::stream::InputStreamReader &sr, int8_t chunkY) {
+    static std::shared_ptr<SubChunk> ParseClassic(mcfile::stream::InputStreamReader &sr, int8_t chunkY) {
         using namespace std;
 
         array<uint8_t, 4096> id;
