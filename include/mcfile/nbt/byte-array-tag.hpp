@@ -28,7 +28,7 @@ public:
             if (i > 0) {
                 out << ",";
             }
-            out << (int)fValue[i] << "b";
+            out << (int)(*(int8_t *)(fValue.data() + i)) << "b";
         }
         out << "]";
     }

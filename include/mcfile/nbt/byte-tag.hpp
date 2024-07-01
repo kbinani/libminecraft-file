@@ -18,7 +18,8 @@ public:
     }
 
     void toSnbt(std::ostream &out, SnbtOptions const &) const override {
-        out << (int)fValue << "b";
+        int8_t v = *(int8_t *)&fValue;
+        out << (int)v << "b";
     }
 };
 
