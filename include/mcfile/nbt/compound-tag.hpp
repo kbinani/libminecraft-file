@@ -504,6 +504,12 @@ public:
         out << "}";
     }
 
+    std::string toSnbt(SnbtOptions const &opt) const {
+        std::ostringstream ss;
+        toSnbt(ss, opt);
+        return ss.str();
+    }
+
     static std::shared_ptr<CompoundTag> FromSnbt(std::istream &in) {
         using namespace std;
         auto root = ReadSnbt(in);
@@ -511,6 +517,11 @@ public:
             return nullptr;
         }
         return dynamic_pointer_cast<CompoundTag>(root);
+    }
+
+    static std::shared_ptr<CompoundTag> FromSnbt(std::string const &in) {
+        std::istringstream ss(in);
+        return FromSnbt(ss);
     }
 
     static bool Equals(Tag const &a, Tag const &b) {
@@ -968,14 +979,24 @@ private:
             return nullptr;
         }
         if (b == '{') {
+            b = in.get();
             auto ret = make_shared<CompoundTag>();
+            if (b == '}') {
+                return ret;
+            }
+            in.unget();
             while (!in.eof()) {
                 auto key = sReadScalar(in);
                 if (!key) {
                     return nullptr;
                 }
-                auto typedKey = dynamic_pointer_cast<StringTag>(key);
-                if (!typedKey) {
+                u8string skey;
+                if (auto typedKey = dynamic_pointer_cast<StringTag>(key); typedKey) {
+                    skey = typedKey->fValue;
+                } else if (auto typedKey = dynamic_pointer_cast<IntTag>(key); typedKey) {
+                    auto k = std::to_string(typedKey->fValue);
+                    skey.assign((char8_t const *)k.c_str(), k.size());
+                } else {
                     return nullptr;
                 }
                 sSkipWhitespaces(in);
@@ -988,7 +1009,7 @@ private:
                 if (!value) {
                     return nullptr;
                 }
-                ret->set(typedKey->fValue, value);
+                ret->set(skey, value);
                 sSkipWhitespaces(in);
                 b = in.get();
                 if (b == '}') {

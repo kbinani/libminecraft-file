@@ -50,4 +50,43 @@ TEST_CASE("snbt") {
         REQUIRE(r);
         CHECK(r->equals(*nbt));
     }
+    SUBCASE("empty compound tag") {
+        auto s = CompoundTag::FromSnbt(R"({})");
+        CHECK(s);
+    }
+    SUBCASE("empty list tag") {
+        auto s = CompoundTag::FromSnbt(R"({a:[]})");
+        REQUIRE(s);
+        auto a = s->listTag(u8"a");
+        REQUIRE(a);
+        CHECK(a->empty());
+    }
+    SUBCASE("empty byte array tag") {
+        auto s = CompoundTag::FromSnbt(R"({a:[B;]})");
+        REQUIRE(s);
+        auto a = s->byteArrayTag(u8"a");
+        REQUIRE(a);
+        CHECK(a->fValue.empty());
+    }
+    SUBCASE("empty int array tag") {
+        auto s = CompoundTag::FromSnbt(R"({a:[I;]})");
+        REQUIRE(s);
+        auto a = s->intArrayTag(u8"a");
+        REQUIRE(a);
+        CHECK(a->fValue.empty());
+    }
+    SUBCASE("empty long array tag") {
+        auto s = CompoundTag::FromSnbt(R"({a:[L;]})");
+        REQUIRE(s);
+        auto a = s->longArrayTag(u8"a");
+        REQUIRE(a);
+        CHECK(a->fValue.empty());
+    }
+    SUBCASE("numeric key") {
+        auto s = CompoundTag::FromSnbt(R"({0:1})");
+        REQUIRE(s);
+        auto c = dynamic_pointer_cast<CompoundTag>(s);
+        REQUIRE(c);
+        CHECK(c->int32(u8"0") == 1);
+    }
 }
