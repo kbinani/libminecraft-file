@@ -39,6 +39,10 @@ public:
         return true;
     }
 
+    void push_back(T const &v) {
+        fValue.push_back(v);
+    }
+
 protected:
     bool readImpl(::mcfile::stream::InputStreamReader &r) override {
         uint32_t length;

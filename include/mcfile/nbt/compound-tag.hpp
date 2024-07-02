@@ -504,6 +504,15 @@ public:
         out << "}";
     }
 
+    static std::shared_ptr<CompoundTag> FromSnbt(std::istream &in) {
+        using namespace std;
+        auto root = ReadSnbt(in);
+        if (!root) {
+            return nullptr;
+        }
+        return dynamic_pointer_cast<CompoundTag>(root);
+    }
+
     static bool Equals(Tag const &a, Tag const &b) {
         if (a.type() != b.type()) {
             return false;
@@ -768,6 +777,364 @@ private:
                 break;
             }
         }
+    }
+
+    static std::shared_ptr<Tag> ReadSnbt(std::istream &in) {
+        using namespace std;
+        static auto const sIsDigit = [](char c) {
+            return 48 <= c && c <= 57;
+        };
+        static auto const sReadScalar = [](istream &in) -> shared_ptr<Tag> {
+            optional<int> quote;
+            int b = in.get();
+            if (b == '"' || b == '\'') {
+                quote = b;
+                b = in.get();
+            }
+            std::string buffer;
+            bool escape = false;
+            while (!in.eof()) {
+                if (quote) {
+                    // quoted string
+                    if (quote == b && !escape) {
+                        return make_shared<StringTag>(u8string((char8_t const *)buffer.data(), buffer.size()));
+                    }
+                    if (escape) {
+                        buffer.push_back((char)b);
+                        escape = false;
+                    } else if (b == '\\') {
+                        escape = true;
+                    } else {
+                        buffer.push_back((char)b);
+                    }
+                } else if (b == ',' || b == ':' || b == ']' || b == '}') {
+                    in.unget();
+                    break;
+                } else {
+                    buffer.push_back((char)b);
+                }
+                b = in.get();
+            }
+            if (quote) {
+                return nullptr;
+            }
+            if (buffer == "true") {
+                return make_shared<ByteTag>(1);
+            } else if (buffer == "false") {
+                return make_shared<ByteTag>(0);
+            }
+            bool i8trailing = buffer.ends_with('b') || buffer.ends_with('B');
+            bool i16trailing = buffer.ends_with('s') || buffer.ends_with('S');
+            bool i64trailing = buffer.ends_with('l') || buffer.ends_with('L');
+            bool f32trailing = buffer.ends_with('f') || buffer.ends_with('F');
+            bool f64trailing = buffer.ends_with('d') || buffer.ends_with('D');
+            if (i8trailing || i16trailing || i64trailing) {
+                if (buffer.size() == 1) {
+                    return make_shared<StringTag>(u8string((char8_t const *)buffer.data(), buffer.size()));
+                }
+                if (buffer.starts_with('-')) {
+                    if (all_of(buffer.begin() + 1, buffer.begin() + buffer.size() - 1, sIsDigit)) {
+                        std::string copy;
+                        std::copy(buffer.begin() + 1, buffer.begin() + buffer.size() - 1, back_inserter(copy));
+                        char *end = nullptr;
+                        uint64_t v = strtoull(copy.c_str(), &end, 10);
+                        if (copy.c_str() + copy.size() == end) {
+                            if (i8trailing) {
+                                auto mini = numeric_limits<int8_t>::lowest();
+                                if (-(int64_t)numeric_limits<int8_t>::lowest() < v) {
+                                    return nullptr;
+                                } else {
+                                    int8_t vv = -(int8_t)v;
+                                    return make_shared<ByteTag>(*(uint8_t *)&vv);
+                                }
+                            } else if (i16trailing) {
+                                if (-(int64_t)numeric_limits<int16_t>::lowest() < v) {
+                                    return nullptr;
+                                } else {
+                                    return make_shared<ShortTag>(-(int16_t)v);
+                                }
+                            } else {
+                                if (-(int64_t)numeric_limits<int64_t>::lowest() < v) {
+                                    return nullptr;
+                                } else {
+                                    return make_shared<LongTag>(-(int64_t)v);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    size_t offset = buffer.starts_with('+') ? 1 : 0;
+                    if (all_of(buffer.begin() + offset, buffer.begin() + buffer.size() - 1, sIsDigit)) {
+                        std::string copy;
+                        std::copy(buffer.begin() + offset, buffer.begin() + buffer.size() - 1, back_inserter(copy));
+                        char *end = 0;
+                        uint64_t v = strtoull(copy.c_str(), &end, 10);
+                        if (copy.c_str() + copy.size() == end) {
+                            if (i8trailing) {
+                                if (numeric_limits<int8_t>::max() < v) {
+                                    return nullptr;
+                                } else {
+                                    int8_t vv = (int8_t)v;
+                                    return make_shared<ByteTag>(*(uint8_t *)&vv);
+                                }
+                            } else if (i16trailing) {
+                                if (numeric_limits<int16_t>::max() < v) {
+                                    return nullptr;
+                                } else {
+                                    return make_shared<ShortTag>((int16_t)v);
+                                }
+                            } else {
+                                if (numeric_limits<int64_t>::max() < v) {
+                                    return nullptr;
+                                } else {
+                                    return make_shared<LongTag>((int64_t)v);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (f32trailing || f64trailing) {
+                if (buffer.size() == 1) {
+                    return make_shared<StringTag>(u8string((char8_t const *)buffer.data(), buffer.size()));
+                }
+                std::string copy;
+                std::copy(buffer.begin(), buffer.begin() + buffer.size() - 1, back_inserter(copy));
+                char *end = 0;
+                double v = strtod(copy.c_str(), &end);
+                if (copy.c_str() + copy.size() == end) {
+                    if (f32trailing) {
+                        if (v < numeric_limits<float>::lowest() || numeric_limits<float>::max() < v) {
+                            return nullptr;
+                        } else {
+                            return make_shared<FloatTag>((float)v);
+                        }
+                    } else {
+                        return make_shared<DoubleTag>(v);
+                    }
+                }
+            }
+            if (buffer.starts_with('-')) {
+                if (all_of(buffer.begin() + 1, buffer.end(), sIsDigit)) {
+                    std::string copy;
+                    std::copy(buffer.begin() + 1, buffer.begin() + buffer.size(), back_inserter(copy));
+                    char *end = 0;
+                    uint64_t v = strtoull(copy.c_str(), &end, 10);
+                    if (copy.c_str() + copy.size() == end) {
+                        if (-(int64_t)numeric_limits<int32_t>::lowest() < v) {
+                            return nullptr;
+                        } else {
+                            return make_shared<IntTag>(-(int32_t)v);
+                        }
+                    }
+                }
+            }
+            {
+                size_t offset = buffer.starts_with('+') ? 1 : 0;
+                if (all_of(buffer.begin() + offset, buffer.end(), sIsDigit)) {
+                    char *end = 0;
+                    uint64_t v = strtoull(buffer.c_str() + offset, &end, 10);
+                    if (buffer.c_str() + buffer.size() == end) {
+                        if (numeric_limits<int32_t>::max() < v) {
+                            return nullptr;
+                        }
+                        return make_shared<IntTag>((int32_t)v);
+                    }
+                }
+            }
+            {
+                char *end = 0;
+                double v = strtod(buffer.c_str(), &end);
+                if (buffer.c_str() + buffer.size() == end) {
+                    return make_shared<DoubleTag>(v);
+                }
+            }
+            if (all_of(buffer.begin(), buffer.end(), [](char c) { return ('0' <= c && c <= '9') || ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') || c == '_' || c == '-' || c == '.' || c == '+'; })) {
+                return make_shared<StringTag>(u8string((char8_t const *)buffer.data(), buffer.size()));
+            }
+            return nullptr;
+        };
+        static auto const sSkipWhitespaces = [](istream &in) {
+            int b = in.get();
+            while (!in.eof()) {
+                if (!(b == ' ' || b == '\xd' || b == '\xa')) {
+                    in.unget();
+                    return;
+                }
+            }
+        };
+        sSkipWhitespaces(in);
+        int b = in.get();
+        if (in.eof()) {
+            return nullptr;
+        }
+        if (b == '{') {
+            auto ret = make_shared<CompoundTag>();
+            while (!in.eof()) {
+                auto key = sReadScalar(in);
+                if (!key) {
+                    return nullptr;
+                }
+                auto typedKey = dynamic_pointer_cast<StringTag>(key);
+                if (!typedKey) {
+                    return nullptr;
+                }
+                sSkipWhitespaces(in);
+                b = in.get();
+                if (b != ':') {
+                    return nullptr;
+                }
+                sSkipWhitespaces(in);
+                auto value = ReadSnbt(in);
+                if (!value) {
+                    return nullptr;
+                }
+                ret->set(typedKey->fValue, value);
+                sSkipWhitespaces(in);
+                b = in.get();
+                if (b == '}') {
+                    return ret;
+                } else if (b == ',') {
+                    continue;
+                } else if (b == '"' || b == '\'') {
+                    in.unget();
+                    continue;
+                }
+            }
+            return nullptr;
+        } else if (b == '[') {
+            sSkipWhitespaces(in);
+            b = in.get();
+            shared_ptr<ListTag> instance;
+            function<void(shared_ptr<Tag>)> append;
+            if (b == 'B' || b == 'I' || b == 'L') {
+                int const marker = b;
+                b = in.get();
+                if (b == ';') {
+                    if (marker == 'B') {
+                        auto v = make_shared<ByteArrayTag>();
+                        sSkipWhitespaces(in);
+                        while (!in.eof()) {
+                            b = in.get();
+                            if (b == ']') {
+                                return v;
+                            } else if (b == ',') {
+                                if (v->fValue.empty()) {
+                                    return nullptr;
+                                }
+                                sSkipWhitespaces(in);
+                            } else {
+                                in.unget();
+                            }
+                            auto raw = ReadSnbt(in);
+                            if (!raw) {
+                                return nullptr;
+                            }
+                            auto value = dynamic_pointer_cast<ByteTag>(raw);
+                            if (!value) {
+                                return nullptr;
+                            }
+                            v->push_back(value->fValue);
+                            sSkipWhitespaces(in);
+                        }
+                    } else if (marker == 'I') {
+                        auto v = make_shared<IntArrayTag>();
+                        sSkipWhitespaces(in);
+                        while (!in.eof()) {
+                            b = in.get();
+                            if (b == ']') {
+                                return v;
+                            } else if (b == ',') {
+                                if (v->fValue.empty()) {
+                                    return nullptr;
+                                }
+                                sSkipWhitespaces(in);
+                            } else {
+                                in.unget();
+                            }
+                            auto raw = ReadSnbt(in);
+                            if (!raw) {
+                                return nullptr;
+                            }
+                            auto value = dynamic_pointer_cast<IntTag>(raw);
+                            if (!value) {
+                                return nullptr;
+                            }
+                            v->push_back(value->fValue);
+                            sSkipWhitespaces(in);
+                        }
+                    } else {
+                        auto v = make_shared<LongArrayTag>();
+                        sSkipWhitespaces(in);
+                        while (!in.eof()) {
+                            b = in.get();
+                            if (b == ']') {
+                                return v;
+                            } else if (b == ',') {
+                                if (v->fValue.empty()) {
+                                    return nullptr;
+                                }
+                                sSkipWhitespaces(in);
+                            } else {
+                                in.unget();
+                            }
+                            auto raw = ReadSnbt(in);
+                            if (!raw) {
+                                return nullptr;
+                            }
+                            auto value = dynamic_pointer_cast<LongTag>(raw);
+                            if (!value) {
+                                return nullptr;
+                            }
+                            v->push_back(value->fValue);
+                            sSkipWhitespaces(in);
+                        }
+                    }
+                    return nullptr;
+                } else {
+                    in.unget();
+                    in.unget();
+                    auto v = make_shared<ListTag>(Tag::Type::End);
+                    append = [v](shared_ptr<Tag> const &value) {
+                        v->push_back(value);
+                    };
+                    instance = v;
+                }
+            } else {
+                in.unget();
+                auto v = make_shared<ListTag>(Tag::Type::End);
+                append = [v](shared_ptr<Tag> const &value) {
+                    v->push_back(value);
+                };
+                instance = v;
+            }
+            // list
+            sSkipWhitespaces(in);
+            while (!in.eof()) {
+                b = in.get();
+                if (b == ']') {
+                    return instance;
+                } else if (b == ',') {
+                    if (instance->empty()) {
+                        return nullptr;
+                    }
+                } else {
+                    in.unget();
+                }
+                auto value = ReadSnbt(in);
+                if (!value) {
+                    return nullptr;
+                }
+                if (!instance->push_back(value)) {
+                    return nullptr;
+                }
+                sSkipWhitespaces(in);
+            }
+            return nullptr;
+        } else {
+            in.unget();
+            return sReadScalar(in);
+        }
+        return nullptr;
     }
 
 public:

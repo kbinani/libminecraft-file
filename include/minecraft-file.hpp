@@ -46,6 +46,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include <inttypes.h>
+
 #if __has_include(<leveldb/db.h>)
 #include <leveldb/db.h>
 #endif

@@ -21,9 +21,9 @@ public:
     decltype(auto) begin() const { return fValue.begin(); }
     decltype(auto) end() const { return fValue.end(); }
 
-    void push_back(std::shared_ptr<Tag> const &item) {
+    bool push_back(std::shared_ptr<Tag> const &item) {
         if (!item) {
-            return;
+            return false;
         }
         Tag::Type id = item->type();
         if (fValue.empty() && fType == Tag::Type::End) {
@@ -31,9 +31,10 @@ public:
         }
         assert(fType == id);
         if (fType != id) {
-            return;
+            return false;
         }
         fValue.push_back(item);
+        return true;
     }
 
     size_t size() const { return fValue.size(); }
