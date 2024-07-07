@@ -486,16 +486,15 @@ public:
     void toSnbt(std::ostream &out, SnbtOptions const &opt) const override {
         out << "{";
         size_t count = 0;
-        static std::regex sReg(R"([,:{}\[\]])");
         for (auto const &it : fValue) {
             if (it.second) {
                 if (count > 0) {
                     out << ",";
                 }
-                if (std::regex_search((char const *)it.first.c_str(), sReg)) {
-                    out << '"' << (char const *)StringTag::Escape(it.first).c_str() << "\":";
+                if (std::all_of(it.first.begin(), it.first.end(), [](char8_t c) { return IsAlnum((char)c); })) {
+                    out << (char const *)it.first.c_str() << ":";
                 } else {
-                    out << (char const *)StringTag::Escape(it.first).c_str() << ":";
+                    out << (char const *)StringTag::Quote(it.first).c_str() << ":";
                 }
                 it.second->toSnbt(out, opt);
                 count++;
@@ -790,10 +789,67 @@ private:
         }
     }
 
+    static bool IsAlnum(char c) {
+        return ('0' <= c && c <= '9') || ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') || c == '_' || c == '-' || c == '.' || c == '+';
+    }
+
     static std::shared_ptr<Tag> ReadSnbt(std::istream &in) {
         using namespace std;
         static auto const sIsDigit = [](char c) {
             return 48 <= c && c <= 57;
+        };
+        static auto const sReadKey = [](istream &in) -> optional<u8string> {
+            optional<int> quote;
+            int b = in.get();
+            if (b == '"' || b == '\'') {
+                quote = b;
+                b = in.get();
+            }
+            std::string buffer;
+            bool escape = false;
+            while (!in.eof()) {
+                if (quote) {
+                    // quoted string
+                    if (quote == b && !escape) {
+                        return u8string((char8_t const *)buffer.data(), buffer.size());
+                    }
+                    if (escape) {
+                        if (b == 'x') {
+                            int code = 0;
+                            for (int i = 0; i < 2; i++) {
+                                if (in.eof()) {
+                                    return nullptr;
+                                }
+                                b = in.get();
+                                code *= 16;
+                                if (48 <= b && b <= 57) { // 0 ~ 9
+                                    code += b - 48;
+                                } else if (65 <= b && b <= 70) { // A ~ F
+                                    code += b - 55;
+                                } else if (97 <= b && b <= 102) { // a ~ f
+                                    code += b - 87;
+                                } else {
+                                    return nullptr;
+                                }
+                            }
+                            buffer.push_back((char)code);
+                        } else {
+                            buffer.push_back((char)b);
+                        }
+                    } else if (b == '\\') {
+                        escape = true;
+                    } else {
+                        buffer.push_back((char)b);
+                    }
+                } else if (IsAlnum((char)b)) {
+                    buffer.push_back((char)b);
+                } else {
+                    in.unget();
+                    break;
+                }
+                b = in.get();
+            }
+            return u8string((char8_t const *)buffer.data(), buffer.size());
         };
         static auto const sReadScalar = [](istream &in) -> shared_ptr<Tag> {
             optional<int> quote;
@@ -811,7 +867,28 @@ private:
                         return make_shared<StringTag>(u8string((char8_t const *)buffer.data(), buffer.size()));
                     }
                     if (escape) {
-                        buffer.push_back((char)b);
+                        if (b == 'x') {
+                            int code = 0;
+                            for (int i = 0; i < 2; i++) {
+                                if (in.eof()) {
+                                    return nullptr;
+                                }
+                                b = in.get();
+                                code *= 16;
+                                if (48 <= b && b <= 57) { // 0 ~ 9
+                                    code += b - 48;
+                                } else if (65 <= b && b <= 70) { // A ~ F
+                                    code += b - 55;
+                                } else if (97 <= b && b <= 102) { // a ~ f
+                                    code += b - 87;
+                                } else {
+                                    return nullptr;
+                                }
+                            }
+                            buffer.push_back((char)code);
+                        } else {
+                            buffer.push_back((char)b);
+                        }
                         escape = false;
                     } else if (b == '\\') {
                         escape = true;
@@ -959,7 +1036,7 @@ private:
                     return make_shared<DoubleTag>(v);
                 }
             }
-            if (all_of(buffer.begin(), buffer.end(), [](char c) { return ('0' <= c && c <= '9') || ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') || c == '_' || c == '-' || c == '.' || c == '+'; })) {
+            if (all_of(buffer.begin(), buffer.end(), IsAlnum)) {
                 return make_shared<StringTag>(u8string((char8_t const *)buffer.data(), buffer.size()));
             }
             return nullptr;
@@ -986,17 +1063,8 @@ private:
             }
             in.unget();
             while (!in.eof()) {
-                auto key = sReadScalar(in);
+                auto key = sReadKey(in);
                 if (!key) {
-                    return nullptr;
-                }
-                u8string skey;
-                if (auto typedKey = dynamic_pointer_cast<StringTag>(key); typedKey) {
-                    skey = typedKey->fValue;
-                } else if (auto typedKey = dynamic_pointer_cast<IntTag>(key); typedKey) {
-                    auto k = std::to_string(typedKey->fValue);
-                    skey.assign((char8_t const *)k.c_str(), k.size());
-                } else {
                     return nullptr;
                 }
                 sSkipWhitespaces(in);
@@ -1009,7 +1077,7 @@ private:
                 if (!value) {
                     return nullptr;
                 }
-                ret->set(skey, value);
+                ret->set(*key, value);
                 sSkipWhitespaces(in);
                 b = in.get();
                 if (b == '}') {

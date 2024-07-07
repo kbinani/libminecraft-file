@@ -209,6 +209,83 @@ public:
         }
         return ret;
     }
+
+    static std::optional<std::u8string> ValidateUtf8(std::u8string const &s, bool allowUnprintable) {
+        using namespace std;
+        for (size_t i = 0; i < s.size(); i++) {
+            char8_t ch = s[i];
+            if ((ch & 0b10000000) == 0b00000000) {
+                if (!allowUnprintable) {
+                    if (ch < 32 || ch == 127) {
+                        return nullopt;
+                    }
+                }
+            } else if ((ch & 0b11100000) == 0b11000000) {
+                if (i + 1 >= s.size()) {
+                    return nullopt;
+                }
+                ch = s[++i];
+                if (ch < 0x80 || 0xbf < ch) {
+                    return nullopt;
+                }
+            } else if ((ch & 0b11110000) == 0b11100000) {
+                if (i + 2 >= s.size()) {
+                    return nullopt;
+                }
+                char8_t first = ch;
+                ch = s[++i];
+                switch (first) {
+                case 0xe0:
+                    if (0x80 <= ch && ch <= 0x9f) {
+                        return nullopt;
+                    }
+                    break;
+                case 0xf0:
+                    if (0x80 <= ch && ch <= 0x8f) {
+                        return nullopt;
+                    }
+                    break;
+                case 0xed:
+                    if (ch >= 0xa0) {
+                        return nullopt;
+                    }
+                    break;
+                default:
+                    break;
+                }
+                i++;
+            } else if ((ch & 0b11111000) == 0b11110000) {
+                if (i + 3 >= s.size()) {
+                    return nullopt;
+                }
+                char8_t first = ch;
+                ch = s[++i];
+                switch (first) {
+                case 0xe0:
+                    if (0x80 <= ch && ch <= 0x9f) {
+                        return nullopt;
+                    }
+                    break;
+                case 0xf0:
+                    if (0x80 <= ch && ch <= 0x8f) {
+                        return nullopt;
+                    }
+                    break;
+                case 0xed:
+                    if (ch >= 0xa0) {
+                        return nullopt;
+                    }
+                    break;
+                default:
+                    break;
+                }
+                i += 2;
+            } else {
+                return nullopt;
+            }
+        }
+        return s;
+    }
 };
 
 } // namespace mcfile
