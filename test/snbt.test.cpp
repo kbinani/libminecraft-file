@@ -89,4 +89,18 @@ TEST_CASE("snbt") {
         REQUIRE(c);
         CHECK(c->int32(u8"0") == 1);
     }
+    SUBCASE("escaped character") {
+        auto s = CompoundTag::FromSnbt(R"({a:"a\rb\nc\t"})");
+        REQUIRE(s);
+        auto c = dynamic_pointer_cast<CompoundTag>(s);
+        REQUIRE(c);
+        CHECK(c->string(u8"a") == u8"a\rb\nc\t");
+    }
+    SUBCASE("binary string") {
+        auto s = CompoundTag::FromSnbt("{a:\"x\x1by\"}");
+        REQUIRE(s);
+        auto c = dynamic_pointer_cast<CompoundTag>(s);
+        REQUIRE(c);
+        CHECK(c->string(u8"a") == u8"x\x1by");
+    }
 }

@@ -833,6 +833,13 @@ private:
                                 }
                             }
                             buffer.push_back((char)code);
+                        } else if (b == 'r') {
+                            buffer.push_back('\r');
+                        } else if (b == 'n') {
+                            static_assert('\n' == 0x0a);
+                            buffer.push_back('\n');
+                        } else if (b == 't') {
+                            buffer.push_back('\t');
                         } else {
                             buffer.push_back((char)b);
                         }
@@ -886,6 +893,13 @@ private:
                                 }
                             }
                             buffer.push_back((char)code);
+                        } else if (b == 'r') {
+                            buffer.push_back('\r');
+                        } else if (b == 'n') {
+                            static_assert('\n' == 0x0a);
+                            buffer.push_back('\n');
+                        } else if (b == 't') {
+                            buffer.push_back('\t');
                         } else {
                             buffer.push_back((char)b);
                         }

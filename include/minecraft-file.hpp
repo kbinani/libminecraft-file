@@ -53,6 +53,7 @@
 #endif
 #include <libdeflate.h>
 #include <lz4.h>
+#include <utf8.h>
 #include <xxhash.h>
 
 // clang-format off
