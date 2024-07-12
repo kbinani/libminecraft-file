@@ -807,7 +807,7 @@ private:
             }
             std::string buffer;
             bool escape = false;
-            while (!in.eof()) {
+            while (!in.eof() && !in.fail()) {
                 if (quote) {
                     // quoted string
                     if (quote == b && !escape) {
@@ -817,7 +817,7 @@ private:
                         if (b == 'x') {
                             int code = 0;
                             for (int i = 0; i < 2; i++) {
-                                if (in.eof()) {
+                                if (in.eof() || in.fail()) {
                                     return nullptr;
                                 }
                                 b = in.get();
@@ -867,7 +867,7 @@ private:
             }
             std::string buffer;
             bool escape = false;
-            while (!in.eof()) {
+            while (!in.eof() && !in.fail()) {
                 if (quote) {
                     // quoted string
                     if (quote == b && !escape) {
@@ -877,7 +877,7 @@ private:
                         if (b == 'x') {
                             int code = 0;
                             for (int i = 0; i < 2; i++) {
-                                if (in.eof()) {
+                                if (in.eof() || in.fail()) {
                                     return nullptr;
                                 }
                                 b = in.get();
@@ -1057,7 +1057,7 @@ private:
         };
         static auto const sSkipWhitespaces = [](istream &in) {
             int b = in.get();
-            while (!in.eof()) {
+            while (!in.eof() && !in.fail()) {
                 if (!(b == ' ' || b == '\xd' || b == '\xa')) {
                     in.unget();
                     return;
@@ -1066,7 +1066,7 @@ private:
         };
         sSkipWhitespaces(in);
         int b = in.get();
-        if (in.eof()) {
+        if (in.eof() || in.fail()) {
             return nullptr;
         }
         if (b == '{') {
@@ -1076,7 +1076,7 @@ private:
                 return ret;
             }
             in.unget();
-            while (!in.eof()) {
+            while (!in.eof() && !in.fail()) {
                 auto key = sReadKey(in);
                 if (!key) {
                     return nullptr;
@@ -1116,7 +1116,7 @@ private:
                     if (marker == 'B') {
                         auto v = make_shared<ByteArrayTag>();
                         sSkipWhitespaces(in);
-                        while (!in.eof()) {
+                        while (!in.eof() && !in.fail()) {
                             b = in.get();
                             if (b == ']') {
                                 return v;
@@ -1142,7 +1142,7 @@ private:
                     } else if (marker == 'I') {
                         auto v = make_shared<IntArrayTag>();
                         sSkipWhitespaces(in);
-                        while (!in.eof()) {
+                        while (!in.eof() && !in.fail()) {
                             b = in.get();
                             if (b == ']') {
                                 return v;
@@ -1168,7 +1168,7 @@ private:
                     } else {
                         auto v = make_shared<LongArrayTag>();
                         sSkipWhitespaces(in);
-                        while (!in.eof()) {
+                        while (!in.eof() && !in.fail()) {
                             b = in.get();
                             if (b == ']') {
                                 return v;
@@ -1212,7 +1212,7 @@ private:
             }
             // list
             sSkipWhitespaces(in);
-            while (!in.eof()) {
+            while (!in.eof() && !in.fail()) {
                 b = in.get();
                 if (b == ']') {
                     return instance;
