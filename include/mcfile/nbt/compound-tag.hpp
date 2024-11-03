@@ -818,7 +818,7 @@ private:
                             int code = 0;
                             for (int i = 0; i < 2; i++) {
                                 if (in.eof() || in.fail()) {
-                                    return nullptr;
+                                    return nullopt;
                                 }
                                 b = in.get();
                                 code *= 16;
@@ -829,7 +829,7 @@ private:
                                 } else if (97 <= b && b <= 102) { // a ~ f
                                     code += b - 87;
                                 } else {
-                                    return nullptr;
+                                    return nullopt;
                                 }
                             }
                             buffer.push_back((char)code);
