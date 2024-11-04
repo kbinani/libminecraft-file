@@ -107,12 +107,31 @@ public:
 
     static std::optional<std::u8string> ValidateUtf8(std::u8string const &s, bool allowUnprintable) {
         UErrorCode err = U_ZERO_ERROR;
-        u_strFromUTF8(nullptr, 0, nullptr, (char const *)s.c_str(), s.size(), &err);
+        UConverter *conv = ucnv_open("UTF8", &err);
         if (U_FAILURE(err)) {
             return std::nullopt;
-        } else {
-            return s;
         }
+        struct Closer {
+            explicit Closer(UConverter *cnv)
+                : cnv(cnv) {}
+            UConverter *cnv;
+            ~Closer() {
+                ucnv_close(cnv);
+            }
+        } closer(conv);
+        size_t offset = 0;
+        std::vector<UChar> buf(128);
+        while (offset < s.size()) {
+            UChar *out = buf.data();
+            char const *in = (char const *)s.c_str() + offset;
+            err = U_ZERO_ERROR;
+            ucnv_toUnicode(conv, &out, (UChar const *)buf.data() + buf.size(), &in, (char const *)s.c_str() + s.size(), nullptr, false, &err);
+            if (err != U_BUFFER_OVERFLOW_ERROR && U_FAILURE(err)) {
+                return std::nullopt;
+            }
+            offset += in - ((char const *)s.c_str() + offset);
+        }
+        return s;
     }
 
 private:
