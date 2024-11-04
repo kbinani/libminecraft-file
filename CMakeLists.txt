@@ -14,7 +14,7 @@ if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
   endif()
   if (MSVC)
     add_compile_options(
-      /source-charset:utf-8
+      /utf-8
       /MP
       /ZI
       /Zc:__cplusplus # Enable updated __cplusplus macro
@@ -171,13 +171,16 @@ list(APPEND mcfile_test_link_libraries lz4_static)
 CPMAddPackage("gh:doctest/doctest@2.4.11")
 
 CPMAddPackage(
-  NAME utf8
-  GITHUB_REPOSITORY sheredom/utf8.h
-  GIT_TAG 2aa5709fe39c66d2868c0d52d42788899b90dc92
-  DOWNLOAD_ONLY YES)
+  NAME icu
+  GITHUB_REPOSITORY AiMiDi/icu-cmake
+  GIT_TAG aec5295e98979f2bcf3646c834e8e1e31c70b485
+  OPTIONS
+    "ICU_BUILD_I18N OFF"
+    "ICU_BUILD_IO OFF")
+list(APPEND mcfile_test_link_libraries icu::uc)
 
 add_library(mcfile INTERFACE ${mcfile_files})
-target_include_directories(mcfile INTERFACE include ${utf8_SOURCE_DIR})
+target_include_directories(mcfile INTERFACE include)
 target_link_libraries(mcfile INTERFACE ${mcfile_test_link_libraries})
 
 add_executable(mcfile-test ${mcfile_test_files})

@@ -51,9 +51,12 @@
 #if __has_include(<leveldb/db.h>)
 #include <leveldb/db.h>
 #endif
+
+#include <unicode/ucnv.h>
+#include <unicode/ustring.h>
+
 #include <libdeflate.h>
 #include <lz4.h>
-#include <utf8.h>
 #include <xxhash.h>
 
 // clang-format off

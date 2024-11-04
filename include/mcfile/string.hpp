@@ -74,174 +74,110 @@ public:
 
     static std::optional<std::u8string> Utf8FromJavaUtf8(std::string_view const &s) {
         using namespace std;
-        u8string ret;
-        size_t i = 0;
-        auto at = [&s](size_t i) -> uint8_t {
-            return *(uint8_t *)(s.data() + i);
-        };
-        auto append = [&ret](uint8_t c) {
-            ret += *(char8_t *)&c;
-        };
-        while (i < s.size()) {
-            uint8_t a = at(i);
-            if (a == 0xc0 && i + 1 < s.size() && at(i + 1) == 0x80) {
-                append(0);
-                i += 2;
-            } else if (a < 0x80) {
-                append(a);
+        string tmp;
+        for (size_t i = 0; i < s.size(); i++) {
+            char c = s[i];
+            if (c == 0xc0 && i + 1 < s.size() && s[i + 1] == 0x80) {
+                tmp += '\0';
                 i++;
-            } else if ((a & 0xe0) == 0xc0) {
-                if (i + 1 >= s.size()) {
-                    return nullopt;
-                }
-                auto b = at(i + 1);
-                if ((b & 0xc0) != 0x80) {
-                    return nullopt;
-                }
-                append(a);
-                append(b);
-                i += 2;
-            } else if ((a & 0xf0) == 0xe0) {
-                if (a == 0xed) {
-                    if (i + 5 >= s.size()) {
-                        return nullopt;
-                    }
-                    auto b = at(i + 1);
-                    auto c = at(i + 2);
-                    auto d = at(i + 3);
-                    auto e = at(i + 4);
-                    auto f = at(i + 5);
-                    if ((b & 0xf0) != 0xa0 || (c & 0xc0) != 0x80 || d != 0xed || (e & 0xf0) != 0xb0 || (f & 0xc0) != 0x80) {
-                        return nullopt;
-                    }
-                    uint32_t unicode = uint32_t((b & 0xf) + 1) << 16 | (uint32_t(c & 0x3f) << 10) | (uint32_t(e & 0xf) << 6) | uint32_t(f & 0x1f);
-                    append(0xf0 | uint8_t(0x7 & (unicode >> 18)));
-                    append(0x80 | uint8_t(0x3f & (unicode >> 12)));
-                    append(0x80 | uint8_t(0x3f & (unicode >> 6)));
-                    append(0x80 | uint8_t(0x3f & unicode));
-                    i += 6;
-                } else if (i + 2 < s.size()) {
-                    auto b = at(i + 1);
-                    auto c = at(i + 2);
-                    if ((b & 0xc0) != 0x80 || (c & 0xc0) != 0x80) {
-                        return nullopt;
-                    }
-                    append(a);
-                    append(at(i + 1));
-                    append(at(i + 2));
-                    i += 3;
-                } else {
-                    return nullopt;
-                }
             } else {
-                return nullopt;
+                tmp += c;
             }
         }
-        return ret;
+        return ConvertImpl("CESU8", "UTF8", tmp);
     }
 
     static std::optional<std::string> JavaUtf8FromUtf8(std::u8string_view const &s) {
         using namespace std;
-        string ret;
-        auto at = [&s](size_t i) -> uint8_t {
-            return *(uint8_t *)(s.data() + i);
-        };
-        auto append = [&ret](uint8_t v) {
-            ret += *(char *)&v;
-        };
-        size_t i = 0;
-        while (i < s.size()) {
-            uint8_t a = at(i);
-            if (a == 0) {
-                append(0xc0);
-                append(0x80);
-                i++;
-            } else if (a < 0x80) {
-                append(a);
-                i++;
-            } else if ((a & 0xe0) == 0xc0) {
-                if (i + 1 >= s.size()) {
-                    return nullopt;
-                }
-                auto b = at(i + 1);
-                if ((b & 0xc0) != 0x80) {
-                    return nullopt;
-                }
-                append(a);
-                append(b);
-                i += 2;
-            } else if ((a & 0xf0) == 0xe0) {
-                if (i + 2 >= s.size()) {
-                    return nullopt;
-                }
-                auto b = at(i + 1);
-                auto c = at(i + 2);
-                if ((b & 0xc0) != 0x80 || (c & 0xc0) != 0x80) {
-                    return nullopt;
-                }
-                append(a);
-                append(b);
-                append(c);
-                i += 3;
-            } else if ((a & 0xf8) == 0xf0) {
-                if (i + 3 >= s.size()) {
-                    return nullopt;
-                }
-                auto b = at(i + 1);
-                auto c = at(i + 2);
-                auto d = at(i + 3);
-                if ((b & 0xc0) != 0x80 || (c & 0xc0) != 0x80 || (d & 0xc0) != 0x80) {
-                    return nullopt;
-                }
-                uint32_t unicode = (uint32_t(a & 0x7) << 18) | (uint32_t(b & 0x3f) << 12) | (uint32_t(c & 0x3f) << 6) | uint32_t(d & 0x3f);
-                uint32_t hi = ((unicode & 0x1f0000) >> 16) - 1;
-                uint32_t lo = unicode & 0xffff;
-                append(0xed);
-                append(0xa0 | uint8_t(hi & 0xf));
-                append(0x80 | uint8_t(0x3f & (lo >> 10)));
-                append(0xed);
-                append(0xb0 | uint8_t(0xf & (lo >> 6)));
-                append(0x80 | uint8_t(0x3f & lo));
-                i += 4;
+        auto tmp = ConvertImpl("UTF8", "CESU8", s);
+        if (!tmp) {
+            return nullopt;
+        }
+        string result;
+        for (char8_t ch : *tmp) {
+            if (ch == u8'\0') {
+                result += 0xc0;
+                result += 0x80;
             } else {
-                return nullopt;
+                result += (char)ch;
             }
         }
-        return ret;
+        return result;
     }
 
     static std::optional<std::u8string> ValidateUtf8(std::u8string const &s, bool allowUnprintable) {
-        using namespace std;
-        if (::utf8nvalid(s.c_str(), s.size()) != 0) {
-            return nullopt;
-        }
-        if (allowUnprintable) {
+        UErrorCode err = U_ZERO_ERROR;
+        u_strFromUTF8(nullptr, 0, nullptr, (char const *)s.c_str(), s.size(), &err);
+        if (U_FAILURE(err)) {
+            return std::nullopt;
+        } else {
             return s;
         }
-        for (size_t i = 0; i < s.size(); i++) {
-            char8_t ch = s[i];
-            if ((ch & 0b10000000) == 0b00000000) {
-                switch (ch) {
-                case '\r':
-                case '\n':
-                case '\t':
-                    break;
-                default:
-                    if (ch < 32 || ch == 127) {
-                        return nullopt;
-                    }
-                }
-            } else if ((ch & 0b11100000) == 0b11000000) {
-                i++;
-            } else if ((ch & 0b11110000) == 0b11100000) {
-                i += 2;
-            } else if ((ch & 0b11111000) == 0b11110000) {
-                i += 3;
-            } else {
+    }
+
+private:
+    template<class StringView>
+    static std::optional<std::u8string> ConvertImpl(char const *from, char const *to, StringView const &input) {
+        using namespace std;
+        struct Closer {
+            ~Closer() {
+                func();
+            }
+            explicit Closer(std::function<void()> func)
+                : func(func) {}
+
+            std::function<void()> func;
+        };
+        UErrorCode err = U_ZERO_ERROR;
+        auto fromConverter = ucnv_open(from, &err);
+        if (U_FAILURE(err) || !fromConverter) {
+            return nullopt;
+        }
+        Closer c0([&]() {
+            ucnv_close(fromConverter);
+        });
+        err = U_ZERO_ERROR;
+        auto toConverter = ucnv_open(to, &err);
+        if (U_FAILURE(err) || !toConverter) {
+            return nullopt;
+        }
+        Closer c1([&]() {
+            ucnv_close(toConverter);
+        });
+        vector<UChar> unicodes;
+        vector<UChar> bufu(128);
+        size_t offset = 0;
+        while (offset < input.size()) {
+            err = U_ZERO_ERROR;
+            UChar *out = bufu.data();
+            char const *in = (char const *)input.data() + offset;
+            ucnv_toUnicode(fromConverter, &out, bufu.data() + bufu.size(), &in, (char const *)input.data() + input.size(), nullptr, false, &err);
+            if (err != U_BUFFER_OVERFLOW_ERROR && U_FAILURE(err)) {
                 return nullopt;
             }
+            offset += in - ((char const *)input.data() + offset);
+            size_t count = out - bufu.data();
+            copy_n(bufu.data(), count, back_inserter(unicodes));
         }
-        return s;
+
+        u8string result;
+        vector<char> bufo(128);
+        offset = 0;
+        while (offset < unicodes.size()) {
+            err = U_ZERO_ERROR;
+            char *out = bufo.data();
+            UChar const *in = unicodes.data() + offset;
+            ucnv_fromUnicode(toConverter, &out, bufo.data() + bufo.size(), &in, (UChar const *)unicodes.data() + unicodes.size(), nullptr, false, &err);
+            if (err != U_BUFFER_OVERFLOW_ERROR && U_FAILURE(err)) {
+                return nullopt;
+            }
+            offset += in - ((UChar const *)unicodes.data() + offset);
+            size_t count = out - bufo.data();
+            for (size_t i = 0; i < count; i++) {
+                result += (char8_t)bufo[i];
+            }
+        }
+        return result;
     }
 };
 
