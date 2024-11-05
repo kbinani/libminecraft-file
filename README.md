@@ -76,6 +76,8 @@ int main() {
 
 - zlib
 - libdeflate
+- lz4
+- icu
 
 # license
 
