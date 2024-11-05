@@ -1099,6 +1099,43 @@ static inline std::vector<Characteristics> CreateTable() {
     m[vault] = {.name = u8"minecraft:vault", .opaque = false};
     m[heavy_core] = {.name = u8"minecraft:heavy_core", .opaque = false};
 
+    // 1.21.4
+    m[creaking_heart] = {.name = u8"minecraft:creaking_heart", .opaque = true};
+    m[open_eyeblossom] = {.name = u8"minecraft:open_eyeblossom", .opaque = false};
+    m[closed_eyeblossom] = {.name = u8"minecraft:closed_eyeblossom", .opaque = false};
+    m[potted_open_eyeblossom] = {.name = u8"minecraft:potted_open_eyeblossom", .opaque = false};
+    m[potted_closed_eyeblossom] = {.name = u8"minecraft:potted_closed_eyeblossom", .opaque = false};
+    m[pale_hanging_moss] = {.name = u8"minecraft:pale_hanging_moss", .opaque = false};
+    m[pale_moss_block] = {.name = u8"minecraft:pale_moss_block", .opaque = true};
+    m[pale_moss_carpet] = {.name = u8"minecraft:pale_moss_carpet", .opaque = false};
+    m[pale_oak_leaves] = {.name = u8"minecraft:pale_oak_leaves", .opaque = false};
+    m[pale_oak_log] = {.name = u8"minecraft:pale_oak_log", .opaque = true};
+    m[pale_oak_wood] = {.name = u8"minecraft:pale_oak_wood", .opaque = true};
+    m[stripped_pale_oak_log] = {.name = u8"minecraft:stripped_pale_oak_log", .opaque = true};
+    m[stripped_pale_oak_wood] = {.name = u8"minecraft:stripped_pale_oak_wood", .opaque = true};
+    m[pale_oak_planks] = {.name = u8"minecraft:pale_oak_planks", .opaque = true};
+    m[pale_oak_stairs] = {.name = u8"minecraft:pale_oak_stairs", .opaque = false};
+    m[pale_oak_slab] = {.name = u8"minecraft:pale_oak_slab", .opaque = false};
+    m[pale_oak_fence] = {.name = u8"minecraft:pale_oak_fence", .opaque = false};
+    m[pale_oak_fence_gate] = {.name = u8"minecraft:pale_oak_fence_gate", .opaque = false};
+    m[pale_oak_door] = {.name = u8"minecraft:pale_oak_door", .opaque = false};
+    m[pale_oak_trapdoor] = {.name = u8"minecraft:pale_oak_trapdoor", .opaque = false};
+    m[pale_oak_pressure_plate] = {.name = u8"minecraft:pale_oak_pressure_plate", .opaque = false};
+    m[pale_oak_button] = {.name = u8"minecraft:pale_oak_button", .opaque = false};
+    m[pale_oak_sign] = {.name = u8"minecraft:pale_oak_sign", .opaque = false};
+    m[pale_oak_wall_sign] = {.name = u8"minecraft:pale_oak_wall_sign", .opaque = false};
+    m[pale_oak_hanging_sign] = {.name = u8"minecraft:pale_oak_hanging_sign", .opaque = false};
+    m[pale_oak_wall_hanging_sign] = {.name = u8"minecraft:pale_oak_wall_hanging_sign", .opaque = false};
+    m[pale_oak_sapling] = {.name = u8"minecraft:pale_oak_sapling", .opaque = false};
+    m[potted_pale_oak_sapling] = {.name = u8"minecraft:potted_pale_oak_sapling", .opaque = false};
+    m[resin_clump] = {.name = u8"minecraft:resin_clump", .opaque = false};
+    m[resin_block] = {.name = u8"minecraft:resin_block", .opaque = true};
+    m[resin_bricks] = {.name = u8"minecraft:resin_bricks", .opaque = true};
+    m[resin_brick_stairs] = {.name = u8"minecraft:resin_brick_stairs", .opaque = false};
+    m[resin_brick_slab] = {.name = u8"minecraft:resin_brick_slab", .opaque = false};
+    m[resin_brick_wall] = {.name = u8"minecraft:resin_brick_wall", .opaque = false};
+    m[chiseled_resin_bricks] = {.name = u8"minecraft:chiseled_resin_bricks", .opaque = true};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);

@@ -1024,7 +1024,7 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:torchflower"] = torchflower;
     t[u8"minecraft:torchflower_crop"] = torchflower_crop;
 
-    //1.20
+    // 1.20
     t[u8"minecraft:calibrated_sculk_sensor"] = calibrated_sculk_sensor;
     t[u8"minecraft:pitcher_crop"] = pitcher_crop;
     t[u8"minecraft:pitcher_plant"] = pitcher_plant;
@@ -1096,6 +1096,43 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     // 1.21
     t[u8"minecraft:vault"] = vault;
     t[u8"minecraft:heavy_core"] = heavy_core;
+
+    // 1.21.4
+    t[u8"minecraft:creaking_heart"] = creaking_heart;
+    t[u8"minecraft:open_eyeblossom"] = open_eyeblossom;
+    t[u8"minecraft:closed_eyeblossom"] = closed_eyeblossom;
+    t[u8"minecraft:potted_open_eyeblossom"] = potted_open_eyeblossom;
+    t[u8"minecraft:potted_closed_eyeblossom"] = potted_closed_eyeblossom;
+    t[u8"minecraft:pale_hanging_moss"] = pale_hanging_moss;
+    t[u8"minecraft:pale_moss_block"] = pale_moss_block;
+    t[u8"minecraft:pale_moss_carpet"] = pale_moss_carpet;
+    t[u8"minecraft:pale_oak_leaves"] = pale_oak_leaves;
+    t[u8"minecraft:pale_oak_log"] = pale_oak_log;
+    t[u8"minecraft:pale_oak_wood"] = pale_oak_wood;
+    t[u8"minecraft:stripped_pale_oak_log"] = stripped_pale_oak_log;
+    t[u8"minecraft:stripped_pale_oak_wood"] = stripped_pale_oak_wood;
+    t[u8"minecraft:pale_oak_planks"] = pale_oak_planks;
+    t[u8"minecraft:pale_oak_stairs"] = pale_oak_stairs;
+    t[u8"minecraft:pale_oak_slab"] = pale_oak_slab;
+    t[u8"minecraft:pale_oak_fence"] = pale_oak_fence;
+    t[u8"minecraft:pale_oak_fence_gate"] = pale_oak_fence_gate;
+    t[u8"minecraft:pale_oak_door"] = pale_oak_door;
+    t[u8"minecraft:pale_oak_trapdoor"] = pale_oak_trapdoor;
+    t[u8"minecraft:pale_oak_pressure_plate"] = pale_oak_pressure_plate;
+    t[u8"minecraft:pale_oak_button"] = pale_oak_button;
+    t[u8"minecraft:pale_oak_sign"] = pale_oak_sign;
+    t[u8"minecraft:pale_oak_wall_sign"] = pale_oak_wall_sign;
+    t[u8"minecraft:pale_oak_hanging_sign"] = pale_oak_hanging_sign;
+    t[u8"minecraft:pale_oak_wall_hanging_sign"] = pale_oak_wall_hanging_sign;
+    t[u8"minecraft:pale_oak_sapling"] = pale_oak_sapling;
+    t[u8"minecraft:potted_pale_oak_sapling"] = potted_pale_oak_sapling;
+    t[u8"minecraft:resin_clump"] = resin_clump;
+    t[u8"minecraft:resin_block"] = resin_block;
+    t[u8"minecraft:resin_bricks"] = resin_bricks;
+    t[u8"minecraft:resin_brick_stairs"] = resin_brick_stairs;
+    t[u8"minecraft:resin_brick_slab"] = resin_brick_slab;
+    t[u8"minecraft:resin_brick_wall"] = resin_brick_wall;
+    t[u8"minecraft:chiseled_resin_bricks"] = chiseled_resin_bricks;
 
     return ret;
 }
