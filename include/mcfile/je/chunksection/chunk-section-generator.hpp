@@ -4,7 +4,7 @@ namespace mcfile::je::chunksection {
 
 class ChunkSectionGenerator {
 public:
-    //clang-format: off
+    // clang-format off
     enum : int {
         // :
         //1444 (17w43a)
@@ -32,7 +32,7 @@ public:
         //2858 (1.18rc3)
         // :
     };
-    //clang-format: on
+    // clang-format on
 
     static std::function<std::shared_ptr<ChunkSection>(int sectionY, int dataVersion)>
     MakeChunkSections(std::shared_ptr<nbt::ListTag> const &sections,

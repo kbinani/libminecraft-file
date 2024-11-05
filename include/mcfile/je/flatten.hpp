@@ -1055,7 +1055,7 @@ public:
             // 8
             [](uint8_t data, map<u8string, u8string> &props) {
                 AssertDataLayout(data, 0b1111);
-                //IGNORE: props[u8"level"] = String::ToString(data & 0x7);
+                // IGNORE: props[u8"level"] = String::ToString(data & 0x7);
                 props[u8"falling"] = ((0x8 & data) == 0x8) ? u8"true" : u8"false";
                 return blocks::minecraft::water;
             },
@@ -1070,7 +1070,7 @@ public:
             // 10
             [](uint8_t data, map<u8string, u8string> &props) {
                 AssertDataLayout(data, 0b1111);
-                //IGNORE: props[u8"level"] = String::ToString(data & 0x7);
+                // IGNORE: props[u8"level"] = String::ToString(data & 0x7);
                 props[u8"falling"] = ((0x8 & data) == 0x8) ? u8"true" : u8"false";
                 return blocks::minecraft::lava;
             },
