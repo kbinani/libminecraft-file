@@ -907,6 +907,31 @@ public:
         case waxed_weathered_copper_bulb:
         case waxed_oxidized_copper_bulb:
         case vault:
+        case creaking_heart:
+        case pale_moss_block:
+        case pale_oak_leaves:
+        case pale_oak_log:
+        case pale_oak_wood:
+        case stripped_pale_oak_log:
+        case stripped_pale_oak_wood:
+        case pale_oak_planks:
+        case pale_oak_stairs:
+        case pale_oak_slab:
+        case pale_oak_fence:
+        case pale_oak_fence_gate:
+        case pale_oak_door:
+        case pale_oak_trapdoor:
+        case pale_oak_pressure_plate:
+        case pale_oak_sign:
+        case pale_oak_wall_sign:
+        case pale_oak_hanging_sign:
+        case pale_oak_wall_hanging_sign:
+        case resin_block:
+        case resin_bricks:
+        case resin_brick_stairs:
+        case resin_brick_slab:
+        case resin_brick_wall:
+        case chiseled_resin_bricks:
             return true;
         default:
             return false;
@@ -1762,6 +1787,30 @@ public:
         case waxed_weathered_copper_bulb:
         case waxed_oxidized_copper_bulb:
         case vault:
+        case creaking_heart:
+        case pale_moss_block:
+        case pale_oak_log:
+        case pale_oak_wood:
+        case stripped_pale_oak_log:
+        case stripped_pale_oak_wood:
+        case pale_oak_planks:
+        case pale_oak_stairs:
+        case pale_oak_slab:
+        case pale_oak_fence:
+        case pale_oak_fence_gate:
+        case pale_oak_door:
+        case pale_oak_trapdoor:
+        case pale_oak_pressure_plate:
+        case pale_oak_sign:
+        case pale_oak_wall_sign:
+        case pale_oak_hanging_sign:
+        case pale_oak_wall_hanging_sign:
+        case resin_block:
+        case resin_bricks:
+        case resin_brick_stairs:
+        case resin_brick_slab:
+        case resin_brick_wall:
+        case chiseled_resin_bricks:
             return true;
         default:
             return false;
@@ -2605,6 +2654,31 @@ public:
         case waxed_weathered_copper_bulb:
         case waxed_oxidized_copper_bulb:
         case vault:
+        case creaking_heart:
+        case pale_moss_block:
+        case pale_oak_leaves:
+        case pale_oak_log:
+        case pale_oak_wood:
+        case stripped_pale_oak_log:
+        case stripped_pale_oak_wood:
+        case pale_oak_planks:
+        case pale_oak_stairs:
+        case pale_oak_slab:
+        case pale_oak_fence:
+        case pale_oak_fence_gate:
+        case pale_oak_door:
+        case pale_oak_trapdoor:
+        case pale_oak_pressure_plate:
+        case pale_oak_sign:
+        case pale_oak_wall_sign:
+        case pale_oak_hanging_sign:
+        case pale_oak_wall_hanging_sign:
+        case resin_block:
+        case resin_bricks:
+        case resin_brick_stairs:
+        case resin_brick_slab:
+        case resin_brick_wall:
+        case chiseled_resin_bricks:
             return true;
         default:
             return false;
@@ -3664,6 +3738,40 @@ public:
         case waxed_oxidized_copper_bulb:
         case vault:
         case heavy_core:
+        case creaking_heart:
+        case open_eyeblossom:
+        case closed_eyeblossom:
+        case potted_open_eyeblossom:
+        case potted_closed_eyeblossom:
+        case pale_moss_block:
+        case pale_moss_carpet:
+        case pale_oak_leaves:
+        case pale_oak_log:
+        case pale_oak_wood:
+        case stripped_pale_oak_log:
+        case stripped_pale_oak_wood:
+        case pale_oak_planks:
+        case pale_oak_stairs:
+        case pale_oak_slab:
+        case pale_oak_fence:
+        case pale_oak_fence_gate:
+        case pale_oak_door:
+        case pale_oak_trapdoor:
+        case pale_oak_pressure_plate:
+        case pale_oak_button:
+        case pale_oak_sign:
+        case pale_oak_wall_sign:
+        case pale_oak_hanging_sign:
+        case pale_oak_wall_hanging_sign:
+        case pale_oak_sapling:
+        case potted_pale_oak_sapling:
+        case resin_clump:
+        case resin_block:
+        case resin_bricks:
+        case resin_brick_stairs:
+        case resin_brick_slab:
+        case resin_brick_wall:
+        case chiseled_resin_bricks:
             return true;
         default:
             return false;
