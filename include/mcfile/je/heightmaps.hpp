@@ -25,6 +25,9 @@ public:
         switch (block.fId) {
         case sea_pickle:
         case heavy_core:
+        case sculk_vein:
+        case glow_lichen:
+        case resin_clump:
             return block.property(u8"waterlogged") == u8"true";
         }
         return IsMotionBlockingById(block.fId);
@@ -35,6 +38,9 @@ public:
         switch (block.fId) {
         case sea_pickle:
         case heavy_core:
+        case sculk_vein:
+        case glow_lichen:
+        case resin_clump:
             return block.property(u8"waterlogged") == u8"true";
         }
         return IsMotionBlockingNoLeavesById(block.fId);
