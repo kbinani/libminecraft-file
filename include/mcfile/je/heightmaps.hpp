@@ -25,7 +25,6 @@ public:
         switch (block.fId) {
         case sea_pickle:
         case heavy_core:
-        case sculk_vein:
         case glow_lichen:
         case resin_clump:
             return block.property(u8"waterlogged") == u8"true";
@@ -38,7 +37,6 @@ public:
         switch (block.fId) {
         case sea_pickle:
         case heavy_core:
-        case sculk_vein:
         case glow_lichen:
         case resin_clump:
             return block.property(u8"waterlogged") == u8"true";
