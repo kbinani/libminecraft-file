@@ -77,7 +77,7 @@ public:
         string tmp;
         for (size_t i = 0; i < s.size(); i++) {
             char c = s[i];
-            if (c == 0xc0 && i + 1 < s.size() && s[i + 1] == 0x80) {
+            if (c == '\xc0' && i + 1 < s.size() && s[i + 1] == '\x80') {
                 tmp += '\0';
                 i++;
             } else {
@@ -96,8 +96,8 @@ public:
         string result;
         for (char8_t ch : *tmp) {
             if (ch == u8'\0') {
-                result += 0xc0;
-                result += 0x80;
+                result += '\xc0';
+                result += '\x80';
             } else {
                 result += (char)ch;
             }

@@ -943,20 +943,20 @@ private:
                         if (copy.c_str() + copy.size() == end) {
                             if (i8trailing) {
                                 auto mini = numeric_limits<int8_t>::lowest();
-                                if (-(int64_t)numeric_limits<int8_t>::lowest() < v) {
+                                if (128ULL < v) {
                                     return nullptr;
                                 } else {
                                     int8_t vv = -(int8_t)v;
                                     return make_shared<ByteTag>(*(uint8_t *)&vv);
                                 }
                             } else if (i16trailing) {
-                                if (-(int64_t)numeric_limits<int16_t>::lowest() < v) {
+                                if (32768ULL < v) {
                                     return nullptr;
                                 } else {
                                     return make_shared<ShortTag>(-(int16_t)v);
                                 }
                             } else {
-                                if (-(int64_t)numeric_limits<int64_t>::lowest() < v) {
+                                if (9223372036854775808ULL < v) {
                                     return nullptr;
                                 } else {
                                     return make_shared<LongTag>(-(int64_t)v);
