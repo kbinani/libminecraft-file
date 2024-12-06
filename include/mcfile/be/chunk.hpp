@@ -370,6 +370,7 @@ private:
         // chunkVersion:
         // 15: Minecraft-1.13.1.5.Appx
         // 22: Minecraft-1.17.0.2.Appx
+        // 41: Minecraft-1.21.50.7.Appx
 
         for (int8_t y = possibleMinY; y <= possibleMaxY; y++) {
             auto subChunkData = db.get(DbKey::SubChunk(chunkX, y, chunkZ, d));
