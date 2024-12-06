@@ -30,10 +30,18 @@ public:
 
     static std::u8string Quote(std::u8string const &s) {
         if (auto v = String::ValidateUtf8(s, false); v) {
-            std::basic_ostringstream<char8_t> ss;
-            ss << std::quoted(s);
-            auto ret = ss.str();
-            return ret;
+            char8_t const delim = u8'"';
+            char8_t const escape = u8'\\';
+            std::u8string str;
+            str.push_back(delim);
+            for (char8_t ch : s) {
+                if (ch == escape || ch == delim) {
+                    str.push_back(escape);
+                }
+                str.push_back(ch);
+            }
+            str.push_back(delim);
+            return str;
         } else {
             std::ostringstream ss;
             for (char8_t ch : s) {
