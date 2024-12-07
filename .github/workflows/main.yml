@@ -19,11 +19,6 @@ jobs:
         mkdir -p build
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --parallel --target mcfile-example --config Release --verbose
         cmake --build . --parallel --target mcfile-test --config Release --verbose
         ./mcfile-test
-    - name: example
-      run: |
-        mkdir -p example/build
-        cd example/build
-        cmake ../.. -DCMAKE_BUILD_TYPE=Release
-        cmake --build . --parallel --target mcfile-example --config Release --verbose
