@@ -7,6 +7,11 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
+    - uses: actions/cache@v4
+      with:
+        path: |
+          build/_deps/icu-src
+        key: ${{ hashFiles('cmake/icu.cmake') }}
     - name: test
       run: |
         mkdir -p build
