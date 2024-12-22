@@ -599,6 +599,13 @@ public:
             } else {
                 return ns(u8"cherry_grove");
             }
+        case pale_garden:
+            if (dataVersion < 4072) {
+                return ns(u8"gravelly_mountains");
+            } else {
+                // 24w40a or later
+                return ns(u8"pale_garden");
+            }
         }
 #if !defined(NDEBUG)
         special = false;
@@ -734,6 +741,9 @@ public:
 
             // 1.20
             {u8"minecraft:cherry_grove", minecraft::cherry_grove},
+
+            // 1.21.2
+            {u8"minecraft:pale_garden", minecraft::pale_garden},
         };
         auto found = sMapping.find(name);
         if (found == sMapping.end()) {

@@ -106,6 +106,9 @@ enum : BiomeId {
     // 1.20
     cherry_grove,
 
+    // 1.21.4
+    pale_garden,
+
     minecraft_max_biome_id
 
     // Functions need to update when new biomes will be released:
