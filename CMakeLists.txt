@@ -170,7 +170,7 @@ list(APPEND mcfile_test_link_libraries lz4_static)
 
 CPMAddPackage("gh:doctest/doctest@2.4.11")
 
-include(cmake/icu.cmake)
+include(cmake/icu-cpm.cmake)
 list(APPEND mcfile_test_link_libraries icu::uc)
 
 add_library(mcfile INTERFACE ${mcfile_files})
