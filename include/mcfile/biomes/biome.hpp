@@ -600,8 +600,10 @@ public:
                 return ns(u8"cherry_grove");
             }
         case pale_garden:
-            if (dataVersion < 4072) {
+            if (dataVersion < 2838) {
                 return ns(u8"gravelly_mountains");
+            } else if (dataVersion < 4072) {
+                return ns(u8"windswept_gravelly_hills");
             } else {
                 // 24w40a or later
                 return ns(u8"pale_garden");
