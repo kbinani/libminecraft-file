@@ -11,9 +11,7 @@ jobs:
       with:
         path: |
           build/_deps/icu-src
-          build/_deps/icu-build
-          build/_deps/icu-subbuild
-        key: ${{ hashFiles('cmake/icu.cmake') }}
+        key: ${{ hashFiles('cmake/icu-cpm.cmake') }}
     - name: test
       run: |
         mkdir -p build
