@@ -1134,6 +1134,20 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:resin_brick_wall"] = resin_brick_wall;
     t[u8"minecraft:chiseled_resin_bricks"] = chiseled_resin_bricks;
 
+    // 1.21.5
+    t[u8"minecraft:wildflowers"] = wildflowers;
+    t[u8"minecraft:leaf_litter"] = leaf_litter;
+    t[u8"minecraft:bush"] = bush;
+    t[u8"minecraft:firefly_bush"] = firefly_bush;
+    t[u8"minecraft:short_dry_grass"] = short_dry_grass;
+    t[u8"minecraft:tall_dry_grass"] = tall_dry_grass;
+    t[u8"minecraft:cactus_flower"] = cactus_flower;
+    t[u8"minecraft:test_block"] = test_block;
+    t[u8"minecraft:test_instance_block"] = test_instance_block;
+
+    // 1.21.6
+    t[u8"minecraft:dried_ghast"] = dried_ghast;
+
     return ret;
 }
 

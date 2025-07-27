@@ -1147,6 +1147,20 @@ enum : BlockId {
     resin_brick_wall,
     chiseled_resin_bricks,
 
+    // 1.21.5
+    wildflowers,
+    leaf_litter,
+    bush,
+    firefly_bush,
+    short_dry_grass,
+    tall_dry_grass,
+    cactus_flower,
+    test_block,
+    test_instance_block,
+
+    // 1.21.6
+    dried_ghast,
+
     minecraft_max_block_id,
 };
 

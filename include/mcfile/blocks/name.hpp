@@ -1136,6 +1136,20 @@ static inline std::vector<Characteristics> CreateTable() {
     m[resin_brick_wall] = {.name = u8"minecraft:resin_brick_wall", .opaque = false};
     m[chiseled_resin_bricks] = {.name = u8"minecraft:chiseled_resin_bricks", .opaque = true};
 
+    // 1.21.5
+    m[wildflowers] = {.name = u8"minecraft:wildflowers", .opaque = false};
+    m[leaf_litter] = {.name = u8"minecraft:leaf_litter", .opaque = false};
+    m[bush] = {.name = u8"minecraft:bush", .opaque = false};
+    m[firefly_bush] = {.name = u8"minecraft:firefly_bush", .opaque = false};
+    m[short_dry_grass] = {.name = u8"minecraft:short_dry_grass", .opaque = false};
+    m[tall_dry_grass] = {.name = u8"minecraft:tall_dry_grass", .opaque = false};
+    m[cactus_flower] = {.name = u8"minecraft:cactus_flower", .opaque = false};
+    m[test_block] = {.name = u8"minecraft:test_block", .opaque = true};
+    m[test_instance_block] = {.name = u8"minecraft:test_instance_block", .opaque = true};
+
+    // 1.21.6
+    m[dried_ghast] = {.name = u8"minecraft:dried_ghast", .opaque = false};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);
