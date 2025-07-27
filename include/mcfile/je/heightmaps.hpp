@@ -936,6 +936,9 @@ public:
         case resin_brick_slab:
         case resin_brick_wall:
         case chiseled_resin_bricks:
+        case test_block:
+        case test_instance_block:
+        case dried_ghast:
             return true;
         default:
             return false;
@@ -1815,6 +1818,9 @@ public:
         case resin_brick_slab:
         case resin_brick_wall:
         case chiseled_resin_bricks:
+        case test_block:
+        case test_instance_block:
+        case dried_ghast:
             return true;
         default:
             return false;
@@ -2683,6 +2689,9 @@ public:
         case resin_brick_slab:
         case resin_brick_wall:
         case chiseled_resin_bricks:
+        case test_block:
+        case test_instance_block:
+        case dried_ghast:
             return true;
         default:
             return false;
@@ -3776,6 +3785,16 @@ public:
         case resin_brick_slab:
         case resin_brick_wall:
         case chiseled_resin_bricks:
+        case wildflowers:
+        case leaf_litter:
+        case bush:
+        case firefly_bush:
+        case short_dry_grass:
+        case tall_dry_grass:
+        case cactus_flower:
+        case test_block:
+        case test_instance_block:
+        case dried_ghast:
             return true;
         default:
             return false;
