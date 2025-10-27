@@ -635,7 +635,6 @@ public:
         case cracked_polished_blackstone_bricks:
         case crimson_fence:
         case warped_fence:
-        case chain:
         case blackstone_wall:
         case polished_blackstone_wall:
         case polished_blackstone_brick_wall:
@@ -939,6 +938,58 @@ public:
         case test_block:
         case test_instance_block:
         case dried_ghast:
+        case acacia_shelf:
+        case cherry_shelf:
+        case dark_oak_shelf:
+        case oak_shelf:
+        case warped_shelf:
+        case waxed_exposed_copper_bars:
+        case copper_bars:
+        case oxidized_copper_chest:
+        case waxed_weathered_lightning_rod:
+        case waxed_copper_chest:
+        case waxed_oxidized_lightning_rod:
+        case jungle_shelf:
+        case waxed_weathered_copper_bars:
+        case waxed_exposed_copper_chest:
+        case exposed_lightning_rod:
+        case pale_oak_shelf:
+        case exposed_copper_bars:
+        case bamboo_shelf:
+        case waxed_oxidized_copper_bars:
+        case waxed_weathered_copper_chest:
+        case weathered_lightning_rod:
+        case crimson_shelf:
+        case copper_lantern:
+        case exposed_copper_lantern:
+        case weathered_copper_bars:
+        case weathered_copper_lantern:
+        case oxidized_copper_lantern:
+        case mangrove_shelf:
+        case waxed_copper_lantern:
+        case waxed_exposed_copper_lantern:
+        case waxed_oxidized_copper_chest:
+        case copper_chest:
+        case oxidized_lightning_rod:
+        case iron_chain:
+        case waxed_weathered_copper_lantern:
+        case waxed_oxidized_copper_lantern:
+        case copper_chain:
+        case spruce_shelf:
+        case exposed_copper_chain:
+        case oxidized_copper_bars:
+        case exposed_copper_chest:
+        case waxed_lightning_rod:
+        case birch_shelf:
+        case weathered_copper_chain:
+        case oxidized_copper_chain:
+        case waxed_copper_chain:
+        case waxed_exposed_copper_chain:
+        case weathered_copper_chest:
+        case waxed_exposed_lightning_rod:
+        case waxed_weathered_copper_chain:
+        case waxed_copper_bars:
+        case waxed_oxidized_copper_chain:
             return true;
         default:
             return false;
@@ -1522,7 +1573,6 @@ public:
         case cracked_polished_blackstone_bricks:
         case crimson_fence:
         case warped_fence:
-        case chain:
         case blackstone_wall:
         case polished_blackstone_wall:
         case polished_blackstone_brick_wall:
@@ -1821,6 +1871,58 @@ public:
         case test_block:
         case test_instance_block:
         case dried_ghast:
+        case acacia_shelf:
+        case cherry_shelf:
+        case dark_oak_shelf:
+        case oak_shelf:
+        case warped_shelf:
+        case waxed_exposed_copper_bars:
+        case copper_bars:
+        case oxidized_copper_chest:
+        case waxed_weathered_lightning_rod:
+        case waxed_copper_chest:
+        case waxed_oxidized_lightning_rod:
+        case jungle_shelf:
+        case waxed_weathered_copper_bars:
+        case waxed_exposed_copper_chest:
+        case exposed_lightning_rod:
+        case pale_oak_shelf:
+        case exposed_copper_bars:
+        case bamboo_shelf:
+        case waxed_oxidized_copper_bars:
+        case waxed_weathered_copper_chest:
+        case weathered_lightning_rod:
+        case crimson_shelf:
+        case copper_lantern:
+        case exposed_copper_lantern:
+        case weathered_copper_bars:
+        case weathered_copper_lantern:
+        case oxidized_copper_lantern:
+        case mangrove_shelf:
+        case waxed_copper_lantern:
+        case waxed_exposed_copper_lantern:
+        case waxed_oxidized_copper_chest:
+        case copper_chest:
+        case oxidized_lightning_rod:
+        case iron_chain:
+        case waxed_weathered_copper_lantern:
+        case waxed_oxidized_copper_lantern:
+        case copper_chain:
+        case spruce_shelf:
+        case exposed_copper_chain:
+        case oxidized_copper_bars:
+        case exposed_copper_chest:
+        case waxed_lightning_rod:
+        case birch_shelf:
+        case weathered_copper_chain:
+        case oxidized_copper_chain:
+        case waxed_copper_chain:
+        case waxed_exposed_copper_chain:
+        case weathered_copper_chest:
+        case waxed_exposed_lightning_rod:
+        case waxed_weathered_copper_chain:
+        case waxed_copper_bars:
+        case waxed_oxidized_copper_chain:
             return true;
         default:
             return false;
@@ -2388,7 +2490,6 @@ public:
         case cracked_polished_blackstone_bricks:
         case crimson_fence:
         case warped_fence:
-        case chain:
         case blackstone_wall:
         case polished_blackstone_wall:
         case polished_blackstone_brick_wall:
@@ -2692,6 +2793,58 @@ public:
         case test_block:
         case test_instance_block:
         case dried_ghast:
+        case acacia_shelf:
+        case cherry_shelf:
+        case dark_oak_shelf:
+        case oak_shelf:
+        case warped_shelf:
+        case waxed_exposed_copper_bars:
+        case copper_bars:
+        case oxidized_copper_chest:
+        case waxed_weathered_lightning_rod:
+        case waxed_copper_chest:
+        case waxed_oxidized_lightning_rod:
+        case jungle_shelf:
+        case waxed_weathered_copper_bars:
+        case waxed_exposed_copper_chest:
+        case exposed_lightning_rod:
+        case pale_oak_shelf:
+        case exposed_copper_bars:
+        case bamboo_shelf:
+        case waxed_oxidized_copper_bars:
+        case waxed_weathered_copper_chest:
+        case weathered_lightning_rod:
+        case crimson_shelf:
+        case copper_lantern:
+        case exposed_copper_lantern:
+        case weathered_copper_bars:
+        case weathered_copper_lantern:
+        case oxidized_copper_lantern:
+        case mangrove_shelf:
+        case waxed_copper_lantern:
+        case waxed_exposed_copper_lantern:
+        case waxed_oxidized_copper_chest:
+        case copper_chest:
+        case oxidized_lightning_rod:
+        case iron_chain:
+        case waxed_weathered_copper_lantern:
+        case waxed_oxidized_copper_lantern:
+        case copper_chain:
+        case spruce_shelf:
+        case exposed_copper_chain:
+        case oxidized_copper_bars:
+        case exposed_copper_chest:
+        case waxed_lightning_rod:
+        case birch_shelf:
+        case weathered_copper_chain:
+        case oxidized_copper_chain:
+        case waxed_copper_chain:
+        case waxed_exposed_copper_chain:
+        case weathered_copper_chest:
+        case waxed_exposed_lightning_rod:
+        case waxed_weathered_copper_chain:
+        case waxed_copper_bars:
+        case waxed_oxidized_copper_chain:
             return true;
         default:
             return false;
@@ -3419,7 +3572,6 @@ public:
         case crimson_fence:
         case warped_fence:
         case soul_torch:
-        case chain:
         case blackstone_wall:
         case polished_blackstone_wall:
         case polished_blackstone_brick_wall:
@@ -3795,6 +3947,68 @@ public:
         case test_block:
         case test_instance_block:
         case dried_ghast:
+        case acacia_shelf:
+        case cherry_shelf:
+        case dark_oak_shelf:
+        case oak_shelf:
+        case warped_shelf:
+        case waxed_exposed_copper_bars:
+        case copper_bars:
+        case oxidized_copper_chest:
+        case weathered_copper_golem_statue:
+        case waxed_oxidized_copper_golem_statue:
+        case waxed_weathered_lightning_rod:
+        case waxed_copper_chest:
+        case waxed_oxidized_lightning_rod:
+        case jungle_shelf:
+        case waxed_weathered_copper_bars:
+        case oxidized_copper_golem_statue:
+        case waxed_exposed_copper_chest:
+        case exposed_lightning_rod:
+        case pale_oak_shelf:
+        case exposed_copper_bars:
+        case bamboo_shelf:
+        case waxed_oxidized_copper_bars:
+        case waxed_weathered_copper_chest:
+        case waxed_copper_golem_statue:
+        case weathered_lightning_rod:
+        case crimson_shelf:
+        case copper_torch:
+        case copper_lantern:
+        case exposed_copper_lantern:
+        case copper_wall_torch:
+        case weathered_copper_bars:
+        case weathered_copper_lantern:
+        case oxidized_copper_lantern:
+        case mangrove_shelf:
+        case waxed_copper_lantern:
+        case waxed_exposed_copper_lantern:
+        case waxed_oxidized_copper_chest:
+        case copper_chest:
+        case oxidized_lightning_rod:
+        case iron_chain:
+        case waxed_weathered_copper_lantern:
+        case waxed_oxidized_copper_lantern:
+        case waxed_exposed_copper_golem_statue:
+        case copper_chain:
+        case spruce_shelf:
+        case exposed_copper_chain:
+        case oxidized_copper_bars:
+        case copper_golem_statue:
+        case exposed_copper_chest:
+        case waxed_lightning_rod:
+        case birch_shelf:
+        case weathered_copper_chain:
+        case oxidized_copper_chain:
+        case waxed_copper_chain:
+        case waxed_weathered_copper_golem_statue:
+        case waxed_exposed_copper_chain:
+        case weathered_copper_chest:
+        case waxed_exposed_lightning_rod:
+        case waxed_weathered_copper_chain:
+        case waxed_copper_bars:
+        case waxed_oxidized_copper_chain:
+        case exposed_copper_golem_statue:
             return true;
         default:
             return false;
