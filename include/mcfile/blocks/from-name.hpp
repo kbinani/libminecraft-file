@@ -738,7 +738,7 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
     t[u8"minecraft:crimson_fence"] = crimson_fence;
     t[u8"minecraft:warped_fence"] = warped_fence;
     t[u8"minecraft:soul_torch"] = soul_torch;
-    t[u8"minecraft:chain"] = chain;
+    t[u8"minecraft:chain"] = iron_chain; // 25w32a
     t[u8"minecraft:blackstone_wall"] = blackstone_wall;
     t[u8"minecraft:polished_blackstone_wall"] = polished_blackstone_wall;
     t[u8"minecraft:polished_blackstone_brick_wall"] = polished_blackstone_brick_wall;
@@ -1147,6 +1147,70 @@ static inline std::unordered_map<std::u8string_view, BlockId> *CreateTable() {
 
     // 1.21.6
     t[u8"minecraft:dried_ghast"] = dried_ghast;
+
+    // 1.21.7~1.21.10
+    t[u8"minecraft:acacia_shelf"] = acacia_shelf;
+    t[u8"minecraft:cherry_shelf"] = cherry_shelf;
+    t[u8"minecraft:dark_oak_shelf"] = dark_oak_shelf;
+    t[u8"minecraft:oak_shelf"] = oak_shelf;
+    t[u8"minecraft:warped_shelf"] = warped_shelf;
+    t[u8"minecraft:waxed_exposed_copper_bars"] = waxed_exposed_copper_bars;
+    t[u8"minecraft:copper_bars"] = copper_bars;
+    t[u8"minecraft:oxidized_copper_chest"] = oxidized_copper_chest;
+    t[u8"minecraft:weathered_copper_golem_statue"] = weathered_copper_golem_statue;
+    t[u8"minecraft:waxed_oxidized_copper_golem_statue"] = waxed_oxidized_copper_golem_statue;
+    t[u8"minecraft:waxed_weathered_lightning_rod"] = waxed_weathered_lightning_rod;
+    t[u8"minecraft:waxed_copper_chest"] = waxed_copper_chest;
+    t[u8"minecraft:waxed_oxidized_lightning_rod"] = waxed_oxidized_lightning_rod;
+    t[u8"minecraft:jungle_shelf"] = jungle_shelf;
+    t[u8"minecraft:waxed_weathered_copper_bars"] = waxed_weathered_copper_bars;
+    t[u8"minecraft:oxidized_copper_golem_statue"] = oxidized_copper_golem_statue;
+    t[u8"minecraft:waxed_exposed_copper_chest"] = waxed_exposed_copper_chest;
+    t[u8"minecraft:exposed_lightning_rod"] = exposed_lightning_rod;
+    t[u8"minecraft:pale_oak_shelf"] = pale_oak_shelf;
+    t[u8"minecraft:exposed_copper_bars"] = exposed_copper_bars;
+    t[u8"minecraft:bamboo_shelf"] = bamboo_shelf;
+    t[u8"minecraft:waxed_oxidized_copper_bars"] = waxed_oxidized_copper_bars;
+    t[u8"minecraft:waxed_weathered_copper_chest"] = waxed_weathered_copper_chest;
+    t[u8"minecraft:waxed_copper_golem_statue"] = waxed_copper_golem_statue;
+    t[u8"minecraft:weathered_lightning_rod"] = weathered_lightning_rod;
+    t[u8"minecraft:crimson_shelf"] = crimson_shelf;
+    t[u8"minecraft:copper_torch"] = copper_torch;
+    t[u8"minecraft:copper_lantern"] = copper_lantern;
+    t[u8"minecraft:exposed_copper_lantern"] = exposed_copper_lantern;
+    t[u8"minecraft:copper_wall_torch"] = copper_wall_torch;
+    t[u8"minecraft:weathered_copper_bars"] = weathered_copper_bars;
+    t[u8"minecraft:weathered_copper_lantern"] = weathered_copper_lantern;
+    t[u8"minecraft:oxidized_copper_lantern"] = oxidized_copper_lantern;
+    t[u8"minecraft:mangrove_shelf"] = mangrove_shelf;
+    t[u8"minecraft:waxed_copper_lantern"] = waxed_copper_lantern;
+    t[u8"minecraft:waxed_exposed_copper_lantern"] = waxed_exposed_copper_lantern;
+    t[u8"minecraft:waxed_oxidized_copper_chest"] = waxed_oxidized_copper_chest;
+    t[u8"minecraft:copper_chest"] = copper_chest;
+    t[u8"minecraft:oxidized_lightning_rod"] = oxidized_lightning_rod;
+    t[u8"minecraft:iron_chain"] = iron_chain;
+    t[u8"minecraft:waxed_weathered_copper_lantern"] = waxed_weathered_copper_lantern;
+    t[u8"minecraft:waxed_oxidized_copper_lantern"] = waxed_oxidized_copper_lantern;
+    t[u8"minecraft:waxed_exposed_copper_golem_statue"] = waxed_exposed_copper_golem_statue;
+    t[u8"minecraft:copper_chain"] = copper_chain;
+    t[u8"minecraft:spruce_shelf"] = spruce_shelf;
+    t[u8"minecraft:exposed_copper_chain"] = exposed_copper_chain;
+    t[u8"minecraft:oxidized_copper_bars"] = oxidized_copper_bars;
+    t[u8"minecraft:copper_golem_statue"] = copper_golem_statue;
+    t[u8"minecraft:exposed_copper_chest"] = exposed_copper_chest;
+    t[u8"minecraft:waxed_lightning_rod"] = waxed_lightning_rod;
+    t[u8"minecraft:birch_shelf"] = birch_shelf;
+    t[u8"minecraft:weathered_copper_chain"] = weathered_copper_chain;
+    t[u8"minecraft:oxidized_copper_chain"] = oxidized_copper_chain;
+    t[u8"minecraft:waxed_copper_chain"] = waxed_copper_chain;
+    t[u8"minecraft:waxed_weathered_copper_golem_statue"] = waxed_weathered_copper_golem_statue;
+    t[u8"minecraft:waxed_exposed_copper_chain"] = waxed_exposed_copper_chain;
+    t[u8"minecraft:weathered_copper_chest"] = weathered_copper_chest;
+    t[u8"minecraft:waxed_exposed_lightning_rod"] = waxed_exposed_lightning_rod;
+    t[u8"minecraft:waxed_weathered_copper_chain"] = waxed_weathered_copper_chain;
+    t[u8"minecraft:waxed_copper_bars"] = waxed_copper_bars;
+    t[u8"minecraft:waxed_oxidized_copper_chain"] = waxed_oxidized_copper_chain;
+    t[u8"minecraft:exposed_copper_golem_statue"] = exposed_copper_golem_statue;
 
     return ret;
 }

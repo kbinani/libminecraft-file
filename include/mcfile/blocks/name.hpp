@@ -739,7 +739,7 @@ static inline std::vector<Characteristics> CreateTable() {
     m[crimson_fence] = {.name = u8"minecraft:crimson_fence", .opaque = false};
     m[warped_fence] = {.name = u8"minecraft:warped_fence", .opaque = false};
     m[soul_torch] = {.name = u8"minecraft:soul_torch", .opaque = false};
-    m[chain] = {.name = u8"minecraft:chain", .opaque = false};
+    // m[chain] = {.name = u8"minecraft:chain", .opaque = false};
     m[blackstone_wall] = {.name = u8"minecraft:blackstone_wall", .opaque = false};
     m[polished_blackstone_wall] = {.name = u8"minecraft:polished_blackstone_wall", .opaque = false};
     m[polished_blackstone_brick_wall] = {.name = u8"minecraft:polished_blackstone_brick_wall", .opaque = false};
@@ -1150,6 +1150,70 @@ static inline std::vector<Characteristics> CreateTable() {
     // 1.21.6
     m[dried_ghast] = {.name = u8"minecraft:dried_ghast", .opaque = false};
 
+    // 1.21.7~1.21.10
+    m[acacia_shelf] = {.name = u8"minecraft:acacia_shelf", .opaque = false};
+    m[cherry_shelf] = {.name = u8"minecraft:cherry_shelf", .opaque = false};
+    m[dark_oak_shelf] = {.name = u8"minecraft:dark_oak_shelf", .opaque = false};
+    m[oak_shelf] = {.name = u8"minecraft:oak_shelf", .opaque = false};
+    m[warped_shelf] = {.name = u8"minecraft:warped_shelf", .opaque = false};
+    m[waxed_exposed_copper_bars] = {.name = u8"minecraft:waxed_exposed_copper_bars", .opaque = false};
+    m[copper_bars] = {.name = u8"minecraft:copper_bars", .opaque = false};
+    m[oxidized_copper_chest] = {.name = u8"minecraft:oxidized_copper_chest", .opaque = false};
+    m[weathered_copper_golem_statue] = {.name = u8"minecraft:weathered_copper_golem_statue", .opaque = false};
+    m[waxed_oxidized_copper_golem_statue] = {.name = u8"minecraft:waxed_oxidized_copper_golem_statue", .opaque = false};
+    m[waxed_weathered_lightning_rod] = {.name = u8"minecraft:waxed_weathered_lightning_rod", .opaque = false};
+    m[waxed_copper_chest] = {.name = u8"minecraft:waxed_copper_chest", .opaque = false};
+    m[waxed_oxidized_lightning_rod] = {.name = u8"minecraft:waxed_oxidized_lightning_rod", .opaque = false};
+    m[jungle_shelf] = {.name = u8"minecraft:jungle_shelf", .opaque = false};
+    m[waxed_weathered_copper_bars] = {.name = u8"minecraft:waxed_weathered_copper_bars", .opaque = false};
+    m[oxidized_copper_golem_statue] = {.name = u8"minecraft:oxidized_copper_golem_statue", .opaque = false};
+    m[waxed_exposed_copper_chest] = {.name = u8"minecraft:waxed_exposed_copper_chest", .opaque = false};
+    m[exposed_lightning_rod] = {.name = u8"minecraft:exposed_lightning_rod", .opaque = false};
+    m[pale_oak_shelf] = {.name = u8"minecraft:pale_oak_shelf", .opaque = false};
+    m[exposed_copper_bars] = {.name = u8"minecraft:exposed_copper_bars", .opaque = false};
+    m[bamboo_shelf] = {.name = u8"minecraft:bamboo_shelf", .opaque = false};
+    m[waxed_oxidized_copper_bars] = {.name = u8"minecraft:waxed_oxidized_copper_bars", .opaque = false};
+    m[waxed_weathered_copper_chest] = {.name = u8"minecraft:waxed_weathered_copper_chest", .opaque = false};
+    m[waxed_copper_golem_statue] = {.name = u8"minecraft:waxed_copper_golem_statue", .opaque = false};
+    m[weathered_lightning_rod] = {.name = u8"minecraft:weathered_lightning_rod", .opaque = false};
+    m[crimson_shelf] = {.name = u8"minecraft:crimson_shelf", .opaque = false};
+    m[copper_torch] = {.name = u8"minecraft:copper_torch", .opaque = false};
+    m[copper_lantern] = {.name = u8"minecraft:copper_lantern", .opaque = false};
+    m[exposed_copper_lantern] = {.name = u8"minecraft:exposed_copper_lantern", .opaque = false};
+    m[copper_wall_torch] = {.name = u8"minecraft:copper_wall_torch", .opaque = false};
+    m[weathered_copper_bars] = {.name = u8"minecraft:weathered_copper_bars", .opaque = false};
+    m[weathered_copper_lantern] = {.name = u8"minecraft:weathered_copper_lantern", .opaque = false};
+    m[oxidized_copper_lantern] = {.name = u8"minecraft:oxidized_copper_lantern", .opaque = false};
+    m[mangrove_shelf] = {.name = u8"minecraft:mangrove_shelf", .opaque = false};
+    m[waxed_copper_lantern] = {.name = u8"minecraft:waxed_copper_lantern", .opaque = false};
+    m[waxed_exposed_copper_lantern] = {.name = u8"minecraft:waxed_exposed_copper_lantern", .opaque = false};
+    m[waxed_oxidized_copper_chest] = {.name = u8"minecraft:waxed_oxidized_copper_chest", .opaque = false};
+    m[copper_chest] = {.name = u8"minecraft:copper_chest", .opaque = false};
+    m[oxidized_lightning_rod] = {.name = u8"minecraft:oxidized_lightning_rod", .opaque = false};
+    m[iron_chain] = {.name = u8"minecraft:iron_chain", .opaque = false};
+    m[waxed_weathered_copper_lantern] = {.name = u8"minecraft:waxed_weathered_copper_lantern", .opaque = false};
+    m[waxed_oxidized_copper_lantern] = {.name = u8"minecraft:waxed_oxidized_copper_lantern", .opaque = false};
+    m[waxed_exposed_copper_golem_statue] = {.name = u8"minecraft:waxed_exposed_copper_golem_statue", .opaque = false};
+    m[copper_chain] = {.name = u8"minecraft:copper_chain", .opaque = false};
+    m[spruce_shelf] = {.name = u8"minecraft:spruce_shelf", .opaque = false};
+    m[exposed_copper_chain] = {.name = u8"minecraft:exposed_copper_chain", .opaque = false};
+    m[oxidized_copper_bars] = {.name = u8"minecraft:oxidized_copper_bars", .opaque = false};
+    m[copper_golem_statue] = {.name = u8"minecraft:copper_golem_statue", .opaque = false};
+    m[exposed_copper_chest] = {.name = u8"minecraft:exposed_copper_chest", .opaque = false};
+    m[waxed_lightning_rod] = {.name = u8"minecraft:waxed_lightning_rod", .opaque = false};
+    m[birch_shelf] = {.name = u8"minecraft:birch_shelf", .opaque = false};
+    m[weathered_copper_chain] = {.name = u8"minecraft:weathered_copper_chain", .opaque = false};
+    m[oxidized_copper_chain] = {.name = u8"minecraft:oxidized_copper_chain", .opaque = false};
+    m[waxed_copper_chain] = {.name = u8"minecraft:waxed_copper_chain", .opaque = false};
+    m[waxed_weathered_copper_golem_statue] = {.name = u8"minecraft:waxed_weathered_copper_golem_statue", .opaque = false};
+    m[waxed_exposed_copper_chain] = {.name = u8"minecraft:waxed_exposed_copper_chain", .opaque = false};
+    m[weathered_copper_chest] = {.name = u8"minecraft:weathered_copper_chest", .opaque = false};
+    m[waxed_exposed_lightning_rod] = {.name = u8"minecraft:waxed_exposed_lightning_rod", .opaque = false};
+    m[waxed_weathered_copper_chain] = {.name = u8"minecraft:waxed_weathered_copper_chain", .opaque = false};
+    m[waxed_copper_bars] = {.name = u8"minecraft:waxed_copper_bars", .opaque = false};
+    m[waxed_oxidized_copper_chain] = {.name = u8"minecraft:waxed_oxidized_copper_chain", .opaque = false};
+    m[exposed_copper_golem_statue] = {.name = u8"minecraft:exposed_copper_golem_statue", .opaque = false};
+
     std::vector<Characteristics> list(blocks::minecraft::minecraft_max_block_id - 1);
     for (uint32_t i = 1; i < minecraft::minecraft_max_block_id; i++) {
         BlockId id = static_cast<BlockId>(i);
@@ -1185,6 +1249,8 @@ static inline std::u8string Name(BlockId id, int dataVersion) {
             return u8"minecraft:cauldron";
         } else if (id == minecraft::short_grass && dataVersion < 3698) {
             return u8"minecraft:grass";
+        } else if (id == minecraft::iron_chain && dataVersion < 4536) {
+            return u8"minecraft:chain";
         }
     }
     auto characteristic = impl::BlockCharacteristic(id);
