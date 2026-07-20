@@ -119,6 +119,7 @@ public:
         if (i == u8"stone_slab") {
             switch (DrainDamage(damage)) {
             case 1: return ns u8"sandstone_slab";
+            case 2: return ns u8"petrified_oak_slab";
             case 3: return ns u8"cobblestone_slab";
             case 4: return ns u8"brick_slab";
             case 5: return ns u8"stone_brick_slab";
@@ -132,11 +133,20 @@ public:
         if (i == u8"brick_block") {
             return ns u8"bricks";
         }
+        if (i == u8"mob_spawner") {
+            return ns u8"spawner";
+        }
         if (i == u8"stone_stairs") {
             return ns u8"cobblestone_stairs";
         }
+        if (i == u8"snow_layer") {
+            return ns u8"snow";
+        }
         if (i == u8"snow") {
             return ns u8"snow_block";
+        }
+        if (i == u8"fence") {
+            return ns u8"oak_fence";
         }
         if (i == u8"pumpkin") {
             return ns u8"carved_pumpkin";
@@ -179,6 +189,9 @@ public:
         if (i == u8"melon_block") {
             return ns u8"melon";
         }
+        if (i == u8"waterlily") {
+            return ns u8"lily_pad";
+        }
         if (i == u8"nether_brick") {
             return ns u8"nether_bricks";
         }
@@ -193,6 +206,9 @@ public:
             default:
                 return ns u8"oak_slab";
             }
+        }
+        if (i == u8"quartz_ore") {
+            return ns u8"nether_quartz_ore";
         }
         if (i == u8"quartz_block") {
             switch (DrainDamage(damage)) {
@@ -256,6 +272,9 @@ public:
         }
         if (i == u8"stone_slab2") {
             return ns u8"red_sandstone_slab";
+        }
+        if (i == u8"end_bricks") {
+            return ns u8"end_stone_bricks";
         }
         if (i == u8"magma") {
             return ns u8"magma_block";
@@ -335,6 +354,8 @@ public:
         if (i == u8"tallgrass") {
             switch (DrainDamage(damage)) {
             case 2: return ns u8"fern";
+            // shrub -> dead bush
+            case 0: return ns u8"dead_bush";
             case 1:
             default:
                 return ns u8"grass";
@@ -573,6 +594,9 @@ public:
                 return ns u8"ink_sac";
             }
         }
+        if (i == u8"fireworks") {
+            return ns u8"firework_rocket";
+        }
         if (i == u8"firework_charge") {
             return ns u8"firework_star";
         }
@@ -645,6 +669,8 @@ public:
         }
         if (i == u8"melon") {
             return ns u8"melon_slice";
+        } else if (i == u8"speckled_melon") {
+            return ns u8"glistering_melon_slice";
         }
 #undef ns
 
@@ -666,7 +692,7 @@ public:
             }
         }
 #define ns u8"minecraft:"
-#define egg u8"_spawn_egg";
+#define egg u8"_spawn_egg"
         switch (id) {
         case 256: return ns u8"iron_shovel";
         case 257: return ns u8"iron_pickaxe";
@@ -788,7 +814,7 @@ public:
             case 1: return ns u8"cooked_salmon";
             case 0:
             default:
-                return ns u8"cooked_fish";
+                return ns u8"cooked_cod";
             }
         case 351:
             switch (DrainDamage(damage)) {
@@ -1116,13 +1142,24 @@ public:
             [](uint8_t data, map<u8string, u8string> &props) {
                 AssertDataLayout(data, 0b1111);
                 Log(data, props);
-                static blocks::BlockId const sIds[4] = {
-                    blocks::minecraft::oak_log,
-                    blocks::minecraft::spruce_log,
-                    blocks::minecraft::birch_log,
-                    blocks::minecraft::jungle_log,
-                };
-                return Select<4>(data & 0x3, sIds, blocks::minecraft::oak_log);
+
+                if (((data >> 2) & 0x3) == 0x3) {
+                    static blocks::BlockId const sIds[4] = {
+                        blocks::minecraft::oak_wood,
+                        blocks::minecraft::spruce_wood,
+                        blocks::minecraft::birch_wood,
+                        blocks::minecraft::jungle_wood,
+                    };
+                    return Select<4>(data & 0x3, sIds, blocks::minecraft::oak_wood);
+                } else {
+                    static blocks::BlockId const sIds[4] = {
+                        blocks::minecraft::oak_log,
+                        blocks::minecraft::spruce_log,
+                        blocks::minecraft::birch_log,
+                        blocks::minecraft::jungle_log,
+                    };
+                    return Select<4>(data & 0x3, sIds, blocks::minecraft::oak_log);
+                }
             },
             // 18
             [](uint8_t data, map<u8string, u8string> &props) {
@@ -1219,8 +1256,9 @@ public:
                 AssertDataLayout(data, 0b11);
                 switch (data) {
                 case 2: return blocks::minecraft::fern;
+                // shrub. Legacy console edition only
+                case 0: return blocks::minecraft::dead_bush;
                 case 1:
-                case 0: // shrub. Legacy console edition only
                 default:
                     return blocks::minecraft::short_grass;
                 }
@@ -1310,13 +1348,22 @@ public:
                 return blocks::minecraft::iron_block;
             },
             // 43
-            [](uint8_t data, map<u8string, u8string> &props) {
+            [](uint8_t data, map<u8string, u8string> &props) -> blocks::BlockId {
                 AssertDataLayout(data, 0b1111);
+                if ((data & 0x8) == 0x8) {
+                    switch (data & 0x7) {
+                        case 0: return blocks::minecraft::smooth_stone;
+                        case 1: return blocks::minecraft::smooth_sandstone;
+                        case 7: return blocks::minecraft::smooth_quartz;
+                        default:
+                            break;
+                    }
+                }
                 props[u8"type"] = u8"double";
                 static blocks::BlockId const sIds[8] = {
                     blocks::minecraft::smooth_stone_slab,
                     blocks::minecraft::sandstone_slab,
-                    blocks::minecraft::oak_slab,
+                    blocks::minecraft::petrified_oak_slab,
                     blocks::minecraft::cobblestone_slab,
                     blocks::minecraft::brick_slab,
                     blocks::minecraft::stone_brick_slab,
@@ -1332,7 +1379,7 @@ public:
                 static blocks::BlockId const sIds[8] = {
                     blocks::minecraft::smooth_stone_slab,
                     blocks::minecraft::sandstone_slab,
-                    blocks::minecraft::oak_slab,
+                    blocks::minecraft::petrified_oak_slab,
                     blocks::minecraft::cobblestone_slab,
                     blocks::minecraft::brick_slab,
                     blocks::minecraft::stone_brick_slab,
@@ -2332,6 +2379,16 @@ public:
             [](uint8_t data, map<u8string, u8string> &props) {
                 AssertDataLayout(data, 0b1111);
                 Log(data, props);
+
+                if (((data >> 2) & 0x3) == 0x3) {
+                    switch (data & 0x3) {
+                    case 1: return blocks::minecraft::dark_oak_wood;
+                    case 0:
+                    default:
+                        return blocks::minecraft::acacia_wood;
+                    }
+                }
+
                 switch (data & 0x3) {
                 case 1: return blocks::minecraft::dark_oak_log;
                 case 0:
@@ -2492,12 +2549,12 @@ public:
             // 181
             [](uint8_t data, map<u8string, u8string> &props) {
                 AssertDataLayout(data, 0b1000);
-                props[u8"type"] = u8"double";
                 switch (data) {
                 case 8:
-                    return blocks::minecraft::smooth_red_sandstone_slab;
+                    return blocks::minecraft::smooth_red_sandstone;
                 case 0:
                 default:
+                    props[u8"type"] = u8"double";
                     return blocks::minecraft::red_sandstone_slab;
                 }
             },
@@ -2996,7 +3053,7 @@ public:
     static void Stairs(uint8_t data, std::map<std::u8string, std::u8string> &props) {
         static std::u8string const facing[4] = {u8"east", u8"west", u8"south", u8"north"};
         props[u8"facing"] = facing[std::clamp(data & 0x3, 0, 3)];
-        static std::u8string const half[2] = {u8"bottm", u8"top"};
+        static std::u8string const half[2] = {u8"bottom", u8"top"};
         props[u8"half"] = half[std::clamp(data & 0x4, 0, 1)];
     }
 
@@ -3031,7 +3088,12 @@ public:
     }
 
     static void Log(uint8_t data, std::map<std::u8string, std::u8string> &props) {
-        props[u8"axis"] = Axis((data >> 2) & 0x3);
+        if (((data >> 2) & 0x3) == 0x3) {
+            // log axis="none" -> wood axis="y"
+            props[u8"axis"] = u8"y";
+        } else {
+            props[u8"axis"] = Axis((data >> 2) & 0x3);
+        }
     }
 
     static void Leaves(uint8_t data, std::map<std::u8string, std::u8string> &props) {
@@ -3139,7 +3201,7 @@ public:
             break;
         }
         props[u8"half"] = (data & 0x8) == 0x8 ? u8"top" : u8"bottom";
-        props[u8"open"] = (data & 0x4) == 0x4 ? u8"true" : u8"fasle";
+        props[u8"open"] = (data & 0x4) == 0x4 ? u8"true" : u8"false";
     }
 
     static void Button(uint8_t data, std::map<std::u8string, std::u8string> &props) {
